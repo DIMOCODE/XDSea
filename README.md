@@ -1,10 +1,8 @@
-# BlocksSea | Opensource NFT Marketplace for XDC Network
+# XDSea | Opensource NFT Marketplace for XDC Network
 
-Try running some of the following tasks:
+Run the webpage on localhost using:
 
 ```shell
 npm i 
-npx hardhat run scripts/deploy.js --network  xdctest
-npx hardhat run scripts/deploy.js --network  xdcmainnet
 npm start
 ```
