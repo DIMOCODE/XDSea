@@ -1,0 +1,618 @@
+/***********************************************************
+                    Typography CSS
+***********************************************************/
+.gradient-text {
+    /* Fallback: Set a background color. */
+    background-color: red;
+
+    /* Create the gradient. */
+    background-image: linear-gradient(45deg, #0484e5, #24c5f9);
+
+    /* Set the background size and repeat properties. */
+    background-size: 100%;
+    background-repeat: repeat;
+
+    /* Use the text as a mask for the background. */
+    /* This will show the gradient as a text color rather than element bg. */
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    -moz-background-clip: text;
+    -moz-text-fill-color: transparent;
+}
+
+.nft-h2 {
+    font-weight: 700 !important;
+    font-size: 30px !important;
+    color: #fff !important;
+    /*margin-bottom: 36px !important;*/
+}
+
+.nft-h1 {
+    font-weight: 700 !important;
+    font-size: 48px !important;
+    color: #000000 !important;
+    /*margin-bottom: 36px !important;*/
+}
+
+/***********************************************************
+                    Label Value CSS
+***********************************************************/
+.nft-label {
+    font-size: 14px;
+    color: #B5B7CA !important;
+}
+
+.nft-value {
+    font-size: 15px;
+    color: #27273B !important;
+}
+
+
+/***********************************************************
+                    Input CSS
+***********************************************************/
+.nft-input {
+    padding: 10px 20px;
+    border-radius: 36px;
+    min-height: 48px;
+    display: block;
+    width: 100%;
+    height: calc(1.5em + 0.75rem + 2px);
+    font-size: .875rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #5c6873;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #e4e7ea;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+.nft-input:focus {
+    border-color: #e4e7ea;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(51, 51, 51, 0.25);
+    color: #5c6873;
+    background-color: #fff;
+}
+
+.nft-input-label {
+    font-size: 14px;
+    color: #fff;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.nft-warning-label {
+    font-size: 14px;
+    color: red;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+}
+
+.nft-neutral-label {
+    font-size: 14px;
+    color: grey;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+}
+
+.nft-success-label {
+    font-size: 14px;
+    color: green;
+    display: inline-block;
+    margin-bottom: 0.5rem;
+}
+
+.nft-dropdown {
+    position: relative;
+    padding: 10px 20px;
+    border-radius: 36px;
+    min-height: 48px;
+    display: block;
+    width: 100%;
+    height: calc(1.5em + 0.75rem + 2px);
+    font-size: .875rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #5c6873;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #e4e7ea;
+    transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+}
+
+.profileLabel.profileName {
+    position: absolute;
+}
+
+.nft-input.profileName {
+    display: none;
+    width: 50%;
+}
+
+/***********************************************************
+                    Button CSS
+***********************************************************/
+.nft-btn {
+    font-size: 14px;
+    background: #333;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 36px;
+    border: none;
+    box-shadow: none;
+    height: 48px;
+    min-width: 120px;
+    background-size: 300% 100%;
+    moz-transition: all 0.4s ease-in-out;
+    -o-transition: all 0.4s ease-in-out;
+    -webkit-transition: all 0.4s ease-in-out;
+    transition: all 0.4s ease-in-out;
+}
+.nft-btn:hover {
+    background-position: 100% 0;
+    moz-transition: all 0.4s ease-in-out;
+    -o-transition: all 0.4s ease-in-out;
+    -webkit-transition: all 0.4s ease-in-out;
+    transition: all 0.4s ease-in-out;
+}
+.nft-btn.light {
+    background: #fff !important;
+    color: #27273b !important;
+    border: 1px solid #e4e7ea;
+}
+.nft-btn:focus {
+    outline: none;
+}
+
+.nft-btn-gradient {
+    font-size: 18px;
+    background: rgb(4, 132, 229);
+    background: linear-gradient(90deg, rgba(4, 132, 229, 1) 0%, rgba(36, 197, 249, 1) 16%, rgba(4, 132, 229, 1) 33%, rgba(4, 132, 229, 1) 100%);
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 36px;
+    border: none;
+    box-shadow: none;
+    height: 48px;
+    min-width: 120px;
+    background-size: 300% 100%;
+    moz-transition: all 0.4s ease-in-out;
+    -o-transition: all 0.4s ease-in-out;
+    -webkit-transition: all 0.4s ease-in-out;
+    transition: all 0.4s ease-in-out;
+}
+.nft-btn-gradient:disabled{
+    background: grey;
+    background: linear-gradient(90deg, grey 0%, rgba(192, 192, 192, 1) 16%, grey 33%, grey 100%);
+    background-size: 300% 100%;
+}
+.nft-btn-gradient:hover {
+    background-position: 100% 0;
+    moz-transition: all 0.4s ease-in-out;
+    -o-transition: all 0.4s ease-in-out;
+    -webkit-transition: all 0.4s ease-in-out;
+    transition: all 0.4s ease-in-out;
+}
+.nft-btn-gradient.white {
+    background: #fff !important;
+    color: #2794e9 !important;
+}
+.nft-btn-gradient:focus {
+    outline: none;
+}
+
+.nft-btn-linear {
+    font-size: 14px;
+    background: transparent;
+    color: #2794e9;
+    min-width: 100px;
+    padding: 6px 12px;
+    position: relative;
+    display: inline-block;
+    border: 2px solid #2794e9;
+    border-radius: 36px;
+    transition: border-color .5s, background-color .5s, color .5s;
+}
+.nft-btn-linear:hover {
+    border-radius: 36px;
+    background-color: #2794e9;
+    color: #fff;
+}
+.nft-btn-linear:focus {
+    outline: none;
+}
+
+.nft-btn-linear-gradient {
+    font-size: 14px;
+    background: transparent;
+    color: #03466e;
+    padding: 10px 20px;
+    position: relative;
+    display: inline-block;
+    border: none;
+    height: 48px;
+    min-width: 120px;
+    transition: border-color 0.5s, background-color 0.5s, color 0.5s;
+}
+.nft-btn-linear-gradient:hover::before {
+    background-position: 100% 0;
+    moz-transition: all 0.4s ease-in-out;
+    -o-transition: all 0.4s ease-in-out;
+    -webkit-transition: all 0.4s ease-in-out;
+    transition: all 0.4s ease-in-out;
+}
+
+.nft-btn-linear-gradient::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 50px;
+    padding: 2px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 1) 0%, rgba(36, 197, 249, 1) 16%, rgba(255, 255, 255, 1) 33%, rgba(255, 255, 255, 1) 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: destination-out;
+    mask-composite: exclude;
+    background-size: 300% 100%;
+    moz-transition: all 0.4s ease-in-out;
+    -o-transition: all 0.4s ease-in-out;
+    -webkit-transition: all 0.4s ease-in-out;
+    transition: all 0.4s ease-in-out;
+}
+.nft-btn-linear-gradient:focus {
+    outline: none;
+}
+.nft-btn-linear-gradient.light {
+    color: white !important;
+}
+.nft-btn-linear-gradient.light::before {
+    background: linear-gradient(90deg, rgba(36, 197, 249, 1) 0%, rgba(4, 132, 229, 1) 50%, rgba(36, 197, 249, 1) 100%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+}
+
+.nft-btn-linear-gradient.light {
+    color: white !important;
+}
+.nft-btn-linear-gradient.light::before {
+     background: linear-gradient(90deg, rgba(36, 197, 249, 1) 0%, rgba(4, 132, 229, 1) 50%, rgba(36, 197, 249, 1) 100%);
+     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+}
+
+/**********************************************************
+                Collection Card CSS
+**********************************************************/
+.collection-card {
+    background-color: transparent;
+    border-radius: 12px;
+    -webkit-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+    box-shadow: 0 5px 20px 0 rgba(255,255,255,0.2);
+    z-index: 999;
+    /* max-width: 500px; */
+}
+
+.collection-card-body img {
+    width: 100%;
+    height: 100%;
+    max-height: 350px;
+    min-height: 350px;
+    /* max-width: 500px; */
+    border-radius: 12px;
+    object-fit: cover;
+    border-radius: 12px 12px 0 0;
+}
+
+.collection-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 5px 20px 0 rgba(255,255,255,0.4);
+}
+
+.collection-card-logo {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: -48px;
+    margin-bottom: 15px;
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    outline: 1px solid #fff;
+    overflow: hidden;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    z-index: 999;
+}
+
+.collection-logo img {
+    flex-shrink: 0;
+    min-width: 100%;
+    min-height: 100%;
+}
+
+.collection-card-footer h4{
+    text-align: center;
+    padding-left: auto;
+    padding-right: auto;
+    font-weight: 800;
+    color: white;
+}
+
+.collection-card-footer {
+    padding-top: 8px;
+}
+
+.collection-card-footer p {
+    text-align: center;
+    color: white;
+    overflow: hidden;
+    width: 80%;
+    margin-right: auto;
+    margin-left: auto;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+/**********************************************************
+                Property Card CSS
+**********************************************************/
+
+.property-card {
+    background-color: transparent;
+    border-radius: 12px;
+    border: 1px solid rgb(36, 197, 249);
+    padding: 8px;
+    -webkit-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+    box-shadow: 0 5px 20px 0 rgba(138, 155, 165, 0.1);
+    z-index: 999;
+    height: auto;
+    margin-top: 10px;
+}
+
+.property-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 20px 0 rgba(138, 155, 165, 0.2);
+}
+
+.property-card-header {
+    text-align: center;
+    margin-top: -5px;
+    padding: 0px;
+    font-weight: 100;
+    font-size: 11px;
+    color: #fff;
+}
+
+.property-card-body p {
+    text-align: center;
+    font-size: 15px;
+    margin-top: -18px;
+    font-weight: 600;
+    width: 100%;
+    color: rgb(36, 197, 249);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.property-card-footer {
+    text-align: center;
+    margin-top: -18px;
+    font-size: 12px;
+    color: #fff;
+}
+
+/***********************************************************
+                    Card CSS
+***********************************************************/
+.nft-card {
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    border: 1px solid #e8e8e8;
+    padding: 16px;
+    -webkit-transition: all 0.3s ease-out;
+    transition: all 0.3s ease-out;
+    box-shadow: 0 5px 20px 0 rgba(138, 155, 165, 0.1);
+    z-index: 999;
+}
+
+.nft-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 5px 20px 0 rgba(138, 155, 165, 0.2);
+}
+
+.nft-card-header {
+    margin: 4px 0;
+}
+
+.nft-card-header-owner .nft-label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.nft-card-body {
+    margin: 16px 0;
+}
+
+.nft-card-body img {
+    width: 100%;
+    height: 100%;
+    max-height: 240px;
+    min-height: 240px;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+.nft-card-body video {
+    width: 100%;
+    height: 100%;
+    max-height: 240px;
+    min-height: 240px;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+.nft-card-body audio {
+    width: 100%;
+    height: 100%;
+    max-height: 240px;
+    min-height: 240px;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+.nft-card-footer {
+    margin: 4px 0;
+    display: flex;
+    justify-content: space-between;
+}
+
+.nft-card-footer-bid {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    text-align: left;
+    width: 50%;
+}
+
+.nft-card-footer-bid .nft-label, .nft-card-footer-bid .nft-value {
+    margin: 0 !important;
+}
+
+.nft-card-footer-avatar {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+
+.nft-card-footer-avatar img {
+    height: 60px;
+    width: 60px;
+    object-fit: cover;
+    margin-top: -30px;
+    border-radius: 50%;
+}
+
+
+
+.nft-info-card {
+    border: 1px solid #e7e7e7;
+    padding: 10px;
+    margin: 15px 0 0;
+    border-radius: 16px;
+}
+/***********************************************************
+                    Footer CSS
+***********************************************************/
+.nft-footer {
+    width: 100%;
+    display: inline-block;
+    background: #000;
+    padding: 50px 0 0;
+}
+
+/* .nft-footer-logo {
+    padding: 12px 0;
+} */
+
+.nft-footer-logo img {
+    height: 88px;
+    object-fit: cover;
+    object-position: -28px;
+    /* margin-bottom: 12px; */
+}
+
+.nft-footer-text {
+    margin-bottom: 16px;
+}
+
+.nft-footer-social {
+    display: flex;
+    margin-bottom: 16px;
+    margin-top: 16px;
+}
+
+.nft-footer-social span {
+    width: 36px;
+    height: 36px;
+    margin-right: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    cursor: pointer;
+    background-color: rgb(48, 51, 57);
+}
+
+.nft-footer-social span img {
+    height: 22px;
+}
+
+.nft-footer h4 {
+    font-size: 18px;
+    color: #fff;
+}
+
+.nft-footer a, .nft-footer p {
+    font-size: 14px;
+    color: #fff;
+}
+
+.nft-footer hr {
+    border-color: #fff;
+}
+
+.nft-footer-list {
+    text-align: center;
+    margin-bottom: 4px;
+}
+
+.nft-footer-copy {
+    color: #fff;
+    margin: 36px 0 6px;
+    text-align: center;
+}
+
+/***********************************************************
+                    Skeleton CSS
+***********************************************************/
+.nft-skeleton {
+    overflow: hidden;
+}
+
+.nft-skeleton_loading {
+    position: relative;
+    background-color: rgba(52, 161, 255, 0.05);
+    border-radius: 12px;
+}
+
+.nft-skeleton_loading::after {
+    display: block;
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    transform: translateX(-100%);
+    background: -webkit-gradient(linear, left top,
+    right top, from(transparent),
+    color-stop(rgba(255, 255, 255, 0.3)),
+    to(transparent));
+
+    background: linear-gradient(90deg, transparent,
+    rgba(255, 255, 255, 0.5), transparent);
+
+    /* Adding animation */
+    animation: nft-skeleton_loading 1s infinite;
+}
+
+@keyframes nft-skeleton_loading {
+    100% {
+        transform: translateX(100%);
+    }
+} 

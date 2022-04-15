@@ -30,16 +30,19 @@ const Discover = () => {
             const marketContract = new xdc3.eth.Contract(NFTMarketLayer1.abi, nftmarketlayeraddress, xdc3)
             const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress)
 
-            const data2 = await oldMarketContract.methods.fetchMarketItems().call()
-            console.log(data2.length);
-            const newCollections = await Promise.all(data2.slice(600, 650).map(async i => {
-                // console.log(i)
+            // const data2 = await oldMarketContract.methods.fetchMarketItems().call()
+            // console.log(data2.length);
+            // const oldData = await Promise.all(data2.map( async i => {
+            //     console.log(i.tokenId, i.itemId)
+            // }))
+            // const newCollections = await Promise.all(data2.slice(1380, 1500).map(async i => {
+                // // console.log(i)
                 // const uri = await nftContract.methods.tokenURI(i.tokenId).call()
                 // var metadata = await axios.get(uri)
-                // console.log(metadata?.data?.collection?.nft?.name, metadata?.data?.collection?.name)
+                // // console.log(metadata?.data?.collection?.nft?.name, metadata?.data?.collection?.name)
                 // let data = marketContract.methods.createMarketItem(
-                //     nftaddress, 
                 //     i.tokenId, 
+                //     i.itemId,
                 //     i.owner, 
                 //     i.creator,
                 //     i.price,
@@ -48,7 +51,6 @@ const Discover = () => {
                 //     i.eventCount,
                 //     metadata?.data?.collection?.nft?.name,
                 //     metadata?.data?.collection?.name,
-                //     true
                 // ).encodeABI()
                 
                 // const tx = {
@@ -60,7 +62,7 @@ const Discover = () => {
                 // var gasLimit = await xdc3.eth.estimateGas(tx)
                 // tx["gas"] = gasLimit
                 // let transaction = await SendTransaction(tx);
-            }))
+            // }))
 
             const collectionData = await marketContract.methods.fetchCollections().call()
             const collections = await Promise.all(collectionData.slice(0, 12).map(async i => {
@@ -78,36 +80,95 @@ const Discover = () => {
                 return collection
             }))
 
-            setCollections(collections)
+            var filteredCollections = collections.filter((element) => {
+                return element?.name !== "Untitled Collection 7"
+            })
+
+            setCollections(filteredCollections)
             setCollectionPage(collectionData)
             
-            const allEvents = await Promise.all(data2.slice(600, 650).map(async item => {
-                // var eventCount = item.eventCount
-                // var events = []
-                // for(var i = 1; i <= eventCount; i++) {
-                //     var event = await oldMarketContract.methods.getEventHistory(item.itemId, i).call()
-                //     let data = marketContract.methods.addEventsToItem(
-                //         item.tokenId,
-                //         i,
-                //         event.eventType,
-                //         event.from,
-                //         event.to,
-                //         event.price,
-                //         event.timestamp
-                //     ).encodeABI()
+            // const allEvents = await Promise.all(data2.slice(0, 1400).map(async item => {
+            //     // console.log(item.tokenId)
+            //     var eventCount = item.eventCount
+            //     var events = []
+            //     for(var i = 1; i <= eventCount; i++) {
+            //         var event = await oldMarketContract.methods.getEventHistory(item.itemId, i).call()  
+            //         if(event.timestamp >= 1649854620) {
+            //             const uri = await nftContract.methods.tokenURI(item.tokenId).call()
+            //             var metadata = await axios.get(uri)
+            //             console.log(item, event, metadata?.data?.collection?.nft?.name, metadata?.data?.collection?.name)
+                        // let data = marketContract.methods.editMarketItem(
+                        //     item.tokenId, 
+                        //     item.itemId,
+                        //     item.owner, 
+                        //     item.creator,
+                        //     item.price,
+                        //     item.isListed,
+                        //     item.royalty,
+                        //     item.eventCount,
+                        //     0,
+                        //     metadata?.data?.collection?.nft?.name,
+                        //     metadata?.data?.collection?.name,
+                        // ).encodeABI()
+                        
+                        // const tx = {
+                        //     from: wallet.wallet.address,
+                        //     to: nftmarketlayeraddress,
+                        //     data
+                        // }
+                
+                        // var gasLimit = await xdc3.eth.estimateGas(tx)
+                        // tx["gas"] = gasLimit
+                        // let transaction = await SendTransaction(tx);
 
-                //     const tx = {
-                //         from: wallet.wallet.address,
-                //         to: nftmarketlayeraddress,
-                //         data
+                        // let data = marketContract.methods.addEventsToItem(
+                        //     item.tokenId,
+                        //     i,
+                        //     event.eventType,
+                        //     event.from,
+                        //     event.to,
+                        //     event.price,
+                        //     event.timestamp
+                        // ).encodeABI()
+
+                        //     const tx = {
+                        //         from: wallet.wallet.address,
+                        //         to: nftmarketlayeraddress,
+                        //         data
+                        //     }
+
+                        //     var gasLimit = await xdc3.eth.estimateGas(tx)
+                        //     tx["gas"] = gasLimit
+                        //     let transaction = SendTransaction(tx)
                 //     }
+                // }  
 
-                //     var gasLimit = await xdc3.eth.estimateGas(tx)
-                //     tx["gas"] = gasLimit
-                //     let transaction = SendTransaction(tx)
-                // }
-                // return events
-            }))
+            // var eventCount = item.eventCount
+            // var events = []
+            // for(var i = 1; i <= eventCount; i++) {
+            //     var event = await oldMarketContract.methods.getEventHistory(item.itemId, i).call()
+            //     let data = marketContract.methods.addEventsToItem(
+            //         item.tokenId,
+            //         i,
+            //         event.eventType,
+            //         event.from,
+            //         event.to,
+            //         event.price,
+            //         event.timestamp
+            //     ).encodeABI()
+
+            //         const tx = {
+            //             from: wallet.wallet.address,
+            //             to: nftmarketlayeraddress,
+            //             data
+            //         }
+
+            //         var gasLimit = await xdc3.eth.estimateGas(tx)
+            //         tx["gas"] = gasLimit
+            //         let transaction = SendTransaction(tx)
+            //     }
+            // return events
+            // }))
             
             setLoadingState('loaded')
         } catch (error) {
@@ -118,7 +179,7 @@ const Discover = () => {
         history.push(`/collection/${data}`)
     }
     const handleScroll = () => {
-        console.log(window.innerHeight, document.documentElement.scrollTop, document.documentElement.offsetHeight)
+        // console.log(window.innerHeight, document.documentElement.scrollTop, document.documentElement.offsetHeight)
         if (window.innerHeight + document.documentElement.scrollTop <= document.documentElement.offsetHeight - 510) return;
         setIsFetching(true)
     }
@@ -140,7 +201,12 @@ const Discover = () => {
 
             return collection
         }))
-        setCollections(prevState => ([...prevState, ...collections]));
+
+        var filteredCollections = collections.filter((element) => {
+            return element?.name !== "Untitled Collection 7"
+        })
+
+        setCollections(prevState => ([...prevState, ...filteredCollections]));
         setIsFetching(false);
     }
     useEffect(() => {

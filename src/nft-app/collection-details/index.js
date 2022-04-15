@@ -11,12 +11,13 @@ import Card from "../home/common/card";
 // import CollectionCard from "../home/common/collectionCard";
 import {GetWallet, SendTransaction} from 'xdc-connect';
 import axios from "axios"
-import { BuyNFT, SellNFT, WithdrawListing } from '../../common';
+import { LegacyBuyNFT, BuyNFT, SellNFT, LegacyWithdrawListing, WithdrawListing } from '../../common';
 import { Dialog, Transition } from '@headlessui/react';
 import {toXdc} from '../../common/common';
 import SkeletonCard from "../../common/skeleton/card";
 import { fromXdc, isXdc } from '../../common/common';
 import NFTMarketLayer1 from '../../abis/NFTMarketLayer1.json'
+import { permaBlacklist } from '../../blacklist';
 
 const CollectionDetails = () => {
     const history = useHistory()
@@ -50,11 +51,14 @@ const CollectionDetails = () => {
     const [withdrawnNFT, setWithdrawnNFT] = useState(null);
     const [withdrawing, setWithdrawing] = useState(false);
     const [settingPrice, setSettingPrice] = useState(false);
+    const [blacklist, setBlacklist] = useState([])
 
     const { collectionName } = useParams()
 
     const getData = async () => {
         try {
+            // console.log(permaBlacklist)
+            setBlacklist(permaBlacklist)
             const wallet = await GetWallet();
             setWallet(wallet);
             const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER))
@@ -75,6 +79,7 @@ const CollectionDetails = () => {
                 let item = {
                     price: price,
                     tokenId: i.tokenId,
+                    itemId: i.itemId,
                     owner: i.owner,
                     collectionName: metadata?.data?.collection?.name,
                     collectionBanner: metadata?.data?.collection?.banner,
@@ -96,6 +101,9 @@ const CollectionDetails = () => {
                 }
                 return item
             }))
+            var filteredCollectionItems = collectionItems.filter((element) => {
+                return element?.tokenId !== "119" && element?.tokenId !== "1778"
+            })
             var volumeTraded = 0
             const uniqueOwners = []
             var lowestPrice = 99999999999999999999999999999
@@ -121,7 +129,7 @@ const CollectionDetails = () => {
             setFloorPrice(lowestPrice)
             setVolume(volumeTraded)
             setLoadingState('loaded')
-            setNFts(collectionItems)
+            setNFts(filteredCollectionItems)
             setPage(collectionData)
             setCollectionOwners(uniqueOwners)
             setApproved(getVal)
@@ -131,9 +139,8 @@ const CollectionDetails = () => {
     }
 
     const handleScroll = () => {
-        console.log(window.innerHeight, document.documentElement.scrollTop, document.documentElement.offsetHeight)
-        if (window.innerHeight + document.documentElement.scrollTop >= document.documentElement.offsetHeight - 490 
-            || window.innerHeight + document.documentElement.scrollTop <= document.documentElement.offsetHeight - 510) return;
+        // console.log(window.innerHeight, document.documentElement.scrollTop, document.documentElement.offsetHeight)
+        if (window.innerHeight + document.documentElement.scrollTop <= document.documentElement.offsetHeight - 510) return;
         setIsFetching(true)
     }
 
@@ -150,6 +157,7 @@ const CollectionDetails = () => {
             let nft = {
                 price: price,
                 tokenId: i.tokenId,
+                itemId: i.itemId,
                 owner: i.owner,
                 collectionName: metadata?.data?.collection?.name,
                 collectionBanner: metadata?.data?.collection?.banner,
@@ -172,13 +180,16 @@ const CollectionDetails = () => {
 
             return nft
         }))
+        var filteredCollectionItems = nfts.filter((element) => {
+            return element?.tokenId !== "119" && element?.tokenId !== "1778"
+        })
 
-        setNFts(prevState => ([...prevState, ...nfts]));
+        setNFts(prevState => ([...prevState, ...filteredCollectionItems]));
         setIsFetching(false);
     }
 
     const viewNFT = data => {
-        history.push(`/nft/${toXdc(data.nftContract)}/${data.tokenId}`)
+        history.push(`/nft/${nftaddress}/${data.tokenId}`)
     }
 
     const startSale = async (nft) =>{
@@ -189,7 +200,10 @@ const CollectionDetails = () => {
     }
     const sellNFT = async () => {
         setSettingPrice(false)
-        const success = await SellNFT(approved, sellData, sellPrice)
+        var success = false
+        if(!blacklist.includes(sellData.tokenId)){
+            success = await SellNFT(approved, sellData, sellPrice)
+        }
         if(success) {
             setListedNFT(sellData)
             setListSuccess(true)
@@ -206,7 +220,13 @@ const CollectionDetails = () => {
     const buyNFT = async (nft) => {
         setBuying(true)
         setBuyFailure(false)
-        const success = await BuyNFT(nft)
+        var success = false
+        if(blacklist.includes(nft.tokenId)){
+            success = await LegacyBuyNFT(nft)
+        }
+        else{
+            success = await BuyNFT(nft)
+        }
         if(success) {
             setBoughtNFT(nft)
             setBuySuccess(true)
@@ -223,7 +243,13 @@ const CollectionDetails = () => {
     const withdrawListing = async(nft) => {
         setWithdrawing(true)
         setWithdrawFailure(false)
-        const success = await WithdrawListing(approved, nft)
+        var success = false
+        if(blacklist.includes(nft.tokenId)) {
+            success = await LegacyWithdrawListing(approved, nft)
+        }
+        else{
+            success = await WithdrawListing(approved, nft)
+        }
         if(success) {
             setWithdrawnNFT(nft)
             setWithdrawSuccess(true)
@@ -249,6 +275,23 @@ const CollectionDetails = () => {
             description.style.height = "100px";
             setShowingDescription(true)
         }
+    }
+    const getBlacklist = async () => {
+        const wallet = await GetWallet();
+        setWallet(wallet);
+        const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER))
+        const oldMarketContract = new xdc3.eth.Contract(NFTMarket.abi, nftmarketaddress, xdc3)
+        const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress)
+        const data = await oldMarketContract.methods.fetchMarketItems().call()
+
+        var newBlacklist = []
+        const marketItems = await Promise.all(data.map(async i => {
+            if(i.isListed) {
+                newBlacklist.push(i.tokenId)
+            }
+        }))
+        // console.log(newBlacklist)
+        // setBlacklist(newBlacklist)
     }
     useEffect(() => {
         getData()
@@ -291,7 +334,7 @@ const CollectionDetails = () => {
             </div>
             <div className='collection-details max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'>
                 <div className='collection-count'>
-                    <h2 className='text-white text-center'>{page.length}</h2>
+                    <h2 className='text-white text-center'>{collectionName == "The Lucid Women" || collectionName == "NFTHC" ? page.length - 1 : page.length}</h2>
                     <h5 className='text-white text-center'>{page.length === 1 ? "Item" : "Items"}</h5>
                 </div>
                 <div className='collection-owners'>
