@@ -178,10 +178,10 @@ const NFTApp = () => {
                         <Route exact path="/discover" component={Discover} />
                         <Route exact path="/mint-item" component={CreateToken} />
                         {/* <Route exact path="/connect" component={ConnectWallet}/> */}
-                        <Route exact path="/my-nfts" component={MyNFT} />
-                        <Route exact path="/nft/:nftaddress/:id" component={NFTDetails} />
-                        <Route exact path="/collection/:collectionName" component={CollectionDetails} />
-                        <Route exact path="/" component={Home} />
+                        <Route exact path="/my-nfts" render={() => <MyNFT wallet={wallet}/>} />
+                        <Route exact path="/nft/:nftaddress/:id" render={() => <NFTDetails wallet={wallet}/>} />
+                        <Route exact path="/collection/:collectionName" render={() => <CollectionDetails wallet={wallet}/>} />
+                        <Route exact path="/" render={() => <Home wallet={wallet}/>} />
                         {/* <Route exact path="/profile" component = {Profile} /> */}
                     </Switch>
                 </div>

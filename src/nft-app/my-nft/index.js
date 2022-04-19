@@ -20,7 +20,7 @@ import { fromXdc, isXdc } from '../../common/common';
 import NFTMarketLayer1 from '../../abis/NFTMarketLayer1.json'
 import { permaBlacklist } from '../../blacklist';
 
-const MyNFT = () => {
+const MyNFT = (props) => {
     const history = useHistory()
     const [nfts, setNFts] = useState([]);
     const [address, setAddress] = useState('')
@@ -126,7 +126,6 @@ const MyNFT = () => {
             // console.log(permaBlacklist)
             setBlacklist(permaBlacklist)
             const wallet = await GetWallet();
-            setWallet(wallet);
             if(wallet.wallet.connected) {
                 const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER))
                 // const marketContract = new xdc3.eth.Contract(NFTMarket.abi, nftmarketaddress, xdc3)
@@ -253,6 +252,7 @@ const MyNFT = () => {
     }
 
     useEffect(() => {
+        setWallet(props.wallet)
         getData()
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
@@ -261,6 +261,9 @@ const MyNFT = () => {
         if (!isFetching) return;
         fetchMoreNFTs();
     }, [isFetching]);
+    useEffect(() => {
+        setWallet(props.wallet)
+    }, [props.wallet])
     return <div>
         <header className='secondary-page-header'>
             <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-6">

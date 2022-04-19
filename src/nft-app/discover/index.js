@@ -87,13 +87,13 @@ const Discover = () => {
             setCollections(filteredCollections)
             setCollectionPage(collectionData)
             
-            // const allEvents = await Promise.all(data2.slice(0, 1400).map(async item => {
+            // const allEvents = await Promise.all(data2.map(async item => {
             //     // console.log(item.tokenId)
             //     var eventCount = item.eventCount
             //     var events = []
             //     for(var i = 1; i <= eventCount; i++) {
             //         var event = await oldMarketContract.methods.getEventHistory(item.itemId, i).call()  
-            //         if(event.timestamp >= 1649854620) {
+            //         if(event.timestamp >= 1650376040) {
             //             const uri = await nftContract.methods.tokenURI(item.tokenId).call()
             //             var metadata = await axios.get(uri)
             //             console.log(item, event, metadata?.data?.collection?.nft?.name, metadata?.data?.collection?.name)

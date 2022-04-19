@@ -21,8 +21,12 @@ const Card = (props) => {
         return !!fileType?.match('audio.*');
     }
     useEffect(() => {
-        getWalletAddress()
+        setWallet(props.wallet)
     }, [])
+    useEffect(() => {
+        // console.log(props?.wallet?.address)
+        setWallet(props.wallet)
+    }, [props.wallet])
     return (
         <div className="nft-card cursor-pointer" onClick={e => {
             e.preventDefault()
@@ -56,9 +60,9 @@ const Card = (props) => {
                     <h4 className="nft-value truncate" title={`${props.price} XDC`}>{props.price} XDC</h4>
                 </div>
                 <div className="nft-card-footer-bid">
-                    {props?.wallet?.wallet?.connected 
+                    {props?.wallet?.connected 
                         ? props.isListed 
-                            ? props?.wallet?.wallet?.address === props.owner 
+                            ? props?.wallet?.address === props.owner 
                                 ? <>
                                     <button className='nft-btn-linear' onClick={e => {
                                         e.preventDefault();
@@ -73,7 +77,7 @@ const Card = (props) => {
                                         }}>{"Buy"}
                                         </button>
                                 </> 
-                            : props.wallet?.wallet?.address === props.owner 
+                            : props.wallet?.address === props.owner 
                                 ? <>
                                     <button className='nft-btn-linear' onClick={e => {
                                         e.preventDefault();

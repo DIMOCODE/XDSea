@@ -19,7 +19,7 @@ import { fromXdc, isXdc } from '../../common/common';
 import { XdcConnect } from "xdc-connect";
 import { permaBlacklist } from '../../blacklist';
 
-const Home = () => {
+const Home = (props) => {
     const history = useHistory()
     const [nfts, setNFts] = useState([]);
     const [loadingState, setLoadingState] = useState('not-loaded');
@@ -47,6 +47,7 @@ const Home = () => {
     const [withdrawing, setWithdrawing] = useState(false);
     const [settingPrice, setSettingPrice] = useState(false);
     const [blacklist, setBlacklist] = useState([])
+    const [featuredNFTType, setFeaturedNFTType] = useState('')
 
     const close = () => {
         setSellData(null)
@@ -143,8 +144,7 @@ const Home = () => {
         try {
             // console.log(permaBlacklist)
             setBlacklist(permaBlacklist)
-            const wallet = await GetWallet();
-            setWallet(wallet);
+            const wallet = await GetWallet()
             const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER))
             // const marketContract = new xdc3.eth.Contract(NFTMarket.abi, nftmarketaddress, xdc3)
             const marketContract = new xdc3.eth.Contract(NFTMarketLayer1.abi, nftmarketlayeraddress, xdc3)
@@ -154,7 +154,7 @@ const Home = () => {
             if(wallet.wallet.address !== '')
                 var getVal = await nftContract.methods.isApprovedForAll(isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address, nftmarketlayeraddress).call()
             
-            const featuredNFT = await marketContract.methods.idToMarketItem(1).call()
+            const featuredNFT = await marketContract.methods.idToMarketItem(1772).call()
             const featuredNFTUri = await nftContract.methods.tokenURI(featuredNFT.tokenId).call()
             var featuredNFTMetadata = await axios.get(featuredNFTUri)
             let featuredNFTData = {
@@ -195,7 +195,7 @@ const Home = () => {
             spotlightCollections.push(collection2)
 
             var trendingItems = []
-            var itemData = await marketContract.methods.idToMarketItem(1).call()
+            var itemData = await marketContract.methods.idToMarketItem(97).call()
             const trendingItemUri = await nftContract.methods.tokenURI(itemData.tokenId).call()
             var trendingItemMetadata = await axios.get(trendingItemUri)
             var price = await xdc3.utils.fromWei(itemData.price, "ether")
@@ -214,7 +214,7 @@ const Home = () => {
             }
             trendingItems.push(item)
 
-            var itemData = await marketContract.methods.idToMarketItem(33).call()
+            var itemData = await marketContract.methods.idToMarketItem(760).call()
             const trendingItemUri2 = await nftContract.methods.tokenURI(itemData.tokenId).call()
             var trendingItemMetadata = await axios.get(trendingItemUri2)
             var price = await xdc3.utils.fromWei(itemData.price, "ether")
@@ -233,7 +233,7 @@ const Home = () => {
             }
             trendingItems.push(item2)
 
-            var itemData = await marketContract.methods.idToMarketItem(140).call()
+            var itemData = await marketContract.methods.idToMarketItem(1723).call()
             const trendingItemUri3 = await nftContract.methods.tokenURI(itemData.tokenId).call()
             var trendingItemMetadata = await axios.get(trendingItemUri3)
             var price = await xdc3.utils.fromWei(itemData.price, "ether")
@@ -252,7 +252,7 @@ const Home = () => {
             }
             trendingItems.push(item3)
 
-            var itemData = await marketContract.methods.idToMarketItem(68).call()
+            var itemData = await marketContract.methods.idToMarketItem(1772).call()
             const trendingItemUri4 = await nftContract.methods.tokenURI(itemData.tokenId).call()
             var trendingItemMetadata = await axios.get(trendingItemUri4)
             var price = await xdc3.utils.fromWei(itemData.price, "ether")
@@ -275,6 +275,7 @@ const Home = () => {
             setLoadingState('loaded')
             setNFts(trendingItems)
             setFeaturedNFT(featuredNFTData)
+            setFeaturedNFTType(featuredNFTData.fileType)
             setApproved(getVal)
         } catch (error) {
             console.log(error)
@@ -289,8 +290,8 @@ const Home = () => {
     }
     const setBannerImage = () => {
         let data = document.getElementsByClassName("nft-banner")[0] !== undefined 
-            ? document.getElementsByClassName("nft-banner")[0].style.backgroundImage = featuredNFT?.image 
-                ? `url(${featuredNFT.image})` 
+            ? document.getElementsByClassName("nft-banner")[0].style.backgroundImage = featuredNFT?.preview 
+                ? `url(${featuredNFT.preview})` 
                 : "" 
             : ""
     }
@@ -322,13 +323,25 @@ const Home = () => {
         // setBlacklist(newBlacklist)
     }
 
+    const isImage = (fileType) => {
+        return !!fileType?.match('image.*');
+    }
+      
+    const isVideo = (fileType) => {
+        return !!fileType?.match('video.*');
+    }
+
     useEffect(() => {
         checkWalletConnection()
+        setWallet(props.wallet)
         getData();
         // getBlacklist()
     }, [])
+    useEffect(() => {
+        setWallet(props.wallet)
+    }, [props.wallet])
     return (
-        <div className="nft-banner" style={{
+        <div key={props.wallet} className="nft-banner" style={{
             backgroundImage: setBannerImage()
         }}>
             <div>
@@ -342,7 +355,17 @@ const Home = () => {
                     <div>
                         <div className='featuredNFT' onClick = {() => {history.push(`/collection/${featuredNFT.collectionName}`)}}>
                             <div className='featuredNFTCaption'>
-                                <img src={featuredNFT?.image ? featuredNFT.image : ""}/>
+                                {isImage(featuredNFTType)
+                                    ? <img src={featuredNFT?.image ? featuredNFT.image : ""} />
+                                    : <></>
+                                }
+                                {isVideo(featuredNFTType)
+                                    ? <video autoPlay loop muted>
+                                        <source src={featuredNFT?.image ? featuredNFT.image : ""} type={featuredNFTType.type}/>
+                                    </video>
+                                    : <></>
+                                }
+                                {/* <img src={featuredNFT?.preview ? featuredNFT.preview : ""}/> */}
                             </div>
                             <div className="featuredNFTTitle">
                                 <h5>{featuredNFT?.name ? featuredNFT.name : ""} <>{featuredNFT?.name ? "from" : ""}</> <span>{featuredNFT?.collectionName ? featuredNFT.collectionName : ""}</span></h5>

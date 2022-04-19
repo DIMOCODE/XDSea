@@ -19,7 +19,7 @@ import { fromXdc, isXdc } from '../../common/common';
 import NFTMarketLayer1 from '../../abis/NFTMarketLayer1.json'
 import { permaBlacklist } from '../../blacklist';
 
-const CollectionDetails = () => {
+const CollectionDetails = (props) => {
     const history = useHistory()
     const [nfts, setNFts] = useState([]);
     const [loadingState, setLoadingState] = useState('not-loaded');
@@ -60,7 +60,6 @@ const CollectionDetails = () => {
             // console.log(permaBlacklist)
             setBlacklist(permaBlacklist)
             const wallet = await GetWallet();
-            setWallet(wallet);
             const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER))
             // const marketContract = new xdc3.eth.Contract(NFTMarket.abi, nftmarketaddress, xdc3)
             const marketContract = new xdc3.eth.Contract(NFTMarketLayer1.abi, nftmarketlayeraddress, xdc3)
@@ -294,6 +293,7 @@ const CollectionDetails = () => {
         // setBlacklist(newBlacklist)
     }
     useEffect(() => {
+        setWallet(props.wallet)
         getData()
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
@@ -302,6 +302,9 @@ const CollectionDetails = () => {
         if (!isFetching) return;
         fetchMoreNFTs();
     }, [isFetching]);
+    useEffect(() => {
+        setWallet(props.wallet)
+    }, [props.wallet])
     return <div>
         <header className='secondary-page-header'>
             <div className='collection-banner'>

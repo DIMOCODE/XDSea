@@ -20,7 +20,7 @@ import { fromXdc, isXdc } from '../../common/common';
 import NFTMarketLayer1 from '../../abis/NFTMarketLayer1.json'
 import { permaBlacklist, contractFix } from '../../blacklist';
 
-const NFTDetails = () => {
+const NFTDetails = (props) => {
     const history = useHistory()
     const [nfts, setNFts] = useState([]);
     const [loadingState, setLoadingState] = useState('not-loaded');
@@ -344,7 +344,6 @@ const NFTDetails = () => {
             setBlacklist(permaBlacklist)
             setContractFixes(contractFix)
             const wallet = await GetWallet()
-            setWallet(wallet);
 
             const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER))
             // const marketContract = new xdc3.eth.Contract(NFTMarket.abi, nftmarketaddress, xdc3)
@@ -487,8 +486,12 @@ const NFTDetails = () => {
     }
 
     useEffect(() => {
+        setWallet(props.wallet)
         getData()
     }, [])
+    useEffect(() => {
+        setWallet(props.wallet)
+    }, [props.wallet])
 
     return (
         <div>
