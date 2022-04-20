@@ -93,7 +93,7 @@ const Discover = () => {
             //     var events = []
             //     for(var i = 1; i <= eventCount; i++) {
             //         var event = await oldMarketContract.methods.getEventHistory(item.itemId, i).call()  
-            //         if(event.timestamp >= 1650376040) {
+            //         if(event.timestamp >= 1650448720) {
             //             const uri = await nftContract.methods.tokenURI(item.tokenId).call()
             //             var metadata = await axios.get(uri)
             //             console.log(item, event, metadata?.data?.collection?.nft?.name, metadata?.data?.collection?.name)
