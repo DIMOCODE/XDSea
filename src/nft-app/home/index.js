@@ -233,7 +233,7 @@ const Home = (props) => {
             }
             trendingItems.push(item2)
 
-            var itemData = await marketContract.methods.idToMarketItem(1723).call()
+            var itemData = await marketContract.methods.idToMarketItem(2133).call()
             const trendingItemUri3 = await nftContract.methods.tokenURI(itemData.tokenId).call()
             var trendingItemMetadata = await axios.get(trendingItemUri3)
             var price = await xdc3.utils.fromWei(itemData.price, "ether")

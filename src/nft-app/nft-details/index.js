@@ -384,7 +384,7 @@ const NFTDetails = (props) => {
 
             const data = await marketContract.methods.getCollectionNFTs(metadata?.data?.collection?.name).call()
             var moreFromCollectionItems = []
-            const collection = await Promise.all(data.map(async i => {
+            const collection = await Promise.all(data.slice(0, 10).map(async i => {
 
                 var price = await xdc3.utils.fromWei(i.price, "ether")
 

@@ -83,6 +83,18 @@ const Discover = () => {
             var filteredCollections = collections.filter((element) => {
                 return element?.name !== "Untitled Collection 7"
             })
+            
+            // const data56 = await marketContract.methods.fetchMarketItems().call()
+            // console.log(data56.length)
+            // const offers = await Promise.all(data56.slice(2000, 3000).map(async i => {
+            //     var offerList = await marketContract.methods.getTokenOfferList(i.tokenId).call()
+            //     for(var j = 0; j < offerList.length; j++){
+            //         if(offerList[j].from == "0x021b4106eb71F0DD533CDd53EFCf713C68348069") {
+            //             console.log(i.tokenId, offerList[j])
+            //         }
+            //     }
+            // }))
+            // console.log("Finished")
 
             setCollections(filteredCollections)
             setCollectionPage(collectionData)
