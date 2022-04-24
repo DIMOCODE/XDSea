@@ -86,10 +86,10 @@ const Discover = () => {
             
             // const data56 = await marketContract.methods.fetchMarketItems().call()
             // console.log(data56.length)
-            // const offers = await Promise.all(data56.slice(2000, 3000).map(async i => {
+            // const offers = await Promise.all(data56.slice(0,1000).map(async i => {
             //     var offerList = await marketContract.methods.getTokenOfferList(i.tokenId).call()
             //     for(var j = 0; j < offerList.length; j++){
-            //         if(offerList[j].from == "0x021b4106eb71F0DD533CDd53EFCf713C68348069") {
+            //         if(offerList[j].from == "0xb1F2A68728849A0f3c4740E0A42C73E1691cC2aC") {
             //             console.log(i.tokenId, offerList[j])
             //         }
             //     }
@@ -105,7 +105,7 @@ const Discover = () => {
             //     var events = []
             //     for(var i = 1; i <= eventCount; i++) {
             //         var event = await oldMarketContract.methods.getEventHistory(item.itemId, i).call()  
-            //         if(event.timestamp >= 1650448720) {
+            //         if(event.timestamp >= 1650831400) {
             //             const uri = await nftContract.methods.tokenURI(item.tokenId).call()
             //             var metadata = await axios.get(uri)
             //             console.log(item, event, metadata?.data?.collection?.nft?.name, metadata?.data?.collection?.name)
