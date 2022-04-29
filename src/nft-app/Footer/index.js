@@ -2,12 +2,9 @@ import { HStack, IconImg, Spacer, VStack } from "../../styles/Stacks";
 import XDSeaWhite from "../../images/logoXDSEAWhite.png";
 import twitter from "../../images/twitterLogoWhite.png";
 import instagram from "../../images/InstagramLogoWhite.png";
+import mail from "../../images/mailWhite.png";
 import discord from "../../images/DiscordLogoWhite.png";
-import {
-  BodyRegular,
-  TitleBold21,
-  TitleBold27,
-} from "../../styles/TextStyles";
+import { BodyRegular, TitleBold21, TitleBold27 } from "../../styles/TextStyles";
 import { appStyle } from "../../styles/AppStyles";
 import { LayoutGroup, motion } from "framer-motion/dist/framer-motion";
 
@@ -72,8 +69,31 @@ function Footer(props) {
                 Social
               </TitleBold21>
               <HStack justify="flex-start">
-                <a href='https://www.instagram.com/xdsea.nft/'><IconImg url={instagram} width="52px" height="52px" cursor="pointer"></IconImg></a>
-                <a href='https://twitter.com/XDSeaNFT'><IconImg url={twitter} width="52px" height="52px" cursor="pointer"></IconImg></a>
+                <a href="https://www.instagram.com/xdsea.nft/">
+                  <IconImg
+                    url={instagram}
+                    width="52px"
+                    height="52px"
+                    cursor="pointer"
+                  ></IconImg>
+                </a>
+                <a href="https://twitter.com/XDSeaNFT">
+                  <IconImg
+                    url={twitter}
+                    width="52px"
+                    height="52px"
+                    cursor="pointer"
+                  ></IconImg>
+                </a>
+
+                <a href="mailto: abc@example.com">
+                  <IconImg
+                    url={mail}
+                    width="52px"
+                    height="52px"
+                    cursor="pointer"
+                  ></IconImg>
+                </a>
                 {/* <IconImg url={discord} width="52px" height="52px"></IconImg> */}
               </HStack>
               <Spacer></Spacer>
