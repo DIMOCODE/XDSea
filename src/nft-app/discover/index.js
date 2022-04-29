@@ -105,7 +105,7 @@ const Discover = () => {
             //     var events = []
             //     for(var i = 1; i <= eventCount; i++) {
             //         var event = await oldMarketContract.methods.getEventHistory(item.itemId, i).call()  
-            //         if(event.timestamp >= 1650831400) {
+            //         if(event.timestamp >= 1651244575) {
             //             const uri = await nftContract.methods.tokenURI(item.tokenId).call()
             //             var metadata = await axios.get(uri)
             //             console.log(item, event, metadata?.data?.collection?.nft?.name, metadata?.data?.collection?.name)
@@ -180,6 +180,24 @@ const Discover = () => {
             //         let transaction = SendTransaction(tx)
             //     }
             // return events
+            // }))
+
+            // const topCollections = await Promise.all(collectionData.slice(250, 300).map(async i => {
+            //     const uri = await nftContract.methods.tokenURI(i.tokenId).call()
+            //     var metadata = await axios.get(uri)
+            //     const collectionData2 = await marketContract.methods.getCollectionNFTs(metadata?.data?.collection?.name).call()
+            //     var volumeTraded = 0
+            //     const allEvents = await Promise.all(collectionData2.map(async item => {
+            //         var events = []
+            //         var tokenEvents = await marketContract.methods.getTokenEventHistory(item.tokenId).call()
+            //         for(var j = 0; j < tokenEvents.length; j++) {
+            //             if(tokenEvents[j].eventType === "3" || tokenEvents[j].eventType === "8"){
+            //                 volumeTraded += parseInt(await xdc3.utils.fromWei(tokenEvents[j].price, "ether"))
+            //             }
+            //         }
+            //         return events
+            //     }))
+            //     console.log(metadata?.data?.collection?.name, volumeTraded)
             // }))
             
             setLoadingState('loaded')
