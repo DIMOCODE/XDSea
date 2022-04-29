@@ -5,7 +5,11 @@ import miniXdcLogo from "../images/miniXdcLogo.png";
 import { BodyBold, BodyRegular, TitleBold18 } from "./TextStyles";
 
 import { appStyle } from "./AppStyles";
-import { motion, AnimatePresence, LayoutGroup } from "framer-motion/dist/framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  LayoutGroup,
+} from "framer-motion/dist/framer-motion";
 import ButtonApp from "./Buttons";
 
 function NftContainer(props) {
@@ -107,15 +111,26 @@ function NftContainer(props) {
               <BodyBold>{collectionName}</BodyBold>
 
               <HStack padding="9px 0" height="30px">
-                <BodyRegular display={"-webkit-box"} overflow={"hidden"} clamp={"1"} orient={"vertical"}>{itemNumber}</BodyRegular>
+                <BodyRegular
+                  display={"-webkit-box"}
+                  overflow={"hidden"}
+                  clamp={"1"}
+                  orient={"vertical"}
+                >
+                  {itemNumber}
+                </BodyRegular>
                 <Spacer></Spacer>
-                <HStack spacing="3px">
+                <HStack spacing="3px" alignment="center">
                   <IconImg
                     url={miniXdcLogo}
                     width="18px"
                     height="18px"
                   ></IconImg>
-                  <TitleBold18>{price}</TitleBold18>
+                  <TitleBold18>
+                    {price.toLocaleString(undefined, {
+                      maximumFractionDigits: 2,
+                    })}
+                  </TitleBold18>
                 </HStack>
               </HStack>
               <Spacer></Spacer>

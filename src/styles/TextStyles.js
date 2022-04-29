@@ -100,6 +100,7 @@ export const TitleBold18 = styled(motion.h3).attrs((props) => ({
   font-weight: bold;
   letter-spacing: -0.04em;
   font-size: 18px;
+
   color: ${(props) => props.textcolor};
 `;
 

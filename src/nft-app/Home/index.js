@@ -1,23 +1,38 @@
-import React, {Fragment, useEffect, useState, useRef} from 'react';
-import {useHistory} from "react-router-dom";
+import React, { Fragment, useEffect, useState, useRef } from "react";
+import { useHistory } from "react-router-dom";
 import Card from "./common/card";
 import Xdc3 from "xdc3";
-import {DEFAULT_PROVIDER} from "../../constant";
-import {nftaddress, nftmarketaddress, nftmarketlayeraddress} from "../../config";
-import NFT from '../../abis/NFT.json'
-import NFTMarket from '../../abis/NFTMarket.json'
-import NFTMarketLayer1 from '../../abis/NFTMarketLayer1.json'
+import { DEFAULT_PROVIDER } from "../../constant";
+import {
+  nftaddress,
+  nftmarketaddress,
+  nftmarketlayeraddress,
+} from "../../config";
+import NFT from "../../abis/NFT.json";
+import NFTMarket from "../../abis/NFTMarket.json";
+import NFTMarketLayer1 from "../../abis/NFTMarketLayer1.json";
 import axios from "axios";
-import { GetWallet } from 'xdc-connect';
-import { Dialog, Transition } from '@headlessui/react';
-import { LegacyBuyNFT, BuyNFT, LegacyWithdrawListing, SellNFT, WithdrawListing } from '../../common';
-import {toXdc} from '../../common/common';
+import { GetWallet } from "xdc-connect";
+import { Dialog, Transition } from "@headlessui/react";
+import {
+  LegacyBuyNFT,
+  BuyNFT,
+  LegacyWithdrawListing,
+  SellNFT,
+  WithdrawListing,
+} from "../../common";
+import { toXdc } from "../../common/common";
 import SkeletonCard from "../../common/skeleton/card";
 import detectEthereumProvider from "@metamask/detect-provider";
-import CollectionCard from './common/collectionCard';
-import { fromXdc, isXdc } from '../../common/common';
+import CollectionCard from "./common/collectionCard";
+import { fromXdc, isXdc } from "../../common/common";
 import { XdcConnect } from "xdc-connect";
-import { permaBlacklist, featuredNFTList, spotlightCollectionList, trendingItemList } from '../../blacklist';
+import {
+  permaBlacklist,
+  featuredNFTList,
+  spotlightCollectionList,
+  trendingItemList,
+} from "../../blacklist";
 
 import styled from "styled-components";
 // import imageNFT2 from "../../images/Doodles.jpeg";
@@ -42,478 +57,525 @@ import { Featured } from "../../styles/Featured";
 import useWindowSize from "../../styles/useWindowSize";
 
 const Home = (props) => {
-    const history = useHistory()
-    const [nfts, setNFts] = useState([]);
-    const [loadingState, setLoadingState] = useState('not-loaded');
-    const [wallet, setWallet] = useState({})
-    const [featuredNFT, setFeaturedNFT] = useState([]);
-    const [address, setAddress] = useState(false)
-    const [collections, setCollections] = useState([]);
-    const [creating, setCreating] = useState(false);
+  const history = useHistory();
+  const [nfts, setNFts] = useState([]);
+  const [loadingState, setLoadingState] = useState("not-loaded");
+  const [wallet, setWallet] = useState({});
+  const [featuredNFT, setFeaturedNFT] = useState([]);
+  const [address, setAddress] = useState(false);
+  const [collections, setCollections] = useState([]);
+  const [creating, setCreating] = useState(false);
 
-    const [sellPrice, setSellPrice] = useState('');
-    const [approved, setApproved] = useState(false)
-    const cancelButtonRef = useRef(null)
-    const [sellData, setSellData] = useState(null)
-    const [listSuccess, setListSuccess] = useState(false);
-    const [listFailure, setListFailure] = useState(false);
-    const [listedNFT, setListedNFT] = useState(null);
-    const [listing, setListing] = useState(false);
-    const [buySuccess, setBuySuccess] = useState(false);
-    const [buyFailure, setBuyFailure] = useState(false)
-    const [boughtNFT, setBoughtNFT] = useState(null);
-    const [buying, setBuying] = useState(false);
-    const [withdrawSuccess, setWithdrawSuccess] = useState(false);
-    const [withdrawFailure, setWithdrawFailure] = useState(false)
-    const [withdrawnNFT, setWithdrawnNFT] = useState(null);
-    const [withdrawing, setWithdrawing] = useState(false);
-    const [settingPrice, setSettingPrice] = useState(false);
-    const [blacklist, setBlacklist] = useState([])
+  const [sellPrice, setSellPrice] = useState("");
+  const [approved, setApproved] = useState(false);
+  const cancelButtonRef = useRef(null);
+  const [sellData, setSellData] = useState(null);
+  const [listSuccess, setListSuccess] = useState(false);
+  const [listFailure, setListFailure] = useState(false);
+  const [listedNFT, setListedNFT] = useState(null);
+  const [listing, setListing] = useState(false);
+  const [buySuccess, setBuySuccess] = useState(false);
+  const [buyFailure, setBuyFailure] = useState(false);
+  const [boughtNFT, setBoughtNFT] = useState(null);
+  const [buying, setBuying] = useState(false);
+  const [withdrawSuccess, setWithdrawSuccess] = useState(false);
+  const [withdrawFailure, setWithdrawFailure] = useState(false);
+  const [withdrawnNFT, setWithdrawnNFT] = useState(null);
+  const [withdrawing, setWithdrawing] = useState(false);
+  const [settingPrice, setSettingPrice] = useState(false);
+  const [blacklist, setBlacklist] = useState([]);
 
-    const close = () => {
-        setSellData(null)
-        setSellPrice('')
-    }
+  const close = () => {
+    setSellData(null);
+    setSellPrice("");
+  };
 
-    const startSale = async (nft) =>{
-        setSellData(nft)
-        setListing(true)
-        setListFailure(false)
-        setSettingPrice(true)
+  const startSale = async (nft) => {
+    setSellData(nft);
+    setListing(true);
+    setListFailure(false);
+    setSettingPrice(true);
+  };
+  const sellNFT = async () => {
+    setSettingPrice(false);
+    var success = false;
+    if (!blacklist.includes(sellData.tokenId)) {
+      success = await SellNFT(approved, sellData, sellPrice);
     }
-    const sellNFT = async () => {
-        setSettingPrice(false)
-        var success = false
-        if(!blacklist.includes(sellData.tokenId)){
-            success = await SellNFT(approved, sellData, sellPrice)
-        }
-        if(success) {
-            setListedNFT(sellData)
-            setListSuccess(true)
-        }
-        else {
-            setListFailure(true)
-        }
+    if (success) {
+      setListedNFT(sellData);
+      setListSuccess(true);
+    } else {
+      setListFailure(true);
     }
-    const closeList = () => {
-        setListing(false);
-        if(!listFailure)
-            history.push(`/my-nfts`)
+  };
+  const closeList = () => {
+    setListing(false);
+    if (!listFailure) history.push(`/my-nfts`);
+  };
+  const buyNFT = async (nft) => {
+    setBuying(true);
+    setBuyFailure(false);
+    var success = false;
+    if (blacklist.includes(nft.tokenId)) {
+      success = await LegacyBuyNFT(nft);
+    } else {
+      success = await BuyNFT(nft);
     }
-    const buyNFT = async (nft) => {
-        setBuying(true)
-        setBuyFailure(false)
-        var success = false
-        if(blacklist.includes(nft.tokenId)){
-            success = await LegacyBuyNFT(nft)
-        }
-        else{
-            success = await BuyNFT(nft)
-        }
-        if(success) {
-            setBoughtNFT(nft)
-            setBuySuccess(true)
-        }
-        else {
-            setBuyFailure(true)
-        }
+    if (success) {
+      setBoughtNFT(nft);
+      setBuySuccess(true);
+    } else {
+      setBuyFailure(true);
     }
-    const closeBuy = () => {
-        setBuying(false)
-        if(!buyFailure)
-            history.push('/my-nfts')
+  };
+  const closeBuy = () => {
+    setBuying(false);
+    if (!buyFailure) history.push("/my-nfts");
+  };
+  const withdrawListing = async (nft) => {
+    setWithdrawing(true);
+    setWithdrawFailure(false);
+    var success = false;
+    if (blacklist.includes(nft.tokenId)) {
+      success = await LegacyWithdrawListing(approved, nft);
+    } else {
+      success = await WithdrawListing(approved, nft);
     }
-    const withdrawListing = async(nft) => {
-        setWithdrawing(true)
-        setWithdrawFailure(false)
-        var success = false
-        if(blacklist.includes(nft.tokenId)) {
-            success = await LegacyWithdrawListing(approved, nft)
-        }
-        else{
-            success = await WithdrawListing(approved, nft)
-        }
-        if(success) {
-            setWithdrawnNFT(nft)
-            setWithdrawSuccess(true)
-        }
-        else{
-            setWithdrawFailure(true)
-        }
+    if (success) {
+      setWithdrawnNFT(nft);
+      setWithdrawSuccess(true);
+    } else {
+      setWithdrawFailure(true);
     }
-    const closeWithdraw = () => {
-        setWithdrawing(false); 
-        if(!withdrawFailure)
-            history.push('/my-nfts')
-    }
+  };
+  const closeWithdraw = () => {
+    setWithdrawing(false);
+    if (!withdrawFailure) history.push("/my-nfts");
+  };
 
-    const checkWalletConnection = async () => {
-        try {
-            await window.ethereum.enable()
+  const checkWalletConnection = async () => {
+    try {
+      await window.ethereum.enable();
 
-            const provider = await detectEthereumProvider()
+      const provider = await detectEthereumProvider();
 
-            const xdc3 = new Xdc3(provider)
-            const accounts = await xdc3.eth.getAccounts();
-            setAddress(true)
-        } catch (e) {
-            console.log(e)
-        }
+      const xdc3 = new Xdc3(provider);
+      const accounts = await xdc3.eth.getAccounts();
+      setAddress(true);
+    } catch (e) {
+      console.log(e);
     }
-    
-    const getData = async () => {
-        try {
-            // console.log(permaBlacklist)
-            setBlacklist(permaBlacklist)
-            const wallet = await GetWallet()
-            const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER))
-            // const marketContract = new xdc3.eth.Contract(NFTMarket.abi, nftmarketaddress, xdc3)
-            const marketContract = new xdc3.eth.Contract(NFTMarketLayer1.abi, nftmarketlayeraddress, xdc3)
-            const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress)
+  };
 
-            // console.log(wallet)
-            if(wallet.wallet.address !== '')
-                var getVal = await nftContract.methods.isApprovedForAll(isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address, nftmarketlayeraddress).call()
+  const getData = async () => {
+    try {
+      // console.log(permaBlacklist)
+      setBlacklist(permaBlacklist);
+      const wallet = await GetWallet();
+      const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
+      // const marketContract = new xdc3.eth.Contract(NFTMarket.abi, nftmarketaddress, xdc3)
+      const marketContract = new xdc3.eth.Contract(
+        NFTMarketLayer1.abi,
+        nftmarketlayeraddress,
+        xdc3
+      );
+      const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
 
-            const featuredNFTs = await Promise.all(featuredNFTList.map(async i => {
-                var featuredNFT = await marketContract.methods.idToMarketItem(i).call()
-                var featuredNFTUri = await nftContract.methods.tokenURI(featuredNFT.tokenId).call()
-                var featuredNFTMetadata = await axios.get(featuredNFTUri)
-                let featuredNFTData = {
-                    collectionName: featuredNFTMetadata?.data?.collection?.name,
-                    collectionLogo: featuredNFTMetadata?.data?.collection?.logo,
-                    image: featuredNFTMetadata?.data?.collection?.nft?.image,
-                    name: featuredNFTMetadata?.data?.collection?.nft?.name,
-                    fileType: featuredNFTMetadata?.data?.collection?.nft?.fileType,
-                    preview: featuredNFTMetadata?.data?.collection?.nft?.preview,
-                    creator: featuredNFTMetadata?.data?.collection?.creator
+      // console.log(wallet)
+      if (wallet.wallet.address !== "")
+        var getVal = await nftContract.methods
+          .isApprovedForAll(
+            isXdc(wallet.wallet.address)
+              ? fromXdc(wallet.wallet.address)
+              : wallet.wallet.address,
+            nftmarketlayeraddress
+          )
+          .call();
+
+      const featuredNFTs = await Promise.all(
+        featuredNFTList.map(async (i) => {
+          var featuredNFT = await marketContract.methods
+            .idToMarketItem(i)
+            .call();
+          var featuredNFTUri = await nftContract.methods
+            .tokenURI(featuredNFT.tokenId)
+            .call();
+          var featuredNFTMetadata = await axios.get(featuredNFTUri);
+          let featuredNFTData = {
+            collectionName: featuredNFTMetadata?.data?.collection?.name,
+            collectionLogo: featuredNFTMetadata?.data?.collection?.logo,
+            image: featuredNFTMetadata?.data?.collection?.nft?.image,
+            name: featuredNFTMetadata?.data?.collection?.nft?.name,
+            fileType: featuredNFTMetadata?.data?.collection?.nft?.fileType,
+            preview: featuredNFTMetadata?.data?.collection?.nft?.preview,
+            creator: featuredNFTMetadata?.data?.collection?.creator,
+          };
+          return featuredNFTData;
+        })
+      );
+
+      const spotlightCollections = await Promise.all(
+        spotlightCollectionList.map(async (name, i) => {
+          var collectionData = await marketContract.methods
+            .fetchCollection(name)
+            .call();
+          const collectionUri = await nftContract.methods
+            .tokenURI(collectionData.tokenId)
+            .call();
+          var collectionMetadata = await axios.get(collectionUri);
+          const collectionData2 = await marketContract.methods
+            .getCollectionNFTs(name)
+            .call();
+          var volumeTraded = 0;
+          const uniqueOwners = [];
+          var lowestPrice = 99999999999999999999999999999;
+          const allEvents = await Promise.all(
+            collectionData2.map(async (item) => {
+              var price = await xdc3.utils.fromWei(item.price, "ether");
+              if (!uniqueOwners.includes(item.owner)) {
+                uniqueOwners.push(item.owner);
+              }
+              if (parseInt(price) < lowestPrice) {
+                lowestPrice = parseInt(price);
+              }
+              var eventCount = item.eventCount;
+              var events = [];
+              var tokenEvents = await marketContract.methods
+                .getTokenEventHistory(item.tokenId)
+                .call();
+              for (var j = 0; j < tokenEvents.length; j++) {
+                if (
+                  tokenEvents[j].eventType === "3" ||
+                  tokenEvents[j].eventType === "8"
+                ) {
+                  volumeTraded += parseInt(
+                    await xdc3.utils.fromWei(tokenEvents[j].price, "ether")
+                  );
                 }
-                return featuredNFTData;
-            }));
+              }
+              return events;
+            })
+          );
+          let collection = {
+            id: i,
+            name: collectionMetadata?.data?.collection?.name,
+            collectionLogo: collectionMetadata?.data?.collection?.logo,
+            fileType: collectionMetadata?.data?.collection?.nft?.fileType,
+            preview: collectionMetadata?.data?.collection?.nft?.preview,
+            floorPrice: lowestPrice,
+            volumeTraded: volumeTraded,
+            items: collectionData2.length,
+            owners: uniqueOwners.length,
+          };
+          return collection;
+        })
+      );
 
-            const spotlightCollections = await Promise.all(spotlightCollectionList.map(async (name, i) => {
-                var collectionData = await marketContract.methods.fetchCollection(name).call()
-                const collectionUri = await nftContract.methods.tokenURI(collectionData.tokenId).call()
-                var collectionMetadata = await axios.get(collectionUri)
-                const collectionData2 = await marketContract.methods.getCollectionNFTs(name).call()
-                var volumeTraded = 0
-                const uniqueOwners = []
-                var lowestPrice = 99999999999999999999999999999
-                const allEvents = await Promise.all(collectionData2.map(async item => {
-                    var price = await xdc3.utils.fromWei(item.price, "ether")
-                    if(!uniqueOwners.includes(item.owner)) {
-                        uniqueOwners.push(item.owner);
-                    }
-                    if(parseInt(price) < lowestPrice) {
-                        lowestPrice = parseInt(price)
-                    }
-                    var eventCount = item.eventCount
-                    var events = []
-                    var tokenEvents = await marketContract.methods.getTokenEventHistory(item.tokenId).call()
-                    for(var j = 0; j < tokenEvents.length; j++) {
-                        if(tokenEvents[j].eventType === "3" || tokenEvents[j].eventType === "8"){
-                            volumeTraded += parseInt(await xdc3.utils.fromWei(tokenEvents[j].price, "ether"))
-                        }
-                    }
-                    return events
-                }))
-                let collection = {
-                    id: i,
-                    name: collectionMetadata?.data?.collection?.name,
-                    collectionLogo: collectionMetadata?.data?.collection?.logo,
-                    fileType: collectionMetadata?.data?.collection?.nft?.fileType,
-                    preview: collectionMetadata?.data?.collection?.nft?.preview,
-                    floorPrice: lowestPrice,
-                    volumeTraded: volumeTraded,
-                    items: collectionData2.length,
-                    owners: uniqueOwners.length
-                }
-                return collection;
-            }));
+      const trendingItems = await Promise.all(
+        trendingItemList.map(async (i) => {
+          var itemData = await marketContract.methods.idToMarketItem(i).call();
+          const trendingItemUri = await nftContract.methods
+            .tokenURI(itemData.tokenId)
+            .call();
+          var trendingItemMetadata = await axios.get(trendingItemUri);
+          var price = await xdc3.utils.fromWei(itemData.price, "ether");
+          let item = {
+            price: price,
+            collectionLogo: trendingItemMetadata?.data?.collection?.logo,
+            collectionName: trendingItemMetadata?.data?.collection?.name,
+            tokenId: itemData.tokenId,
+            itemId: itemData.itemId,
+            owner: itemData.owner,
+            image: trendingItemMetadata?.data?.collection?.nft?.image,
+            name: trendingItemMetadata?.data?.collection?.nft?.name,
+            description:
+              trendingItemMetadata?.data?.collection?.nft?.description,
+            nftContract: itemData.nftContract,
+            isListed: itemData.isListed,
+            fileType: trendingItemMetadata?.data?.collection?.nft?.fileType,
+            preview: trendingItemMetadata?.data?.collection?.nft?.preview,
+          };
+          return item;
+        })
+      );
 
-            const trendingItems = await Promise.all(trendingItemList.map(async i => {
-                var itemData = await marketContract.methods.idToMarketItem(i).call()
-                const trendingItemUri = await nftContract.methods.tokenURI(itemData.tokenId).call()
-                var trendingItemMetadata = await axios.get(trendingItemUri)
-                var price = await xdc3.utils.fromWei(itemData.price, "ether")
-                let item = {
-                    price: price,
-                    collectionLogo: trendingItemMetadata?.data?.collection?.logo,
-                    collectionName: trendingItemMetadata?.data?.collection?.name,
-                    tokenId: itemData.tokenId,
-                    itemId: itemData.itemId,
-                    owner: itemData.owner,
-                    image: trendingItemMetadata?.data?.collection?.nft?.image,
-                    name: trendingItemMetadata?.data?.collection?.nft?.name,
-                    description: trendingItemMetadata?.data?.collection?.nft?.description,
-                    nftContract: itemData.nftContract,
-                    isListed: itemData.isListed,
-                    fileType: trendingItemMetadata?.data?.collection?.nft?.fileType,
-                    preview: trendingItemMetadata?.data?.collection?.nft?.preview
-                }
-                return item;
-            }))
+      setCollections(spotlightCollections);
+      setLoadingState("loaded");
+      setNFts(trendingItems);
+      setFeaturedNFT(featuredNFTs);
+      setApproved(getVal);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const viewNFT = (data) => {
+    history.push(`/nft/${nftaddress}/${data.tokenId}`);
+  };
 
-            setCollections(spotlightCollections)
-            setLoadingState('loaded')
-            setNFts(trendingItems)
-            setFeaturedNFT(featuredNFTs)
-            setApproved(getVal)
-        } catch (error) {
-            console.log(error)
+  const viewCollection = (data) => {
+    history.push(`/collection/${data}`);
+  };
+  const setBannerImage = () => {
+    let data =
+      document.getElementsByClassName("nft-banner")[0] !== undefined
+        ? (document.getElementsByClassName(
+            "nft-banner"
+          )[0].style.backgroundImage = featuredNFT?.preview
+            ? `url(${featuredNFT.preview})`
+            : "")
+        : "";
+  };
+  const goToCreate = async () => {
+    const wallet = await GetWallet();
+    setWallet(wallet);
+    if (wallet?.wallet?.connected) {
+      history.push("/mint-item");
+    } else {
+      setCreating(true);
+    }
+  };
+  const getBlacklist = async () => {
+    const wallet = await GetWallet();
+    setWallet(wallet);
+    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
+    const oldMarketContract = new xdc3.eth.Contract(
+      NFTMarket.abi,
+      nftmarketaddress,
+      xdc3
+    );
+    const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
+    const data = await oldMarketContract.methods.fetchMarketItems().call();
+
+    var newBlacklist = [];
+    const marketItems = await Promise.all(
+      data.map(async (i) => {
+        if (i.isListed) {
+          newBlacklist.push(i.tokenId);
         }
-    }
-    const viewNFT = data => {
-        history.push(`/nft/${nftaddress}/${data.tokenId}`)
-    }
-    
-    const viewCollection = (data) => {
-        history.push(`/collection/${data}`)
-    }
-    const setBannerImage = () => {
-        let data = document.getElementsByClassName("nft-banner")[0] !== undefined 
-            ? document.getElementsByClassName("nft-banner")[0].style.backgroundImage = featuredNFT?.preview 
-                ? `url(${featuredNFT.preview})` 
-                : "" 
-            : ""
-    }
-    const goToCreate = async () => {
-        const wallet = await GetWallet();
-        setWallet(wallet);
-        if(wallet?.wallet?.connected){
-            history.push('/mint-item')
-        }
-        else {
-            setCreating(true)
-        }
-    }
-    const getBlacklist = async () => {
-        const wallet = await GetWallet();
-        setWallet(wallet);
-        const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER))
-        const oldMarketContract = new xdc3.eth.Contract(NFTMarket.abi, nftmarketaddress, xdc3)
-        const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress)
-        const data = await oldMarketContract.methods.fetchMarketItems().call()
+      })
+    );
+    // console.log(newBlacklist)
+    // setBlacklist(newBlacklist)
+  };
 
-        var newBlacklist = []
-        const marketItems = await Promise.all(data.map(async i => {
-            if(i.isListed) {
-                newBlacklist.push(i.tokenId)
-            }
-        }))
-        // console.log(newBlacklist)
-        // setBlacklist(newBlacklist)
-    }
+  const isImage = (fileType) => {
+    return !!fileType?.match("image.*");
+  };
 
-    const isImage = (fileType) => {
-        return !!fileType?.match('image.*');
-    }
-      
-    const isVideo = (fileType) => {
-        return !!fileType?.match('video.*');
-    }
+  const isVideo = (fileType) => {
+    return !!fileType?.match("video.*");
+  };
 
-    useEffect(() => {
-        checkWalletConnection()
-        setWallet(props.wallet)
-        getData();
-        // getBlacklist()
-    }, [])
-    useEffect(() => {
-        setWallet(props.wallet)
-    }, [props.wallet])
+  useEffect(() => {
+    checkWalletConnection();
+    setWallet(props.wallet);
+    getData();
+    // getBlacklist()
+  }, []);
+  useEffect(() => {
+    setWallet(props.wallet);
+  }, [props.wallet]);
 
-    function NavigateTo(route) {
-        history.push(`/${route}`);
-    }
+  function NavigateTo(route) {
+    history.push(`/${route}`);
+  }
 
-    const truncateAddress = (address) => {
-        return address 
-            ? address.substring(0, 7) + "..." + address.substring(38)
-            : "undefined"
-    };
+  const truncateAddress = (address) => {
+    return address
+      ? address.substring(0, 7) + "..." + address.substring(38)
+      : "undefined";
+  };
 
-    const size = useWindowSize();
+  const size = useWindowSize();
 
-    return (
-        <Content>
-            <HStack
-                width="100%"
-                height={size.width < 768 ? "auto" : "580px"}
-                alignment="flex-start"
-                spacing="15px"
-                padding="0px 30px"
-                responsive={true}
-            >
-                <VStack
-                    maxwidth={size.width < 768 ? "100%" : "32%"}
-                    alignment="flex-start"
-                >
-                    <Spacer></Spacer>
-                    <IconImg url={XDSealogo} width="120px" height="120px"></IconImg>
-                    <VStack spacing="9px" alignment="flex-start">
-                        <TitleBold27>
-                            Exploring, Collecting, and Selling exclusive NFTs has now become
-                        </TitleBold27>
-                        <TitleBold33 textcolor={({ theme }) => theme.blue}>
-                            simpler & faster
-                        </TitleBold33>
-                    </VStack>
+  return (
+    <Content>
+      <HStack
+        width="100%"
+        height={size.width < 768 ? "auto" : "580px"}
+        alignment="flex-start"
+        spacing="15px"
+        padding="0px 30px"
+        responsive={true}
+      >
+        <VStack
+          maxwidth={size.width < 768 ? "100%" : "32%"}
+          alignment="flex-start"
+        >
+          <Spacer></Spacer>
+          <IconImg url={XDSealogo} width="120px" height="120px"></IconImg>
+          <VStack spacing="9px" alignment="flex-start">
+            <TitleBold27>
+              Exploring, Collecting, and Selling exclusive NFTs has now become
+            </TitleBold27>
+            <TitleBold33 textcolor={({ theme }) => theme.blue}>
+              simpler & faster
+            </TitleBold33>
+          </VStack>
 
-                    <BodyRegular>
-                        Be a part of the world's first NFT Marketplace on the XDC
-                        blockchain.
-                    </BodyRegular>
+          <BodyRegular>
+            Be a part of the world's first NFT Marketplace on the XDC
+            blockchain.
+          </BodyRegular>
 
-                    <HStack spacing="10px">
-                        {/* <ButtonApp
+          <HStack spacing="10px">
+            {/* <ButtonApp
                             height="39px"
                             textcolor={appStyle.colors.white}
                             background={({ theme }) => theme.blue}
                             text="Top Collections"
                         ></ButtonApp> */}
-                        <ButtonApp
-                            height="45px"
-                            textcolor={appStyle.colors.white}
-                            background={({ theme }) => theme.blue}
-                            text="Spotlight Collections"
-                        ></ButtonApp>
-                        <ButtonApp
-                            height="45px"
-                            textcolor={appStyle.colors.white}
-                            background={({ theme }) => theme.blue}
-                            text="Trending NFTs"
-                        ></ButtonApp>
-                        <Spacer></Spacer>
-                    </HStack>
-                    <Spacer></Spacer>
-                </VStack>
+            <ButtonApp
+              height="45px"
+              textcolor={appStyle.colors.white}
+              background={({ theme }) => theme.blue}
+              text="Spotlight Collections"
+            ></ButtonApp>
+            <ButtonApp
+              height="45px"
+              textcolor={appStyle.colors.white}
+              background={({ theme }) => theme.blue}
+              text="Trending NFTs"
+            ></ButtonApp>
+            <Spacer></Spacer>
+          </HStack>
+          <Spacer></Spacer>
+        </VStack>
 
-                <HStack
-                    width={size.width < 768 ? "100%" : "60%"}
-                    height={size.width < 768 ? "390px" : "100%"}
-                >
-                    {/* Featured Big */}
-                    <VStack>
-                        <Featured
-                            creatorImage={featuredNFT[0]?.collectionLogo}
-                            itemImage={featuredNFT[0]?.preview}
-                            collectionName={featuredNFT[0]?.collectionName}
-                            creatorName={truncateAddress(featuredNFT[0]?.creator)}
-                            itemNumber={featuredNFT[0]?.name}
-                            fileType={featuredNFT[0]?.fileType}
-                            onClickCreator={() => NavigateTo(`collection/${featuredNFT[0]?.collectionName}`)}
-                        ></Featured>
-                    </VStack>
-                    {/* Featured Small */}
-                    <VStack>
-                        <LayoutGroup id="number2">
-                            <Featured
-                                creatorImage={featuredNFT[1]?.collectionLogo}
-                                itemImage={featuredNFT[1]?.image}
-                                collectionName={featuredNFT[1]?.collectionName}
-                                creatorName={truncateAddress(featuredNFT[1]?.creator)}
-                                itemNumber={featuredNFT[1]?.name}
-                                fileType={featuredNFT[1]?.fileType}
-                                onClickCreator={() => NavigateTo(`collection/${featuredNFT[1]?.collectionName}`)}
-                            ></Featured>
-                        </LayoutGroup>
-                        <LayoutGroup id="number3">
-                        <Featured
-                            creatorImage={featuredNFT[2]?.collectionLogo}
-                            itemImage={featuredNFT[2]?.image}
-                            collectionName={featuredNFT[2]?.collectionName}
-                            creatorName={truncateAddress(featuredNFT[2]?.creator)}
-                            itemNumber={featuredNFT[2]?.name}
-                            fileType={featuredNFT[2]?.fileType}
-                            onClickCreator={() => NavigateTo(`collection/${featuredNFT[2]?.collectionName}`)}
-                        ></Featured>
-                        </LayoutGroup>
-                    </VStack>
-                </HStack>
-            </HStack>
+        <HStack
+          width={size.width < 768 ? "100%" : "60%"}
+          height={size.width < 768 ? "390px" : "100%"}
+        >
+          {/* Featured Big */}
+          <VStack>
+            <Featured
+              creatorImage={featuredNFT[0]?.collectionLogo}
+              itemImage={featuredNFT[0]?.preview}
+              collectionName={featuredNFT[0]?.collectionName}
+              creatorName={truncateAddress(featuredNFT[0]?.creator)}
+              itemNumber={featuredNFT[0]?.name}
+              fileType={featuredNFT[0]?.fileType}
+              onClickCreator={() =>
+                NavigateTo(`collection/${featuredNFT[0]?.collectionName}`)
+              }
+            ></Featured>
+          </VStack>
+          {/* Featured Small */}
+          <VStack>
+            <LayoutGroup id="number2">
+              <Featured
+                creatorImage={featuredNFT[1]?.collectionLogo}
+                itemImage={featuredNFT[1]?.image}
+                collectionName={featuredNFT[1]?.collectionName}
+                creatorName={truncateAddress(featuredNFT[1]?.creator)}
+                itemNumber={featuredNFT[1]?.name}
+                fileType={featuredNFT[1]?.fileType}
+                onClickCreator={() =>
+                  NavigateTo(`collection/${featuredNFT[1]?.collectionName}`)
+                }
+              ></Featured>
+            </LayoutGroup>
+            <LayoutGroup id="number3">
+              <Featured
+                creatorImage={featuredNFT[2]?.collectionLogo}
+                itemImage={featuredNFT[2]?.image}
+                collectionName={featuredNFT[2]?.collectionName}
+                creatorName={truncateAddress(featuredNFT[2]?.creator)}
+                itemNumber={featuredNFT[2]?.name}
+                fileType={featuredNFT[2]?.fileType}
+                onClickCreator={() =>
+                  NavigateTo(`collection/${featuredNFT[2]?.collectionName}`)
+                }
+              ></Featured>
+            </LayoutGroup>
+          </VStack>
+        </HStack>
+      </HStack>
 
-            {/* Top Collections */}
+      {/* Top Collections */}
+      <VStack
+        height={size.width < 768 ? "auto" : "700px"}
+        width="100%"
+        spacing="9px"
+        padding="60px 0"
+        marginTop="60px"
+      >
+        <HStack>
+          <IconImg url={rocketCollection} width="45px" height="45px"></IconImg>
+          <TitleBold27 textcolor={({ theme }) => theme.text}>
+            Spotlight Collections
+          </TitleBold27>
+        </HStack>
+
+        <HStack responsive={true}>
+          <VStack
+            flexwrap={size.width < 768 ? "nowrap" : "wrap"}
+            height={size.width < 768 ? "auto" : "630px"}
+            spacing="15px"
+          >
+            {collections.map((item) => (
+              <LayoutGroup id={item.id + 1}>
+                <TopCollectionItem
+                  key={item.id + 1}
+                  width={size.width < 768 ? "100%" : "570px"}
+                  imageCreator={item.collectionLogo}
+                  collectionName={item.name}
+                  position={item.id + 1}
+                  floorprice={item.floorPrice}
+                  owners={item.owners}
+                  nfts={item.items}
+                  volumetraded={item.volumeTraded}
+                  textcolor={({ theme }) => theme.text}
+                  onClick={() => NavigateTo(`collection/${item.name}`)}
+                ></TopCollectionItem>
+              </LayoutGroup>
+            ))}
+          </VStack>
+        </HStack>
+      </VStack>
+
+      {/* Hot NFTs */}
+
+      <VStack height={size.width < 768 ? "auto" : "1100px"} width="100%">
+        <HStack>
+          <IconImg url={iconTrending} width="45px" height="45px"></IconImg>
+          <TitleBold27>Trending NFTs</TitleBold27>
+        </HStack>
+
+        <HStack flexwrap="wrap" padding="0 30px">
+          {nfts.map((item) => (
             <VStack
-                height={size.width < 768 ? "auto" : "735px"}
-                width="100%"
-                spacing="9px"
-                padding="60px 0"
-                marginTop="60px"
+              minwidth={size.width < 768 ? "230px" : "280px"}
+              height="450px"
             >
-                <HStack>
-                    <IconImg url={rocketCollection} width="45px" height="45px"></IconImg>
-                    <TitleBold27 textcolor={({ theme }) => theme.text}>
-                        Spotlight Collections
-                    </TitleBold27>
-                </HStack>
-
-                <HStack responsive={true}>
-                    <VStack
-                        flexwrap={size.width < 768 ? "nowrap" : "wrap"}
-                        height={size.width < 768 ? "auto" : "700px"}
-                        spacing="15px"
-                    >
-                        {collections.map((item) => (
-                            <LayoutGroup id={item.id + 1}>
-                                <TopCollectionItem
-                                    key={item.id + 1}
-                                    width={size.width < 768 ? "100%" : "520px"}
-                                    imageCreator={item.collectionLogo}
-                                    collectionName={item.name}
-                                    position={item.id + 1}
-                                    floorprice={item.floorPrice}
-                                    owners={item.owners}
-                                    nfts={item.items}
-                                    volumetraded={item.volumeTraded}
-                                    textcolor={({ theme }) => theme.text}
-                                    onClick={() => NavigateTo(`collection/${item.name}`)}
-                                ></TopCollectionItem>
-                            </LayoutGroup>
-                        ))}
-                    </VStack>
-                </HStack>
+              <NftContainer
+                key={item.name}
+                creatorImage={item.collectionLogo}
+                itemImage={isImage(item.fileType) ? item.image : item.preview}
+                price={item.price}
+                collectionName={item.collectionName}
+                itemNumber={item.name}
+                background={({ theme }) => theme.backElement}
+                onClick={() => NavigateTo(`nft/${nftaddress}/${item.tokenId}`)}
+                onClickCreator={() =>
+                  NavigateTo(`collection/${item.collectionName}`)
+                }
+              ></NftContainer>
             </VStack>
+          ))}
+        </HStack>
+        <ButtonApp
+          height="39px"
+          width="360px"
+          text="Discover More"
+          textcolor={appStyle.colors.white}
+          onClick={() => NavigateTo(`discover`)}
+          cursor="pointer"
+        ></ButtonApp>
+      </VStack>
 
-            {/* Hot NFTs */}
-
-            <VStack height={size.width < 768 ? "auto" : "1100px"} width="100%">
-                <HStack>
-                    <IconImg url={iconTrending} width="45px" height="45px"></IconImg>
-                    <TitleBold27>Trending NFTs</TitleBold27>
-                </HStack>
-
-                <HStack flexwrap="wrap" padding="0 30px">
-                    {nfts.map((item) => (
-                        <VStack
-                            minwidth={size.width < 768 ? "230px" : "280px"}
-                            height="450px"
-                        >
-                            <NftContainer
-                                key={item.name}
-                                creatorImage={item.collectionLogo}
-                                itemImage={isImage(item.fileType) ? item.image : item.preview}
-                                price={item.price}
-                                collectionName={item.collectionName}
-                                itemNumber={item.name}
-                                background={({ theme }) => theme.backElement}
-                                onClick={() => NavigateTo(`nft/${nftaddress}/${item.tokenId}`)}
-                                onClickCreator={() => NavigateTo(`collection/${item.collectionName}`)}
-                            ></NftContainer>
-                        </VStack>
-                    ))}
-                </HStack>
-                <ButtonApp
-                    height="39px"
-                    width="360px"
-                    text="Discover More"
-                    textcolor={appStyle.colors.white}
-                    onClick={() => NavigateTo(`discover`)}
-                    cursor="pointer"
-                ></ButtonApp>
-            </VStack>
-
-            {/* <div key={props.wallet} className="nft-banner" style={{
+      {/* <div key={props.wallet} className="nft-banner" style={{
                 backgroundImage: setBannerImage()
             }}>
                 <div className='tutorial'>
@@ -782,8 +844,8 @@ const Home = (props) => {
                     </Dialog>
                 </Transition.Root>
             </div> */}
-        </Content>
-    )
+    </Content>
+  );
 };
 
 export { Home };

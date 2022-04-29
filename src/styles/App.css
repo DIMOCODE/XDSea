@@ -1,96 +1,232 @@
-@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200&display=swap" rel="stylesheet');
 
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
-    background-color: #F7F8F9;
-    background-repeat: no-repeat;
-    background-size: cover;
-    padding: 0;
-    margin: 0;
-    font-size: 16px;
-    font-weight: normal;
+  background-color: #f7f8f9;
+  background-repeat: no-repeat;
+  background-size: cover;
+  padding: 0;
+  margin: 0;
+  font-size: 16px;
+  font-weight: normal;
 }
 
 /* #NiceAndSimple: Main - margin:auto */
 
-
 a {
-    color: #FFFFFF;
-    transition: all 0.2s;
+  color: #ffffff;
+  transition: all 0.2s;
 }
 
 a:hover {
-    opacity: 0.6;
+  opacity: 0.6;
 }
 
 a:active {
-    opacity: 1;
+  opacity: 1;
 }
 
-body, input, button, select, optgroup, textarea {
-    font-family: 'Fira Sans', sans-serif;
+body,
+input,
+button,
+select,
+optgroup,
+textarea {
+  font-family: "Poppins", sans-serif;
 }
-
 
 .nft {
-    min-height: 100vh;
-    margin: 0;
-    display: grid;
-    grid-template-rows: auto 1fr auto;
+  min-height: 100vh;
+  margin: 0;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
 }
 
 .text-gray-300 {
-    color: rgb(209 213 219) !important;
+  color: rgb(209 213 219) !important;
 }
 
 .text-gray-400 {
-    color: rgb(156 163 175) !important;
+  color: rgb(156 163 175) !important;
 }
 
 .text-gray-700 {
-    color: rgb(55 65 81) !important;
+  color: rgb(55 65 81) !important;
 }
 
 .text-gray-900 {
-    color: rgb(17 24 39) !important;
+  color: rgb(17 24 39) !important;
 }
 
 .font {
-    color: #27273B !important;
+  color: #27273b !important;
 }
 
 .font-light {
-    color: #B5B7CA !important;
+  color: #b5b7ca !important;
 }
 
 .font-secondary {
-    color: #777E90 !important;
+  color: #777e90 !important;
 }
 
 .z-999 {
-    z-index: 999 !important;
+  z-index: 999 !important;
 }
 
 iframe {
-    z-index: -1 !important;
+  z-index: -1 !important;
 }
 
 .walletConnect {
-    width: 160px;
-    height: 49px;
-    background-color: transparent !important;
-    border: none !important;
-    border-radius: 9px;
-    color: transparent !important;
-    margin-top: -24px;
-    margin-left: 15px;
-    position: absolute;
-    z-index: 10;
+  width: 160px;
+  height: 49px;
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 9px;
+  color: transparent !important;
+  margin-top: -24px;
+  margin-left: 15px;
+  position: absolute;
+  z-index: 10;
 }
 
 .hide {
-    display: none !important;
+  display: none !important;
+}
+
+/* styling to default  */
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+
+  vertical-align: baseline;
+  box-sizing: border-box;
+}
+
+/* HTML5 display-role reset for older browsers */
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
+}
+body,
+input {
+  line-height: 1;
+  font-size: 15px;
+  font-family: "Poppins", sans-serif;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smooting: antialiased;
+}
+ol,
+ul {
+  list-style: none;
+}
+blockquote,
+q {
+  quotes: none;
+}
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: "";
+  content: none;
+}
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
 }

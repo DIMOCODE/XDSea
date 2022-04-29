@@ -9,7 +9,11 @@ import {
 import { appStyle } from "./AppStyles";
 
 import miniXdcLogo from "../images/miniXdcLogo.png";
-import { motion, AnimatePresence, LayoutGroup } from "framer-motion/dist/framer-motion";
+import {
+  motion,
+  AnimatePresence,
+  LayoutGroup,
+} from "framer-motion/dist/framer-motion";
 import { useState } from "react";
 
 function TopCollectionItem(props) {
@@ -75,7 +79,11 @@ function TopCollectionItem(props) {
 
             <HStack spacing="6px">
               <IconImg url={miniXdcLogo} width="18px" height="18px"></IconImg>
-              <BodyBold>{floorprice || "0"}</BodyBold>
+              <BodyBold>
+                {floorprice.toLocaleString(undefined, {
+                  maximumFractionDigits: 2,
+                }) || "0"}
+              </BodyBold>
             </HStack>
           </VStack>
 
@@ -93,7 +101,11 @@ function TopCollectionItem(props) {
             <CaptionBoldShort align="center">Volume Traded</CaptionBoldShort>
             <HStack spacing="6px">
               <IconImg url={miniXdcLogo} width="18px" height="18px"></IconImg>
-              <BodyBold>{volumetraded || "0"}</BodyBold>
+              <BodyBold>
+                {volumetraded.toLocaleString(undefined, {
+                  maximumFractionDigits: 2,
+                }) || "0"}
+              </BodyBold>
             </HStack>
           </VStack>
         </HStack>
