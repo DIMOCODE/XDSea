@@ -1,0 +1,96 @@
+@import url('https://fonts.googleapis.com/css2?family=Fira+Sans:wght@300;400;500;600;700&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #F7F8F9;
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding: 0;
+    margin: 0;
+    font-size: 16px;
+    font-weight: normal;
+}
+
+/* #NiceAndSimple: Main - margin:auto */
+
+
+a {
+    color: #FFFFFF;
+    transition: all 0.2s;
+}
+
+a:hover {
+    opacity: 0.6;
+}
+
+a:active {
+    opacity: 1;
+}
+
+body, input, button, select, optgroup, textarea {
+    font-family: 'Fira Sans', sans-serif;
+}
+
+
+.nft {
+    min-height: 100vh;
+    margin: 0;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+}
+
+.text-gray-300 {
+    color: rgb(209 213 219) !important;
+}
+
+.text-gray-400 {
+    color: rgb(156 163 175) !important;
+}
+
+.text-gray-700 {
+    color: rgb(55 65 81) !important;
+}
+
+.text-gray-900 {
+    color: rgb(17 24 39) !important;
+}
+
+.font {
+    color: #27273B !important;
+}
+
+.font-light {
+    color: #B5B7CA !important;
+}
+
+.font-secondary {
+    color: #777E90 !important;
+}
+
+.z-999 {
+    z-index: 999 !important;
+}
+
+iframe {
+    z-index: -1 !important;
+}
+
+.walletConnect {
+    width: 160px;
+    height: 49px;
+    background-color: transparent !important;
+    border: none !important;
+    border-radius: 9px;
+    color: transparent !important;
+    margin-top: -24px;
+    margin-left: 15px;
+    position: absolute;
+    z-index: 10;
+}
+
+.hide {
+    display: none !important;
+}

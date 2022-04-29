@@ -6,11 +6,24 @@ import {DEFAULT_PROVIDER} from "../../constant";
 import NFT from '../../abis/NFT.json'
 import NFTMarket from '../../abis/NFTMarket.json'
 import NFTMarketLayer1 from "../../abis/NFTMarketLayer1.json"
-import CollectionCard from "../home/common/collectionCard";
+import CollectionCard from "../Home/common/collectionCard";
 import {GetWallet} from 'xdc-connect';
 import axios from "axios"
 import { SendTransaction } from 'xdc-connect';
 import SkeletonCollectionCard from '../../common/skeleton/collectionCard';
+
+import styled from "styled-components";
+import { LayoutGroup, motion } from "framer-motion/dist/framer-motion";
+
+import { DiscoverFilter } from "../../styles/DiscoverFilter";
+import { Collection } from "../../styles/Collection";
+
+import DiscoverBar from "../../images/DiscoverBar.png";
+import { HStack, Spacer, VStack } from "../../styles/Stacks";
+import { TitleBold27 } from "../../styles/TextStyles";
+import { appStyle } from "../../styles/AppStyles";
+import ButtonApp from "../../styles/Buttons";
+import useWindowSize from "../../styles/useWindowSize";
 
 const Discover = () => {
     const history = useHistory()
@@ -68,13 +81,41 @@ const Discover = () => {
             const collections = await Promise.all(collectionData.slice(0, 12).map(async i => {
                 const uri = await nftContract.methods.tokenURI(i.tokenId).call()
                 var metadata = await axios.get(uri)
+                const collectionData2 = await marketContract.methods.getCollectionNFTs(metadata?.data?.collection?.name).call()
+                var volumeTraded = 0
+                const uniqueOwners = []
+                var lowestPrice = 99999999999999999999999999999
+                const allEvents = await Promise.all(collectionData2.map(async item => {
+                    var price = await xdc3.utils.fromWei(item.price, "ether")
+                    if(!uniqueOwners.includes(item.owner)) {
+                        uniqueOwners.push(item.owner);
+                    }
+                    if(parseInt(price) < lowestPrice) {
+                        lowestPrice = parseInt(price)
+                    }
+                    var eventCount = item.eventCount
+                    var events = []
+                    var tokenEvents = await marketContract.methods.getTokenEventHistory(item.tokenId).call()
+                    for(var j = 0; j < tokenEvents.length; j++) {
+                        if(tokenEvents[j].eventType === "3" || tokenEvents[j].eventType === "8"){
+                            volumeTraded += parseInt(await xdc3.utils.fromWei(tokenEvents[j].price, "ether"))
+                        }
+                    }
+                    return events
+                }))
 
                 let collection = {
                     name: metadata?.data?.collection?.name,
                     description: metadata?.data?.collection?.description,
                     creator: metadata?.data?.collection?.creator,
                     banner: metadata?.data?.collection?.banner,
-                    logo: metadata?.data?.collection?.logo
+                    logo: metadata?.data?.collection?.logo,
+                    fileType: metadata?.data?.collection?.nft?.fileType,
+                    preview: metadata?.data?.collection?.nft?.preview,
+                    floorPrice: lowestPrice,
+                    volumeTraded: volumeTraded,
+                    items: collectionData2.length,
+                    owners: uniqueOwners.length
                 }
 
                 return collection
@@ -187,16 +228,45 @@ const Discover = () => {
         setPageCount(pageCount + 1)
         const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER))
         const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress)
+        const marketContract = new xdc3.eth.Contract(NFTMarketLayer1.abi, nftmarketlayeraddress, xdc3)
         const collections = await Promise.all(collectionPage.slice(pageCount * 12, 12 * (pageCount + 1)).map(async i => {
             const uri = await nftContract.methods.tokenURI(i.tokenId).call()
             var metadata = await axios.get(uri)
+            const collectionData2 = await marketContract.methods.getCollectionNFTs(metadata?.data?.collection?.name).call()
+            var volumeTraded = 0
+            const uniqueOwners = []
+            var lowestPrice = 99999999999999999999999999999
+            const allEvents = await Promise.all(collectionData2.map(async item => {
+                var price = await xdc3.utils.fromWei(item.price, "ether")
+                if(!uniqueOwners.includes(item.owner)) {
+                    uniqueOwners.push(item.owner);
+                }
+                if(parseInt(price) < lowestPrice) {
+                    lowestPrice = parseInt(price)
+                }
+                var eventCount = item.eventCount
+                var events = []
+                var tokenEvents = await marketContract.methods.getTokenEventHistory(item.tokenId).call()
+                for(var j = 0; j < tokenEvents.length; j++) {
+                    if(tokenEvents[j].eventType === "3" || tokenEvents[j].eventType === "8"){
+                        volumeTraded += parseInt(await xdc3.utils.fromWei(tokenEvents[j].price, "ether"))
+                    }
+                }
+                return events
+            }))
 
             let collection = {
                 name: metadata?.data?.collection?.name,
                 description: metadata?.data?.collection?.description,
                 creator: metadata?.data?.collection?.creator,
                 banner: metadata?.data?.collection?.banner,
-                logo: metadata?.data?.collection?.logo
+                logo: metadata?.data?.collection?.logo,
+                fileType: metadata?.data?.collection?.nft?.fileType,
+                preview: metadata?.data?.collection?.nft?.preview,
+                floorPrice: lowestPrice,
+                volumeTraded: volumeTraded,
+                items: collectionData2.length,
+                owners: uniqueOwners.length
             }
 
             return collection
@@ -218,53 +288,95 @@ const Discover = () => {
         if (!isFetching) return;
         fetchMoreCollections();
     }, [isFetching]);
-    return <div className='bg-black'>
-        <header className='secondary-page-header'>
-            <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-6">
-                <h2 className="nft-h2"><span className="gradient-text">Discover</span> Collections</h2>
-            </div>
-        </header>
-        <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-6">
-            <div>
-                {loadingState === 'loaded' ? (
-                    <React.Fragment>
-                        {!collections.length 
-                        ? <h1 className='px-4 py-4 text-4x1 text-white'>There are no collections available on the market.</h1>
-                        :
-                        <>
-                            <div className='grid grid-cols-3 gap-4'>
-                                {collections.map((collection, i) => (
-                                    (collection !== undefined) ?
-                                        <React.Fragment key={i}>
-                                            <CollectionCard
-                                                name={collection.name}
-                                                creator = {collection.creator}
-                                                banner = {collection.banner}
-                                                logo = {collection.logo}
-                                                description = {collection.description}
-                                                viewCollection={() => viewCollection(collection.name)}
-                                                wallet = {wallet}
-                                            />
-                                        </React.Fragment>
-                                    : <></>
-                                ))}
-                            </div>
-                            <>
-                                {isFetching && <div className='grid grid-cols-3 gap-4'>
-                                    <SkeletonCollectionCard/>
-                                </div>      
-                                }
-                            </>
-                        </>
-                        }
-                    </React.Fragment>
-                ) : (
-                    <div className='grid grid-cols-3 gap-4'>
-                        <SkeletonCollectionCard/>
-                    </div>
-                )}
-            </div>
-        </div>
-    </div>
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
+    const size = useWindowSize();
+
+    function NavigateTo(route) {
+        history.push(`/${route}`);
+    }
+
+    return (
+    <DiscoverSection>
+        {/* Discover Top Bar */}
+
+        <HStack backgroundimage={DiscoverBar}>
+            <HStack width="1200px" height="157px" padding="0px 30px">
+            <TitleBold27 textcolor={appStyle.colors.white}>Discover Collections</TitleBold27>
+            <Spacer></Spacer>
+            {/* <ButtonApp
+                background="white"
+                text="Collections"
+                textcolor={appStyle.colors.black}
+            ></ButtonApp> */}
+            </HStack>
+        </HStack>
+
+        {/* Content Discover*/}
+
+        <ContentDiscover>
+            <VStack spacing="30px">
+            {/* <HStack>
+                <DiscoverFilter
+                textcolor={({ theme }) => theme.text}
+                background={({ theme }) => theme.backElement}
+                ></DiscoverFilter>
+            </HStack> */}
+            <HStack>
+                <HStack
+                    spacing="30px"
+                    flexwrap="wrap"
+                    padding="0 30px"
+                    justify="flex-start"
+                    width={size.width < 768 ? "100%" : "1100px"}
+                >
+                {collections.map((item) => (
+                    <VStack
+                        minwidth={size.width < 768 ? "100%" : "500px"}
+                        maxwidth="500px"
+                        height={size.width < 768 ? "440px" : "420px"}
+                    >
+                        <Collection
+                            key={item.name}
+                            collectionImage={item.banner}
+                            creatorLogo={item.logo}
+                            collectionName={item.name}
+                            collectionDescription={
+                                item.description
+                            }
+                            creatorName={item.creator}
+                            onClickCollection={() =>
+                                NavigateTo(`collection/${item.name}`)
+                            }
+                            floorprice={item.floorPrice}
+                            owners={item.owners}
+                            nfts={item.items}
+                            volumetraded={item.volumeTraded}
+                            // onClickCreator={() => NavigateTo("UserProfile")}
+                        ></Collection>
+                    </VStack>
+                ))}
+                </HStack>
+            </HStack>
+            </VStack>
+        </ContentDiscover>
+    </DiscoverSection>
+    );
 }
-export default Discover
+
+export { Discover };
+
+const DiscoverSection = styled(motion.div)`
+  padding: 90px 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.06);
+`;
+
+const ContentDiscover = styled(motion.div)`
+  padding: 30px 0;
+  max-width: 1200px;
+  margin: 0 auto;
+`;

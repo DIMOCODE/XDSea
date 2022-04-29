@@ -1,0 +1,20 @@
+export const appStyle = {
+  colors: {
+    white: "#FFFFFF",
+    white90: "rgba(255, 255, 255, 0.9)",
+    white60: "rgba(255, 255, 255, 0.3)",
+    white30: "rgba(255, 255, 255, 0.1)",
+    yellow: "#FFE500",
+    blue: "#044FC5",
+    green: "#2ACA45",
+    green30: "rgba(49, 236, 86, 0.3);",
+    black: "#2E334D",
+    darkgrey: "#5A616F",
+    darkgrey10: "rgba(2, 2, 2, 0.1);",
+    darkgrey30: "rgba(2, 2, 2, 0.30);",
+    darkgrey60: "rgba(2, 2, 2, 0.6);",
+    darkgrey90: "rgba(2, 2, 2, 0.69);",
+    darkBlue: "#292D41",
+    orange: "rgba(234, 100, 4, 1)",
+  },
+};
