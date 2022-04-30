@@ -30,9 +30,11 @@ function TopBar(props) {
       <HStack height="90px" width="1200px">
         <HStack>
           <IconImg url={XDSealogo} width="66px" height="66px"></IconImg>
-          <VStack spacing="0px">
+          <VStack spacing="0px" alignment="flex-start">
             <BodyBold textcolor={({ theme }) => theme.text}>XDSea</BodyBold>
-            <BodyBold textcolor={({ theme }) => theme.blue}>βeta v1.6.0</BodyBold>
+            <BodyBold textcolor={({ theme }) => theme.blue}>
+              βeta v1.6.0
+            </BodyBold>
           </VStack>
         </HStack>
 
@@ -61,9 +63,25 @@ function TopBar(props) {
         ></ButtonApp>
 
         <Spacer></Spacer>
-        <XdcConnect btnClass={`walletConnect ${wallet?.connected ? "hide" : ""}`} onConnect={(wallet) => {setWallet(wallet)}} 
-          onAddressChange={(wallet) => {setWallet(wallet)}} onDisconnect={(wallet) => {setWallet(wallet)}}/>
-        <WalletButton onClick={Disconnect} status={wallet?.connected} wallet={wallet}></WalletButton>
+
+        <XdcConnect
+          btnClass={`walletConnect ${wallet?.connected ? "hide" : ""}`}
+          onConnect={(wallet) => {
+            setWallet(wallet);
+          }}
+          onAddressChange={(wallet) => {
+            setWallet(wallet);
+          }}
+          onDisconnect={(wallet) => {
+            setWallet(wallet);
+          }}
+        />
+
+        <WalletButton
+          logout={Disconnect}
+          status={wallet?.connected}
+          wallet={wallet}
+        ></WalletButton>
 
         <SwitchButton clickOnSwitch={themeToggler}></SwitchButton>
 
