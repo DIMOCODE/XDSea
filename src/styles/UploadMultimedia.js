@@ -1,39 +1,27 @@
 import React from "react";
-import { useState } from "react";
-import { VStack, IconImg, ZStack, HStack, Spacer } from "./Stacks";
-import { BodyRegular, CaptionBoldShort } from "./TextStyles";
+import { VStack, IconImg, ZStack, HStack } from "./Stacks";
+import { BodyRegular } from "./TextStyles";
 import multimediaIcon from "../images/multimedia.png";
 import updateIcon from "../images/update.png";
 import styled from "styled-components";
 import { appStyle } from "./AppStyles";
 
 function UploadMultimedia(props) {
-  const { width, height, sizeText, backsize, border } = props;
+  const { width, height, sizeText, backsize, border, image } = props;
 
-  const [image, setImage] = useState({ preview: "", raw: "" });
+  // const handleUpload = async (e) => {
+  //   e.preventDefault();
+  //   const formData = new FormData();
+  //   formData.append("image", image.raw);
 
-  const handleChange = (e) => {
-    if (e.target.files.length) {
-      setImage({
-        preview: URL.createObjectURL(e.target.files[0]),
-        raw: e.target.files[0],
-      });
-    }
-  };
-
-  const handleUpload = async (e) => {
-    e.preventDefault();
-    const formData = new FormData();
-    formData.append("image", image.raw);
-
-    await fetch("YOUR_URL", {
-      method: "POST",
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-      body: formData,
-    });
-  };
+  //   await fetch("YOUR_URL", {
+  //     method: "POST",
+  //     headers: {
+  //       "Content-Type": "multipart/form-data",
+  //     },
+  //     body: formData,
+  //   });
+  // };
 
   return (
     <div>
@@ -81,20 +69,11 @@ function UploadMultimedia(props) {
 
             <BodyRegular align="Center">
               {sizeText} <br></br>
-              Supported: JPG, PNG, GIF, SVG. <br></br>
               Max size: 100 MB <br></br>
             </BodyRegular>
           </VStack>
         )}
       </label>
-      <input
-        type="file"
-        id="upload-button"
-        style={{ display: "none" }}
-        onChange={handleChange}
-      />
-      <br />
-      <button onClick={handleUpload}>Upload</button>
     </div>
   );
 }

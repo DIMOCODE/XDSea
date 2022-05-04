@@ -1,5 +1,4 @@
 import React from "react";
-import { VStack } from "./Stacks";
 import styled from "styled-components";
 
 function TextAreaStyled(props) {
@@ -11,10 +10,10 @@ export { TextAreaStyled };
 // Example of Styled Component with attributes
 export const TextArea = styled.textarea.attrs((props) => ({
   height: props.height || "300px",
+  placeholder: "Describe your NFT"
 }))`
   height: ${(props) => props.height}; //
   width: 100%;
-  
  
 
   border-radius: 9px;

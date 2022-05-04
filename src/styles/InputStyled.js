@@ -6,7 +6,7 @@ import empty from "../images/empty.png";
 import { BodyBold, BodyRegular } from "./TextStyles";
 
 function InputStyled(props) {
-  const { type, name, placeholder, icon, onChange } = props;
+  const { type, name, placeholder, icon, onChange, min, max, propertyKey } = props;
   const [hasURL, setHasUrl] = useState(false);
 
   return (
@@ -16,6 +16,9 @@ function InputStyled(props) {
         name={name}
         placeholder={placeholder}
         onChange={onChange}
+        min={min}
+        max={max}
+        className={propertyKey}
       />
       <InputIcon>
         <IconImg url={icon || empty} width="18px" height="18px"></IconImg>
