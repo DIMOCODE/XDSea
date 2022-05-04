@@ -5,29 +5,28 @@ import { TitleBold15 } from "./TextStyles";
 import ButtonApp from "./Buttons";
 
 function PropertyValue(props) {
-  const { property, value, onClick } = props;
+  const { property, value, onClick, onChangeProperty, onChangeValue, propertyKey } = props;
   return (
     <HStack>
       {/* Property Input with Label */}
 
       <InputStyled
+        propertyKey={propertyKey}
         type="text"
         placeholder="Character"
         value={property}
+        onChange={onChangeProperty}
       ></InputStyled>
 
       {/* Value Input with Label */}
 
-      <InputStyled type="text" placeholder="Male" value={value}></InputStyled>
-
-      <ButtonApp
-        text="-"
-        textcolor={({ theme }) => theme.text}
-        background={({ theme }) => theme.backElement}
-        height="39px"
-        border="90px"
-        onClick={onClick}
-      ></ButtonApp>
+      <InputStyled 
+        propertyKey={propertyKey}
+        type="text" 
+        placeholder="Male" 
+        value={value} 
+        onChange={onChangeValue}
+      ></InputStyled>
     </HStack>
   );
 }

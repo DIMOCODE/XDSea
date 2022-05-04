@@ -1,4 +1,4 @@
-import React, { createContext, useMemo, useState } from "react";
+import React, { createContext, useEffect, useMemo, useState } from 'react';
 import { Link, Route, Switch, useLocation, useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { motion } from "framer-motion/dist/framer-motion";
@@ -27,6 +27,12 @@ import NFTPage from "./NFTPage";
 import { Modal } from "./Modal";
 // import { Notification } from "./Notification";
 
+import { ModalAds } from "../ModalAds";
+import { HowToStart } from "../HowToStart";
+import starwarsYoda from "../images/Yoda4.gif";
+import starwarsVader from "../images/Vader1.gif";
+
+import { nftaddress } from '../config';
 const NFTApp = () => {
   const location = useLocation();
   const navigation = useMemo(() => {
@@ -51,23 +57,41 @@ const NFTApp = () => {
 
   const history = useHistory();
 
-  const [wallet, setWallet] = useState({});
-  const [theme, setTheme] = useState("light");
-  const [isModal, setIsModal] = useState(false);
-  // const [isNotification, setIsNotification] = useState(false);
+    const [wallet, setWallet] = useState({});
+    const [theme, setTheme] = useState("light");
+    const [isModal, setIsModal] = useState(false);
+    const [isModalAds, setIsModalAds] = useState(false);
+    const [randomNumber, setRandomNumber] = useState(0)
+    // const [isNotification, setIsNotification] = useState(false);
 
   const themeToggler = () => {
     theme === "light" ? setTheme("dark") : setTheme("light");
   };
 
-  return (
-    <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
-      <>
-        <GlobalStyles />
-        <HomeStack>
-          {isModal ? (
-            <Modal onClickCancel={() => setIsModal(!isModal)}></Modal>
-          ) : null}
+    useEffect(() => {
+        setRandomNumber(Math.floor(Math.random() * 2))
+    })
+
+    return (
+        <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
+            <>
+                <GlobalStyles/>
+                <HomeStack>
+                    {/* {isModal
+                        ? <Modal onClickCancel = {() => setIsModal(!isModal)}></Modal>
+                        : null
+                    } */}
+
+                    {isModalAds ? (
+                        <ModalAds
+                            imageAd={randomNumber === 0 ? starwarsYoda : starwarsVader}
+                            onClickCancel={() => setIsModalAds(!isModalAds)}
+                            onClick={() => {
+                                randomNumber === 0 ? 
+                                    history.push(`/nft/${nftaddress}/1793`)
+                                : history.push(`/nft/${nftaddress}/1792`)}}
+                        ></ModalAds>
+                    ) : null}
 
           <TopBar themeToggler={themeToggler}></TopBar>
 
@@ -88,11 +112,12 @@ const NFTApp = () => {
                 component={NFTPage}
               ></Route>
               {/* <Route
-                                exact
-                                path="/CreateCollection"
-                                component={CreateCollection}
-                            ></Route> */}
-              {/* <Route exact path="/Settings" component={Settings}></Route> */}
+                    exact
+                    path="/CreateCollection"
+                    component={CreateCollection}
+                ></Route> */}
+                {/* <Route exact path="/Settings" component={Settings}></Route> */}
+                <Route exact path="/HowToStart" component={HowToStart}></Route>
 
               <Route path="**" component={Home}></Route>
             </Switch>

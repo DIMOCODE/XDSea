@@ -1,4 +1,4 @@
-import React, { useState, createContext, useContext, Component, Fragment, useRef} from 'react';
+import React, { useState, useEffect, createContext, useContext, Component, Fragment, useRef} from 'react';
 import {create as ipfsHttpClient} from 'ipfs-http-client'
 import {GetWallet, SendTransaction} from 'xdc-connect';
 import Xdc3 from "xdc3";
@@ -36,6 +36,12 @@ import { UploadMultimedia } from "../../styles/UploadMultimedia";
 import xinfinLogo from "../../images/xinfinLogo.png";
 import useWindowSize from "../../styles/useWindowSize";
 import { useHistory } from "react-router-dom";
+import { InputStyledURL } from "../../styles/InputStyledURL";
+import { InputStyledLink } from '../../styles/InputStyledLink';
+import instagramIcon from "../../images/instagramMini.png";
+import twitterIcon from "../../images/twitter.png";
+import telegramIcon from "../../images/telegram.png";
+import linkIcon from "../../images/link.png";
 
 const client = ipfsHttpClient('https://ipfs.infura.io:5001/api/v0')
 
@@ -45,200 +51,565 @@ function CreateNft(props) {
     function NavigateTo(route) {
         history.push(`/${route}`);
     }
-    const [textarea, setTextarea] = useState("Describe your NFT");
 
-    const handleChange = (event) => {
-        setTextarea(event.target.value);
-    };
+    const [name, setName] = useState("");
+    const [description, setDescription] = useState("");
+    const [price, setPrice] = useState(0.00);
+    const [royalty, setRoyalty] = useState(0.00);
+    const [collection, setCollection] = useState("");
+    const [collections, setCollections] = useState([]);
+    const [isNewCollection, setNewCollection] = useState(false);
+    const [collectionBanner, setCollectionBanner] = useState({ preview: "", raw: "" });
+    const [collectionDescription, setCollectionDescription] = useState("");
+    const [properties, setProperties] = useState([{property: "", value: ""}, {property:"", value:""}])
+    const [isUnlockableContent, setIsUnlockableContent] = useState(false);
+    const [unlockableContent, setUnlockableContent] = useState("");
+    const [image, setImage] = useState({ preview: "", raw: "" });
 
     const size = useWindowSize();
+
+    const addToIPFS = async (e) => {
+        e.preventDefault()
+        const file = document.getElementById("upload-button").files[0]
+        try {
+            const added = await client.add(file)
+            const url = `https://ipfs.infura.io/ipfs/${added.path}`
+        } catch (error) {
+            console.log('Error uploading file:', error)
+        }
+    };
+
+    const addToIPFSCollectionBanner = async (e) => {
+        e.preventDefault()
+        const file = document.getElementById("upload-button").files[0]
+        try {
+            const added = await client.add(file)
+            const url = `https://ipfs.infura.io/ipfs/${added.path}`
+        } catch (error) {
+            console.log('Error uploading file:', error)
+        }
+    };
+
+    const handleChangeUploadMultimedia = (e) => {
+        if (e.target.files.length) {
+          setImage({
+            preview: URL.createObjectURL(e.target.files[0]),
+            raw: e.target.files[0],
+          });
+        }
+    };
+
+    const handleChangeUploadMultimediaCollection = (e) => {
+        if (e.target.files.length) {
+          setCollectionBanner({
+            preview: URL.createObjectURL(e.target.files[0]),
+            raw: e.target.files[0],
+          });
+        }
+    };
+
+//     createMarket = async () => {
+//         try {
+//             this.setState({minting: true})
+//             const wallet = await GetWallet()
+//             var name = this.state.name
+//             var description = this.state.description
+//             var price = this.state.price
+//             var fileUrl = this.state.fileUrl
+//             var unlockableContent = this.state.unlockableContent
+//             var properties = this.state.properties
+//             this.setState({creator: isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address})
+
+//             const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER))
+//             // const marketContract = new xdc3.eth.Contract(NFTMarket.abi, nftmarketaddress, xdc3)
+//             const marketContract = new xdc3.eth.Contract(NFTMarketLayer1.abi, nftmarketlayeraddress, xdc3)
+//             const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress)
+            
+//             // const data = await marketContract.methods.fetchCollections().call()
+//             // const collections = await Promise.all(data.map(async i => {
+//             //     const uri = await nftContract.methods.tokenURI(i.tokenId).call()
+//             //     var metadata = await axios.get(uri)
+//             //     let collection = {
+//             //         name: metadata?.data?.collection?.name,
+//             //         description: metadata?.data?.collection?.description,
+//             //         creator: metadata?.data?.collection?.creator,
+//             //         banner: metadata?.data?.collection?.banner,
+//             //         logo: metadata?.data?.collection?.logo,
+//             //         twitterUrl: metadata?.data?.collection?.twitterUrl,
+//             //         instagramUrl: metadata?.data?.collection?.instagramUrl,
+//             //         discordUrl: metadata?.data?.collection?.discordUrl,
+//             //         websiteUrl: metadata?.data?.collection?.websiteUrl,
+//             //     }
+//             //     return collection
+//             // }))
+//             // this.setState({collections: collections})
+
+//             const tokenCount = await marketContract.methods.tokenCount().call()
+//             var collection = this.state.collection == "" || this.state.collection == undefined
+//                                 ? `Untitled Collection ${tokenCount}` : this.state.collection
+
+//             this.setState({collection: collection})
+
+//             var bannerFile = null
+//             await fetch("/Untitled Collection.svg")
+//             .then(response => response.text())
+//             .then(data => {
+//                 bannerFile = new File([data], "Untitled Collection")
+//             });
+
+//             if(this.state.ownedCollection !== null){
+//                 this.setState({
+//                     collection: this.state.ownedCollection.name,
+//                     collectionDescription: this.state.ownedCollection.description,
+//                     creator: this.state.ownedCollection.creator,
+//                     collectionBannerUrl: this.state.ownedCollection.banner,
+//                     collectionLogoUrl: this.state.ownedCollection.logo,
+//                     twitterUrl: this.state.ownedCollection.twitterUrl,
+//                     instagramUrl: this.state.ownedCollection.instagramUrl,
+//                     discordUrl: this.state.ownedCollection.discordUrl,
+//                     websiteUrl: this.state.ownedCollection.websiteUrl,
+//                 })
+//             }
+
+//             if(this.state.collectionBannerUrl == null && !this.state.existingCollection) {
+//                 const added = await client.add(
+//                     bannerFile)
+//                 const url = `https://ipfs.infura.io/ipfs/${added.path}`
+//                 this.setState({ collectionBannerUrl: url })
+//             }
+
+//             if(this.state.collectionLogoUrl == null && !this.state.existingCollection) {
+//                 this.setState({ collectionLogoUrl: this.state.fileUrl })
+//             }
+
+//             const uploadData = JSON.stringify({
+//                 collection: { 
+//                     name: this.state.collection,
+//                     description: this.state.collectionDescription,  
+//                     creator: this.state.creator, 
+//                     banner: this.state.collectionBannerUrl, 
+//                     logo: this.state.collectionLogoUrl,
+//                     twitterUrl: this.state.twitterUrl,
+//                     instagramUrl: this.state.instagramUrl,
+//                     discordUrl: this.state.discordUrl,
+//                     websiteUrl: this.state.websiteUrl, 
+//                     nft:{ 
+//                         name, 
+//                         description, 
+//                         owner: isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address, 
+//                         image: fileUrl, 
+//                         unlockableContent, 
+//                         properties: properties,
+//                         royalty: this.state.royalty,
+//                         fileType: this.state.file.type,
+//                         preview: this.state.previewUrl
+//                     }
+//                 }
+//             })
+        
+//             const added = await client.add(uploadData)
+//             const url = `https://ipfs.infura.io/ipfs/${added.path}`
+//             this.createSale(url)
+//         } catch (error) {
+//             console.log('Error uploading file:', error)
+//             this.setState({mintFailure: true})
+//         }
+//     }
+
+    const fetchCollection = async() => {
+        const wallet = await GetWallet();
+        const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
+        const marketContract = new xdc3.eth.Contract(NFTMarketLayer1.abi, nftmarketlayeraddress, xdc3);
+        try{
+            const data = await marketContract.methods.fetchItemsCreated(isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address).call();
+            var uniqueCollections = [];
+            const creations = await Promise.all(data.map(async i => {
+                if(!uniqueCollections.includes(i.collectionName))
+                    uniqueCollections.push(i.collectionName);
+            }));
+            setCollections(uniqueCollections);
+        }
+        catch (e) {
+            console.log(e.message)
+        }
+    }
+
+    useEffect(() => {
+        fetchCollection();
+    }, [])
 
     return (
         <CreationSection>
             {/* Creation Top Bar */}
 
             <HStack backgroundimage={CreationBar}>
-            <HStack width="1200px" height="157px" padding="0px 30px">
-                <TitleBold27 textcolor={appStyle.colors.white}>
-                Create an NFT
-                </TitleBold27>
-            </HStack>
+                <HStack width="1200px" height="157px" padding="0px 30px">
+                    <TitleBold27 textcolor={appStyle.colors.white}>
+                        Create an NFT
+                    </TitleBold27>
+                </HStack>
             </HStack>
             <ContentCreation>
             {/* Creation Content */}
 
-            <VStack spacing="51px">
-                <HStack padding="0 39px" spacing="69px" responsive={true}>
-                {/* Preview Square */}
-                <VStack maxwidth={size.width < 768 ? "320px" : "489px"}>
-                    <HStack>
-                    <TitleBold15 textcolor={({ theme }) => theme.text}>
-                        Upload you Image, Video or Audio
-                    </TitleBold15>
-                    <Spacer></Spacer>
-                    <CaptionRegular
-                        textcolor={({ theme }) => theme.text}
-                    ></CaptionRegular>
+                <VStack spacing="51px">
+                    <HStack padding="0 39px" spacing="69px" responsive={true}>
+                        {/* Preview Square */}
+                        <VStack maxwidth={size.width < 768 ? "320px" : "489px"}>
+                            <HStack>
+                                <TitleBold15 textcolor={({ theme }) => theme.text}>
+                                    Upload you Image, Video or Audio
+                                </TitleBold15>
+                                <Spacer></Spacer>
+                                <CaptionRegular
+                                    textcolor={({ theme }) => theme.text}
+                                >Required</CaptionRegular>
+                            </HStack>
+                            <UploadMultimedia
+                                border="15px"
+                                sizeText="Recommended size: 490px x 490px"
+                                width={size.width < 768 ? "320px" : "489px"}
+                                height={size.width < 768 ? "320px" : "489px"}
+                                image={image}
+                            ></UploadMultimedia>
+                            <input
+                                type="file"
+                                id="upload-button"
+                                style={{ display: "none" }}
+                                onChange={handleChangeUploadMultimedia}
+                            />
+                            <br />
+                            <button onClick={addToIPFS}>Upload</button>
+                        </VStack>
+
+                        {/* Form with Name, Description and Price */}
+                        <VStack spacing="18px" width="100%">
+                            <HStack>
+                                <TitleBold15 textcolor={({ theme }) => theme.text}>
+                                    Name
+                                </TitleBold15>
+                                <Spacer></Spacer>
+                                <CaptionRegular textcolor={({ theme }) => theme.text}>
+                                    Required
+                                </CaptionRegular>
+                            </HStack>
+                            <InputStyled
+                                type="text"
+                                placeholder="Name your NFT"
+                                onChange={(event) => {setName(event.target.value)}}
+                            ></InputStyled>
+
+                            <HStack>
+                                <TitleBold15 textcolor={({ theme }) => theme.text}>
+                                    Description
+                                </TitleBold15>
+                                <Spacer></Spacer>
+                                <CaptionRegular textcolor={({ theme }) => theme.text}>
+                                    Required
+                                </CaptionRegular>
+                            </HStack>
+                            <TextAreaStyled
+                                value={description}
+                                onChange={(event) => {setDescription(event.target.value)}}
+                            ></TextAreaStyled>
+
+                            <HStack>
+                                <TitleBold15 textcolor={({ theme }) => theme.text}>
+                                    Price
+                                </TitleBold15>
+                                <Spacer></Spacer>
+                                <CaptionRegular textcolor={({ theme }) => theme.text}>
+                                    Required
+                                </CaptionRegular>
+                            </HStack>
+                            <InputStyled
+                                type="number"
+                                placeholder="0.00"
+                                min={"0.0001"}
+                                icon={xdc}
+                                onChange={(event) => {setPrice(event.target.value)}}
+                            ></InputStyled>
+                        </VStack>
                     </HStack>
-                    <UploadMultimedia
-                    border="15px"
-                    sizeText="490px x 490px"
-                    width={size.width < 768 ? "320px" : "489px"}
-                    height={size.width < 768 ? "320px" : "489px"}
-                    ></UploadMultimedia>
+                    <Divider></Divider>
+
+                    <HStack padding="0 39px" spacing="69px" responsive={true}>
+                        {/* Properties */}
+                        <VStack alignment="flex-start">
+                            <TitleBold15 textcolor={({ theme }) => theme.text}>
+                                Properties
+                            </TitleBold15>
+                            <BodyRegular textcolor={({ theme }) => theme.text}>
+                                Create custom properties that define the Rarity of your NFT.
+                                Properties are shown underneath your piece.
+                            </BodyRegular>
+
+                            {/* Value variables are "Property" and "Value" */}
+                            <HStack>
+                                <TitleBold15 width="100%" textcolor={({ theme }) => theme.text}>
+                                    Property
+                                </TitleBold15>
+                                <TitleBold15 width="100%" textcolor={({ theme }) => theme.text}>
+                                    Value
+                                </TitleBold15>
+                            </HStack>
+
+                            {/* Value variables are "Property" and "Value", user can add or erase as many they wish */}
+                            {properties.map((property, i) => (
+                                <PropertyValue 
+                                    propertyKey={i}
+                                    key={i}
+                                    onChangeProperty={(event) => {
+                                        var newProperties = properties;
+                                        newProperties[event.target.className.split(" ")[2] !== undefined ? event.target.className.split(" ")[2] : 0].property = event.target.value;
+                                        setProperties(newProperties);}}
+                                    onChangeValue={(event) => {
+                                        var newProperties = properties;
+                                        newProperties[event.target.className.split(" ")[2] !== undefined ? event.target.className.split(" ")[2] : 0].value = event.target.value;
+                                        setProperties(newProperties);}}
+                                ></PropertyValue>
+                            ))}
+
+                            <HStack>
+                                <ButtonApp
+                                    height="39px"
+                                    width={size.width < 768 ? "100%" : "44%"}
+                                    text="Add More"
+                                    textcolor={appStyle.colors.white}
+                                    onClick={() => setProperties([...properties, {property: "", value: ""}])}
+                                ></ButtonApp>
+                                <ButtonApp
+                                    height="39px"
+                                    width={size.width < 768 ? "100%" : "44%"}
+                                    text="Remove"
+                                    textcolor={appStyle.colors.white}
+                                    onClick={() => setProperties(properties.slice(0, -1))}
+                                ></ButtonApp>
+                            </HStack>
+                        </VStack>
+
+                        {/* Royalties, Collection Selector and Unlockables */}
+                        <VStack spacing="39px">
+                            <VStack width="100%" alignment="flex-start">
+                                <TitleBold15 textcolor={({ theme }) => theme.text}>
+                                    Royalty
+                                </TitleBold15>
+                                <BodyRegular textcolor={({ theme }) => theme.text}>
+                                    Earn a fee when a user re-sells your NFT
+                                </BodyRegular>
+                                <InputStyled 
+                                    placeholder="0.00" 
+                                    type={"number"}
+                                    min={"0"}
+                                    max={"100"}
+                                    icon={percent}
+                                    onChange={(event) => {setRoyalty(event.target.value)}}
+                                ></InputStyled>
+                            </VStack>
+
+                            <VStack width="100%" alignment="flex-start">
+                                <TitleBold15 textcolor={({ theme }) => theme.text}>
+                                    Collection
+                                </TitleBold15>
+                                <BodyRegular textcolor={({ theme }) => theme.text}>
+                                    If your NFT belongs to any collection, please choose one
+                                </BodyRegular>
+                                <SelectStyled 
+                                    collections={collections} 
+                                    onChange={(event) => {
+                                        if(event.target.value === "newCollection")
+                                            setNewCollection(true);
+                                        else{
+                                            setNewCollection(false);
+                                            setCollection(event.target.value);
+                                        }
+                                    }}
+                                ></SelectStyled>
+                            </VStack>
+
+                            <VStack width="100%" alignment="flex-start">
+                                <TitleBold15 textcolor={({ theme }) => theme.text}>
+                                    Unlockable Content
+                                </TitleBold15>
+                                <BodyRegular textcolor={({ theme }) => theme.text}>
+                                    If needed, include unlockable content that will be revealed by
+                                    the owner of the NFT.
+                                </BodyRegular>
+                                {isUnlockableContent 
+                                    ? <InputStyled 
+                                        placeholder="e.g. Secret Code, Invitation Link" 
+                                        type={"text"}
+                                        onChange={(event) => {setUnlockableContent(event.target.value)}}
+                                    ></InputStyled>
+                                    : null
+                                }
+                                <ButtonApp
+                                    icon={lock}
+                                    iconWidth="39px"
+                                    iconHeight="18px"
+                                    text={isUnlockableContent ? "Remove Unlockable Content" : "Add Unlockable Content"}
+                                    width="100%"
+                                    height="39px"
+                                    textcolor={appStyle.colors.white}
+                                    onClick={() => {setIsUnlockableContent(!isUnlockableContent)}}
+                                ></ButtonApp>
+                            </VStack>
+                        </VStack>
+                    </HStack>
+                    <Divider></Divider>
+
+                    {/* {isNewCollection
+                        ? <>
+                            <HStack backgroundimage={CreationBar}>
+                                <HStack width="1200px" height="157px" padding="0px 30px">
+                                    <TitleBold27 textcolor={appStyle.colors.white}>
+                                        Create a Collection
+                                    </TitleBold27>
+                                </HStack>
+                            </HStack>
+                            <VStack> */}
+                                {/* Banner Image */}
+                                {/* <VStack>
+                                    <HStack>
+                                        <TitleBold15>Upload your banner image</TitleBold15>
+                                        <Spacer></Spacer>
+                                    </HStack>
+
+                                    <UploadMultimedia
+                                        sizeText="Recommended size: 1200px x 520px"
+                                        width="1200px"
+                                        height="520px"
+                                        backsize="cover"
+                                        image={collectionBanner}
+                                    ></UploadMultimedia>
+                                </VStack>
+                                <input
+                                    type="file"
+                                    id="upload-button-collection"
+                                    style={{ display: "none" }}
+                                    onChange={handleChangeUploadMultimediaCollection}
+                                />
+                                <br />
+                                <button onClick={addToIPFSCollectionBanner}>Upload</button>
+                                <Divider></Divider> */}
+                                {/* Collection Name and URL */}
+                                {/* <HStack responsive={true} alignment="flex-start" padding="15px 15px">
+                                    <VStack alignment="flex-start">
+                                        <TitleBold15>Collection Name</TitleBold15>
+                                        <InputStyled placeholder="Name your Collection"></InputStyled>
+                                        <BodyRegular>
+                                            Must only contain lowercase letters,numbers, and hyphens.
+                                        </BodyRegular>
+                                    </VStack>
+                                    <VStack alignment="flex-start">
+                                        <TitleBold15>Collection URL</TitleBold15>
+                                        <InputStyledURL placeholder="collection-name"></InputStyledURL>
+                                    </VStack>
+                                </HStack>
+                                <Divider></Divider> */}
+                                {/* Description, Social Links, Featured Image */}
+                                {/* <HStack
+                                    responsive={true}
+                                    alignment="center"
+                                    spacing="30px"
+                                    padding="30px 0"
+                                > */}
+                                    {/* Description */}
+                                    {/* <VStack alignment="flex-start">
+                                        <TitleBold15>Description</TitleBold15>
+                                        <TextAreaStyled
+                                            value={collectionDescription}
+                                            onChange={(event) => {setCollectionDescription(event.target.value)}}
+                                            height="400px"
+                                        ></TextAreaStyled>
+                                    </VStack> */}
+                                    {/* Social Links */}
+                                    {/* <VStack spacing="45px">
+                                    <VStack width="100%" alignment="flex-start">
+                                        <TitleBold15>Social Networks and Link</TitleBold15>
+                                        <InputStyledLink
+                                        icon={instagramIcon}
+                                        placeholder="Instagram Account"
+                                        ></InputStyledLink>
+                                        <InputStyledLink
+                                        icon={twitterIcon}
+                                        placeholder="Twitter Account"
+                                        ></InputStyledLink>
+                                        <InputStyledLink
+                                        icon={telegramIcon}
+                                        placeholder="Telegram Account"
+                                        ></InputStyledLink>
+                                        <InputStyledLink
+                                        icon={linkIcon}
+                                        placeholder="Website Account"
+                                        ></InputStyledLink>
+                                    </VStack>
+
+                                    <VStack width="100%" alignment="flex-start">
+                                        <TitleBold15 textcolor={({ theme }) => theme.text}>
+                                        Creator Earnings
+                                        </TitleBold15>
+                                        <BodyRegular textcolor={({ theme }) => theme.text}>
+                                        Earn a fee when a user re-sells one of you NFT
+                                        </BodyRegular>
+                                        <InputStyled placeholder="0.00" icon={percent}></InputStyled>
+                                    </VStack>
+                                    </VStack> */}
+                                    {/* Featured Image */}
+                                    {/* <VStack>
+                                    <VStack width="300px">
+                                        <TitleBold15>Featured Image</TitleBold15>
+                                        <UploadMultimedia
+                                        sizeText="400px x 400px"
+                                        width="300px"
+                                        height="300px"
+                                        backsize="cover"
+                                        ></UploadMultimedia>
+                                        <BodyRegular>
+                                        This image will be used to feature your collection in the
+                                        Discover page
+                                        </BodyRegular>
+                                    </VStack>
+                                    </VStack>
+                                </HStack>
+                                <Divider></Divider>
+                            </VStack>
+                            <Divider></Divider>
+                        </>
+                        : null
+                    } */}
+
+                    {/* Blockchain and Mint Button */}
+                    <HStack padding="0 39px" spacing="69px" responsive={true}>
+                        <HStack width="100%">
+                            <IconImg url={xinfinLogo} width="45px" height="45px"></IconImg>
+                            <VStack width="100%" alignment="flex-start" spacing="6px">
+                                <TitleBold15 textcolor={({ theme }) => theme.text}>
+                                    Blockchain
+                                </TitleBold15>
+                                <BodyRegular textcolor={({ theme }) => theme.text}>
+                                    Your NFT will be published on XinFin Blockchain
+                                </BodyRegular>
+                            </VStack>
+                        </HStack>
+                        <HStack width="100%">
+                            <ButtonApp
+                                text="Clear Form"
+                                height="39px"
+                                width="100%"
+                                background={({ theme }) => theme.faded}
+                                textcolor={appStyle.colors.text}
+                                onClick={() => NavigateTo(``)}
+                            ></ButtonApp>
+                            <ButtonApp
+                                text="Mint your NFT"
+                                height="39px"
+                                width="100%"
+                                textcolor={appStyle.colors.white}
+                            ></ButtonApp>
+                        </HStack>
+                    </HStack>
                 </VStack>
-
-                {/* Form with Name, Description and Price */}
-                <VStack spacing="18px" width="100%">
-                    <HStack>
-                    <TitleBold15 textcolor={({ theme }) => theme.text}>
-                        Name
-                    </TitleBold15>
-                    <Spacer></Spacer>
-                    <CaptionRegular textcolor={({ theme }) => theme.text}>
-                        Required
-                    </CaptionRegular>
-                    </HStack>
-                    <InputStyled
-                    type="text"
-                    placeholder="Name your NFT"
-                    ></InputStyled>
-
-                    <HStack>
-                    <TitleBold15 textcolor={({ theme }) => theme.text}>
-                        Description
-                    </TitleBold15>
-                    <Spacer></Spacer>
-                    <CaptionRegular textcolor={({ theme }) => theme.text}>
-                        Required
-                    </CaptionRegular>
-                    </HStack>
-                    <TextAreaStyled
-                    value={textarea}
-                    onChange={handleChange}
-                    ></TextAreaStyled>
-
-                    <HStack>
-                    <TitleBold15 textcolor={({ theme }) => theme.text}>
-                        Price
-                    </TitleBold15>
-                    <Spacer></Spacer>
-                    <CaptionRegular textcolor={({ theme }) => theme.text}>
-                        Required
-                    </CaptionRegular>
-                    </HStack>
-                    <InputStyled
-                    type="text"
-                    placeholder="0.00"
-                    icon={xdc}
-                    ></InputStyled>
-                </VStack>
-                </HStack>
-                <Divider></Divider>
-
-                <HStack padding="0 39px" spacing="69px" responsive={true}>
-                {/* Properties */}
-                <VStack alignment="flex-start">
-                    <TitleBold15 textcolor={({ theme }) => theme.text}>
-                    Properties
-                    </TitleBold15>
-                    <BodyRegular textcolor={({ theme }) => theme.text}>
-                    Create custom properties that define the Rarity of your NFT.
-                    Properties are shown underneath your piece.
-                    </BodyRegular>
-
-                    {/* Value variables are "Property" and "Value" */}
-                    <HStack padding="0 45px 0 0">
-                    <TitleBold15 width="100%" textcolor={({ theme }) => theme.text}>
-                        Property
-                    </TitleBold15>
-                    <TitleBold15 width="100%" textcolor={({ theme }) => theme.text}>
-                        Value
-                    </TitleBold15>
-                    </HStack>
-
-                    {/* Value variables are "Property" and "Value", user can add or erase as many they wish */}
-                    <PropertyValue></PropertyValue>
-                    <PropertyValue></PropertyValue>
-
-                    <ButtonApp
-                    height="39px"
-                    width={size.width < 768 ? "100%" : "44%"}
-                    text="Add More"
-                    textcolor={appStyle.colors.white}
-                    ></ButtonApp>
-                </VStack>
-
-                {/* Royalties, Collection Selector and Unlockables */}
-                <VStack spacing="39px">
-                    <VStack width="100%" alignment="flex-start">
-                    <TitleBold15 textcolor={({ theme }) => theme.text}>
-                        Royalty
-                    </TitleBold15>
-                    <BodyRegular textcolor={({ theme }) => theme.text}>
-                        Earn a fee when a user re-sells your NFT
-                    </BodyRegular>
-                    <InputStyled placeholder="0.00" icon={percent}></InputStyled>
-                    </VStack>
-
-                    <VStack width="100%" alignment="flex-start">
-                    <BodyRegular textcolor={({ theme }) => theme.text}>
-                        If your NFT belongs to any collection, please choose one
-                    </BodyRegular>
-                    <SelectStyled></SelectStyled>
-                    </VStack>
-
-                    <VStack width="100%" alignment="flex-start">
-                    <ButtonApp
-                        icon={lock}
-                        iconWidth="39px"
-                        iconHeight="18px"
-                        text="Add Unlockable Content"
-                        width="100%"
-                        height="39px"
-                        textcolor={appStyle.colors.white}
-                    ></ButtonApp>
-                    <BodyRegular textcolor={({ theme }) => theme.text}>
-                        If needed, include unlockable content that will be revealed by
-                        the owner of the NFT.
-                    </BodyRegular>
-                    </VStack>
-                </VStack>
-                </HStack>
-
-                <Divider></Divider>
-
-                {/* Blockchain and Mint Button */}
-                <HStack padding="0 39px" spacing="69px" responsive={true}>
-                <HStack width="100%">
-                    <IconImg url={xinfinLogo} width="45px" height="45px"></IconImg>
-                    <VStack width="100%" alignment="flex-start" spacing="6px">
-                    <TitleBold15 textcolor={({ theme }) => theme.text}>
-                        Blockchain
-                    </TitleBold15>
-                    <BodyRegular textcolor={({ theme }) => theme.text}>
-                        Your NFT will be published on XinFin Blockchain
-                    </BodyRegular>
-                    </VStack>
-                </HStack>
-                <HStack width="100%">
-                    <ButtonApp
-                    text="Cancel"
-                    height="39px"
-                    width="100%"
-                    background={({ theme }) => theme.faded}
-                    textcolor={appStyle.colors.text}
-                    onClick={() => NavigateTo(``)}
-                    ></ButtonApp>
-                    <ButtonApp
-                    text="Mint your NFT"
-                    height="39px"
-                    width="100%"
-                    textcolor={appStyle.colors.white}
-                    ></ButtonApp>
-                </HStack>
-                </HStack>
-            </VStack>
             </ContentCreation>
         </CreationSection>
     );
@@ -434,114 +805,6 @@ const ContentCreation = styled(motion.div)`
 //         } catch (error) {
 //             console.log('Error uploading file:', error)
 //             this.setState({uploadFailure: true})
-//         }
-//     }
-
-//     createMarket = async () => {
-//         try {
-//             this.setState({minting: true})
-//             const wallet = await GetWallet()
-//             var name = this.state.name
-//             var description = this.state.description
-//             var price = this.state.price
-//             var fileUrl = this.state.fileUrl
-//             var unlockableContent = this.state.unlockableContent
-//             var properties = this.state.properties
-//             this.setState({creator: isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address})
-
-//             const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER))
-//             // const marketContract = new xdc3.eth.Contract(NFTMarket.abi, nftmarketaddress, xdc3)
-//             const marketContract = new xdc3.eth.Contract(NFTMarketLayer1.abi, nftmarketlayeraddress, xdc3)
-//             const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress)
-            
-//             // const data = await marketContract.methods.fetchCollections().call()
-//             // const collections = await Promise.all(data.map(async i => {
-//             //     const uri = await nftContract.methods.tokenURI(i.tokenId).call()
-//             //     var metadata = await axios.get(uri)
-//             //     let collection = {
-//             //         name: metadata?.data?.collection?.name,
-//             //         description: metadata?.data?.collection?.description,
-//             //         creator: metadata?.data?.collection?.creator,
-//             //         banner: metadata?.data?.collection?.banner,
-//             //         logo: metadata?.data?.collection?.logo,
-//             //         twitterUrl: metadata?.data?.collection?.twitterUrl,
-//             //         instagramUrl: metadata?.data?.collection?.instagramUrl,
-//             //         discordUrl: metadata?.data?.collection?.discordUrl,
-//             //         websiteUrl: metadata?.data?.collection?.websiteUrl,
-//             //     }
-//             //     return collection
-//             // }))
-//             // this.setState({collections: collections})
-
-//             const tokenCount = await marketContract.methods.tokenCount().call()
-//             var collection = this.state.collection == "" || this.state.collection == undefined
-//                                 ? `Untitled Collection ${tokenCount}` : this.state.collection
-
-//             this.setState({collection: collection})
-
-//             var bannerFile = null
-//             await fetch("/Untitled Collection.svg")
-//             .then(response => response.text())
-//             .then(data => {
-//                 bannerFile = new File([data], "Untitled Collection")
-//             });
-
-//             if(this.state.ownedCollection !== null){
-//                 this.setState({
-//                     collection: this.state.ownedCollection.name,
-//                     collectionDescription: this.state.ownedCollection.description,
-//                     creator: this.state.ownedCollection.creator,
-//                     collectionBannerUrl: this.state.ownedCollection.banner,
-//                     collectionLogoUrl: this.state.ownedCollection.logo,
-//                     twitterUrl: this.state.ownedCollection.twitterUrl,
-//                     instagramUrl: this.state.ownedCollection.instagramUrl,
-//                     discordUrl: this.state.ownedCollection.discordUrl,
-//                     websiteUrl: this.state.ownedCollection.websiteUrl,
-//                 })
-//             }
-
-//             if(this.state.collectionBannerUrl == null && !this.state.existingCollection) {
-//                 const added = await client.add(
-//                     bannerFile)
-//                 const url = `https://ipfs.infura.io/ipfs/${added.path}`
-//                 this.setState({ collectionBannerUrl: url })
-//             }
-
-//             if(this.state.collectionLogoUrl == null && !this.state.existingCollection) {
-//                 this.setState({ collectionLogoUrl: this.state.fileUrl })
-//             }
-
-//             const uploadData = JSON.stringify({
-//                 collection: { 
-//                     name: this.state.collection,
-//                     description: this.state.collectionDescription,  
-//                     creator: this.state.creator, 
-//                     banner: this.state.collectionBannerUrl, 
-//                     logo: this.state.collectionLogoUrl,
-//                     twitterUrl: this.state.twitterUrl,
-//                     instagramUrl: this.state.instagramUrl,
-//                     discordUrl: this.state.discordUrl,
-//                     websiteUrl: this.state.websiteUrl, 
-//                     nft:{ 
-//                         name, 
-//                         description, 
-//                         owner: isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address, 
-//                         image: fileUrl, 
-//                         unlockableContent, 
-//                         properties: properties,
-//                         royalty: this.state.royalty,
-//                         fileType: this.state.file.type,
-//                         preview: this.state.previewUrl
-//                     }
-//                 }
-//             })
-        
-//             const added = await client.add(uploadData)
-//             const url = `https://ipfs.infura.io/ipfs/${added.path}`
-//             this.createSale(url)
-//         } catch (error) {
-//             console.log('Error uploading file:', error)
-//             this.setState({mintFailure: true})
 //         }
 //     }
 

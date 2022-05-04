@@ -4,13 +4,15 @@ import { IconImg, ZStack } from "./Stacks";
 import arrow from "../images/arrow.png";
 
 function SelectStyled(props) {
-  const { value, onChange } = props;
+  const { value, onChange, collections } = props;
   return (
     <ZStack>
-      <SelectInput value={value} onChange={onChange}>
-        <option value="None">None</option>
-        <option value="Collection 1">Collection 1</option>
-        <option value="Collection 2">Collection 2</option>
+      <SelectInput value={value} onChange={onChange} defaultValue="default">
+        <option value="default" disabled hidden>Select Collection...</option>
+        <option value="newCollection">Create New Collection</option>
+        {collections?.map((collectionName, i) => (
+          <option key={i} value={collectionName}>{collectionName}</option>
+        ))}
       </SelectInput>
       <IconSelect>
         <IconImg url={arrow} width="18px" height="18px"></IconImg>

@@ -53,7 +53,13 @@ function TopBar(props) {
           cursor="pointer"
           onClick={() => NavigateTo("discover")}
         ></ButtonApp>
-
+        <ButtonApp
+          background="rgba(255, 255, 255, 0)"
+          textcolor={({ theme }) => theme.text}
+          text="How to Start"
+          cursor="pointer"
+          onClick={() => NavigateTo("HowToStart")}
+        ></ButtonApp>
         <ButtonApp
           background="rgba(255, 255, 255, 0)"
           textcolor={({ theme }) => theme.blue}
