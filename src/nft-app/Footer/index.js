@@ -4,7 +4,12 @@ import twitter from "../../images/twitterLogoWhite.png";
 import instagram from "../../images/InstagramLogoWhite.png";
 import mail from "../../images/mailWhite.png";
 import discord from "../../images/DiscordLogoWhite.png";
-import { BodyRegular, TitleBold21, TitleBold27 } from "../../styles/TextStyles";
+import {
+  BodyRegular,
+  TitleBold21,
+  TitleBold27,
+  TitleRegular18,
+} from "../../styles/TextStyles";
 import { appStyle } from "../../styles/AppStyles";
 import { LayoutGroup, motion } from "framer-motion/dist/framer-motion";
 
@@ -20,85 +25,99 @@ function Footer(props) {
     <FooterSection>
       <FooterContent>
         <LayoutGroup id="footer">
-          <HStack
-            responsive={true}
-            alignment="flex-start"
-            padding={size.width < 768 ? "0 60px" : "0 30px"}
-          >
-            <VStack alignment="flex-start">
-              <IconImg
-                url={XDSeaWhite}
-                width={size.width < 768 ? "60px" : "90px"}
-                height={size.width < 768 ? "60px" : "90px"}
-              ></IconImg>
+          <VStack>
+            <HStack
+              responsive={true}
+              alignment="flex-start"
+              padding={size.width < 768 ? "0 60px" : "0 30px"}
+            >
+              <VStack alignment="flex-start" spacing="6px">
+                <IconImg
+                  url={XDSeaWhite}
+                  width={size.width < 768 ? "60px" : "90px"}
+                  height={size.width < 768 ? "60px" : "90px"}
+                ></IconImg>
 
-              <TitleBold27 textcolor={appStyle.colors.white}>XDSea</TitleBold27>
-              <BodyRegular textcolor={appStyle.colors.white}>
-                NFT Marketplace
-              </BodyRegular>
-              <Spacer></Spacer>
-            </VStack>
+                <TitleBold27 textcolor={appStyle.colors.white}>
+                  XDSea
+                </TitleBold27>
+                <BodyRegular textcolor={appStyle.colors.white}>
+                  NFT Marketplace
+                </BodyRegular>
+                <Spacer></Spacer>
+              </VStack>
 
-            <VStack alignment="flex-start">
-              <TitleBold21 textcolor={appStyle.colors.white}>
-                Marketplace
-              </TitleBold21>
+              <VStack alignment="flex-start">
+                <TitleBold21 textcolor={appStyle.colors.white}>
+                  Marketplace
+                </TitleBold21>
 
-              <LayoutGroup id="MarketPlaceLink">
-                <Link text="Home"></Link>
-                <Link text="Discover"></Link>
-                {/* <Link text="Terms of Service"></Link>
+                <LayoutGroup id="MarketPlaceLink">
+                  <Link text="Home"></Link>
+                  <Link text="Discover"></Link>
+                  {/* <Link text="Terms of Service"></Link>
                 <Link text="Build on Xinfin"></Link> */}
-              </LayoutGroup>
+                </LayoutGroup>
 
-              <Spacer></Spacer>
-            </VStack>
-            <VStack alignment="flex-start">
-              <TitleBold21 textcolor={appStyle.colors.white}>
-                Account
-              </TitleBold21>
-              {/* <Link text="Sync XDCPay"></Link> */}
-              <Link text="Create NFT"></Link>
-              {/* <Link text="User Profile"></Link> */}
-              {/* <Link text="Collections"></Link> */}
+                <Spacer></Spacer>
+              </VStack>
+              <VStack alignment="flex-start">
+                <TitleBold21 textcolor={appStyle.colors.white}>
+                  Account
+                </TitleBold21>
+                {/* <Link text="Sync XDCPay"></Link> */}
+                <Link text="Create NFT"></Link>
+                {/* <Link text="User Profile"></Link> */}
+                {/* <Link text="Collections"></Link> */}
 
-              <Spacer></Spacer>
-            </VStack>
-            <VStack alignment="flex-start">
-              <TitleBold21 textcolor={appStyle.colors.white}>
-                Social
-              </TitleBold21>
-              <HStack justify="flex-start">
-                <a href="https://www.instagram.com/xdsea.nft/">
-                  <IconImg
-                    url={instagram}
-                    width="52px"
-                    height="52px"
-                    cursor="pointer"
-                  ></IconImg>
-                </a>
-                <a href="https://twitter.com/XDSeaNFT">
-                  <IconImg
-                    url={twitter}
-                    width="52px"
-                    height="52px"
-                    cursor="pointer"
-                  ></IconImg>
-                </a>
+                <Spacer></Spacer>
+              </VStack>
+              <VStack alignment="flex-start">
+                <TitleBold21 textcolor={appStyle.colors.white}>
+                  Social
+                </TitleBold21>
+                <HStack justify="flex-start">
+                  <a href="https://www.instagram.com/xdsea.nft/">
+                    <IconImg
+                      url={instagram}
+                      width="52px"
+                      height="52px"
+                      cursor="pointer"
+                    ></IconImg>
+                  </a>
+                  <a href="https://twitter.com/XDSeaNFT">
+                    <IconImg
+                      url={twitter}
+                      width="52px"
+                      height="52px"
+                      cursor="pointer"
+                    ></IconImg>
+                  </a>
 
-                <a href="mailto: abc@example.com">
-                  <IconImg
-                    url={mail}
-                    width="52px"
-                    height="52px"
-                    cursor="pointer"
-                  ></IconImg>
-                </a>
-                {/* <IconImg url={discord} width="52px" height="52px"></IconImg> */}
-              </HStack>
-              <Spacer></Spacer>
+                  <a href="mailto: abc@example.com">
+                    <IconImg
+                      url={mail}
+                      width="52px"
+                      height="52px"
+                      cursor="pointer"
+                    ></IconImg>
+                  </a>
+                  {/* <IconImg url={discord} width="52px" height="52px"></IconImg> */}
+                </HStack>
+                <Spacer></Spacer>
+              </VStack>
+            </HStack>
+
+            <VStack
+              background={appStyle.colors.darkgrey10}
+              padding="6px 9px"
+              border="6px"
+            >
+              <BodyRegular textcolor="white">
+                Copyright @2022 XDSea All Rights Reserved
+              </BodyRegular>
             </VStack>
-          </HStack>
+          </VStack>
         </LayoutGroup>
       </FooterContent>
     </FooterSection>
