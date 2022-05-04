@@ -23,6 +23,7 @@ function NftContainer(props) {
     background,
     onClick,
     onClickCreator,
+    fileType,
   } = props;
   const scaleImage = {
     initial: {
@@ -67,15 +68,19 @@ function NftContainer(props) {
         {/* NFT Image*/}
 
         <ZItem>
-          <IconImg
-            url={itemImage}
-            width="100%"
-            height="450px"
-            backsize="cover"
-            animate={isVisible ? "hover" : "initial"}
-            variants={scaleImage}
-            border="27px"
-          ></IconImg>
+          {fileType.match("image.*") ? (
+            <IconImg
+              url={itemImage}
+              width="100%"
+              height="450px"
+              backsize="cover"
+              animate={isVisible ? "hover" : "initial"}
+              variants={scaleImage}
+              border="27px"
+            ></IconImg>
+          ) : (
+            "Our Video Component"
+          )}
         </ZItem>
         {/* NFT Content*/}
         <ZItem>

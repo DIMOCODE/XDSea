@@ -7,15 +7,15 @@ import { XdcConnect, Disconnect } from "xdc-connect";
 
 import { GlobalStyles } from "../GlobalStyle";
 import { lightTheme, darkTheme } from "../themes";
-import { isXdc, fromXdc } from '../common/common';
-import ScrollToTop from '../common/scrollToTop';
+import { isXdc, fromXdc } from "../common/common";
+import ScrollToTop from "../common/scrollToTop";
 
-import { Disclosure } from '@headlessui/react'
-import { MenuIcon, XIcon } from '@heroicons/react/outline'
+import { Disclosure } from "@headlessui/react";
+import { MenuIcon, XIcon } from "@heroicons/react/outline";
 
 import { TopBar } from "./TopBar";
 import { Footer } from "./Footer";
-import { Home } from './Home'
+import { Home } from "./Home";
 import { Discover } from "./Discover";
 import MyNFT from "./MyNFT";
 // import { UserProfile } from "./UserProfile";
@@ -33,19 +33,29 @@ import starwarsYoda from "../images/Yoda4.gif";
 import starwarsVader from "../images/Vader1.gif";
 
 import { nftaddress } from '../config';
-
-
 const NFTApp = () => {
-    const location = useLocation();
-    const navigation = useMemo(() => {
-        return [
-            { name: 'Discover', href: '/discover', current: location.pathname === '/discover' },
-            { name: 'My NFTs', href: '/my-nfts', current: location.pathname === '/my-nfts' },
-            { name: 'Create an NFT', href: '/mint-item', current: location.pathname === '/mint-item' }
-        ]
-    }, [location.pathname]);
+  const location = useLocation();
+  const navigation = useMemo(() => {
+    return [
+      {
+        name: "Discover",
+        href: "/discover",
+        current: location.pathname === "/discover",
+      },
+      {
+        name: "My NFTs",
+        href: "/my-nfts",
+        current: location.pathname === "/my-nfts",
+      },
+      {
+        name: "Create an NFT",
+        href: "/mint-item",
+        current: location.pathname === "/mint-item",
+      },
+    ];
+  }, [location.pathname]);
 
-    const history = useHistory()
+  const history = useHistory();
 
     const [wallet, setWallet] = useState({});
     const [theme, setTheme] = useState("light");
@@ -54,9 +64,9 @@ const NFTApp = () => {
     const [randomNumber, setRandomNumber] = useState(0)
     // const [isNotification, setIsNotification] = useState(false);
 
-    const themeToggler = () => {
-        theme === "light" ? setTheme("dark") : setTheme("light");
-    };
+  const themeToggler = () => {
+    theme === "light" ? setTheme("dark") : setTheme("light");
+  };
 
     useEffect(() => {
         setRandomNumber(Math.floor(Math.random() * 2))
@@ -83,42 +93,40 @@ const NFTApp = () => {
                         ></ModalAds>
                     ) : null}
 
-                    <TopBar themeToggler={themeToggler}></TopBar>
+          <TopBar themeToggler={themeToggler}></TopBar>
 
-                    <ScrollView>
-                        <Switch>
-                            <Route exact path="/" component={Home}></Route>
-                            <Route exact path="/discover" component={Discover}></Route>
-                            {/* <Route exact path="/UserProfile" component={UserProfile}></Route> */}
-                            <Route exact path="/CreateNFT" component={CreateNft}></Route>
-                            <Route
-                                exact
-                                path="/collection/:collectionName"
-                                component={Collection}
-                            ></Route>
-                            <Route
-                                exact
-                                path="/nft/:nftaddress/:id"
-                                component={NFTPage}
-                            ></Route>
-                            {/* <Route
-                                exact
-                                path="/CreateCollection"
-                                component={CreateCollection}
-                            ></Route> */}
-                            {/* <Route exact path="/Settings" component={Settings}></Route> */}
-                            <Route exact path="/HowToStart" component={HowToStart}></Route>
+          <ScrollView>
+            <Switch>
+              <Route exact path="/" component={Home}></Route>
+              <Route exact path="/discover" component={Discover}></Route>
+              {/* <Route exact path="/UserProfile" component={UserProfile}></Route> */}
+              <Route exact path="/CreateNFT" component={CreateNft}></Route>
+              <Route
+                exact
+                path="/collection/:collectionName"
+                component={Collection}
+              ></Route>
+              <Route
+                exact
+                path="/nft/:nftaddress/:id"
+                component={NFTPage}
+              ></Route>
+              {/* <Route
+                    exact
+                    path="/CreateCollection"
+                    component={CreateCollection}
+                ></Route> */}
+                {/* <Route exact path="/Settings" component={Settings}></Route> */}
+                <Route exact path="/HowToStart" component={HowToStart}></Route>
 
-                            <Route path="**" component={Home}></Route>
-                        </Switch>
-                        <Footer></Footer>
-                    </ScrollView>
-
-                </HomeStack>
-            </>
-        </ThemeProvider>
-        
-    );
+              <Route path="**" component={Home}></Route>
+            </Switch>
+            <Footer></Footer>
+          </ScrollView>
+        </HomeStack>
+      </>
+    </ThemeProvider>
+  );
 };
 
 export default NFTApp;
