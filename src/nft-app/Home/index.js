@@ -58,6 +58,7 @@ import useWindowSize from "../../styles/useWindowSize";
 import { textFieldClasses } from "@mui/material";
 import { LoadingSpot } from "../../styles/LoadingSpot";
 import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
+import { LogoHover } from "../../styles/LogoHover";
 
 const Home = (props) => {
   const history = useHistory();
@@ -432,7 +433,7 @@ const Home = (props) => {
           alignment="flex-start"
         >
           <Spacer></Spacer>
-          <IconImg url={XDSealogo} width="120px" height="120px"></IconImg>
+          <LogoHover></LogoHover>
           <VStack spacing="9px" alignment="flex-start">
             <TitleBold27>
               Exploring, Collecting, and Selling exclusive NFTs has now become
