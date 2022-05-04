@@ -55,6 +55,9 @@ import { BodyRegular, TitleBold27, TitleBold33 } from "../../styles/TextStyles";
 import { LayoutGroup, motion } from "framer-motion/dist/framer-motion";
 import { Featured } from "../../styles/Featured";
 import useWindowSize from "../../styles/useWindowSize";
+import { textFieldClasses } from "@mui/material";
+import { LoadingSpot } from "../../styles/LoadingSpot";
+import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
 
 const Home = (props) => {
   const history = useHistory();
@@ -84,6 +87,7 @@ const Home = (props) => {
   const [withdrawing, setWithdrawing] = useState(false);
   const [settingPrice, setSettingPrice] = useState(false);
   const [blacklist, setBlacklist] = useState([]);
+  const [setLoading, isSetLoading] = useState(false);
 
   const close = () => {
     setSellData(null);
@@ -170,6 +174,7 @@ const Home = (props) => {
 
   const getData = async () => {
     try {
+      isSetLoading(true);
       // console.log(permaBlacklist)
       setBlacklist(permaBlacklist);
       const wallet = await GetWallet();
@@ -305,6 +310,7 @@ const Home = (props) => {
       setNFts(trendingItems);
       setFeaturedNFT(featuredNFTs);
       setApproved(getVal);
+      isSetLoading(false);
     } catch (error) {
       console.log(error);
     }
@@ -386,6 +392,28 @@ const Home = (props) => {
       ? address.substring(0, 7) + "..." + address.substring(38)
       : "undefined";
   };
+
+  const [arrayCollection, setArrayCollection] = useState([
+    { id: 1, name: "Collection 1" },
+    { id: 2, name: "Collection 2" },
+    { id: 3, name: "Collection 3" },
+    { id: 4, name: "Collection 4" },
+    { id: 5, name: "Collection 5" },
+    { id: 6, name: "Collection 6" },
+    { id: 7, name: "Collection 7" },
+    { id: 8, name: "Collection 8" },
+    { id: 9, name: "Collection 9" },
+    { id: 10, name: "Collection 10" },
+  ]);
+
+  const [loadingNFT, setIsLoadingNFT] = useState([
+    { id: 1, name: "NFT 1" },
+    { id: 2, name: "NFT 2" },
+    { id: 3, name: "NFT 3" },
+    { id: 4, name: "NFT 4" },
+    { id: 5, name: "NFT 5" },
+    { id: 6, name: "NFT 6" },
+  ]);
 
   const size = useWindowSize();
 
@@ -514,23 +542,30 @@ const Home = (props) => {
             height={size.width < 768 ? "auto" : "630px"}
             spacing="15px"
           >
-            {collections.map((item) => (
-              <LayoutGroup id={item.id + 1}>
-                <TopCollectionItem
-                  key={item.id + 1}
-                  width={size.width < 768 ? "100%" : "570px"}
-                  imageCreator={item.collectionLogo}
-                  collectionName={item.name}
-                  position={item.id + 1}
-                  floorprice={item.floorPrice}
-                  owners={item.owners}
-                  nfts={item.items}
-                  volumetraded={item.volumeTraded}
-                  textcolor={({ theme }) => theme.text}
-                  onClick={() => NavigateTo(`collection/${item.name}`)}
-                ></TopCollectionItem>
-              </LayoutGroup>
-            ))}
+            {setLoading
+              ? arrayCollection.map((item) => (
+                  <LoadingSpot
+                    key={item.name}
+                    width={size.width < 768 ? "100%" : "570px"}
+                  ></LoadingSpot>
+                ))
+              : collections.map((item) => (
+                  <LayoutGroup id={item.id + 1}>
+                    <TopCollectionItem
+                      key={item.id + 1}
+                      width={size.width < 768 ? "100%" : "570px"}
+                      imageCreator={item.collectionLogo}
+                      collectionName={item.name}
+                      position={item.id + 1}
+                      floorprice={item.floorPrice}
+                      owners={item.owners}
+                      nfts={item.items}
+                      volumetraded={item.volumeTraded}
+                      textcolor={({ theme }) => theme.text}
+                      onClick={() => NavigateTo(`collection/${item.name}`)}
+                    ></TopCollectionItem>
+                  </LayoutGroup>
+                ))}
           </VStack>
         </HStack>
       </VStack>
@@ -544,26 +579,40 @@ const Home = (props) => {
         </HStack>
 
         <HStack flexwrap="wrap" padding="0 30px">
-          {nfts.map((item) => (
-            <VStack
-              minwidth={size.width < 768 ? "230px" : "280px"}
-              height="450px"
-            >
-              <NftContainer
-                key={item.name}
-                creatorImage={item.collectionLogo}
-                itemImage={isImage(item.fileType) ? item.image : item.preview}
-                price={item.price}
-                collectionName={item.collectionName}
-                itemNumber={item.name}
-                background={({ theme }) => theme.backElement}
-                onClick={() => NavigateTo(`nft/${nftaddress}/${item.tokenId}`)}
-                onClickCreator={() =>
-                  NavigateTo(`collection/${item.collectionName}`)
-                }
-              ></NftContainer>
-            </VStack>
-          ))}
+          {setLoading
+            ? loadingNFT.map((item) => (
+                <VStack
+                  minwidth={size.width < 768 ? "230px" : "280px"}
+                  height="450px"
+                >
+                  <LoadingNftContainer></LoadingNftContainer>
+                </VStack>
+              ))
+            : nfts.map((item) => (
+                <VStack
+                  minwidth={size.width < 768 ? "230px" : "280px"}
+                  height="450px"
+                >
+                  <NftContainer
+                    key={item.name}
+                    fileType={item.fileType}
+                    creatorImage={item.collectionLogo}
+                    itemImage={
+                      isImage(item.fileType) ? item.image : item.preview
+                    }
+                    price={item.price}
+                    collectionName={item.collectionName}
+                    itemNumber={item.name}
+                    background={({ theme }) => theme.backElement}
+                    onClick={() =>
+                      NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
+                    }
+                    onClickCreator={() =>
+                      NavigateTo(`collection/${item.collectionName}`)
+                    }
+                  ></NftContainer>
+                </VStack>
+              ))}
         </HStack>
         <ButtonApp
           height="39px"
