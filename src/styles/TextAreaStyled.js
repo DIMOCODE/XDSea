@@ -2,15 +2,15 @@ import React from "react";
 import styled from "styled-components";
 
 function TextAreaStyled(props) {
-  const { value, onChange, height } = props;
-  return <TextArea height={height} value={value} onChange={onChange} />;
+  const { value, onChange, height, textClass } = props;
+  return <TextArea height={height} value={value} onChange={onChange} className={textClass} />;
 }
 export { TextAreaStyled };
 
 // Example of Styled Component with attributes
 export const TextArea = styled.textarea.attrs((props) => ({
   height: props.height || "300px",
-  placeholder: "Describe your NFT"
+  placeholder: "Describe your NFT",
 }))`
   height: ${(props) => props.height}; //
   width: 100%;

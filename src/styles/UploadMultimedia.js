@@ -7,7 +7,7 @@ import styled from "styled-components";
 import { appStyle } from "./AppStyles";
 
 function UploadMultimedia(props) {
-  const { width, height, sizeText, backsize, border, image } = props;
+  const { button, width, height, sizeText, backsize, border, image } = props;
 
   // const handleUpload = async (e) => {
   //   e.preventDefault();
@@ -25,7 +25,7 @@ function UploadMultimedia(props) {
 
   return (
     <div>
-      <label htmlFor="upload-button">
+      <label htmlFor={button}>
         {image.preview ? (
           <ZStack>
             <VStack
