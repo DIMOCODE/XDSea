@@ -104,10 +104,10 @@ function TopBar(props) {
 
         <SwitchButton clickOnSwitch={themeToggler}></SwitchButton>
 
-        {/* <UserMenuButton
+        <UserMenuButton
           clickOnUser={() => NavigateTo("UserProfile")}
-          clickOnSettings={() => NavigateTo("Settings")}
-        ></UserMenuButton> */}
+          // clickOnSettings={() => NavigateTo("Settings")}
+        ></UserMenuButton>
       </HStack>
     </ContentBar>
   );

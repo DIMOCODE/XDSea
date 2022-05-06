@@ -5,12 +5,13 @@ import styled from "styled-components";
 import { BodyBold } from "./TextStyles";
 
 function InputStyledURL(props) {
-  const { type, name, placeholder, onChange } = props;
+  const { inputClass, type, name, placeholder, onChange } = props;
   const [hasURL, setHasUrl] = useState(false);
 
   return (
     <ZStack>
       <Input
+        className={inputClass}
         type={type}
         name={name}
         placeholder={placeholder}

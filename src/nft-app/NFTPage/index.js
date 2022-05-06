@@ -19,6 +19,38 @@ import SkeletonMyNFT from "../../common/skeleton/my-nft";
 import { fromXdc, isXdc } from '../../common/common';
 import NFTMarketLayer1 from '../../abis/NFTMarketLayer1.json'
 import { permaBlacklist, contractFix } from '../../blacklist';
+import Tooltip from '@mui/material/Tooltip';
+
+import {
+  HStack,
+  IconImg,
+  VStack,
+  Spacer,
+  ZStack,
+  ZItem,
+  Divider,
+} from "../../styles/Stacks";
+import xdclogo from "../../images/miniXdcLogo.png";
+import { AnimatePresence, motion } from "framer-motion/dist/framer-motion";
+import {
+  BodyBold,
+  BodyRegular,
+  CaptionBoldShort,
+  CaptionRegular,
+  TitleBold18,
+  TitleBold27,
+} from "../../styles/TextStyles";
+import ButtonApp from "../../styles/Buttons";
+import { Property } from "../../styles/Property";
+import star from "../../images/starColor.png";
+import { appStyle } from "../../styles/AppStyles";
+import tagWhite from "../../images/tagWhite.png";
+import tagBlue from "../../images/offerBlue.png";
+import useWindowSize from "../../styles/useWindowSize";
+import { Discover } from "../Discover";
+import { TableActivityNft } from "../../styles/TableActivityNft";
+import xinfinLogo from "../../images/xinfinLogo.png"
+import styled from "styled-components";
 
 const NFTDetails = (props) => {
     const history = useHistory()
@@ -366,6 +398,7 @@ const NFTDetails = (props) => {
                 creator: item.creator,
                 owner: item.owner,
                 collectionName: metadata?.data?.collection?.name,
+                collectionLogo: metadata?.data?.collection?.logo,
                 image: metadata?.data?.collection?.nft?.image,
                 name: metadata?.data?.collection?.nft?.name,
                 description: metadata?.data?.collection?.nft?.description,
@@ -384,7 +417,7 @@ const NFTDetails = (props) => {
 
             const data = await marketContract.methods.getCollectionNFTs(metadata?.data?.collection?.name).call()
             var moreFromCollectionItems = []
-            const collection = await Promise.all(data.map(async i => {
+            const collection = await Promise.all(data.slice(0, 10).map(async i => {
 
                 var price = await xdc3.utils.fromWei(i.price, "ether")
 
@@ -461,17 +494,6 @@ const NFTDetails = (props) => {
                 properties[i].proportion = propCount * 100 / totalCount
             }
 
-            var events = await marketContract.methods.getTokenEventHistory(id).call()
-
-            // console.log(events)
-
-            var offerCount = item.offerCount
-
-            var offers = await marketContract.methods.getTokenOfferList(id).call()
-
-            setOffers(offers)
-
-            setEventHistory(events)
             setLoadingState('loaded')
             setNFts(collection)
             setNFT(currentItem)
@@ -488,739 +510,1015 @@ const NFTDetails = (props) => {
     useEffect(() => {
         setWallet(props.wallet)
         getData()
+        getOffers()
+        getEvents()
     }, [])
+
     useEffect(() => {
         setWallet(props.wallet)
     }, [props.wallet])
 
-    return (
-        <div>
-            <header className='secondary-page-header'>
-                <></>
-            </header>
-            <div className="nft-detail">
-                <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-6">
-                    {loadingState === "loaded" &&
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="nft-image">
-                                {isImage(nftAsset)
-                                    ? <img src={metadata?.collection?.nft?.image ? metadata.collection.nft.image : ""} />
-                                    : <></>
-                                }
-                                {isVideo(nftAsset)
-                                    ? <video controls>
-                                        <source src={metadata?.collection?.nft?.image ? metadata.collection.nft.image : ""} type={nftAsset.type}/>
-                                    </video>
-                                    : <></>
-                                }
-                                {isAudio(nftAsset)
-                                    ? <audio controls>
-                                        <source src={metadata?.collection?.nft?.image ? metadata.collection.nft.image : ""} type={nftAsset.type}/>
-                                    </audio>
-                                    : <></>
-                                }
-                                {metadata?.collection?.nft?.properties && metadata?.collection?.nft?.properties[0]?.property !== ""
-                                    ? <>
-                                        <div className="nft-properties mt-10">
-                                            <button type='button' className='nft-properties-collapsible' onClick={showProperties}>Properties</button>
-                                            <div className='nft-property-tags grid grid-cols-1 md:grid-cols-3 gap-2'>
-                                                {propertyProportions.map((property, index) => (
-                                                    <>
-                                                        <PropertyCard property={property.property} value={property.value} proportion={property.proportion.toFixed(2)} />
-                                                    </>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    </>
-                                    : <></>
-                                }
-                                {nft?.owner === wallet?.address
-                                    ? <>
-                                        {metadata?.collection?.nft?.unlockableContent
-                                            ? <>
-                                                <div className='unlockable-content-div mt-2'>
-                                                    <button type='button' className='unlockable-content-collapsible' onClick={showUnlockableContent}>Unlocked Content</button>
-                                                    <div className='unlockable-content'>
-                                                        <p>{metadata?.collection?.nft?.unlockableContent}</p>
-                                                    </div>
-                                                </div>
-                                            </>
-                                            : <></>
-                                        }
-                                    </> 
-                                    : <></>
-                                }
-                            </div>
-                            <div className="col-span-2 nft-details">
-                                <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-6">
-                                    <div className=" nft-details-header">
-                                        <h2 className="nft-h2">{metadata?.collection?.nft?.name ? metadata.collection.nft.name : "Undefined Name"}</h2>
-                                        <p className="nft-label">{metadata?.collection?.nft?.name ? metadata.collection.nft.description : "Undefined Description"}</p>
-                                    </div>
-                                    <div className="py-4 grid grid-cols-1 md:grid-cols-1">
-                                        <div className="flex nft-details-owner-card my-1">
-                                            <div className="mr-2">
-                                                <img src="/collections.png" />
-                                            </div>
-                                            <div>
-                                                <p className="nft-label mb-2">Owner</p>
-                                                <h2 className="nft-label text-white">{nft?.owner ? nft.owner : "Undefined Owner"}</h2>
-                                            </div>
-                                        </div>
+    React.useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
-                                        <div className="flex nft-details-owner-card my-1">
-                                            <div className="mr-2">
-                                                <img src="/collections.png" />
-                                            </div>
-                                            <div>
-                                                <p className="nft-label mb-2">Collection</p>
-                                                <Link className="nft-label text-white" to={`/${metadata?.collection?.name ? `collection/${metadata.collection.name}` : "discover"}`}>{metadata?.collection?.name ? metadata.collection.name : "Undefined Collection"}</Link>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="nft-details-price block items-end md:flex">
-                                        <div>
-                                            <p className="nft-label mb-1">Current Price</p>
-                                            <h5 className="flex items-center text-white"><img src="/xdc-icon.png" className="nft-xdc-24 mr-2" />{nft?.price ? nft.price : "Unable to fetch"} XDC <span className="nft-label mx-4"></span></h5>
-                                        </div>
-                                        <div>
-                                            {wallet?.connected 
-                                                ? nft?.isListed
-                                                    ? nft?.owner === wallet?.address
+    const size = useWindowSize();
+
+    const [isActive, setIsActive] = useState(0);
+    const [highestOffer, setHighestOffer] = useState(0);
+    const variants = {
+        selected: { opacity: 1 },
+        normal: { opacity: 0.3 },
+    };
+
+    const appear = {
+        selected: { opacity: 1, y: 0 },
+        normal: { opacity: 0.3, y: 6 },
+    };
+
+    const truncateAddress = (address) => {
+        return address
+          ? address.substring(0, 7) + "..." + address.substring(38)
+          : "undefined";
+    };
+
+    const getOffers = async() => {
+        const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
+        const marketContract = new xdc3.eth.Contract(NFTMarketLayer1.abi, nftmarketlayeraddress, xdc3);
+        var offers = await marketContract.methods.getTokenOfferList(id).call();
+        var highestOfferPrice = 0;
+        const getHighest = await Promise.all(offers.map(async i => {
+            if(i.price >= highestOfferPrice)
+                highestOfferPrice = i.price;
+        }));
+        setHighestOffer(highestOfferPrice === 0 ? 0 : await xdc3.utils.fromWei(highestOfferPrice, "ether"));
+        setOffers(offers);
+    };
+
+    const getEvents = async() => {
+        const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
+        const marketContract = new xdc3.eth.Contract(NFTMarketLayer1.abi, nftmarketlayeraddress, xdc3);
+        var events = await marketContract.methods.getTokenEventHistory(id).call();
+        const activity = await Promise.all(events.map(async (item, i) => {
+            let event = {
+                id: i + 1,
+                event: item.eventType === '0'
+                    ? "Mint"
+                    : item.eventType === '1'
+                        ? "List"
+                        : item.eventType === '2'
+                            ? "Withdraw Listing"
+                            : item.eventType === '3'
+                                ? "Sale"
+                                : item.eventType === '4'
+                                    ? "Transfer"
+                                    : item.eventType === '5'
+                                        ? "Edit Listing"
+                                        : item.eventType === '6'
+                                            ? "Offer Placed"
+                                            : item.eventType === '7'
+                                                ? "Offer Withdrawn"
+                                                : "Offer Accepted",
+                price: xdc3.utils.fromWei(item.price, "ether"),
+                from: item.from,
+                to: item.to,
+                date: item.timestamp,
+            };
+            return event;
+        }));
+        setEventHistory(activity.reverse());
+    }
+
+    return (
+        <NFTPage>
+            <ContentNftPage>
+                <VStack height="auto" padding="90px 0 0 0 ">
+                    <HStack height="100%" responsive={true} alignment="flex-start">
+                        <VStack width="100%" padding="30px 15px">
+                            {/* NFT Image and owner */}
+                            <VStack width={size.width < 768 ? "100%" : "540px"}>
+                                <IconImg
+                                    url={nft?.image}
+                                    width="100%"
+                                    height={size.width < 768 ? "360px" : "540px"}
+                                    border="15px"
+                                ></IconImg>
+                                <HStack
+                                    background={({ theme }) => theme.backElement}
+                                    width="100%"
+                                    height="49px"
+                                    border="9px"
+                                >
+                                    <CaptionRegular>Owned by</CaptionRegular>
+                                    <HStack spacing="6px">
+                                        {/* <IconImg
+                                            url={""}
+                                            width="18px"
+                                            height="18px"
+                                            border="30px"
+                                        ></IconImg> */}
+                                        <Tooltip title={nft?.owner ? nft.owner : "-"}>
+                                            <BodyBold>{truncateAddress(nft?.owner)}</BodyBold>
+                                        </Tooltip>
+                                    </HStack>
+                                </HStack>
+                            </VStack>
+                        </VStack>
+                        <VStack width="100%" padding="15px">
+                            <Spacer></Spacer>
+                                <VStack width={size.width < 768 ? "100%" : "502px"}>
+                                <HStack>
+                                    {/* Name */}
+                                    <VStack alignment="flex-start" maxwidth="70%">
+                                        <TitleBold27>{nft?.name}</TitleBold27>
+                                        <ButtonApp
+                                            height="39px"
+                                            text={nft?.collectionName}
+                                            background={({ theme }) => theme.backElement}
+                                        ></ButtonApp>
+                                    </VStack>
+
+                                    {/* Creator */}
+                                    <VStack alignment="flex-end" spacing="9px">
+                                        <CaptionRegular>Creator</CaptionRegular>
+                                        <HStack spacing="6px" justify="flex-end">
+                                            <IconImg
+                                                url={nft?.collectionLogo}
+                                                width="18px"
+                                                height="18px"
+                                                border="30px"
+                                            ></IconImg>
+                                            <Tooltip title={nft?.creator ? nft.creator : "-"}>
+                                                <BodyBold>{truncateAddress(nft?.creator)}</BodyBold>
+                                            </Tooltip>
+                                        </HStack>
+                                        <CaptionRegular>{nft?.royalty.replace(/^0+/, '')}% Royalty</CaptionRegular>
+                                    </VStack>
+                                </HStack>
+
+                                {/* Properties & Description */}
+                                <VStack
+                                    height={size.width < 768 ? "450px" : "360px"}
+                                    width="100%"
+                                    spacing="0px"
+                                    border="9px"
+                                >
+                                    <HStack height="60px">
+                                        {propertyProportions[0]?.property === ""
+                                            ? null
+                                            : <BodyBold
+                                                animate={isActive === 1 ? "selected" : "normal"}
+                                                variants={variants}
+                                                onClick={() => setIsActive(1)}
+                                            >
+                                                Properties
+                                            </BodyBold>
+                                        }
+                                        
+                                        <BodyBold
+                                            animate={isActive === 0 ? "selected" : "normal"}
+                                            variants={variants}
+                                            onClick={() => setIsActive(0)}
+                                        >
+                                            Description
+                                        </BodyBold>
+
+                                        <BodyBold
+                                            animate={isActive === 2 ? "selected" : "normal"}
+                                            variants={variants}
+                                            onClick={() => setIsActive(2)}
+                                        >
+                                            Token Details
+                                        </BodyBold>
+                                    </HStack>
+                                    <AnimatePresence>
+                                        <ZStack>
+                                            {isActive === 0 ? (
+                                                <HStack
+                                                    variants={appear}
+                                                    key={1}
+                                                    initial="normal"
+                                                    animate="selected"
+                                                    layoutId={1}
+                                                    layout="position"
+                                                    exit="normal"
+                                                    spacing="6px"
+                                                    width="100%"
+                                                    padding="30px"
+                                                    height="100%"
+                                                    background={({ theme }) => theme.backElement}
+                                                    border="9px"
+                                                >
+                                                    <BodyRegular>
+                                                        {nft?.description}
+                                                    </BodyRegular>
+                                                </HStack>
+                                            ) : (
+                                                <>
+                                                {isActive === 1 ?
+                                                    <HStack
+                                                        variants={appear}
+                                                        key={2}
+                                                        initial="normal"
+                                                        animate="selected"
+                                                        layoutId={2}
+                                                        layout="position"
+                                                        exit="normal"
+                                                        flexwrap="wrap"
+                                                        spacing="6px"
+                                                        width="100%"
+                                                        justify="flex-start"
+                                                        padding={size.width < 768 ? "0 0 12px 15px" : "5px"}
+                                                        height={size.width < 768 ? "400px" : "300px"}
+                                                    >
+                                                        {propertyProportions[0]?.property !== "" 
+                                                            ? propertyProportions.map((property, index) => (
+                                                                <Property key={index} Title={property.property} Property={property.value} Rarity={property.proportion.toFixed(2)} />
+                                                            ))
+                                                            : null
+                                                        }
+                                                    </HStack>
+                                                    : <HStack
+                                                        variants={appear}
+                                                        key={3}
+                                                        initial="normal"
+                                                        animate="selected"
+                                                        layoutId={3}
+                                                        layout="position"
+                                                        exit="normal"
+                                                        flexwrap="wrap"
+                                                        spacing="6px"
+                                                        width="100%"
+                                                        justify="flex-start"
+                                                        padding={size.width < 768 ? "0 0 12px 15px" : "5px"}
+                                                        height={"100%"}
+                                                    >
+                                                        <VStack
+                                                            background={({ theme }) => theme.backElement}
+                                                            width="100%"
+                                                            height="auto"
+                                                            border="9px"
+                                                            padding="6px 15px"
+                                                        >
+                                                            <HStack width="100%" height="36px">
+                                                                <IconImg url={star} width="18px" height="18px"></IconImg>
+                                                                <CaptionBoldShort>NFT Address</CaptionBoldShort>
+                                                                <Spacer></Spacer>
+                                                                <HStack spacing="6px">
+                                                                    <Tooltip title={nftaddress}>
+                                                                        <TitleBold18>{truncateAddress(nftaddress)}</TitleBold18>
+                                                                    </Tooltip>
+                                                                </HStack>
+                                                            </HStack>
+
+                                                            <HStack width="100%" height="36px">
+                                                                <IconImg url={tagBlue} width="18px" height="18px"></IconImg>
+                                                                <CaptionBoldShort>Token ID</CaptionBoldShort>
+                                                                <Spacer></Spacer>
+                                                                <HStack spacing="6px">
+                                                                    <TitleBold18>{nft?.tokenId}</TitleBold18>
+                                                                </HStack>
+                                                            </HStack>
+
+                                                            <HStack width="100%" height="36px">
+                                                                <IconImg url={star} width="18px" height="18px"></IconImg>
+                                                                <CaptionBoldShort>Blockchain</CaptionBoldShort>
+                                                                <Spacer></Spacer>
+                                                                <HStack spacing="6px">
+                                                                    <IconImg 
+                                                                        url={xinfinLogo} 
+                                                                        width="18px" 
+                                                                        height="18px"
+                                                                    ></IconImg>
+                                                                    <TitleBold18>XDC</TitleBold18>
+                                                                </HStack>
+                                                            </HStack>
+                                                        </VStack>
+                                                    </HStack>
+                                                    }
+                                                </>
+                                            )}
+                                        </ZStack>
+                                    </AnimatePresence>
+                                </VStack>
+                                {/* Price */}
+                                <VStack
+                                    background={({ theme }) => theme.backElement}
+                                    width="100%"
+                                    height="auto"
+                                    border="9px"
+                                    padding="6px 15px"
+                                >
+                                    <HStack width="100%" height="36px">
+                                        <IconImg url={star} width="18px" height="18px"></IconImg>
+                                        <CaptionBoldShort>Price</CaptionBoldShort>
+                                        <Spacer></Spacer>
+                                        <HStack spacing="6px">
+                                            <IconImg
+                                                url={xdclogo}
+                                                width="18px"
+                                                height="18px"
+                                            ></IconImg>
+                                            <TitleBold18>{nft?.price}</TitleBold18>
+                                            <CaptionBoldShort>XDC</CaptionBoldShort>
+                                        </HStack>
+                                    </HStack>
+
+                                    <HStack width="100%" height="36px">
+                                        <IconImg url={tagBlue} width="18px" height="18px"></IconImg>
+                                        <CaptionBoldShort>Highest Offer</CaptionBoldShort>
+                                        <Spacer></Spacer>
+                                        <HStack spacing="6px">
+                                            {highestOffer === 0
+                                                ? <TitleBold18>-</TitleBold18>
+                                                : <>
+                                                <IconImg
+                                                    url={xdclogo}
+                                                    width="18px"
+                                                    height="18px"
+                                                ></IconImg>
+                                                <TitleBold18>{highestOffer}</TitleBold18>
+                                                <CaptionBoldShort>XDC</CaptionBoldShort></>
+                                            }
+                                        </HStack>
+                                    </HStack>
+                                </VStack>
+
+                                {/* Buttons Offer & Buy  */}
+                                <HStack>
+                                    {wallet?.connected
+                                        ? nft?.isListed
+                                                ? nft?.owner !== wallet?.address
                                                         ? <>
-                                                            <button onClick={() => {withdrawListing(nft)}} className="nft-btn-gradient h-32 py-0 px-3 my-1 mx-2">{contractFixes?.includes(nft?.tokenId) ? "Withdraw Old" : "Withdraw Listing"}</button>
-                                                            {
-                                                                blacklist?.includes(nft?.tokenId)
-                                                                ? <></>
-                                                                : <button onClick={() => {editListing(nft)}} className="nft-btn-gradient h-32 py-0 px-3 my-1 mx-2">Edit Listing</button>
-                                                            }
-                                                        </>
+                                                            <ButtonApp
+                                                                icon={tagWhite}
+                                                                iconWidth="21px"
+                                                                iconHeight="21px"
+                                                                text={contractFixes?.includes(nft?.tokenId)
+                                                                    ? "Withdraw Old"
+                                                                    : "Withdraw Listing"}
+                                                                onClick={() => {withdrawListing(nft)}}
+                                                                textcolor={appStyle.colors.white}
+                                                                width="100%"
+                                                            ></ButtonApp>
+                                                            {blacklist?.includes(nft?.tokenId)
+                                                                ? null
+                                                                : <ButtonApp
+                                                                    icon={star}
+                                                                    iconWidth="21px"
+                                                                    iconHeight="21px"
+                                                                    text="Edit Listing"
+                                                                    onClick={() => {editListing(nft)}}
+                                                                    textcolor={({ theme }) => theme.walletText}
+                                                                    width="100%"
+                                                                    background={({ theme }) => theme.walletButton}
+                                                                ></ButtonApp>
+                                                            }</>
                                                         : <>
-                                                            {
-                                                                blacklist?.includes(nft?.tokenId)
-                                                                ? <></>
-                                                                : <button onClick={() => {placeOffer(nft)}} className="nft-btn-gradient h-32 p-0 my-1 mx-2">Place Offer</button>
+                                                            {blacklist?.includes(nft?.tokenId)
+                                                                ? null
+                                                                : <ButtonApp
+                                                                    icon={star}
+                                                                    iconWidth="21px"
+                                                                    iconHeight="21px"
+                                                                    text="Place Offer"
+                                                                    onClick={() => {placeOffer(nft)}}
+                                                                    textcolor={({ theme }) => theme.walletText}
+                                                                    width="100%"
+                                                                    background={({ theme }) => theme.walletButton}
+                                                                ></ButtonApp>
                                                             }
-                                                        <button onClick={() => {buyNFT(nft)}} className="nft-btn-gradient h-32 p-0 my-1 mx-2">Buy</button></>
-                                                    : blacklist?.includes(nft?.tokenId)
-                                                        ? <></>
-                                                        : nft?.owner === wallet?.address
-                                                            ? <><button onClick={() => {startSale(nft)}} className="nft-btn-gradient h-32 p-0 my-1 mx-2">List</button><button onClick={() => {startTransfer(nft)}} className="nft-btn-gradient h-32 p-0 my-1">Transfer</button></>
-                                                            : <><button onClick={() => {placeOffer(nft)}} className="nft-btn-gradient h-32 p-0 my-1 mx-2">Place Offer</button></>
+                                                            <ButtonApp
+                                                                icon={tagWhite}
+                                                                iconWidth="21px"
+                                                                iconHeight="21px"
+                                                                text="Buy Now"
+                                                                onClick={() => {buyNFT(nft)}}
+                                                                textcolor={appStyle.colors.white}
+                                                                width="100%"
+                                                            ></ButtonApp>
+                                                        </>
+                                                : blacklist?.includes(nft?.tokenId)
+                                                    ? null
+                                                    : nft?.owner === wallet?.address
+                                                        ? <>
+                                                            <ButtonApp
+                                                                icon={tagWhite}
+                                                                iconWidth="21px"
+                                                                iconHeight="21px"
+                                                                text="List NFT"
+                                                                onClick={() => {startSale(nft)}}
+                                                                textcolor={appStyle.colors.white}
+                                                                width="100%"
+                                                            ></ButtonApp>
+                                                            <ButtonApp
+                                                                icon={tagWhite}
+                                                                iconWidth="21px"
+                                                                iconHeight="21px"
+                                                                text="Transfer"
+                                                                onClick={() => {startTransfer(nft)}}
+                                                                textcolor={appStyle.colors.white}
+                                                                width="100%"
+                                                            ></ButtonApp>
+                                                            </>
+                                                        : <ButtonApp
+                                                            icon={tagWhite}
+                                                            iconWidth="21px"
+                                                            iconHeight="21px"
+                                                            text="Place an Offer"
+                                                            onClick={() => {placeOffer(nft)}}
+                                                            textcolor={appStyle.colors.white}
+                                                            width="100%"
+                                                        ></ButtonApp>
+                                        : null
+                                    }
+                                </HStack>
+                    {/* <div className="nft-image">
+                                            {isImage(nftAsset)
+                                                ? <img src={metadata?.collection?.nft?.image ? metadata.collection.nft.image : ""} />
                                                 : <></>
                                             }
+                                            {isVideo(nftAsset)
+                                                ? <video controls>
+                                                    <source src={metadata?.collection?.nft?.image ? metadata.collection.nft.image : ""} type={nftAsset.type}/>
+                                                </video>
+                                                : <></>
+                                            }
+                                            {isAudio(nftAsset)
+                                                ? <audio controls>
+                                                    <source src={metadata?.collection?.nft?.image ? metadata.collection.nft.image : ""} type={nftAsset.type}/>
+                                                </audio>
+                                                : <></>
+                                            }
+                    {nft?.owner === wallet?.address
+                        ? <>
+                            {metadata?.collection?.nft?.unlockableContent
+                                ? <>
+                                    <div className='unlockable-content-div mt-2'>
+                                        <button type='button' className='unlockable-content-collapsible' onClick={showUnlockableContent}>Unlocked Content</button>
+                                        <div className='unlockable-content'>
+                                            <p>{metadata?.collection?.nft?.unlockableContent}</p>
                                         </div>
                                     </div>
-                                    <div className='text-white'>
-                                        <p className='nft-label my-2'>{`The sale of this NFT provides ${nft?.royalty}% royalty to the creator.`}</p>
-                                    </div>
-
-                                    <div>
-
-                                        <div className="border-b border-gray-200 pt-12">
-                                            <ul className="flex flex-wrap -mb-px">
-                                            <li className="mr-2">
-                                                    <p onClick={() => setTab('token')}
-                                                        className={`inline-block px-2 py-2 m-0 cursor-pointer text-sm font-medium text-center rounded-t-lg border-b-2 ${tab === 'token' ? 'active-tab border-white active font-bold' : 'font-secondary border-transparent hover:border-white'}`}>Token
-                                                        Detail</p>
-                                                </li>
-                                                <li className="mr-2">
-                                                    <p onClick={() => setTab('price')}
-                                                        className={`inline-block px-2 py-2 m-0 cursor-pointer text-sm font-medium text-center rounded-t-lg border-b-2 ${tab === 'price' ? 'active-tab border-white active font-bold' : 'font-secondary border-transparent hover:border-white'}`}>Events</p>
-                                                </li>
-                                                <li className="mr-2">
-                                                    <p onClick={() => setTab('offers')}
-                                                        className={`inline-block px-2 py-2 m-0 cursor-pointer text-sm font-medium text-center rounded-t-lg border-b-2 ${tab === 'offers' ? 'active-tab border-white active font-bold' : 'font-secondary border-transparent hover:border-white'}`}>Offers</p>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                        <div>
-                                            {tab === 'offers' && <Offers confirmAcceptOffer={confirmAcceptOffer} withdrawOffer={withdrawOffer} wallet={wallet} tokenId={nft?.tokenId} loadingState={loadingState} offers={offers} />}
-                                            {tab === 'token' && <TokenDetails nftAddress={nftaddress} id={nft?.tokenId} />}
-                                            {tab === 'price' && <PriceHistory loadingState={loadingState} events={eventHistory} />}
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-                        </div>
-                        
-                    //     : <SkeletonMyNFT />
+                                </>
+                                : <></>
+                            }
+                        </> 
+                        : <></>
                     }
-                </div>
 
-                <Transition.Root show={listing} as={Fragment}>
-                    <Dialog as="div" className="fixed z-999 inset-0 overflow-y-auto" onClose={closeList}>
-                        <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                            <Transition.Child
-                                as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0"
-                                enterTo="opacity-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100"
-                                leaveTo="opacity-0"
-                            >
-                                <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-                            </Transition.Child>
+                    <Transition.Root show={listing} as={Fragment}>
+                        <Dialog as="div" className="fixed z-999 inset-0 overflow-y-auto" onClose={closeList}>
+                            <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                                <Transition.Child
+                                    as={Fragment}
+                                    enter="ease-out duration-300"
+                                    enterFrom="opacity-0"
+                                    enterTo="opacity-100"
+                                    leave="ease-in duration-200"
+                                    leaveFrom="opacity-100"
+                                    leaveTo="opacity-0"
+                                >
+                                    <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                                </Transition.Child>
 
-                            {/* This element is to trick the browser into centering the modal contents. */}
-                            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-                            <Transition.Child
-                                as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                                enterTo="opacity-100 translate-y-0 sm:scale-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-                                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                            >
-                                <div
-                                    className="inline-block align-center bg-black rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                                    <div className="bg-black text-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                                        <h2 className='text-center gradient-text'>{settingPrice ? "Set Sell Price" : listSuccess ? "NFT Successfully Listed!" : listFailure ? "Transaction failed!" : "Listing in progress!"}</h2>
-                                        <div className="mt-3 text-center">
-                                            <div className="mt-2 w-full">
-                                                {settingPrice 
-                                                ? <>
-                                                    <input type="number" className="nft-input" name="sellPrice" value={sellPrice} onChange={e => setSellPrice(e.target.value)} />
-                                                    <div className="px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                                                        <button className="nft-btn-gradient h-32 py-0 my-1" disabled={sellPrice === 0 || sellPrice?.length === 0} onClick={() => {sellNFT()}}>{approved ? "Submit" : "Approve and Submit"}</button>
-                                                        <button className="nft-btn-linear-gradient light h-32 py-0 ml-2 my-1 mr-2" onClick={closeList} ref={cancelButtonRef}>Cancel</button>
-                                                    </div>
-                                                </>
-                                                : <>
-                                                    {listSuccess
-                                                        ? <>
-                                                            <h4>{listedNFT?.name} is successfully listed on the marketplace and can now be purchased by interested buyers.</h4>
-                                                            <button className="nft-btn-gradient h-32 py-0 my-1" onClick={closeList}>Ok!</button>
-                                                        </> 
-                                                        : <>
-                                                            {listFailure
-                                                                ? <>
-                                                                    <h4>Something went wrong with listing the NFT. Please check your wallet connection and try again!</h4>
-                                                                    <button className="nft-btn-gradient h-32 py-0 my-1" onClick={closeList}>Ok!</button>
-                                                                </>
-                                                                : <h4>We are listing your NFT on the marketplace. Please be patient!</h4>
-                                                            }
-                                                            
-                                                        </>
-                                                    }
-                                                </>}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </Transition.Child>
-                        </div>
-                    </Dialog>
-                </Transition.Root>
-                <Transition.Root show={withdrawing} as={Fragment}>
-                    <Dialog as="div" className="fixed z-999 inset-0 overflow-y-auto" onClose={closeWithdraw}>
-                        <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                            <Transition.Child
-                                as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0"
-                                enterTo="opacity-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100"
-                                leaveTo="opacity-0"
-                            >
-                                <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-                            </Transition.Child>
-
-                            {/* This element is to trick the browser into centering the modal contents. */}
-                            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-                            <Transition.Child
-                                as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                                enterTo="opacity-100 translate-y-0 sm:scale-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-                                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                            >
-                                <div
-                                    className="inline-block align-center bg-black rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                                    <div className="bg-black text-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                                        <h2 className='text-center gradient-text'>{withdrawSuccess ? "NFT Listing Successfully Withdrawn!" : withdrawFailure ? "Transaction failed!" : "Withdrawing your NFT Listing!"}</h2>
-                                        <div className="mt-3 text-center">
-                                            <div className="mt-2 w-full">
-                                                {withdrawSuccess 
-                                                ? <>
-                                                    <h4>The listing for {withdrawnNFT?.name} has been successfully taken off the marketplace. You can list it again when you change your mind.</h4>
-                                                    <button className="nft-btn-gradient h-32 py-0 my-1" onClick={closeWithdraw}>Ok!</button>
-                                                </>
-                                                : <>
-                                                    {withdrawFailure
-                                                        ? <>
-                                                            <h4>Something went wrong with withdrawing the NFT listing. Please check your wallet connection and try again!</h4>
-                                                            <button className="nft-btn-gradient h-32 py-0 my-1" onClick={closeWithdraw}>Ok!</button>
-                                                        </>
-                                                        : <h4>We are withdrawing the active listing of your NFT on the marketplace! Thank you for your patience!</h4>
-                                                    }
-                                                </>
-                                                }
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </Transition.Child>
-                        </div>
-                    </Dialog>
-                </Transition.Root>
-                <Transition.Root show={acceptingOffer} as={Fragment}>
-                    <Dialog as="div" className="fixed z-999 inset-0 overflow-y-auto" onClose={closeAcceptOffer}>
-                        <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                            <Transition.Child
-                                as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0"
-                                enterTo="opacity-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100"
-                                leaveTo="opacity-0"
-                            >
-                                <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-                            </Transition.Child>
-
-                            {/* This element is to trick the browser into centering the modal contents. */}
-                            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-                            <Transition.Child
-                                as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                                enterTo="opacity-100 translate-y-0 sm:scale-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-                                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                            >
-                                <div
-                                    className="inline-block align-center bg-black rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle" style={{"width": "600px"}}>
-                                    <div className="bg-black text-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                                        <h2 className='text-center gradient-text'>{confirmingAcceptOffer ? "Are you sure you want to accept this offer?" : acceptOfferSuccess ? "NFT Offer Successfully Accepted!" : acceptOfferFailure ? "Acceptance failed!" : "Accepting the NFT Offer!"}</h2>
-                                        <div className="mt-3 text-center">
-                                            <div className="mt-2 w-full">
-                                                {confirmingAcceptOffer
+                                <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                                <Transition.Child
+                                    as={Fragment}
+                                    enter="ease-out duration-300"
+                                    enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                    enterTo="opacity-100 translate-y-0 sm:scale-100"
+                                    leave="ease-in duration-200"
+                                    leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                                    leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                >
+                                    <div
+                                        className="inline-block align-center bg-black rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                                        <div className="bg-black text-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                            <h2 className='text-center gradient-text'>{settingPrice ? "Set Sell Price" : listSuccess ? "NFT Successfully Listed!" : listFailure ? "Transaction failed!" : "Listing in progress!"}</h2>
+                                            <div className="mt-3 text-center">
+                                                <div className="mt-2 w-full">
+                                                    {settingPrice 
                                                     ? <>
-                                                        <h4>You are about to accept the offer made by {offerSender} for {offerPrice}. Would you like to proceed?</h4>
-                                                        <button className="nft-btn-gradient h-32 py-0 my-1 mx-2" onClick={acceptOffer}>Yes</button>
-                                                        <button className="nft-btn-gradient h-32 py-0 my-1 mx-2" onClick={closeAcceptOffer}>No</button>
+                                                        <input type="number" className="nft-input" name="sellPrice" value={sellPrice} onChange={e => setSellPrice(e.target.value)} />
+                                                        <div className="px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                                                            <button className="nft-btn-gradient h-32 py-0 my-1" disabled={sellPrice === 0 || sellPrice?.length === 0} onClick={() => {sellNFT()}}>{approved ? "Submit" : "Approve and Submit"}</button>
+                                                            <button className="nft-btn-linear-gradient light h-32 py-0 ml-2 my-1 mr-2" onClick={closeList} ref={cancelButtonRef}>Cancel</button>
+                                                        </div>
                                                     </>
                                                     : <>
-                                                        {acceptOfferSuccess 
+                                                        {listSuccess
                                                             ? <>
-                                                                <h4>The offer has been successfully accepted. The NFT will be delivered to the respective owner.</h4>
-                                                                <button className="nft-btn-gradient h-32 py-0 my-1" onClick={closeAcceptOffer}>Ok!</button>
-                                                            </>
+                                                                <h4>{listedNFT?.name} is successfully listed on the marketplace and can now be purchased by interested buyers.</h4>
+                                                                <button className="nft-btn-gradient h-32 py-0 my-1" onClick={closeList}>Ok!</button>
+                                                            </> 
                                                             : <>
-                                                                {acceptOfferFailure
+                                                                {listFailure
                                                                     ? <>
-                                                                        <h4>Something went wrong with accepting the NFT Offer. Please refresh the page to ensure the offer has not been withdrawn and try again!</h4>
-                                                                        <button className="nft-btn-gradient h-32 py-0 my-1" onClick={closeAcceptOffer}>Ok!</button>
+                                                                        <h4>Something went wrong with listing the NFT. Please check your wallet connection and try again!</h4>
+                                                                        <button className="nft-btn-gradient h-32 py-0 my-1" onClick={closeList}>Ok!</button>
                                                                     </>
-                                                                    : <h4>We are accepting the chosen offer placed on your NFT! Thank you for your patience!</h4>
+                                                                    : <h4>We are listing your NFT on the marketplace. Please be patient!</h4>
+                                                                }
+                                                                
+                                                            </>
+                                                        }
+                                                    </>}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Transition.Child>
+                            </div>
+                        </Dialog>
+                    </Transition.Root>
+                    <Transition.Root show={withdrawing} as={Fragment}>
+                        <Dialog as="div" className="fixed z-999 inset-0 overflow-y-auto" onClose={closeWithdraw}>
+                            <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                                <Transition.Child
+                                    as={Fragment}
+                                    enter="ease-out duration-300"
+                                    enterFrom="opacity-0"
+                                    enterTo="opacity-100"
+                                    leave="ease-in duration-200"
+                                    leaveFrom="opacity-100"
+                                    leaveTo="opacity-0"
+                                >
+                                    <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                                </Transition.Child>
+
+                                <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                                <Transition.Child
+                                    as={Fragment}
+                                    enter="ease-out duration-300"
+                                    enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                    enterTo="opacity-100 translate-y-0 sm:scale-100"
+                                    leave="ease-in duration-200"
+                                    leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                                    leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                >
+                                    <div
+                                        className="inline-block align-center bg-black rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                                        <div className="bg-black text-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                            <h2 className='text-center gradient-text'>{withdrawSuccess ? "NFT Listing Successfully Withdrawn!" : withdrawFailure ? "Transaction failed!" : "Withdrawing your NFT Listing!"}</h2>
+                                            <div className="mt-3 text-center">
+                                                <div className="mt-2 w-full">
+                                                    {withdrawSuccess 
+                                                    ? <>
+                                                        <h4>The listing for {withdrawnNFT?.name} has been successfully taken off the marketplace. You can list it again when you change your mind.</h4>
+                                                        <button className="nft-btn-gradient h-32 py-0 my-1" onClick={closeWithdraw}>Ok!</button>
+                                                    </>
+                                                    : <>
+                                                        {withdrawFailure
+                                                            ? <>
+                                                                <h4>Something went wrong with withdrawing the NFT listing. Please check your wallet connection and try again!</h4>
+                                                                <button className="nft-btn-gradient h-32 py-0 my-1" onClick={closeWithdraw}>Ok!</button>
+                                                            </>
+                                                            : <h4>We are withdrawing the active listing of your NFT on the marketplace! Thank you for your patience!</h4>
+                                                        }
+                                                    </>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Transition.Child>
+                            </div>
+                        </Dialog>
+                    </Transition.Root>
+                    <Transition.Root show={acceptingOffer} as={Fragment}>
+                        <Dialog as="div" className="fixed z-999 inset-0 overflow-y-auto" onClose={closeAcceptOffer}>
+                            <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                                <Transition.Child
+                                    as={Fragment}
+                                    enter="ease-out duration-300"
+                                    enterFrom="opacity-0"
+                                    enterTo="opacity-100"
+                                    leave="ease-in duration-200"
+                                    leaveFrom="opacity-100"
+                                    leaveTo="opacity-0"
+                                >
+                                    <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                                </Transition.Child>
+
+                                <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                                <Transition.Child
+                                    as={Fragment}
+                                    enter="ease-out duration-300"
+                                    enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                    enterTo="opacity-100 translate-y-0 sm:scale-100"
+                                    leave="ease-in duration-200"
+                                    leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                                    leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                >
+                                    <div
+                                        className="inline-block align-center bg-black rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle" style={{"width": "600px"}}>
+                                        <div className="bg-black text-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                            <h2 className='text-center gradient-text'>{confirmingAcceptOffer ? "Are you sure you want to accept this offer?" : acceptOfferSuccess ? "NFT Offer Successfully Accepted!" : acceptOfferFailure ? "Acceptance failed!" : "Accepting the NFT Offer!"}</h2>
+                                            <div className="mt-3 text-center">
+                                                <div className="mt-2 w-full">
+                                                    {confirmingAcceptOffer
+                                                        ? <>
+                                                            <h4>You are about to accept the offer made by {offerSender} for {offerPrice}. Would you like to proceed?</h4>
+                                                            <button className="nft-btn-gradient h-32 py-0 my-1 mx-2" onClick={acceptOffer}>Yes</button>
+                                                            <button className="nft-btn-gradient h-32 py-0 my-1 mx-2" onClick={closeAcceptOffer}>No</button>
+                                                        </>
+                                                        : <>
+                                                            {acceptOfferSuccess 
+                                                                ? <>
+                                                                    <h4>The offer has been successfully accepted. The NFT will be delivered to the respective owner.</h4>
+                                                                    <button className="nft-btn-gradient h-32 py-0 my-1" onClick={closeAcceptOffer}>Ok!</button>
+                                                                </>
+                                                                : <>
+                                                                    {acceptOfferFailure
+                                                                        ? <>
+                                                                            <h4>Something went wrong with accepting the NFT Offer. Please refresh the page to ensure the offer has not been withdrawn and try again!</h4>
+                                                                            <button className="nft-btn-gradient h-32 py-0 my-1" onClick={closeAcceptOffer}>Ok!</button>
+                                                                        </>
+                                                                        : <h4>We are accepting the chosen offer placed on your NFT! Thank you for your patience!</h4>
+                                                                    }
+                                                                </>
+                                                            }
+                                                        </>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Transition.Child>
+                            </div>
+                        </Dialog>
+                    </Transition.Root>
+                    <Transition.Root show={withdrawingOffer} as={Fragment}>
+                        <Dialog as="div" className="fixed z-999 inset-0 overflow-y-auto" onClose={closeWithdrawOffer}>
+                            <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                                <Transition.Child
+                                    as={Fragment}
+                                    enter="ease-out duration-300"
+                                    enterFrom="opacity-0"
+                                    enterTo="opacity-100"
+                                    leave="ease-in duration-200"
+                                    leaveFrom="opacity-100"
+                                    leaveTo="opacity-0"
+                                >
+                                    <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                                </Transition.Child>
+
+                                <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                                <Transition.Child
+                                    as={Fragment}
+                                    enter="ease-out duration-300"
+                                    enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                    enterTo="opacity-100 translate-y-0 sm:scale-100"
+                                    leave="ease-in duration-200"
+                                    leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                                    leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                >
+                                    <div
+                                        className="inline-block align-center bg-black rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                                        <div className="bg-black text-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                            <h2 className='text-center gradient-text'>{withdrawOfferSuccess ? "NFT Offer Successfully Withdrawn!" : withdrawOfferFailure ? "Withdrawal failed!" : "Withdrawing your NFT Offer!"}</h2>
+                                            <div className="mt-3 text-center">
+                                                <div className="mt-2 w-full">
+                                                    {withdrawOfferSuccess 
+                                                    ? <>
+                                                        <h4>The offer for {nft?.name} has been successfully withdrawn.</h4>
+                                                        <button className="nft-btn-gradient h-32 py-0 my-1" onClick={closeWithdrawOffer}>Ok!</button>
+                                                    </>
+                                                    : <>
+                                                        {withdrawOfferFailure
+                                                            ? <>
+                                                                <h4>Something went wrong with withdrawing the NFT Offer. Please try again!</h4>
+                                                                <button className="nft-btn-gradient h-32 py-0 my-1" onClick={closeWithdrawOffer}>Ok!</button>
+                                                            </>
+                                                            : <h4>We are withdrawing the active offer you placed on the NFT! Thank you for your patience!</h4>
+                                                        }
+                                                    </>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Transition.Child>
+                            </div>
+                        </Dialog>
+                    </Transition.Root>
+                    <Transition.Root show={buying} as={Fragment}>
+                        <Dialog as="div" className="fixed z-999 inset-0 overflow-y-auto" onClose={closeBuy}>
+                            <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                                <Transition.Child
+                                    as={Fragment}
+                                    enter="ease-out duration-300"
+                                    enterFrom="opacity-0"
+                                    enterTo="opacity-100"
+                                    leave="ease-in duration-200"
+                                    leaveFrom="opacity-100"
+                                    leaveTo="opacity-0"
+                                >
+                                    <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                                </Transition.Child>
+
+                                <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                                <Transition.Child
+                                    as={Fragment}
+                                    enter="ease-out duration-300"
+                                    enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                    enterTo="opacity-100 translate-y-0 sm:scale-100"
+                                    leave="ease-in duration-200"
+                                    leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                                    leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                >
+                                    <div
+                                        className="inline-block align-center bg-black rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                                        <div className="bg-black text-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                            <h2 className='text-center gradient-text'>{buySuccess ? "NFT Successfully Bought!" : buyFailure ? "Transaction failed!" : "Processing your buy request!"}</h2>
+                                            <div className="mt-3 text-center">
+                                                <div className="mt-2 w-full">
+                                                    {buySuccess 
+                                                        ? <>
+                                                            <h4>{boughtNFT?.name} has been successfully purchased! You can view it in the My NFTs section!</h4>
+                                                            <button className="nft-btn-gradient h-32 py-0 my-1" onClick={closeBuy}>Ok!</button>
+                                                        </>
+                                                        : <>
+                                                            {buyFailure
+                                                                ? <>
+                                                                    <h4>Something went wrong with buying the NFT. Please check your wallet connection and try again!</h4>
+                                                                    <button className="nft-btn-gradient h-32 py-0 my-1" onClick={closeBuy}>Ok!</button>
+                                                                </>
+                                                                : <h4>We are processing your buy request! Thank you for your patience!</h4>
+                                                            }
+                                                        </>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Transition.Child>
+                            </div>
+                        </Dialog>
+                    </Transition.Root>
+
+                    <Transition.Root show={editing} as={Fragment}>
+                        <Dialog as="div" className="fixed z-999 inset-0 overflow-y-auto" onClose={closeEdit}>
+                            <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                                <Transition.Child
+                                    as={Fragment}
+                                    enter="ease-out duration-300"
+                                    enterFrom="opacity-0"
+                                    enterTo="opacity-100"
+                                    leave="ease-in duration-200"
+                                    leaveFrom="opacity-100"
+                                    leaveTo="opacity-0"
+                                >
+                                    <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                                </Transition.Child>
+
+                                <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                                <Transition.Child
+                                    as={Fragment}
+                                    enter="ease-out duration-300"
+                                    enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                    enterTo="opacity-100 translate-y-0 sm:scale-100"
+                                    leave="ease-in duration-200"
+                                    leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                                    leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                >
+                                    <div
+                                        className="inline-block align-center bg-black rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                                        <div className="bg-black text-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                            <h2 className='text-center gradient-text'>{settingPrice ? "Set Sell Price" : editSuccess ? "Listing successfully updated!" : editFailure ? "Transaction failed!" : "Updating your listing!"}</h2>
+                                            <div className="mt-3 text-center">
+                                                <div className="mt-2 w-full">
+                                                    {settingPrice 
+                                                    ? <>
+                                                        <input type="number" className="nft-input" name="sellPrice" value={sellPrice} onChange={e => setSellPrice(e.target.value)} />
+                                                        <div className="px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                                                            <button className="nft-btn-gradient h-32 py-0 my-1" disabled={sellPrice === 0 || sellPrice?.length === 0} onClick={() => {editNFT()}}>{approved ? "Submit" : "Approve and Submit"}</button>
+                                                            <button className="nft-btn-linear-gradient light h-32 py-0 ml-2 my-1 mr-2" onClick={closeEdit} ref={cancelButtonRef}>Cancel</button>
+                                                        </div>
+                                                    </>
+                                                    : <>
+                                                        {editSuccess
+                                                            ? <>
+                                                                <h4>The listing for {editedNFT?.name} has been successfully updated on the marketplace.</h4>
+                                                                <button className="nft-btn-gradient h-32 py-0 my-1" onClick={closeEdit}>Ok!</button>
+                                                            </> 
+                                                            : <>
+                                                                {editFailure
+                                                                    ? <>
+                                                                        <h4>Something went wrong with editing the NFT listing. Please check your wallet connection and try again!</h4>
+                                                                        <button className="nft-btn-gradient h-32 py-0 my-1" onClick={closeEdit}>Ok!</button>
+                                                                    </>
+                                                                    : <h4>We are updating the listing of your NFT on the marketplace. Please be patient!</h4>
                                                                 }
                                                             </>
                                                         }
-                                                    </>
-                                                }
+                                                    </>}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            </Transition.Child>
-                        </div>
-                    </Dialog>
-                </Transition.Root>
-                <Transition.Root show={withdrawingOffer} as={Fragment}>
-                    <Dialog as="div" className="fixed z-999 inset-0 overflow-y-auto" onClose={closeWithdrawOffer}>
-                        <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                            <Transition.Child
-                                as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0"
-                                enterTo="opacity-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100"
-                                leaveTo="opacity-0"
-                            >
-                                <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-                            </Transition.Child>
+                                </Transition.Child>
+                            </div>
+                        </Dialog>
+                    </Transition.Root>
+                    <Transition.Root show={offering} as={Fragment}>
+                        <Dialog as="div" className="fixed z-999 inset-0 overflow-y-auto" onClose={closeOffer}>
+                            <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                                <Transition.Child
+                                    as={Fragment}
+                                    enter="ease-out duration-300"
+                                    enterFrom="opacity-0"
+                                    enterTo="opacity-100"
+                                    leave="ease-in duration-200"
+                                    leaveFrom="opacity-100"
+                                    leaveTo="opacity-0"
+                                >
+                                    <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                                </Transition.Child>
 
-                            {/* This element is to trick the browser into centering the modal contents. */}
-                            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-                            <Transition.Child
-                                as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                                enterTo="opacity-100 translate-y-0 sm:scale-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-                                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                            >
-                                <div
-                                    className="inline-block align-center bg-black rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                                    <div className="bg-black text-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                                        <h2 className='text-center gradient-text'>{withdrawOfferSuccess ? "NFT Offer Successfully Withdrawn!" : withdrawOfferFailure ? "Withdrawal failed!" : "Withdrawing your NFT Offer!"}</h2>
-                                        <div className="mt-3 text-center">
-                                            <div className="mt-2 w-full">
-                                                {withdrawOfferSuccess 
-                                                ? <>
-                                                    <h4>The offer for {nft?.name} has been successfully withdrawn.</h4>
-                                                    <button className="nft-btn-gradient h-32 py-0 my-1" onClick={closeWithdrawOffer}>Ok!</button>
-                                                </>
-                                                : <>
-                                                    {withdrawOfferFailure
-                                                        ? <>
-                                                            <h4>Something went wrong with withdrawing the NFT Offer. Please try again!</h4>
-                                                            <button className="nft-btn-gradient h-32 py-0 my-1" onClick={closeWithdrawOffer}>Ok!</button>
-                                                        </>
-                                                        : <h4>We are withdrawing the active offer you placed on the NFT! Thank you for your patience!</h4>
-                                                    }
-                                                </>
-                                                }
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </Transition.Child>
-                        </div>
-                    </Dialog>
-                </Transition.Root>
-                <Transition.Root show={buying} as={Fragment}>
-                    <Dialog as="div" className="fixed z-999 inset-0 overflow-y-auto" onClose={closeBuy}>
-                        <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                            <Transition.Child
-                                as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0"
-                                enterTo="opacity-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100"
-                                leaveTo="opacity-0"
-                            >
-                                <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-                            </Transition.Child>
-
-                            {/* This element is to trick the browser into centering the modal contents. */}
-                            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-                            <Transition.Child
-                                as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                                enterTo="opacity-100 translate-y-0 sm:scale-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-                                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                            >
-                                <div
-                                    className="inline-block align-center bg-black rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                                    <div className="bg-black text-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                                        <h2 className='text-center gradient-text'>{buySuccess ? "NFT Successfully Bought!" : buyFailure ? "Transaction failed!" : "Processing your buy request!"}</h2>
-                                        <div className="mt-3 text-center">
-                                            <div className="mt-2 w-full">
-                                                {buySuccess 
+                                <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                                <Transition.Child
+                                    as={Fragment}
+                                    enter="ease-out duration-300"
+                                    enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                    enterTo="opacity-100 translate-y-0 sm:scale-100"
+                                    leave="ease-in duration-200"
+                                    leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                                    leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                >
+                                    <div
+                                        className="inline-block align-center bg-black rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+                                        <div className="bg-black text-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                            <h2 className='text-center gradient-text'>{settingPrice ? "Set Offer Price" : offerSuccess ? "Offer successfully placed!" : offerFailure ? "Placing an offer has failed!" : "Placing the offer!"}</h2>
+                                            <div className="mt-3 text-center">
+                                                <div className="mt-2 w-full">
+                                                    {settingPrice 
                                                     ? <>
-                                                        <h4>{boughtNFT?.name} has been successfully purchased! You can view it in the My NFTs section!</h4>
-                                                        <button className="nft-btn-gradient h-32 py-0 my-1" onClick={closeBuy}>Ok!</button>
+                                                        <input type="number" className="nft-input" name="sellPrice" value={sellPrice} onChange={e => setSellPrice(e.target.value)} />
+                                                        <div className="px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                                                            <button className="nft-btn-gradient h-32 py-0 my-1" disabled={sellPrice === 0 || sellPrice?.length === 0} onClick={() => {offer()}}>{approved ? "Submit" : "Approve and Submit"}</button>
+                                                            <button className="nft-btn-linear-gradient light h-32 py-0 ml-2 my-1 mr-2" onClick={closeOffer} ref={cancelButtonRef}>Cancel</button>
+                                                        </div>
                                                     </>
                                                     : <>
-                                                        {buyFailure
+                                                        {offerSuccess
                                                             ? <>
-                                                                <h4>Something went wrong with buying the NFT. Please check your wallet connection and try again!</h4>
-                                                                <button className="nft-btn-gradient h-32 py-0 my-1" onClick={closeBuy}>Ok!</button>
+                                                                <h4>The offer for {offerData?.name} has been successfully placed.</h4>
+                                                                <button className="nft-btn-gradient h-32 py-0 my-1" onClick={closeOffer}>Ok!</button>
+                                                            </> 
+                                                            : <>
+                                                                {offerFailure
+                                                                    ? <>
+                                                                        <h4>Something went wrong while placing an order for the NFT listing. Please check your wallet connection and try again!</h4>
+                                                                        <button className="nft-btn-gradient h-32 py-0 my-1" onClick={closeOffer}>Ok!</button>
+                                                                    </>
+                                                                    : <h4>We are placing an order for this NFT on the marketplace. Please be patient!</h4>
+                                                                }
                                                             </>
-                                                            : <h4>We are processing your buy request! Thank you for your patience!</h4>
                                                         }
+                                                    </>}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Transition.Child>
+                            </div>
+                        </Dialog>
+                    </Transition.Root>
+                    <Transition.Root show={transferring} as={Fragment}>
+                        <Dialog as="div" className="fixed z-999 inset-0 overflow-y-auto" onClose={closeTransfer}>
+                            <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+                                <Transition.Child
+                                    as={Fragment}
+                                    enter="ease-out duration-300"
+                                    enterFrom="opacity-0"
+                                    enterTo="opacity-100"
+                                    leave="ease-in duration-200"
+                                    leaveFrom="opacity-100"
+                                    leaveTo="opacity-0"
+                                >
+                                    <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
+                                </Transition.Child>
+
+                                <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+                                <Transition.Child
+                                    as={Fragment}
+                                    enter="ease-out duration-300"
+                                    enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                    enterTo="opacity-100 translate-y-0 sm:scale-100"
+                                    leave="ease-in duration-200"
+                                    leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+                                    leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                >
+                                    <div
+                                        className="inline-block align-center bg-black rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle" style={{"width": "550px"}}>
+                                        <div className="bg-black text-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                            <h2 className='text-center gradient-text'>{settingPrice ? "Enter the recipient's wallet address" : transferSuccess ? "NFT Successfully Transferred!" : transferFailure ? "Transaction failed!" : "Transferring your NFT!"}</h2>
+                                            <div className="mt-3 text-center">
+                                                <div className="mt-2 w-full">
+                                                    {settingPrice 
+                                                    ? <>
+                                                        <input className="nft-input" name="transferAddress" value={transferAddress} onChange={e => setTransferAddress(e.target.value)} />
+                                                        <div className="px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                                                            <button className="nft-btn-gradient h-32 py-0 my-1" disabled={transferAddress === '0x0000000000000000000000000000000000000000' || transferAddress?.length === 0} onClick={() => {transfer()}}>{approved ? "Submit" : "Approve and Submit"}</button>
+                                                            <button className="nft-btn-linear-gradient light h-32 py-0 ml-2 my-1 mr-2" onClick={closeTransfer} ref={cancelButtonRef2}>Cancel</button>
+                                                        </div>
                                                     </>
+                                                    : <>
+                                                        {transferSuccess
+                                                            ? <>
+                                                                <h4 style={{"width" : "auto"}}>{transferNFT?.name} was successfully transferred to {transferAddress}.</h4>
+                                                                <button className="nft-btn-gradient h-32 py-0 my-1" onClick={closeTransfer}>Ok!</button>
+                                                            </>
+                                                            : <>
+                                                                {transferFailure
+                                                                    ? <>
+                                                                        <h4>Something went wrong with transferring the NFT. Please check your wallet connection and try again!</h4>
+                                                                        <button className="nft-btn-gradient h-32 py-0 my-1" onClick={closeTransfer}>Ok!</button>
+                                                                    </>
+                                                                    : <h4>We are transferring the NFT to the selected address. Please be patient!</h4>
+                                                                }
+                                                            </>
+                                                        }
+                                                    </>}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Transition.Child>
+                            </div>
+                        </Dialog>
+                    </Transition.Root>
+                            
+
+                    <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-6">
+                        {!moreFromCollectionNfts.length ? <></> : <h2 className="nft-h2 mb-8"><span className="gradient-text">More from this</span> collection</h2>}
+                        <div>
+                            <div className='collectionNFTs' style={{maxWidth: '1600px'}}>
+                                {loadingState === 'loaded' ? (
+                                    <React.Fragment>
+                                        {!moreFromCollectionNfts.length ? <></>
+                                        :
+                                        <div style={{maxWidth: '1600px'}}>
+                                            <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'>
+                                                {moreFromCollectionNfts.map((nft, i) => (
+                                                    <React.Fragment key={i}>
+                                                        <Card
+                                                            image={nft.image}
+                                                            name={nft.name}
+                                                            description={nft.description}
+                                                            seller={nft.seller}
+                                                            price={nft.price}
+                                                            owner={nft.owner}
+                                                            buyNFT={() => buyNFT(nft)}
+                                                            viewNFT={() => viewNFT(nft)}
+                                                            listNFT={() => startSale(nft)}
+                                                            withdrawNFT = {() => withdrawListing(nft)}
+                                                            wallet={wallet}
+                                                            isListed={nft.isListed}
+                                                            fileType = {nft.fileType}
+                                                            preview = {nft.preview}
+                                                        />
+                                                    </React.Fragment>
+                                                ))
                                                 }
                                             </div>
                                         </div>
+                                        }
+                                    </React.Fragment>
+                                ) : (
+                                    <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'>
+                                        <SkeletonCard/>
                                     </div>
-                                </div>
-                            </Transition.Child>
+                                )}
+                            </div>
                         </div>
-                    </Dialog>
-                </Transition.Root>
+                    </div>*/}
+                                </VStack>
+                            <Spacer></Spacer>
+                        </VStack>
+                    </HStack>
 
-                <Transition.Root show={editing} as={Fragment}>
-                    <Dialog as="div" className="fixed z-999 inset-0 overflow-y-auto" onClose={closeEdit}>
-                        <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                            <Transition.Child
-                                as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0"
-                                enterTo="opacity-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100"
-                                leaveTo="opacity-0"
-                            >
-                                <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-                            </Transition.Child>
-
-                            {/* This element is to trick the browser into centering the modal contents. */}
-                            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-                            <Transition.Child
-                                as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                                enterTo="opacity-100 translate-y-0 sm:scale-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-                                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                            >
-                                <div
-                                    className="inline-block align-center bg-black rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                                    <div className="bg-black text-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                                        <h2 className='text-center gradient-text'>{settingPrice ? "Set Sell Price" : editSuccess ? "Listing successfully updated!" : editFailure ? "Transaction failed!" : "Updating your listing!"}</h2>
-                                        <div className="mt-3 text-center">
-                                            <div className="mt-2 w-full">
-                                                {settingPrice 
-                                                ? <>
-                                                    <input type="number" className="nft-input" name="sellPrice" value={sellPrice} onChange={e => setSellPrice(e.target.value)} />
-                                                    <div className="px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                                                        <button className="nft-btn-gradient h-32 py-0 my-1" disabled={sellPrice === 0 || sellPrice?.length === 0} onClick={() => {editNFT()}}>{approved ? "Submit" : "Approve and Submit"}</button>
-                                                        <button className="nft-btn-linear-gradient light h-32 py-0 ml-2 my-1 mr-2" onClick={closeEdit} ref={cancelButtonRef}>Cancel</button>
-                                                    </div>
-                                                </>
-                                                : <>
-                                                    {editSuccess
-                                                        ? <>
-                                                            <h4>The listing for {editedNFT?.name} has been successfully updated on the marketplace.</h4>
-                                                            <button className="nft-btn-gradient h-32 py-0 my-1" onClick={closeEdit}>Ok!</button>
-                                                        </> 
-                                                        : <>
-                                                            {editFailure
-                                                                ? <>
-                                                                    <h4>Something went wrong with editing the NFT listing. Please check your wallet connection and try again!</h4>
-                                                                    <button className="nft-btn-gradient h-32 py-0 my-1" onClick={closeEdit}>Ok!</button>
-                                                                </>
-                                                                : <h4>We are updating the listing of your NFT on the marketplace. Please be patient!</h4>
-                                                            }
-                                                        </>
-                                                    }
-                                                </>}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </Transition.Child>
-                        </div>
-                    </Dialog>
-                </Transition.Root>
-                <Transition.Root show={offering} as={Fragment}>
-                    <Dialog as="div" className="fixed z-999 inset-0 overflow-y-auto" onClose={closeOffer}>
-                        <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                            <Transition.Child
-                                as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0"
-                                enterTo="opacity-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100"
-                                leaveTo="opacity-0"
-                            >
-                                <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-                            </Transition.Child>
-
-                            {/* This element is to trick the browser into centering the modal contents. */}
-                            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-                            <Transition.Child
-                                as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                                enterTo="opacity-100 translate-y-0 sm:scale-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-                                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                            >
-                                <div
-                                    className="inline-block align-center bg-black rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                                    <div className="bg-black text-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                                        <h2 className='text-center gradient-text'>{settingPrice ? "Set Offer Price" : offerSuccess ? "Offer successfully placed!" : offerFailure ? "Placing an offer has failed!" : "Placing the offer!"}</h2>
-                                        <div className="mt-3 text-center">
-                                            <div className="mt-2 w-full">
-                                                {settingPrice 
-                                                ? <>
-                                                    <input type="number" className="nft-input" name="sellPrice" value={sellPrice} onChange={e => setSellPrice(e.target.value)} />
-                                                    <div className="px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                                                        <button className="nft-btn-gradient h-32 py-0 my-1" disabled={sellPrice === 0 || sellPrice?.length === 0} onClick={() => {offer()}}>{approved ? "Submit" : "Approve and Submit"}</button>
-                                                        <button className="nft-btn-linear-gradient light h-32 py-0 ml-2 my-1 mr-2" onClick={closeOffer} ref={cancelButtonRef}>Cancel</button>
-                                                    </div>
-                                                </>
-                                                : <>
-                                                    {offerSuccess
-                                                        ? <>
-                                                            <h4>The offer for {offerData?.name} has been successfully placed.</h4>
-                                                            <button className="nft-btn-gradient h-32 py-0 my-1" onClick={closeOffer}>Ok!</button>
-                                                        </> 
-                                                        : <>
-                                                            {offerFailure
-                                                                ? <>
-                                                                    <h4>Something went wrong while placing an order for the NFT listing. Please check your wallet connection and try again!</h4>
-                                                                    <button className="nft-btn-gradient h-32 py-0 my-1" onClick={closeOffer}>Ok!</button>
-                                                                </>
-                                                                : <h4>We are placing an order for this NFT on the marketplace. Please be patient!</h4>
-                                                            }
-                                                        </>
-                                                    }
-                                                </>}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </Transition.Child>
-                        </div>
-                    </Dialog>
-                </Transition.Root>
-                <Transition.Root show={transferring} as={Fragment}>
-                    <Dialog as="div" className="fixed z-999 inset-0 overflow-y-auto" onClose={closeTransfer}>
-                        <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-                            <Transition.Child
-                                as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0"
-                                enterTo="opacity-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100"
-                                leaveTo="opacity-0"
-                            >
-                                <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-                            </Transition.Child>
-
-                            {/* This element is to trick the browser into centering the modal contents. */}
-                            <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-                            <Transition.Child
-                                as={Fragment}
-                                enter="ease-out duration-300"
-                                enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                                enterTo="opacity-100 translate-y-0 sm:scale-100"
-                                leave="ease-in duration-200"
-                                leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-                                leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                            >
-                                <div
-                                    className="inline-block align-center bg-black rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle" style={{"width": "550px"}}>
-                                    <div className="bg-black text-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                                        <h2 className='text-center gradient-text'>{settingPrice ? "Enter the recipient's wallet address" : transferSuccess ? "NFT Successfully Transferred!" : transferFailure ? "Transaction failed!" : "Transferring your NFT!"}</h2>
-                                        <div className="mt-3 text-center">
-                                            <div className="mt-2 w-full">
-                                                {settingPrice 
-                                                ? <>
-                                                    <input className="nft-input" name="transferAddress" value={transferAddress} onChange={e => setTransferAddress(e.target.value)} />
-                                                    <div className="px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                                                        <button className="nft-btn-gradient h-32 py-0 my-1" disabled={transferAddress === '0x0000000000000000000000000000000000000000' || transferAddress?.length === 0} onClick={() => {transfer()}}>{approved ? "Submit" : "Approve and Submit"}</button>
-                                                        <button className="nft-btn-linear-gradient light h-32 py-0 ml-2 my-1 mr-2" onClick={closeTransfer} ref={cancelButtonRef2}>Cancel</button>
-                                                    </div>
-                                                </>
-                                                : <>
-                                                    {transferSuccess
-                                                        ? <>
-                                                            <h4 style={{"width" : "auto"}}>{transferNFT?.name} was successfully transferred to {transferAddress}.</h4>
-                                                            <button className="nft-btn-gradient h-32 py-0 my-1" onClick={closeTransfer}>Ok!</button>
-                                                        </>
-                                                        : <>
-                                                            {transferFailure
-                                                                ? <>
-                                                                    <h4>Something went wrong with transferring the NFT. Please check your wallet connection and try again!</h4>
-                                                                    <button className="nft-btn-gradient h-32 py-0 my-1" onClick={closeTransfer}>Ok!</button>
-                                                                </>
-                                                                : <h4>We are transferring the NFT to the selected address. Please be patient!</h4>
-                                                            }
-                                                        </>
-                                                    }
-                                                </>}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </Transition.Child>
-                        </div>
-                    </Dialog>
-                </Transition.Root>
-                
-
-                <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-6">
-                    {!moreFromCollectionNfts.length ? <></> : <h2 className="nft-h2 mb-8"><span className="gradient-text">More from this</span> collection</h2>}
-                    <div>
-                        <div className='collectionNFTs' style={{maxWidth: '1600px'}}>
-                            {loadingState === 'loaded' ? (
-                                <React.Fragment>
-                                    {!moreFromCollectionNfts.length ? <></>
-                                    :
-                                    <div style={{maxWidth: '1600px'}}>
-                                        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'>
-                                            {moreFromCollectionNfts.map((nft, i) => (
-                                                <React.Fragment key={i}>
-                                                    <Card
-                                                        image={nft.image}
-                                                        name={nft.name}
-                                                        description={nft.description}
-                                                        seller={nft.seller}
-                                                        price={nft.price}
-                                                        owner={nft.owner}
-                                                        buyNFT={() => buyNFT(nft)}
-                                                        viewNFT={() => viewNFT(nft)}
-                                                        listNFT={() => startSale(nft)}
-                                                        withdrawNFT = {() => withdrawListing(nft)}
-                                                        wallet={wallet}
-                                                        isListed={nft.isListed}
-                                                        fileType = {nft.fileType}
-                                                        preview = {nft.preview}
-                                                    />
-                                                </React.Fragment>
-                                            ))
-                                            }
-                                        </div>
-                                    </div>
-                                    }
-                                </React.Fragment>
-                            ) : (
-                                <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'>
-                                    <SkeletonCard/>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+                    <VStack width="100%" padding="15px 30px">
+                        <TitleBold27>Activity</TitleBold27>
+                        <HStack
+                            width="100%"
+                            overflowx={size.width < 768 ? "scroll" : "visible"}
+                            overflowy={size.width < 768 ? "hidden" : "visible"}
+                            justify="flex-start"
+                        >
+                            <HStack width={size.width < 768 ? "690px" : "100%"}>
+                                <TableActivityNft activity={eventHistory}></TableActivityNft>
+                            </HStack>
+                        </HStack>
+                    </VStack>
+                </VStack>
+            </ContentNftPage>
+        </NFTPage>
     );
 };
 
-const PriceHistory = (props) => {
-    return <div>
-        <table className="border-collapse table-auto w-full text-sm">
-            <tbody>
-            {props.loadingState === 'loaded' ? (
-                <React.Fragment>
-                    {!props.events.length ? <h1 className='px-4 py-4 text-4x1'>No events have been recorded yet.</h1>
-                    :
-                    <React.Fragment>
-                        {props.events.map((event, i) => 
-                            <tr key={i}>
-                                <td className="border-b border-gray-300 py-3 pr-3 pl-0 font-secondary">
-                                    <div className="flex">
-                                        <div>
-                                            <h2 className="m-0 from-address">{event.from} <span className="font-secondary">{event.eventType == 0 ? `minted the NFT for ${event.to}` : event.eventType == 1 ? "listed the NFT" : event.eventType == 2 ? "withdrew the NFT listing" : event.eventType == 3 ? `sold the NFT to ${event.to}` : event.eventType == 4 ? `transferred the NFT to ${event.to}` : event.eventType == 5 ? `updated the NFT listing` : event.eventType == 6 ? 'placed an offer' : event.eventType == 7 ? 'withdrew an offer' : `accepted ${event.to}'s offer`}</span></h2>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td className="border-b border-gray-300 py-3 pr-3 pl-0 font-secondary"><p className="font-bold m-0 flex items-center"><img src="/xdc-icon.png" className="nft-xdc-20 mr-2" />{event.price !== 0 ? event.price / 1000000000000000000 : ""}</p></td>
-                            </tr>
-                        )}
-                    </React.Fragment>
-                    }
-                </React.Fragment>
-            ) : (
-                <></>
-            )}
-            </tbody>
-        </table>
-    </div>
-}
 const Offers = (props) => {
     return <div>
         <table className="border-collapse table-auto w-full text-sm">
@@ -1266,24 +1564,16 @@ const Offers = (props) => {
         </table>
     </div>
 }
-const TokenDetails = (props) => {
-    return <div>
-                <table className="border-collapse table-auto w-full text-sm">
-                    <tbody>
-                        <tr>
-                            <td className="border-b border-gray-300 py-3 pr-3 pl-0 font-secondary"><p className="font-bold m-0">Contract Address</p></td>
-                            <td className="border-b border-gray-300 py-3 pr-0 pl-3 font-secondary text-right">{props.nftAddress}</td>
-                        </tr>
-                        <tr>
-                            <td className="border-b border-gray-300 py-3 pr-3 pl-0 font-secondary"><p className="font-bold m-0">Token</p></td>
-                            <td className="border-b border-gray-300 py-3 pr-0 pl-3 font-secondary text-right">{props.id}</td>
-                        </tr>
-                        <tr>
-                            <td className="border-b border-gray-300 py-3 pr-3 pl-0 font-secondary"><p className="font-bold m-0">Block Chain</p></td>
-                            <td className="border-b border-gray-300 py-3 pr-0 pl-3 font-secondary text-right">{NETWORK_NAME}</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-}
+
 export default NFTDetails;
+
+const NFTPage = styled(motion.div)`
+  padding: 30px 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.06);
+`;
+
+const ContentNftPage = styled(motion.div)`
+  max-width: 1200px;
+  margin: 0 auto;
+`;

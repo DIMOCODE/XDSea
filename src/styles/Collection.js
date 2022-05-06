@@ -215,6 +215,7 @@ function Collection(props) {
                     text="Visit Collection"
                     textcolor={appStyle.colors.white}
                     onClick={onClickCollection}
+                    cursor={"pointer"}
                   ></ButtonApp>
                 </VStack>
               </ZItem>

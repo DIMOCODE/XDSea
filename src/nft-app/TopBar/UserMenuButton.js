@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useHistory } from "react-router-dom";
 import { HStack, IconImg, VStack } from "../../styles/Stacks";
 import userIcon from "../../images/userIcon.png";
 import styled from "styled-components";
@@ -17,6 +18,12 @@ function UserMenuButton(props) {
     normal: { scale: 0.9 },
   };
 
+  const history = useHistory();
+
+  function NavigateTo(route) {
+    history.push(`/${route}`);
+  }
+
   const [showMenu, setShowMenu] = useState(false);
   return (
     <LayoutGroup id="usermenu">
@@ -29,17 +36,18 @@ function UserMenuButton(props) {
           border="27px"
           bordercolor="#99A2AF"
           bordersize="3px"
-          onClick={() => setShowMenu((showMenu) => !showMenu)}
+          onClick={() => NavigateTo(`UserProfile/${1}`)}
+          // onClick={() => setShowMenu((showMenu) => !showMenu)}
           variants={scale}
           key={2}
           initial="normal"
-          animate={showMenu ? "normal" : "selected"}
+          // animate={showMenu ? "normal" : "selected"}
           layoutId={2}
           exit="normal"
         >
           <IconImg url={userIcon} width="21px" height="21px"></IconImg>
         </VStack>
-        <AnimatePresence>
+        {/* <AnimatePresence>
           {showMenu && (
             <ItemsMenu>
               <VStack
@@ -67,7 +75,7 @@ function UserMenuButton(props) {
               </VStack>
             </ItemsMenu>
           )}
-        </AnimatePresence>
+        </AnimatePresence> */}
       </UserMenu>
     </LayoutGroup>
   );

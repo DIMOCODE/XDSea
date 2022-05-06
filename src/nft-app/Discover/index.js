@@ -357,6 +357,14 @@ const Discover = () => {
     { id: 2, name: "Collection 2" },
     { id: 3, name: "Collection 3" },
     { id: 4, name: "Collection 4" },
+    { id: 5, name: "Collection 5" },
+    { id: 6, name: "Collection 6" },
+    { id: 7, name: "Collection 7" },
+    { id: 8, name: "Collection 8" },
+    { id: 9, name: "Collection 9" },
+    { id: 10, name: "Collection 10" },
+    { id: 11, name: "Collection 11" },
+    { id: 12, name: "Collection 12" },
   ]);
 
   return (

@@ -54,14 +54,20 @@ function CreateNft(props) {
 
     const [name, setName] = useState("");
     const [description, setDescription] = useState("");
-    const [price, setPrice] = useState(0.00);
-    const [royalty, setRoyalty] = useState(0.00);
+    const [price, setPrice] = useState(0);
+    const [royalty, setRoyalty] = useState(0);
     const [collection, setCollection] = useState("");
     const [collections, setCollections] = useState([]);
     const [isNewCollection, setNewCollection] = useState(false);
     const [collectionBanner, setCollectionBanner] = useState({ preview: "", raw: "" });
+    const [collectionLogo, setCollectionLogo] = useState({ preview: "", raw: "" });
     const [collectionDescription, setCollectionDescription] = useState("");
-    const [properties, setProperties] = useState([{property: "", value: ""}, {property:"", value:""}])
+    const [collectionExists, setCollectionExists] = useState(false);
+    const [instagramLink, setInstagramLink] = useState("");
+    const [twitterLink, setTwitterLink] = useState("");
+    const [discordLink, setDiscordLink] = useState("");
+    const [websiteLink, setWebsiteLink] = useState("");
+    const [properties, setProperties] = useState([{property: "", value: ""}, {property:"", value:""}]);
     const [isUnlockableContent, setIsUnlockableContent] = useState(false);
     const [unlockableContent, setUnlockableContent] = useState("");
     const [image, setImage] = useState({ preview: "", raw: "" });
@@ -81,7 +87,18 @@ function CreateNft(props) {
 
     const addToIPFSCollectionBanner = async (e) => {
         e.preventDefault()
-        const file = document.getElementById("upload-button").files[0]
+        const file = document.getElementById("upload-button-collection").files[0]
+        try {
+            const added = await client.add(file)
+            const url = `https://ipfs.infura.io/ipfs/${added.path}`
+        } catch (error) {
+            console.log('Error uploading file:', error)
+        }
+    };
+
+    const addToIPFSCollectionLogo = async (e) => {
+        e.preventDefault()
+        const file = document.getElementById("upload-button-logo").files[0]
         try {
             const added = await client.add(file)
             const url = `https://ipfs.infura.io/ipfs/${added.path}`
@@ -107,6 +124,35 @@ function CreateNft(props) {
           });
         }
     };
+
+    const handleChangeUploadMultimediaLogo = (e) => {
+        if (e.target.files.length) {
+          setCollectionLogo({
+            preview: URL.createObjectURL(e.target.files[0]),
+            raw: e.target.files[0],
+          });
+        }
+    };
+
+    const clearForm = async() => {
+        setImage({ preview: "", raw: "" });
+        setName("");
+        setDescription("");
+        setPrice(0.00001);
+        setProperties([]);
+        setRoyalty(0);
+        setIsUnlockableContent(false);
+        setUnlockableContent("");
+        setCollection("");
+        setNewCollection(false);
+        setCollectionBanner({ preview: "", raw: "" });
+        setCollectionLogo({ preview: "", raw: "" });
+        setCollectionDescription("");
+        setInstagramLink("");
+        setTwitterLink("");
+        setDiscordLink("");
+        setWebsiteLink("");
+    }
 
 //     createMarket = async () => {
 //         try {
@@ -216,6 +262,60 @@ function CreateNft(props) {
 //         }
 //     }
 
+//     createSale = async (url) => {
+//         try {
+//             const wallet = await GetWallet()
+//             const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER))
+
+//             const contract = new xdc3.eth.Contract(NFT.abi, nftaddress, isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address)
+//             let data = contract.methods.createToken(url).encodeABI()
+
+//             const tx = {
+//                 from: isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address,
+//                 to: nftaddress,
+//                 data
+//             }
+//             let gasLimit = await xdc3.eth.estimateGas(tx);
+
+//             tx["gas"] = gasLimit
+
+//             let transaction = await SendTransaction(tx)
+
+//             this.setState({updatingLedger: true})
+
+//             var txReceipt = await xdc3.eth.getTransactionReceipt(transaction.transactionHash)
+//             var tokenId = await txReceipt.logs[0].topics[3]
+
+//             const price = await xdc3.utils.toWei(this.state.price, "ether")
+
+//             var metadata = await axios.get(url)
+
+//             var tokenName = metadata?.data?.collection?.nft?.name;
+//             var collectionName = metadata?.data?.collection?.name;
+
+//             // const contract2 = new xdc3.eth.Contract(NFTMarket.abi, nftmarketaddress, isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address)
+//             const contract2 = new xdc3.eth.Contract(NFTMarketLayer1.abi, nftmarketlayeraddress, isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address)
+//             data = contract2.methods.createMarketItem(Number(tokenId), 0, isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address, isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address, price, false, this.state.royalty, 1, tokenName, collectionName).encodeABI()
+
+//             const tx2 = {
+//                 from: isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address,
+//                 to: nftmarketlayeraddress,
+//                 value: "",
+//                 data
+//             }
+
+//             gasLimit = await xdc3.eth.estimateGas(tx2);
+
+//             tx2["gas"] = gasLimit
+
+//             transaction = await SendTransaction(tx2)
+//             this.setState({mintSuccess: true})
+//         } catch (error) {
+//             console.log(error)
+//             this.setState({mintFailure: true})
+//         }
+//     }
+
     const fetchCollection = async() => {
         const wallet = await GetWallet();
         const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
@@ -230,13 +330,28 @@ function CreateNft(props) {
             setCollections(uniqueCollections);
         }
         catch (e) {
-            console.log(e.message)
+            console.log(e.message);
         }
+    };
+
+    const checkCollectionExists = async() => {
+        const collectionName = document.getElementsByClassName("collection-name")[0].value;
+        const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
+        const marketContract = new xdc3.eth.Contract(NFTMarketLayer1.abi, nftmarketlayeraddress, xdc3);
+        const collectionData = await marketContract.methods.fetchCollections().call();
+        var uniqueCollections = [];
+        const collections = await Promise.all(collectionData.map(async i => {
+            uniqueCollections.push(i.collectionName);
+        }));
+        if(uniqueCollections.includes(collectionName))
+            setCollectionExists(true);
+        else 
+            setCollectionExists(false);
     }
 
     useEffect(() => {
         fetchCollection();
-    }, [])
+    }, []);
 
     return (
         <CreationSection>
@@ -271,6 +386,7 @@ function CreateNft(props) {
                                 width={size.width < 768 ? "320px" : "489px"}
                                 height={size.width < 768 ? "320px" : "489px"}
                                 image={image}
+                                button={"upload-button"}
                             ></UploadMultimedia>
                             <input
                                 type="file"
@@ -294,7 +410,9 @@ function CreateNft(props) {
                                 </CaptionRegular>
                             </HStack>
                             <InputStyled
+                                propertyKey={"nft-name"}
                                 type="text"
+                                input={name}
                                 placeholder="Name your NFT"
                                 onChange={(event) => {setName(event.target.value)}}
                             ></InputStyled>
@@ -309,6 +427,7 @@ function CreateNft(props) {
                                 </CaptionRegular>
                             </HStack>
                             <TextAreaStyled
+                                textClass={"nft-description"}
                                 value={description}
                                 onChange={(event) => {setDescription(event.target.value)}}
                             ></TextAreaStyled>
@@ -325,6 +444,8 @@ function CreateNft(props) {
                             <InputStyled
                                 type="number"
                                 placeholder="0.00"
+                                propertyKey={"nft-price"}
+                                input={price}
                                 min={"0.0001"}
                                 icon={xdc}
                                 onChange={(event) => {setPrice(event.target.value)}}
@@ -398,12 +519,22 @@ function CreateNft(props) {
                                     Earn a fee when a user re-sells your NFT
                                 </BodyRegular>
                                 <InputStyled 
+                                    propertyKey={"nft-royalty"}
                                     placeholder="0.00" 
                                     type={"number"}
                                     min={"0"}
                                     max={"100"}
                                     icon={percent}
+                                    input={royalty}
                                     onChange={(event) => {setRoyalty(event.target.value)}}
+                                    onBlur={() => {
+                                        if(parseInt(royalty) > 100) {
+                                            setRoyalty(100);
+                                        }
+                                        else if(isNaN(parseInt(royalty))) {
+                                            setRoyalty(0);
+                                        }
+                                    }}
                                 ></InputStyled>
                             </VStack>
 
@@ -415,10 +546,14 @@ function CreateNft(props) {
                                     If your NFT belongs to any collection, please choose one
                                 </BodyRegular>
                                 <SelectStyled 
+                                    selectClass={"nft-collection"}
+                                    value={collection}
                                     collections={collections} 
                                     onChange={(event) => {
-                                        if(event.target.value === "newCollection")
+                                        if(event.target.value === "newCollection-nxfgh-odjfg-hjdeb") {
                                             setNewCollection(true);
+                                            setCollection("newCollection-nxfgh-odjfg-hjdeb");
+                                        }
                                         else{
                                             setNewCollection(false);
                                             setCollection(event.target.value);
@@ -437,6 +572,8 @@ function CreateNft(props) {
                                 </BodyRegular>
                                 {isUnlockableContent 
                                     ? <InputStyled 
+                                        propertyKey={"nft-unlockable-content"}
+                                        input={unlockableContent}
                                         placeholder="e.g. Secret Code, Invitation Link" 
                                         type={"text"}
                                         onChange={(event) => {setUnlockableContent(event.target.value)}}
@@ -458,7 +595,7 @@ function CreateNft(props) {
                     </HStack>
                     <Divider></Divider>
 
-                    {/* {isNewCollection
+                    {isNewCollection
                         ? <>
                             <HStack backgroundimage={CreationBar}>
                                 <HStack width="1200px" height="157px" padding="0px 30px">
@@ -467,9 +604,9 @@ function CreateNft(props) {
                                     </TitleBold27>
                                 </HStack>
                             </HStack>
-                            <VStack> */}
+                            <VStack>
                                 {/* Banner Image */}
-                                {/* <VStack>
+                                <VStack>
                                     <HStack>
                                         <TitleBold15>Upload your banner image</TitleBold15>
                                         <Spacer></Spacer>
@@ -481,6 +618,7 @@ function CreateNft(props) {
                                         height="520px"
                                         backsize="cover"
                                         image={collectionBanner}
+                                        button={"upload-button-collection"}
                                     ></UploadMultimedia>
                                 </VStack>
                                 <input
@@ -491,93 +629,109 @@ function CreateNft(props) {
                                 />
                                 <br />
                                 <button onClick={addToIPFSCollectionBanner}>Upload</button>
-                                <Divider></Divider> */}
+                                <Divider></Divider>
                                 {/* Collection Name and URL */}
-                                {/* <HStack responsive={true} alignment="flex-start" padding="15px 15px">
+                                <HStack responsive={true} alignment="flex-start" padding="15px 15px">
                                     <VStack alignment="flex-start">
                                         <TitleBold15>Collection Name</TitleBold15>
-                                        <InputStyled placeholder="Name your Collection"></InputStyled>
-                                        <BodyRegular>
-                                            Must only contain lowercase letters,numbers, and hyphens.
-                                        </BodyRegular>
+                                        <InputStyled 
+                                            propertyKey={"collection-name"}
+                                            placeholder="Name your Collection"
+                                            onChange={(event) => {
+                                                setCollection(event.target.value);
+                                                document.getElementsByClassName("collection-url")[0].setAttribute("placeholder", event.target.value.replace(/\s+/g, "%20"));
+                                            }}
+                                            onBlur={() => checkCollectionExists()}
+                                        ></InputStyled>
+                                        {collectionExists 
+                                            ? <BodyRegular>
+                                                Collection name already taken. Please choose a different name.
+                                            </BodyRegular>
+                                            : null
+                                        }
                                     </VStack>
                                     <VStack alignment="flex-start">
                                         <TitleBold15>Collection URL</TitleBold15>
-                                        <InputStyledURL placeholder="collection-name"></InputStyledURL>
+                                        <InputStyledURL inputClass="collection-url" placeholder="collection-name"></InputStyledURL>
                                     </VStack>
                                 </HStack>
-                                <Divider></Divider> */}
+                                <Divider></Divider>
                                 {/* Description, Social Links, Featured Image */}
-                                {/* <HStack
+                                <HStack
                                     responsive={true}
                                     alignment="center"
                                     spacing="30px"
                                     padding="30px 0"
-                                > */}
+                                >
                                     {/* Description */}
-                                    {/* <VStack alignment="flex-start">
+                                    <VStack alignment="flex-start">
                                         <TitleBold15>Description</TitleBold15>
                                         <TextAreaStyled
                                             value={collectionDescription}
                                             onChange={(event) => {setCollectionDescription(event.target.value)}}
                                             height="400px"
                                         ></TextAreaStyled>
-                                    </VStack> */}
+                                    </VStack>
                                     {/* Social Links */}
-                                    {/* <VStack spacing="45px">
-                                    <VStack width="100%" alignment="flex-start">
-                                        <TitleBold15>Social Networks and Link</TitleBold15>
-                                        <InputStyledLink
-                                        icon={instagramIcon}
-                                        placeholder="Instagram Account"
-                                        ></InputStyledLink>
-                                        <InputStyledLink
-                                        icon={twitterIcon}
-                                        placeholder="Twitter Account"
-                                        ></InputStyledLink>
-                                        <InputStyledLink
-                                        icon={telegramIcon}
-                                        placeholder="Telegram Account"
-                                        ></InputStyledLink>
-                                        <InputStyledLink
-                                        icon={linkIcon}
-                                        placeholder="Website Account"
-                                        ></InputStyledLink>
+                                    <VStack spacing="45px">
+                                        <VStack width="100%" alignment="flex-start">
+                                            <TitleBold15>Social Networks and Link</TitleBold15>
+                                            <InputStyledLink
+                                                icon={instagramIcon}
+                                                input={instagramLink}
+                                                placeholder="Instagram Account"
+                                                onChange={(event) => {setInstagramLink(event.target.value)}}
+                                            ></InputStyledLink>
+                                            <InputStyledLink
+                                                icon={twitterIcon}
+                                                input={twitterLink}
+                                                placeholder="Twitter Account"
+                                                onChange={(event) => {setTwitterLink(event.target.value)}}
+                                            ></InputStyledLink>
+                                            {/* <InputStyledLink
+                                                icon={telegramIcon}
+                                                input={telegramLink}
+                                                placeholder="Telegram Account"
+                                            ></InputStyledLink> */}
+                                            <InputStyledLink
+                                                icon={linkIcon}
+                                                placeholder="Website"
+                                                input={websiteLink}
+                                                onChange={(event) => {setWebsiteLink(event.target.value)}}
+                                            ></InputStyledLink>
+                                        </VStack>
                                     </VStack>
-
-                                    <VStack width="100%" alignment="flex-start">
-                                        <TitleBold15 textcolor={({ theme }) => theme.text}>
-                                        Creator Earnings
-                                        </TitleBold15>
-                                        <BodyRegular textcolor={({ theme }) => theme.text}>
-                                        Earn a fee when a user re-sells one of you NFT
-                                        </BodyRegular>
-                                        <InputStyled placeholder="0.00" icon={percent}></InputStyled>
-                                    </VStack>
-                                    </VStack> */}
-                                    {/* Featured Image */}
-                                    {/* <VStack>
-                                    <VStack width="300px">
-                                        <TitleBold15>Featured Image</TitleBold15>
-                                        <UploadMultimedia
-                                        sizeText="400px x 400px"
-                                        width="300px"
-                                        height="300px"
-                                        backsize="cover"
-                                        ></UploadMultimedia>
-                                        <BodyRegular>
-                                        This image will be used to feature your collection in the
-                                        Discover page
-                                        </BodyRegular>
-                                    </VStack>
+                                    {/* Collection Logo */}
+                                    <VStack>
+                                        <VStack width="300px">
+                                            <TitleBold15>Collection Logo</TitleBold15>
+                                            {/* <BodyRegular>
+                                                This image will be used as the logo for your collection 
+                                            </BodyRegular> */}
+                                            <UploadMultimedia
+                                                sizeText="Recommended size: 400px x 400px"
+                                                width="300px"
+                                                height="300px"
+                                                backsize="cover"
+                                                image={collectionLogo}
+                                                button={"upload-button-logo"}
+                                            ></UploadMultimedia>
+                                            <input
+                                                type="file"
+                                                id="upload-button-logo"
+                                                style={{ display: "none" }}
+                                                onChange={handleChangeUploadMultimediaLogo}
+                                            />
+                                            <br />
+                                            <button onClick={addToIPFSCollectionLogo}>Upload</button>
+                                        </VStack>
                                     </VStack>
                                 </HStack>
-                                <Divider></Divider>
                             </VStack>
                             <Divider></Divider>
                         </>
                         : null
-                    } */}
+                    }
 
                     {/* Blockchain and Mint Button */}
                     <HStack padding="0 39px" spacing="69px" responsive={true}>
@@ -588,7 +742,7 @@ function CreateNft(props) {
                                     Blockchain
                                 </TitleBold15>
                                 <BodyRegular textcolor={({ theme }) => theme.text}>
-                                    Your NFT will be published on XinFin Blockchain
+                                    Your NFT will be published on XDC Blockchain
                                 </BodyRegular>
                             </VStack>
                         </HStack>
@@ -599,7 +753,7 @@ function CreateNft(props) {
                                 width="100%"
                                 background={({ theme }) => theme.faded}
                                 textcolor={appStyle.colors.text}
-                                onClick={() => NavigateTo(``)}
+                                onClick={() => clearForm()}
                             ></ButtonApp>
                             <ButtonApp
                                 text="Mint your NFT"
@@ -629,13 +783,6 @@ const ContentCreation = styled(motion.div)`
   margin: 0 auto;
 `;
 
-// export default class CreateToken extends Component {
-
-//     close = () => {
-//     }
-
-//     constructor(props) {
-//         super(props)
 
 //         this.state = {
 //             fileUrl: null,
@@ -673,74 +820,6 @@ const ContentCreation = styled(motion.div)`
 //         }
 //     }
 
-//     typingTimer = setTimeout(this.checkCollectionExists, 999999999999999999);
-
-//     doneTypingInterval = 1000;
-
-//     closeUpload = () => {
-//         this.setState({uploading: false})
-//         this.setState({uploadFailure: false})
-//     }
-
-//     closeMint = () => {
-//         this.setState({minting: false})
-//         this.setState({mintFailure: false})
-//     }
-
-//     addUnlockableContent = async() => {
-//         this.state.hasUnlockableContent ? this.setState({hasUnlockableContent: false}) : this.setState({hasUnlockableContent: true});
-//     };
-
-//     addProperty = async() => {
-//         this.state.hasProperties ? this.setState({hasProperties : false}) : this.setState({hasProperties: true});
-//     };
-
-//     handleChangeProperty(i, e) {
-//         let properties = this.state.properties;
-//         properties[i][e.target.name] = e.target.value;
-//         this.setState({ properties });
-//     }
-
-//     addFormFields() {
-//         this.setState(({
-//             properties: [...this.state.properties, { property: "", value: "" }]
-//         }))
-//     }
-
-//     removeFormFields(i) {
-//         let properties = this.state.properties;
-//         properties.splice(i, 1);
-//         this.setState({ properties });
-//     }
-
-//     handleChange = (event) => {
-
-//         const name = event.target.name;
-//         const value = event.target.value;
-
-//         this.setState({
-//             [name]: value
-//         });
-//     }
-
-//     addToIPFS = async (e) => {
-//         this.setState({uploading:true})
-//         const file = e.target.files[0]
-//         this.setState({uploadProgress: 0.00})
-//         try {
-//             const added = await client.add(
-//                 file, {
-//                     progress: (prog) => this.setState({uploadProgress: (prog * 100) / file.size})
-//                 })
-//             const url = `https://ipfs.infura.io/ipfs/${added.path}`
-//             this.setState({fileUrl: url})
-//             this.setState({file: file})
-//             this.setState({uploading:false})
-//         } catch (error) {
-//             console.log('Error uploading file:', error)
-//             this.setState({uploadFailure: true})
-//         }
-//     }
 
 //     isImage = (file) => {
 //         return !!file?.type.match('image.*');
@@ -753,470 +832,3 @@ const ContentCreation = styled(motion.div)`
 //     isAudio = (file) => {
 //         return !!file?.type.match('audio.*');
 //     }
-
-//     addBannerToIPFS = async (e) => {
-//         this.setState({uploading:true})
-//         const file = e.target.files[0]
-//         this.setState({uploadProgress: 0.00})
-//         try {
-//             const added = await client.add(
-//                 file, {
-//                     progress: (prog) => this.setState({uploadProgress: (prog * 100) / file.size})
-//                 })
-//             const url = `https://ipfs.infura.io/ipfs/${added.path}`
-//             this.setState({collectionBannerUrl: url})
-//             this.setState({uploading:false})
-//         } catch (error) {
-//             console.log('Error uploading file:', error)
-//             this.setState({uploadFailure: true})
-//         }
-//     }
-
-//     addLogoToIPFS = async (e) => {
-//         this.setState({uploading:true})
-//         const file = e.target.files[0]
-//         this.setState({uploadProgress: 0.00})
-//         try {
-//             const added = await client.add(
-//                 file, {
-//                     progress: (prog) => this.setState({uploadProgress: (prog * 100) / file.size})
-//                 })
-//             const url = `https://ipfs.infura.io/ipfs/${added.path}`
-//             this.setState({collectionLogoUrl: url})
-//             this.setState({uploading:false})
-//         } catch (error) {
-//             console.log('Error uploading file:', error)
-//             this.setState({uploadFailure: true})
-//         }
-//     }
-
-//     addPreviewToIPFS = async (e) => {
-//         this.setState({uploading:true})
-//         const file = e.target.files[0]
-//         this.setState({uploadProgress: 0.00})
-//         try {
-//             const added = await client.add(
-//                 file, {
-//                     progress: (prog) => this.setState({uploadProgress: (prog * 100) / file.size})
-//                 })
-//             const url = `https://ipfs.infura.io/ipfs/${added.path}`
-//             this.setState({previewUrl: url})
-//             this.setState({uploading:false})
-//         } catch (error) {
-//             console.log('Error uploading file:', error)
-//             this.setState({uploadFailure: true})
-//         }
-//     }
-
-//     createSale = async (url) => {
-//         try {
-//             const wallet = await GetWallet()
-//             const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER))
-
-//             const contract = new xdc3.eth.Contract(NFT.abi, nftaddress, isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address)
-//             let data = contract.methods.createToken(url).encodeABI()
-
-//             const tx = {
-//                 from: isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address,
-//                 to: nftaddress,
-//                 data
-//             }
-//             let gasLimit = await xdc3.eth.estimateGas(tx);
-
-//             tx["gas"] = gasLimit
-
-//             let transaction = await SendTransaction(tx)
-
-//             this.setState({updatingLedger: true})
-
-//             var txReceipt = await xdc3.eth.getTransactionReceipt(transaction.transactionHash)
-//             var tokenId = await txReceipt.logs[0].topics[3]
-
-//             const price = await xdc3.utils.toWei(this.state.price, "ether")
-
-//             var metadata = await axios.get(url)
-
-//             var tokenName = metadata?.data?.collection?.nft?.name;
-//             var collectionName = metadata?.data?.collection?.name;
-
-//             // const contract2 = new xdc3.eth.Contract(NFTMarket.abi, nftmarketaddress, isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address)
-//             const contract2 = new xdc3.eth.Contract(NFTMarketLayer1.abi, nftmarketlayeraddress, isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address)
-//             data = contract2.methods.createMarketItem(Number(tokenId), 0, isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address, isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address, price, false, this.state.royalty, 1, tokenName, collectionName).encodeABI()
-
-//             const tx2 = {
-//                 from: isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address,
-//                 to: nftmarketlayeraddress,
-//                 value: "",
-//                 data
-//             }
-
-//             gasLimit = await xdc3.eth.estimateGas(tx2);
-
-//             tx2["gas"] = gasLimit
-
-//             transaction = await SendTransaction(tx2)
-//             this.setState({mintSuccess: true})
-//         } catch (error) {
-//             console.log(error)
-//             this.setState({mintFailure: true})
-//         }
-//     }
-
-//     checkCollectionExists = async(event) => {
-//         const value = document.getElementsByClassName('collection-name nft-input')[0].value;
-//         const wallet = await GetWallet()
-//         const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER))
-//         // const marketContract = new xdc3.eth.Contract(NFTMarket.abi, nftmarketaddress, xdc3)
-//         const marketContract = new xdc3.eth.Contract(NFTMarketLayer1.abi, nftmarketlayeraddress, xdc3)
-//         const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress)
-//         const collectionData = await marketContract.methods.fetchCollections().call()
-//         const uniqueCollections = []
-//         const ownedCollections = []
-//         const collections = await Promise.all(collectionData.map(async i => {
-//             if(i.collectionName === value) {
-//                 if(i.creator === (isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address)) {
-//                     const uri = await nftContract.methods.tokenURI(i.tokenId).call()
-//                     var metadata = await axios.get(uri)
-//                     let collection = {
-//                         name: metadata?.data?.collection?.name,
-//                         description: metadata?.data?.collection?.description,
-//                         creator: metadata?.data?.collection?.creator,
-//                         banner: metadata?.data?.collection?.banner,
-//                         logo: metadata?.data?.collection?.logo,
-//                         twitterUrl: metadata?.data?.collection?.twitterUrl,
-//                         instagramUrl: metadata?.data?.collection?.instagramUrl,
-//                         discordUrl: metadata?.data?.collection?.discordUrl,
-//                         websiteUrl: metadata?.data?.collection?.websiteUrl,
-//                     }
-//                     this.setState({ownedCollection: collection})
-//                     ownedCollections.push(metadata?.data?.collection?.name)
-//                 }
-//             }
-//             uniqueCollections.push(i.collectionName)
-//         }))
-
-//         if(uniqueCollections.includes(value) && !ownedCollections.includes(value)) {
-//             this.setState({existingCollection: true});
-//             this.setState({ownedCollections: false});
-//         }
-//         else if(uniqueCollections.includes(value) && ownedCollections.includes(value)) {
-//             this.setState({existingCollection: true});
-//             this.setState({ownedCollections: true});
-//         }
-//         else {
-//             this.setState({existingCollection: false});
-//             this.setState({ownedCollections: false});
-//         };
-//         clearTimeout(this.typingTimer)
-//     }
-
-//     checkTyping = async(event) => {
-//         clearTimeout(this.typingTimer);
-//         if(document.getElementsByClassName('collection-name nft-input')[0].value) {
-//             this.typingTimer = setTimeout(this.checkCollectionExists, this.doneTypingInterval);
-//         }
-//     }
-
-//     render() {
-//         return <div>
-//             <header className='secondary-page-header'>
-//                 <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-//                     <h2 className="nft-h2"><span className="gradient-text">Create</span> your own NFT</h2>
-//                 </div>
-//             </header>
-//             <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-//                 <div className='flex justify-center'>
-//                     <div className='w-1/2 flex flex-col pb-12'>
-//                         <div className="mb-4">
-//                             <label className="nft-input-label">Asset</label>
-//                             <input type='file' name='Asset' className='nft-input' onChange={this.addToIPFS}/> 
-//                             {this.state.fileUrl
-//                                 ? <>
-//                                     {this.isImage(this.state.file)
-//                                         ? <img alt="NFT Media" className='rounded mt-4' width='350px' src={this.state.fileUrl}/>
-//                                         : <></>
-//                                     }
-//                                     {this.isVideo(this.state.file)
-//                                         ? <>
-//                                             <video className='rounded mt-4' width='350px' controls>
-//                                                 <source src={this.state.fileUrl} type={this.state.file.type}/>
-//                                             </video>
-//                                             <label className="nft-input-label">Preview</label>
-//                                             <label className='nft-neutral-label'>This image will be used as the primary display on the marketplace.</label>
-//                                             <input type='file' name='Preview' className='nft-input' onChange={this.addPreviewToIPFS}/>
-//                                             {this.state.previewUrl
-//                                                 ? <img alt="NFT Video Preview" className='rounded mt-4' width='350px' src={this.state.previewUrl}/>
-//                                                 : <></>
-//                                             }
-//                                         </>
-//                                         : <></>
-//                                     }
-//                                     {this.isAudio(this.state.file)
-//                                         ? <>
-//                                             <audio className='rounded mt-4' width='350px' controls>
-//                                                 <source src={this.state.fileUrl} type={this.state.file.type}/>
-//                                             </audio>
-//                                             <label className="nft-input-label">Cover Art</label>
-//                                             <label className='nft-neutral-label'>This image will be used as the primary display on the marketplace.</label>
-//                                             <input type='file' name='Cover Art' className='nft-input' onChange={this.addPreviewToIPFS}/>
-//                                             {this.state.previewUrl
-//                                                 ? <img alt="NFT Audio Preview" className='rounded mt-4' width='350px' src={this.state.previewUrl}/>
-//                                                 : <></>
-//                                             }
-//                                         </>
-//                                         : <></>
-//                                     }
-//                                 </>
-//                                 : <></>
-//                             }
-//                         </div>
-//                         <div className="mb-4">
-//                             <label className="nft-input-label">Asset Name</label>
-//                             <input placeholder='Individual NFT Name' className='nft-input' name="name" value={this.state.name} onChange={this.handleChange}/>
-//                         </div>
-//                         <div className="mb-4">
-//                             <label className="nft-input-label">Asset Description</label>
-//                             <textarea placeholder='A description of your asset' className='nft-input' name="description" value={this.state.description} onChange={this.handleChange}/>
-//                         </div>
-//                         <div className="mb-4">
-//                             <label className="nft-input-label">Asset Price in XDC</label>
-//                             <input placeholder='Asset Price in XDC' className='nft-input' name="price" value={this.state.price} onChange={this.handleChange}/>
-//                         </div>
-//                         <div className="mb-4">
-//                             <label className="nft-input-label">Royalty (in percentage)</label>
-//                             <input className='nft-input' name="royalty" value={this.state.royalty} onChange={this.handleChange}/>
-//                         </div>
-//                         <div className="mb-4">
-//                             <label className="nft-input-label">Collection</label>
-//                             {this.state.collection === "" 
-//                             ? <>
-//                             </>
-//                             : <>
-//                                 {this.state.existingCollection
-//                                     ? <>
-//                                         {this.state.ownedCollections
-//                                             ? <label className='nft-success-label'>{this.state.existingCollection ? "You can add NFTs to this collection!" : ""}</label>
-//                                             : <label className='nft-warning-label'>{this.state.existingCollection ? "Please enter a different collection name as the chosen collection name already exists and you do not have contributor access to this collection" : ""}</label>
-//                                         }
-//                                     </>
-//                                     : <>
-//                                         <label className='nft-success-label'>{this.state.existingCollection ? "" : "Collection name available!"}</label>
-//                                     </>
-//                                 }
-//                             </>
-//                             }
-//                             <input placeholder='Collection Name' className='collection-name nft-input' name="collection" value={this.state.collection} onChange={this.handleChange} onKeyUp={this.checkTyping}/>
-//                         </div>
-//                         {this.state.collection === "" 
-//                             ? <>
-//                             </>
-//                             : <>
-//                                 {this.state.existingCollection
-//                                     ? <></>
-//                                     : <>
-//                                         <div className="mb-4">
-//                                             <label className="nft-input-label">Collection Description</label>
-//                                             <textarea placeholder='Collection Description' className='nft-input' name="collectionDescription" value={this.state.collectionDescription} onChange={this.handleChange}/>
-//                                         </div>
-//                                         <div className="mb-4">
-//                                             <label className="nft-input-label">Collection Banner</label>
-//                                             <label className='nft-neutral-label'>Recommended size: 1600 x 350 (w x h)</label>
-//                                             <input type='file' name='Collection Banner' className='nft-input' onChange={this.addBannerToIPFS}/> {
-//                                             this.state.collectionBannerUrl && (
-//                                                 <img alt="Collection Banner" className='rounded mt-4' width='350px' src={this.state.collectionBannerUrl}/>
-//                                             )}
-//                                         </div>
-//                                         <div className="mb-4">
-//                                             <label className="nft-input-label">Collection Logo</label>
-//                                             <input type='file' name='Collection Logo' className='nft-input' onChange={this.addLogoToIPFS}/> {
-//                                             this.state.collectionLogoUrl && (
-//                                                 <img alt="Collection Logo" className='rounded mt-4' width='350px' src={this.state.collectionLogoUrl}/>
-//                                             )}
-//                                         </div>
-//                                         <div className="mb-4">
-//                                             <label className="nft-input-label">Twitter Link</label>
-//                                             <input placeholder='https://twitter.com/' className='nft-input' name="twitterUrl" value={this.state.twitterUrl} onChange={this.handleChange}/>
-//                                         </div>
-//                                         <div className="mb-4">
-//                                             <label className="nft-input-label">Instagram Link</label>
-//                                             <input placeholder='https://instagram.com/' className='nft-input' name="instagramUrl" value={this.state.instagramUrl} onChange={this.handleChange}/>
-//                                         </div>
-//                                         <div className="mb-4">
-//                                             <label className="nft-input-label">Discord Link</label>
-//                                             <input placeholder='https://discord.com/' className='nft-input' name="discordUrl" value={this.state.discordUrl} onChange={this.handleChange}/>
-//                                         </div>
-//                                         <div className="mb-4">
-//                                             <label className="nft-input-label">Website</label>
-//                                             <input placeholder='Collection Website URL' className='nft-input' name="websiteUrl" value={this.state.websiteUrl} onChange={this.handleChange}/>
-//                                         </div>
-//                                     </>
-//                                 }
-//                             </>
-//                         }
-//                         <div className="mb-4">
-//                             <label className="nft-input-label">Properties</label>
-//                             <button onClick = {this.addProperty} className='nft-btn-gradient w-full'>{this.state.hasProperties ? "Remove Property" : "Add Property"}</button>
-//                             {this.state.hasProperties &&
-//                             (<>
-//                             {this.state.properties.map((element, index) => (
-//                                 <div className="mb-4" key={index}>
-//                                     <label className="nft-input-label">Property</label>
-//                                     <input placeholder = "e.g. Character" type="text" className="nft-input" name="property" value={element.property || ""} onChange={e => this.handleChangeProperty(index, e)} />
-//                                     <label className="nft-input-label">Value</label>
-//                                     <input placeholder = "e.g. Male" type="text" className="nft-input" name="value" value={element.value || ""} onChange={e => this.handleChangeProperty(index, e)} />
-//                                 {
-//                                     index ? 
-//                                     <button type="button"  className="nft-btn-gradient" onClick={() => this.removeFormFields(index)}>Remove</button> 
-//                                     : null
-//                                 }
-//                                 </div>
-//                             ))}
-//                             <div className="button-section">
-//                                 <button className="nft-btn-gradient" type="button" onClick={() => this.addFormFields()}>Add</button>
-//                             </div>
-//                             </>)}
-                            
-//                         </div>
-//                         <div className="mb-4">
-//                             <label className="nft-input-label">Unlockable Content</label>
-//                             <button onClick = {this.addUnlockableContent} className='nft-btn-gradient w-full'>{this.state.hasUnlockableContent ? "Remove Unlockable Content" : "Add Unlockable Content"}</button>
-//                             {this.state.hasUnlockableContent && 
-//                                 (<input placeholder='Unlockable Content' className='nft-input' name="unlockableContent" value={this.state.unlockableContent} onChange={this.handleChange} />
-//                             )}
-//                         </div>
-//                         <div className="mb-4">
-//                             <button onClick={this.createMarket} className='nft-btn-gradient w-full' disabled={this.state.name === "" || this.state.name === undefined || this.state.fileUrl === null || (this.state.existingCollection && !this.state.ownedCollection)}>Mint NFT</button>
-//                         </div>
-//                     </div>
-//                 </div>
-//             </div>
-//             <Transition.Root show={this.state.minting} as={Fragment}>
-//                 <Dialog as="div" className="fixed z-999 inset-0 overflow-y-auto" onClose={this.close}>
-//                     <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-//                         <Transition.Child
-//                             as={Fragment}
-//                             enter="ease-out duration-300"
-//                             enterFrom="opacity-0"
-//                             enterTo="opacity-100"
-//                             leave="ease-in duration-200"
-//                             leaveFrom="opacity-100"
-//                             leaveTo="opacity-0"
-//                         >
-//                             <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-//                         </Transition.Child>
-
-//                         <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-//                         <Transition.Child
-//                             as={Fragment}
-//                             enter="ease-out duration-300"
-//                             enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-//                             enterTo="opacity-100 translate-y-0 sm:scale-100"
-//                             leave="ease-in duration-200"
-//                             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-//                             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-//                         >
-//                             <div
-//                                 className="inline-block align-center bg-black rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-//                                 <div className="bg-black text-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-//                                     {this.state.mintSuccess 
-//                                         ? <>
-//                                             <h2 className='text-center gradient-text'>NFT Successfully Minted!</h2>
-//                                             <div className="mt-3 text-center">
-//                                                 <div className="mt-2 w-full">
-//                                                     <h4>{this.state.name} is successfully minted and can now be listed on the market for purchase.</h4>
-//                                                     <button className="nft-btn-gradient h-32 py-0 my-1" onClick={() => {this.props.history.push(`/my-nfts`)}}>Ok!</button>
-//                                                 </div>
-//                                             </div>
-//                                         </>
-//                                         : <>
-//                                             {this.state.mintFailure
-//                                                 ? <>
-//                                                     <h2 className='text-center gradient-text'>Minting failed!</h2>
-//                                                     <div className="mt-3 text-center">
-//                                                         <div className="mt-2 w-full">
-//                                                             <h4>Something went wrong while minting the NFT. Please check your wallet connection and try again.</h4>
-//                                                             <button className="nft-btn-gradient h-32 py-0 my-1" onClick={this.closeMint}>Ok!</button>
-//                                                         </div>
-//                                                     </div>
-//                                                 </>
-//                                                 : <>
-//                                                     {this.state.updatingLedger 
-//                                                         ? <>
-//                                                             <h2 className='text-center gradient-text'>Updating the marketplace ledger!</h2>
-//                                                             <div className="mt-3 text-center">
-//                                                                 <div className="mt-2 w-full">
-//                                                                     <h4>We are making your freshly minted NFT visible on the marketplace. Thank you for your patience!</h4>
-//                                                                 </div>
-//                                                             </div>
-//                                                         </>
-//                                                         : <>
-//                                                             <h2 className='text-center gradient-text'>Minting in progress!</h2>
-//                                                             <div className="mt-3 text-center">
-//                                                                 <div className="mt-2 w-full">
-//                                                                     <h4>We are minting your NFT! Thank you for your patience!</h4>
-//                                                                 </div>
-//                                                             </div>
-//                                                         </>
-//                                                     }
-//                                                 </>
-//                                             }
-//                                         </>
-//                                     }
-//                                 </div>
-//                             </div>
-//                         </Transition.Child>
-//                     </div>
-//                 </Dialog>
-//             </Transition.Root>
-        
-//             <Transition.Root show={this.state.uploading} as={Fragment}>
-//                 <Dialog as="div" className="fixed z-999 inset-0 overflow-y-auto" onClose={this.close}>
-//                     <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-//                         <Transition.Child
-//                             as={Fragment}
-//                             enter="ease-out duration-300"
-//                             enterFrom="opacity-0"
-//                             enterTo="opacity-100"
-//                             leave="ease-in duration-200"
-//                             leaveFrom="opacity-100"
-//                             leaveTo="opacity-0"
-//                         >
-//                             <Dialog.Overlay className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" />
-//                         </Transition.Child>
-//                         <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-//                         <Transition.Child
-//                             as={Fragment}
-//                             enter="ease-out duration-300"
-//                             enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-//                             enterTo="opacity-100 translate-y-0 sm:scale-100"
-//                             leave="ease-in duration-200"
-//                             leaveFrom="opacity-100 translate-y-0 sm:scale-100"
-//                             leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-//                         >
-//                             <div
-//                                 className="inline-block align-center bg-black rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-//                                 <div className="bg-black text-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-//                                     <h2 className='text-center gradient-text'>{this.state.uploadFailure ? "Upload failed!" : "Upload in progress!"}</h2>
-//                                     <div className="mt-3 text-center">
-//                                         <div className="mt-2 w-full">
-//                                             {this.state.uploadFailure
-//                                                 ? <>
-//                                                     <h4>Something went wrong while uploading the asset. Please ensure that the file size is less than 100MB and try again.</h4>
-//                                                     <button className="nft-btn-gradient h-32 py-0 my-1" onClick={this.closeUpload}>Ok!</button>
-//                                                 </>
-//                                                 : <>
-//                                                     <h4>We are uploading your assets! Thank you for your patience!</h4>
-//                                                     <h4>{`Progress: ${this.state.uploadProgress.toFixed(2)}%`}</h4>
-//                                                 </>
-//                                             }
-//                                         </div>
-//                                     </div>
-//                                 </div>
-//                             </div>
-//                         </Transition.Child>
-//                     </div>
-//                 </Dialog>
-//             </Transition.Root>
-//         </div>;
-//     }
-// }

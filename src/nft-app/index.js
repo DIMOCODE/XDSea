@@ -122,7 +122,7 @@ const NFTApp = () => {
             <Switch>
               <Route exact path="/" component={Home}></Route>
               <Route exact path="/discover" component={Discover}></Route>
-              {/* <Route exact path="/UserProfile" component={UserProfile}></Route> */}
+              <Route exact path="/UserProfile/:urlAddress" component={MyNFT}></Route>
               <Route exact path="/CreateNFT" component={CreateNft}></Route>
               <Route
                 exact

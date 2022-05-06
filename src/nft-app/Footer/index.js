@@ -114,7 +114,7 @@ function Footer(props) {
               border="6px"
             >
               <BodyRegular textcolor="white">
-                Copyright @2022 XDSea All Rights Reserved
+                Copyright © 2022 XDSea All Rights Reserved
               </BodyRegular>
             </VStack>
           </VStack>
