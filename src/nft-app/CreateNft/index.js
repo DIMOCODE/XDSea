@@ -742,7 +742,7 @@ function CreateNft(props) {
                                     Blockchain
                                 </TitleBold15>
                                 <BodyRegular textcolor={({ theme }) => theme.text}>
-                                    Your NFT will be published on XinFin Blockchain
+                                    Your NFT will be published on XDC Blockchain
                                 </BodyRegular>
                             </VStack>
                         </HStack>

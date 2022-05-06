@@ -5,30 +5,45 @@ import { BodyBold, BodyRegular } from "./TextStyles";
 import transferIcon from "../images/transferIcon.png";
 import star from "../images/starColor.png";
 import xdclogo from "../images/miniXdcLogo.png";
+import Tooltip from "@mui/material/Tooltip";
 
-function TableActivityNft() {
+function TableActivityNft(props) {
   const widthRow = "264px";
   const debugColor = "transparent";
   const heightRow = "49px";
 
-  const [arrayRows, setArrayRows] = useState([
-    {
-      id: 1,
-      event: "Transfer",
-      price: "",
-      from: "Yoselin",
-      to: "Lia",
-      date: "9 April 2022",
-    },
-    {
-      id: 2,
-      event: "Price",
-      price: "10,000",
-      from: "Paul ",
-      to: "Yoselin",
-      date: "10 april 2022",
-    },
-  ]);
+  function determineAgoTime(date) {
+    var seconds = Math.floor((new Date() - date) / 1000);
+
+    var interval = seconds / 31536000;
+
+    if (interval > 1) {
+      return Math.floor(interval) + " years ago";
+    }
+    interval = seconds / 2592000;
+    if (interval > 1) {
+      return Math.floor(interval) + " months ago";
+    }
+    interval = seconds / 86400;
+    if (interval > 1) {
+      return Math.floor(interval) + " days ago";
+    }
+    interval = seconds / 3600;
+    if (interval > 1) {
+      return Math.floor(interval) + " hours ago";
+    }
+    interval = seconds / 60;
+    if (interval > 1) {
+      return Math.floor(interval) + " minutes ago";
+    }
+    return Math.floor(seconds) + " seconds ago";
+  };
+
+  const truncateAddress = (address) => {
+    return address
+      ? address.substring(0, 7) + "..." + address.substring(38)
+      : "undefined";
+  };
 
   return (
     <VStack
@@ -64,8 +79,8 @@ function TableActivityNft() {
       </HStack>
       <Divider></Divider>
 
-      {arrayRows.map((item) => (
-        <HStack width="100%" height={heightRow}>
+      {props?.activity.map((item) => (
+        <HStack key={item.id} width="100%" height={heightRow}>
           <Spacer></Spacer>
           <HStack spacing="6px" width={widthRow} background={debugColor}>
             <IconImg
@@ -73,8 +88,8 @@ function TableActivityNft() {
                 item.event === "Transfer"
                   ? transferIcon
                   : item.event === "Price"
-                  ? star
-                  : null
+                    ? star
+                    : null
               }
               width="18px"
               height="18px"
@@ -85,7 +100,7 @@ function TableActivityNft() {
           </HStack>
           <Spacer></Spacer>
           <HStack width={widthRow} background={debugColor}>
-            {item.event === "Transfer" ? (
+            {item.event === "Transfer" || item.event === "Mint" || item.event === "Withdraw Listing" || item.event === "Offer Withdrawn" ? (
               <BodyBold></BodyBold>
             ) : (
               <HStack spacing="6px">
@@ -103,8 +118,9 @@ function TableActivityNft() {
               height="18px"
               border="30px"
             ></IconImg>
-
-            <BodyRegular>TeamAzuki</BodyRegular>
+            <Tooltip title={item.from}>
+              <BodyRegular>{truncateAddress(item.from)}</BodyRegular>
+            </Tooltip>
           </HStack>
           <Spacer></Spacer>
           <HStack spacing="6px" width={widthRow} background={debugColor}>
@@ -114,12 +130,24 @@ function TableActivityNft() {
               height="18px"
               border="30px"
             ></IconImg>
-
-            <BodyRegular>TeamMoar</BodyRegular>
+            <Tooltip title={item.to}>
+              <BodyRegular>{truncateAddress(item.to)}</BodyRegular>
+            </Tooltip>
           </HStack>
           <Spacer></Spacer>
           <HStack background={debugColor} width={widthRow}>
-            <BodyRegular>10 days ago</BodyRegular>
+            <Tooltip
+              title={new Date(item.date * 1000).toLocaleDateString("en-US", { 
+                day: "2-digit", 
+                month: "short",
+                year: "2-digit",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit",
+              })}
+            >
+              <BodyRegular>{determineAgoTime(new Date(item.date * 1000))}</BodyRegular>
+            </Tooltip>
           </HStack>
           <Spacer></Spacer>
         </HStack>

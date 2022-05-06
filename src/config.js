@@ -4,6 +4,6 @@
   export const nftmarketlayeraddress = "0xFC8fd5C4CfE35b0AD7f1b02C851968E42F85e45A"
 
   // Test
-  // export const nftmarketaddress = "0xf5d84c5452d8Cf8a6AA4A5Fdb9448F46624fB8b6"
-  // export const nftaddress = "0x2Aac026508D81D6680E3c90165722eC375BF7ae0"
-  // export const nftmarketlayeraddress = "0x707919f77c6169C304F2dc2176B9aDDc755D037A"
+  // export const nftmarketaddress = "0x5F22351A7434D07E491467a7d540E02aaEE51428"
+  // export const nftaddress = "0xf7808A8253A7e893d0851723E3d6CF59D6Cc2519"
+  // export const nftmarketlayeraddress = "0xC42023c4595786E1a3D8Ba2ae5945e991223Ff99"
