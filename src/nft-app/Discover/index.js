@@ -406,6 +406,7 @@ const Discover = () => {
               {setLoading
                 ? loadingCollection.map((item) => (
                     <VStack
+                      key={item.name}
                       minwidth={size.width < 768 ? "100%" : "500px"}
                       maxwidth="500px"
                       height={size.width < 768 ? "440px" : "420px"}
@@ -414,28 +415,32 @@ const Discover = () => {
                     </VStack>
                   ))
                 : collections.map((item) => (
-                    <VStack
-                      minwidth={size.width < 768 ? "100%" : "500px"}
-                      maxwidth="500px"
-                      height={size.width < 768 ? "440px" : "420px"}
-                    >
-                      <Collection
-                        key={item.name}
-                        collectionImage={item.banner}
-                        creatorLogo={item.logo}
-                        collectionName={item.name}
-                        collectionDescription={item.description}
-                        creatorName={item.creator}
-                        onClickCollection={() =>
-                          NavigateTo(`collection/${item.name}`)
-                        }
-                        floorprice={item.floorPrice}
-                        owners={item.owners}
-                        nfts={item.items}
-                        volumetraded={item.volumeTraded}
-                        // onClickCreator={() => NavigateTo("UserProfile")}
-                      ></Collection>
-                    </VStack>
+                    <LayoutGroup id="collection">
+                      <VStack
+                        minwidth={size.width < 768 ? "100%" : "500px"}
+                        maxwidth="500px"
+                        height={size.width < 768 ? "440px" : "420px"}
+                      >
+                        <Collection
+                          key={item.name}
+                          keyContent={item.name}
+                          keyID={item.creator}
+                          collectionImage={item.banner}
+                          creatorLogo={item.logo}
+                          collectionName={item.name}
+                          collectionDescription={item.description}
+                          creatorName={item.creator}
+                          onClickCollection={() =>
+                            NavigateTo(`collection/${item.name}`)
+                          }
+                          floorprice={item.floorPrice}
+                          owners={item.owners}
+                          nfts={item.items}
+                          volumetraded={item.volumeTraded}
+                          // onClickCreator={() => NavigateTo("UserProfile")}
+                        ></Collection>
+                      </VStack>
+                    </LayoutGroup>
                   ))}
             </HStack>
           </HStack>
