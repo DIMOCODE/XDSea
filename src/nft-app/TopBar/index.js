@@ -4,18 +4,19 @@ import styled from "styled-components";
 import { XdcConnect, Disconnect } from "xdc-connect";
 import { HStack, IconImg, Spacer, VStack } from "../../styles/Stacks";
 import ButtonApp from "../../styles/Buttons";
-import { BodyBold } from "../../styles/TextStyles";
+import { BodyBold, CaptionRegular } from "../../styles/TextStyles";
 import XDSealogo from "../../images/LogoXDSEA.png";
 import { WalletButton } from "../../styles/walletButton";
 
 import { SwitchButton } from "../../styles/SwitchButton";
 import { motion } from "framer-motion/dist/framer-motion";
 import { UserMenuButton } from "./UserMenuButton";
+import { appStyle } from "../../styles/AppStyles";
 
 import "../../styles/App.css";
 
 function TopBar(props) {
-  const { themeToggler } = props;
+  const { themeToggler, devMode } = props;
 
   const history = useHistory();
 
@@ -30,11 +31,23 @@ function TopBar(props) {
       <HStack height="90px" width="1200px">
         <HStack>
           <IconImg url={XDSealogo} width="66px" height="66px"></IconImg>
-          <VStack spacing="0px" alignment="flex-start">
+          <VStack spacing="1px" alignment="flex-start">
             <BodyBold textcolor={({ theme }) => theme.text}>XDSea</BodyBold>
-            <BodyBold textcolor={({ theme }) => theme.blue}>
-              βeta v1.6.0
-            </BodyBold>
+            {!devMode ? (
+              <BodyBold textcolor={({ theme }) => theme.blue}>
+                βeta v1.6.0
+              </BodyBold>
+            ) : (
+              <HStack
+                background="linear-gradient(180deg, #044DC4 0%, #192EA6 100%)"
+                border="6px"
+                padding="3px 6px"
+              >
+                <CaptionRegular textcolor={appStyle.colors.white}>
+                  Developer
+                </CaptionRegular>
+              </HStack>
+            )}
           </VStack>
         </HStack>
 

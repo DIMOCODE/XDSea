@@ -1,4 +1,4 @@
-import React, { createContext, useEffect, useMemo, useState } from 'react';
+import React, { createContext, useEffect, useMemo, useState } from "react";
 import { Link, Route, Switch, useLocation, useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { motion } from "framer-motion/dist/framer-motion";
@@ -31,8 +31,11 @@ import { ModalAds } from "../ModalAds";
 import { HowToStart } from "../HowToStart";
 import starwarsYoda from "../images/Yoda4.gif";
 import starwarsVader from "../images/Vader1.gif";
+import alertWhite from "../images/alertWhite.png";
 
-import { nftaddress } from '../config';
+import { nftaddress } from "../config";
+import { HStack, IconImg } from "../styles/Stacks";
+import { BodyRegular, CaptionRegular } from "../styles/TextStyles";
 const NFTApp = () => {
   const location = useLocation();
   const navigation = useMemo(() => {
@@ -57,43 +60,63 @@ const NFTApp = () => {
 
   const history = useHistory();
 
-    const [wallet, setWallet] = useState({});
-    const [theme, setTheme] = useState("light");
-    const [isModal, setIsModal] = useState(false);
-    const [isModalAds, setIsModalAds] = useState(false);
-    const [randomNumber, setRandomNumber] = useState(0)
-    // const [isNotification, setIsNotification] = useState(false);
+  const [wallet, setWallet] = useState({});
+  const [theme, setTheme] = useState("light");
+  const [isModal, setIsModal] = useState(false);
+  const [isModalAds, setIsModalAds] = useState(false);
+  const [randomNumber, setRandomNumber] = useState(0);
+  const [isDevMode, setIsDevMode] = useState(true);
+  // const [isNotification, setIsNotification] = useState(false);
 
   const themeToggler = () => {
     theme === "light" ? setTheme("dark") : setTheme("light");
   };
 
-    useEffect(() => {
-        setRandomNumber(Math.floor(Math.random() * 2))
-    })
+  useEffect(() => {
+    setRandomNumber(Math.floor(Math.random() * 2));
+  });
 
-    return (
-        <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
-            <>
-                <GlobalStyles/>
-                <HomeStack>
-                    {/* {isModal
+  return (
+    <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
+      <>
+        <GlobalStyles />
+
+        <HomeStack>
+          {/* {isModal
                         ? <Modal onClickCancel = {() => setIsModal(!isModal)}></Modal>
                         : null
                     } */}
 
-                    {isModalAds ? (
-                        <ModalAds
-                            imageAd={randomNumber === 0 ? starwarsYoda : starwarsVader}
-                            onClickCancel={() => setIsModalAds(!isModalAds)}
-                            onClick={() => {
-                                randomNumber === 0 ? 
-                                    history.push(`/nft/${nftaddress}/1793`)
-                                : history.push(`/nft/${nftaddress}/1792`)}}
-                        ></ModalAds>
-                    ) : null}
+          {isModalAds ? (
+            <ModalAds
+              imageAd={randomNumber === 0 ? starwarsYoda : starwarsVader}
+              onClickCancel={() => setIsModalAds(!isModalAds)}
+              onClick={() => {
+                randomNumber === 0
+                  ? history.push(`/nft/${nftaddress}/1793`)
+                  : history.push(`/nft/${nftaddress}/1792`);
+              }}
+            ></ModalAds>
+          ) : null}
 
-          <TopBar themeToggler={themeToggler}></TopBar>
+          {/* Devmode bottombar */}
+          {isDevMode ? (
+            <DevMode>
+              <HStack padding="15px 21px" spacing="9px">
+                <IconImg url={alertWhite} width="21px" height="21px"></IconImg>
+                <CaptionRegular textcolor="white">
+                  <b>
+                    This Developer Page is for feature testing purposes. All
+                    transactions
+                  </b>
+                  &nbsp; made on the developer page
+                  <b> are executed in the main network, be careful.</b>
+                </CaptionRegular>
+              </HStack>
+            </DevMode>
+          ) : null}
+
+          <TopBar devMode={isDevMode} themeToggler={themeToggler}></TopBar>
 
           <ScrollView>
             <Switch>
@@ -116,8 +139,8 @@ const NFTApp = () => {
                     path="/CreateCollection"
                     component={CreateCollection}
                 ></Route> */}
-                {/* <Route exact path="/Settings" component={Settings}></Route> */}
-                <Route exact path="/HowToStart" component={HowToStart}></Route>
+              {/* <Route exact path="/Settings" component={Settings}></Route> */}
+              <Route exact path="/HowToStart" component={HowToStart}></Route>
 
               <Route path="**" component={Home}></Route>
             </Switch>
@@ -142,4 +165,13 @@ const ScrollView = styled(motion.div)`
   width: 100%;
   padding: 0px;
   margin: 0px;
+`;
+
+const DevMode = styled(motion.div)`
+  background: linear-gradient(180deg, #044dc4 0%, #192ea6 100%);
+
+  border-radius: 30px;
+  position: fixed;
+  z-index: 10;
+  bottom: 15px;
 `;
