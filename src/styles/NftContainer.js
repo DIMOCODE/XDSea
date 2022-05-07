@@ -3,6 +3,7 @@ import { useState } from "react";
 import { HStack, IconImg, VStack, Spacer, ZStack, ZItem } from "./Stacks";
 import miniXdcLogo from "../images/miniXdcLogo.png";
 import { BodyBold, BodyRegular, TitleBold18 } from "./TextStyles";
+import ReactPlayer from "react-player";
 
 import { appStyle } from "./AppStyles";
 import {
@@ -79,7 +80,21 @@ function NftContainer(props) {
               border="27px"
             ></IconImg>
           ) : (
-            "Our Video Component"
+            <VStack
+              animate={isVisible ? "hover" : "initial"}
+              variants={scaleImage}
+              background={appStyle.colors.darkgrey10}
+              height="370px"
+            >
+              <ReactPlayer
+                url="https://ipfs.infura.io/ipfs/QmbHQEf8GFBpQdVcLT281XaicJPkPMzBJodYq3xzaVYHjJ"
+                playing={true}
+                muted={true}
+                loop={true}
+                width="100%"
+                height="100%"
+              />
+            </VStack>
           )}
         </ZItem>
         {/* NFT Content*/}
@@ -100,6 +115,7 @@ function NftContainer(props) {
                 bordersize="3px"
                 bordercolor="white"
                 whileTap={onClickCreator}
+                backsize="cover"
               ></IconImg>
             </HStack>
             <Spacer></Spacer>
