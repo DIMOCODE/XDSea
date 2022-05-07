@@ -410,7 +410,7 @@ const NFTDetails = (props) => {
                 }
 
                 if(metadata?.data?.collection?.name === currentItem.collectionName && i.tokenId !== currentItem.tokenId
-                    && moreFromCollectionItems.length < 8 && i.tokenId !== "119" && i.tokenId !== "1778") {
+                    && moreFromCollectionItems.length < 8 && i.tokenId !== "119" && i.tokenId !== "1778" && i.tokenId !== "2756") {
                     moreFromCollectionItems.push(item)
                 }
                 return item

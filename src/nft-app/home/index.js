@@ -15,6 +15,9 @@ import {toXdc} from '../../common/common';
 import SkeletonCard from "../../common/skeleton/card";
 import detectEthereumProvider from "@metamask/detect-provider";
 import CollectionCard from './common/collectionCard';
+import { ModalAds } from './common/ModalAds';
+import starwars from "../../images/Yoda4.gif";
+import starwars1 from "../../images/Vader1.gif";
 import { fromXdc, isXdc } from '../../common/common';
 import { XdcConnect } from "xdc-connect";
 import { permaBlacklist } from '../../blacklist';
@@ -48,6 +51,8 @@ const Home = (props) => {
     const [settingPrice, setSettingPrice] = useState(false);
     const [blacklist, setBlacklist] = useState([])
     const [featuredNFTType, setFeaturedNFTType] = useState('')
+    const [isModalAds, setIsModalAds] = useState(false)
+    const [randomNumber, setRandomNumber] = useState(0)
 
     const close = () => {
         setSellData(null)
@@ -154,7 +159,7 @@ const Home = (props) => {
             if(wallet.wallet.address !== '')
                 var getVal = await nftContract.methods.isApprovedForAll(isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address, nftmarketlayeraddress).call()
             
-            const featuredNFT = await marketContract.methods.idToMarketItem(1772).call()
+            const featuredNFT = await marketContract.methods.idToMarketItem(2812).call()
             const featuredNFTUri = await nftContract.methods.tokenURI(featuredNFT.tokenId).call()
             var featuredNFTMetadata = await axios.get(featuredNFTUri)
             let featuredNFTData = {
@@ -180,7 +185,7 @@ const Home = (props) => {
             }
             spotlightCollections.push(collection)
 
-            var collectionData = await marketContract.methods.fetchCollection("NFTHC").call()
+            var collectionData = await marketContract.methods.fetchCollection("DØP3 Punks ").call()
             const collectionUri2 = await nftContract.methods.tokenURI(collectionData.tokenId).call()
             var collectionMetadata = await axios.get(collectionUri2)
             let collection2 = {
@@ -233,7 +238,7 @@ const Home = (props) => {
             }
             trendingItems.push(item2)
 
-            var itemData = await marketContract.methods.idToMarketItem(2133).call()
+            var itemData = await marketContract.methods.idToMarketItem(2812).call()
             const trendingItemUri3 = await nftContract.methods.tokenURI(itemData.tokenId).call()
             var trendingItemMetadata = await axios.get(trendingItemUri3)
             var price = await xdc3.utils.fromWei(itemData.price, "ether")
@@ -332,6 +337,7 @@ const Home = (props) => {
     }
 
     useEffect(() => {
+        setRandomNumber(Math.floor(Math.random() * 2))
         checkWalletConnection()
         setWallet(props.wallet)
         getData();
@@ -344,6 +350,16 @@ const Home = (props) => {
         <div key={props.wallet} className="nft-banner" style={{
             backgroundImage: setBannerImage()
         }}>
+            {isModalAds ? (
+                <ModalAds
+                    imageAd={randomNumber === 0 ? starwars : starwars1}
+                    onClickCancel={() => setIsModalAds(!isModalAds)}
+                    onClick={() => {
+                        randomNumber === 0 ? 
+                            history.push(`/nft/${nftaddress}/1793`)
+                        : history.push(`/nft/${nftaddress}/1792`)}}
+                ></ModalAds>
+            ) : null}
             <div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4 container max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className='topBannerText'>

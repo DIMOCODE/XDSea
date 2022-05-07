@@ -101,7 +101,7 @@ const CollectionDetails = (props) => {
                 return item
             }))
             var filteredCollectionItems = collectionItems.filter((element) => {
-                return element?.tokenId !== "119" && element?.tokenId !== "1778"
+                return element?.tokenId !== "119" && element?.tokenId !== "1778" && element?.tokenId !== "2756"
             })
             var volumeTraded = 0
             const uniqueOwners = []
@@ -180,7 +180,7 @@ const CollectionDetails = (props) => {
             return nft
         }))
         var filteredCollectionItems = nfts.filter((element) => {
-            return element?.tokenId !== "119" && element?.tokenId !== "1778"
+            return element?.tokenId !== "119" && element?.tokenId !== "1778" && element?.tokenId !== "2756"
         })
 
         setNFts(prevState => ([...prevState, ...filteredCollectionItems]));
@@ -337,7 +337,7 @@ const CollectionDetails = (props) => {
             </div>
             <div className='collection-details max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4'>
                 <div className='collection-count'>
-                    <h2 className='text-white text-center'>{collectionName == "The Lucid Women" || collectionName == "NFTHC" ? page.length - 1 : page.length}</h2>
+                    <h2 className='text-white text-center'>{collectionName == "The Lucid Women" || collectionName == "NFTHC" || collectionName == "DØP3 Punks " ? page.length - 1 : page.length}</h2>
                     <h5 className='text-white text-center'>{page.length === 1 ? "Item" : "Items"}</h5>
                 </div>
                 <div className='collection-owners'>

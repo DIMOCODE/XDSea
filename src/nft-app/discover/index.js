@@ -11,6 +11,7 @@ import {GetWallet} from 'xdc-connect';
 import axios from "axios"
 import { SendTransaction } from 'xdc-connect';
 import SkeletonCollectionCard from '../../common/skeleton/collectionCard';
+import { spotlightCollectionList } from '../../blacklist';
 
 const Discover = () => {
     const history = useHistory()
@@ -20,6 +21,7 @@ const Discover = () => {
     const [collectionPage, setCollectionPage] = useState([])
     const [pageCount, setPageCount] = useState(1)
     const [isFetching, setIsFetching] = useState(false)
+    const [lastIndex, setLastIndex] = useState(0)
     
     const getData = async () => {
         try {
@@ -65,8 +67,10 @@ const Discover = () => {
             // }))
 
             const collectionData = await marketContract.methods.fetchCollections().call()
-            const collections = await Promise.all(collectionData.slice(0, 12).map(async i => {
-                const uri = await nftContract.methods.tokenURI(i.tokenId).call()
+
+            const spotlightCollections = await Promise.all(spotlightCollectionList.map(async i => {
+                var collectionData = await marketContract.methods.fetchCollection(i).call();
+                const uri = await nftContract.methods.tokenURI(collectionData.tokenId).call()
                 var metadata = await axios.get(uri)
 
                 let collection = {
@@ -79,10 +83,6 @@ const Discover = () => {
 
                 return collection
             }))
-
-            var filteredCollections = collections.filter((element) => {
-                return element?.name !== "Untitled Collection 7"
-            })
             
             // const data56 = await marketContract.methods.fetchMarketItems().call()
             // console.log(data56.length)
@@ -96,7 +96,7 @@ const Discover = () => {
             // }))
             // console.log("Finished")
 
-            setCollections(filteredCollections)
+            setCollections(spotlightCollections)
             setCollectionPage(collectionData)
             
             // const allEvents = await Promise.all(data2.map(async item => {
@@ -214,32 +214,43 @@ const Discover = () => {
         setIsFetching(true)
     }
     const fetchMoreCollections = async () => {
-        setPageCount(pageCount + 1)
-        const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER))
-        const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress)
-        const collections = await Promise.all(collectionPage.slice(pageCount * 12, 12 * (pageCount + 1)).map(async i => {
-            const uri = await nftContract.methods.tokenURI(i.tokenId).call()
-            var metadata = await axios.get(uri)
+        try{
+            setPageCount(pageCount + 1)
+            const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER))
+            const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress)
+            var nextPage = []
+            const collections = await Promise.all(collectionPage.slice(lastIndex, lastIndex + 24).map(async (i, index) => {
+                if(!spotlightCollectionList.includes(i.collectionName) && i.collectionName !== "Untitled Collection 7") {
+                    const uri = await nftContract.methods.tokenURI(i.tokenId).call()
+                    var metadata = await axios.get(uri)
 
-            let collection = {
-                name: metadata?.data?.collection?.name,
-                description: metadata?.data?.collection?.description,
-                creator: metadata?.data?.collection?.creator,
-                banner: metadata?.data?.collection?.banner,
-                logo: metadata?.data?.collection?.logo
-            }
+                    let collection = {
+                        id: index,
+                        name: metadata?.data?.collection?.name,
+                        description: metadata?.data?.collection?.description,
+                        creator: metadata?.data?.collection?.creator,
+                        banner: metadata?.data?.collection?.banner,
+                        logo: metadata?.data?.collection?.logo
+                    }
 
-            return collection
-        }))
+                    nextPage.push(collection)
+                }
+            }))
 
-        var filteredCollections = collections.filter((element) => {
-            return element?.name !== "Untitled Collection 7"
-        })
+            nextPage = nextPage.sort((collection1, collection2) => {if(collection1.id < collection2.id) 
+                return -1
+            else return 1}).slice(0, 12)
+            setLastIndex(lastIndex + nextPage[11].id + 1)
 
-        setCollections(prevState => ([...prevState, ...filteredCollections]));
-        setIsFetching(false);
+            setCollections(prevState => ([...prevState, ...nextPage]));
+            setIsFetching(false);
+        }
+        catch (error) {
+            setIsFetching(false);
+        }
     }
     useEffect(() => {
+        window.scrollTo(0, 0);
         getData()
         window.addEventListener('scroll', handleScroll);
         return () => window.removeEventListener('scroll', handleScroll);
