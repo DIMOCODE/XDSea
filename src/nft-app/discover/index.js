@@ -98,6 +98,55 @@ const Discover = () => {
 
             setCollections(spotlightCollections)
             setCollectionPage(collectionData)
+
+            // const collections = await Promise.all(
+            //     collectionData.slice(100, 300)
+            //       .map(async (i) => {
+            //         const collectionData2 = await marketContract.methods
+            //           .getCollectionNFTs(i.collectionName)
+            //           .call();
+            //         // console.log(i.collectionName)
+            //         var volumeTraded = 0;
+            //         const allEvents = await Promise.all(
+            //           collectionData2.map(async (item) => {
+            //             // console.log(item.name)
+            //             var tokenEvents = await marketContract.methods
+            //               .getTokenEventHistory(item.tokenId)
+            //               .call();
+            //             // console.log(tokenEvents)
+            //             for (var j = 0; j < tokenEvents.length; j++) {
+            //               if (
+            //                 tokenEvents[j].eventType === "3" ||
+            //                 tokenEvents[j].eventType === "8"
+            //               ) {
+            //                 //   console.log(tokenEvents[j].price)
+            //                 volumeTraded += parseInt(
+            //                   await xdc3.utils.fromWei(tokenEvents[j].price, "ether")
+            //                 );
+            //               }
+            //             }
+            //             // console.log(volumeTraded);
+            //           })
+            //         );
+          
+            //         let collection = {
+            //           name: i.collectionName,
+            //           volumeTraded: volumeTraded,
+            //         };
+
+            //         // console.log(collection)
+          
+            //         return collection;
+            //       })
+            //   );
+
+            // const topCollections = collections.sort((collection1, collection2) => {
+            //     if(collection1.volumeTraded > collection2.volumeTraded)
+            //         return -1;
+            //     else return 1;
+            // })
+
+            // console.log(topCollections)
             
             // const allEvents = await Promise.all(data2.map(async item => {
             //     // console.log(item.tokenId)
