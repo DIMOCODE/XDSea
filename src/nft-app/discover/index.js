@@ -329,9 +329,9 @@ const Discover = () => {
                                             <CollectionCard
                                                 name={collection.name}
                                                 creator = {collection.creator}
-                                                banner = {collection.banner}
-                                                logo = {collection.logo}
-                                                description = {collection.description}
+                                                banner = {collection.name === "DØP3 Punks " ? "/hfnn-jfjd-ornj.jpeg" : collection.banner}
+                                                logo = {collection.name === "DØP3 Punks " ? "/ghnj-hjoe-nfks.jpeg" : collection.logo}
+                                                description = {collection.name === "DØP3 Punks " ? `A multichain NFT project minting collections on every major blockchain!\n\nWhere DØP3 Art Meets Web3` : collection.description}
                                                 viewCollection={() => viewCollection(collection.name)}
                                                 wallet = {wallet}
                                             />

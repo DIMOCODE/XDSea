@@ -308,11 +308,11 @@ const CollectionDetails = (props) => {
     return <div>
         <header className='secondary-page-header'>
             <div className='collection-banner'>
-                <img alt='Collection Banner' src={nfts[0]?.collectionBanner}></img>
+                <img alt='Collection Banner' src={collectionName === "DØP3 Punks " ? "/hfnn-jfjd-ornj.jpeg" : nfts[0]?.collectionBanner}></img>
             </div>
             <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-6 text-center">
                 <div className="collection-logo">
-                    <img alt='Collection Logo' src={nfts[0]?.collectionLogo}></img>
+                    <img alt='Collection Logo' src={collectionName === "DØP3 Punks " ? "/ghnj-hjoe-nfks.jpeg" : nfts[0]?.collectionLogo}></img>
                 </div>
                 <h1 className="nft-h1"><span className="gradient-text">{collectionName}</span></h1>
                 <h6 className='nft-h3 text-white'><span className='gradient-text'>Created by</span> {nfts[0]?.collectionCreator}</h6>
@@ -354,12 +354,17 @@ const CollectionDetails = (props) => {
                 </div>
             </div>
             {/* <div className='description-gradient'></div> */}
-            {nfts[0]?.collectionDescription !== undefined ? 
+            {collectionName === "DØP3 Punks " ? 
                 <div className='max-w-7xl mx-auto py-6 px-4 text-center text-white collection-description'>
-                    <p id='collection-description-text'>{nfts[0]?.collectionDescription}</p>
+                    <p id='collection-description-text'>"A multichain NFT project minting collections on every major blockchain!<br></br><br></br>Where DØP3 Art Meets Web3"</p>
                     {/* <button onClick={showDescription} className='w-full'>{showingDescription ? "Show Less" : "Show More"}</button> */}
-                </div>
-                : <></>
+                </div> : 
+                nfts[0]?.collectionDescription !== undefined ? 
+                    <div className='max-w-7xl mx-auto py-6 px-4 text-center text-white collection-description'>
+                        <p id='collection-description-text'>{nfts[0]?.collectionDescription}</p>
+                        {/* <button onClick={showDescription} className='w-full'>{showingDescription ? "Show Less" : "Show More"}</button> */}
+                    </div>
+                    : <></>
             }
         </header>
         <div className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-6">

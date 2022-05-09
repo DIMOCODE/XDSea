@@ -190,10 +190,10 @@ const Home = (props) => {
             var collectionMetadata = await axios.get(collectionUri2)
             let collection2 = {
                 collectionName: collectionMetadata?.data?.collection?.name,
-                collectionDescription: collectionMetadata?.data?.collection?.description,
+                collectionDescription: `A multichain NFT project minting collections on every major blockchain!\n\nWhere DØP3 Art Meets Web3`,
                 collectionCreator: collectionMetadata?.data?.collection?.creator,
-                collectionBanner: collectionMetadata?.data?.collection?.banner,
-                collectionLogo: collectionMetadata?.data?.collection?.logo,
+                collectionBanner: "/hfnn-jfjd-ornj.jpeg",
+                collectionLogo: "/ghnj-hjoe-nfks.jpeg",
                 fileType: collectionMetadata?.data?.collection?.nft?.fileType,
                 preview: collectionMetadata?.data?.collection?.nft?.preview
             }
