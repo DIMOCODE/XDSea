@@ -1,13 +1,24 @@
 import React from "react";
-import { VStack, IconImg, ZStack, HStack } from "./Stacks";
-import { BodyRegular } from "./TextStyles";
-import multimediaIcon from "../images/multimedia.png";
+import { VStack, IconImg, ZStack, HStack, ZItem } from "./Stacks";
+import { BodyRegular, CaptionRegular, BodyBold } from "./TextStyles";
+import multimediaIcon from "../images/uploadicon.png";
 import updateIcon from "../images/update.png";
 import styled from "styled-components";
 import { appStyle } from "./AppStyles";
+import { motion } from "framer-motion/dist/framer-motion";
+import { UploadLogo } from "./UploadLogo";
 
 function UploadMultimedia(props) {
-  const { button, width, height, sizeText, backsize, border, image } = props;
+  const {
+    button,
+    width,
+    height,
+    sizeText,
+    backsize,
+    border,
+    image,
+    isUploading,
+  } = props;
 
   // const handleUpload = async (e) => {
   //   e.preventDefault();
@@ -28,16 +39,35 @@ function UploadMultimedia(props) {
       <label htmlFor={button}>
         {image.preview ? (
           <ZStack>
-            <VStack
-              width={width}
-              height={height}
-              border={border}
-              background={({ theme }) => theme.backElement}
-              overflow="hidden"
-            >
-              <img src={image.preview} alt="image" width="100%" height="100%" />
-            </VStack>
-            <TagUpload>
+            <ZStack>
+              <ZItem>
+                <VStack
+                  width={width}
+                  height={height}
+                  border={border}
+                  background={({ theme }) => theme.backElement}
+                  overflow="hidden"
+                  cursor="pointer"
+                >
+                  <IconImg
+                    url={image.preview}
+                    alt="image"
+                    width="100%"
+                    height="100%"
+                    backsize="cover"
+                  />
+                </VStack>
+              </ZItem>
+              {isUploading && (
+                <ZItem>
+                  <VStack background={appStyle.colors.darkgrey90} border="15px">
+                    <UploadLogo></UploadLogo>
+                  </VStack>
+                </ZItem>
+              )}
+            </ZStack>
+
+            {/* <TagUpload>
               <HStack height="60px">
                 <HStack
                   height="36px"
@@ -56,7 +86,7 @@ function UploadMultimedia(props) {
                   ></IconImg>
                 </HStack>
               </HStack>
-            </TagUpload>
+            </TagUpload> */}
           </ZStack>
         ) : (
           <VStack
@@ -64,13 +94,17 @@ function UploadMultimedia(props) {
             height={height}
             border={border}
             background={({ theme }) => theme.backElement}
+            whileTap={{ scale: 0.96 }}
           >
-            <IconImg url={multimediaIcon} width="52px" height="40px"></IconImg>
+            <IconImg url={multimediaIcon} width="62px" height="50px"></IconImg>
 
-            <BodyRegular align="Center">
-              {sizeText} <br></br>
-              Max size: 100 MB <br></br>
-            </BodyRegular>
+            <VStack maxheight="60px" spacing="6px">
+              <BodyBold>Click Here to Upload Media</BodyBold>
+              <CaptionRegular align="Center">
+                {sizeText} <br></br>
+                Max size: 100 MB <br></br>
+              </CaptionRegular>
+            </VStack>
           </VStack>
         )}
       </label>
