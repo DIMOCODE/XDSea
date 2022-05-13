@@ -3,7 +3,11 @@ import { useHistory } from "react-router-dom";
 import { HStack, IconImg, VStack } from "../../styles/Stacks";
 import userIcon from "../../images/userIcon.png";
 import styled from "styled-components";
-import { AnimatePresence, LayoutGroup, motion } from "framer-motion/dist/framer-motion";
+import {
+  AnimatePresence,
+  LayoutGroup,
+  motion,
+} from "framer-motion/dist/framer-motion";
 import { BodyBold } from "../../styles/TextStyles";
 
 function UserMenuButton(props) {
@@ -11,11 +15,11 @@ function UserMenuButton(props) {
 
   const appear = {
     selected: { y: 0, opacity: 1 },
-    normal: { y: 6, opacity: 0 },
+    normal: { y: 0, opacity: 0 },
   };
   const scale = {
     selected: { scale: 1 },
-    normal: { scale: 0.9 },
+    normal: { scale: 1 },
   };
 
   const history = useHistory();
@@ -36,13 +40,12 @@ function UserMenuButton(props) {
           border="27px"
           bordercolor="#99A2AF"
           bordersize="3px"
+          whileTap={{ scale: 0.9 }}
           onClick={() => NavigateTo(`UserProfile/${1}`)}
           // onClick={() => setShowMenu((showMenu) => !showMenu)}
-          variants={scale}
-          key={2}
-          initial="normal"
+
           // animate={showMenu ? "normal" : "selected"}
-          layoutId={2}
+
           exit="normal"
         >
           <IconImg url={userIcon} width="21px" height="21px"></IconImg>
