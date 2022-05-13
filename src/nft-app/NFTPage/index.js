@@ -31,10 +31,10 @@ import { fromXdc, isXdc } from "../../common/common";
 import NFTMarketLayer1 from "../../abis/NFTMarketLayer1.json";
 import { permaBlacklist, contractFix } from "../../blacklist";
 import Tooltip from "@mui/material/Tooltip";
-import gold from "../../images/gold.png";
+import gold from "../../images/cupper.png";
 import silver from "../../images/silver.png";
 import cupper from "../../images/cupper.png";
-import lock from "../../images/unlockable1.gif";
+import lock from "../../images/unlockable2.gif";
 
 import {
   HStack,
