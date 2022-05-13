@@ -1,12 +1,19 @@
 import React from "react";
 import { VStack, IconImg, ZStack, HStack, ZItem } from "./Stacks";
-import { BodyRegular, CaptionRegular, BodyBold } from "./TextStyles";
+import {
+  BodyRegular,
+  CaptionRegular,
+  BodyBold,
+  CaptionBold,
+} from "./TextStyles";
 import multimediaIcon from "../images/uploadicon.png";
 import updateIcon from "../images/update.png";
 import styled from "styled-components";
 import { appStyle } from "./AppStyles";
 import { motion } from "framer-motion/dist/framer-motion";
 import { UploadLogo } from "./UploadLogo";
+import checkOK from "../images/checkOK.png";
+import tryAgain from "../images/tryAgain.png";
 
 function UploadMultimedia(props) {
   const {
@@ -18,7 +25,16 @@ function UploadMultimedia(props) {
     border,
     image,
     isUploading,
+    description,
+    setBorder,
+    uploadConfirmed,
+    uploadFailed,
+    borderLoader,
   } = props;
+
+  const borderColor = {
+    border: "6px solid #FFFFFF",
+  };
 
   // const handleUpload = async (e) => {
   //   e.preventDefault();
@@ -48,6 +64,7 @@ function UploadMultimedia(props) {
                   background={({ theme }) => theme.backElement}
                   overflow="hidden"
                   cursor="pointer"
+                  style={setBorder && borderColor}
                 >
                   <IconImg
                     url={image.preview}
@@ -56,11 +73,52 @@ function UploadMultimedia(props) {
                     height="100%"
                     backsize="cover"
                   />
+
+                  {uploadConfirmed && (
+                    <ConfirmUpload>
+                      <HStack
+                        spacing="6px"
+                        background={appStyle.colors.darkgrey90}
+                        border="30px"
+                        padding="6px 12px"
+                      >
+                        <BodyRegular textcolor="white">Uploaded</BodyRegular>
+                        <IconImg
+                          url={checkOK}
+                          width="30px"
+                          height="30px"
+                        ></IconImg>
+                      </HStack>
+                    </ConfirmUpload>
+                  )}
+
+                  {uploadFailed && (
+                    <ConfirmUpload>
+                      <HStack
+                        spacing="6px"
+                        background={appStyle.colors.darkgrey90}
+                        border="30px"
+                        padding="9px 12px"
+                      >
+                        <BodyRegular textcolor="white">
+                          Upload Failed, try again
+                        </BodyRegular>
+                        <IconImg
+                          url={tryAgain}
+                          width="21px"
+                          height="21px"
+                        ></IconImg>
+                      </HStack>
+                    </ConfirmUpload>
+                  )}
                 </VStack>
               </ZItem>
               {isUploading && (
                 <ZItem>
-                  <VStack background={appStyle.colors.darkgrey90} border="15px">
+                  <VStack
+                    background={appStyle.colors.darkgrey90}
+                    border={borderLoader || "15px"}
+                  >
                     <UploadLogo></UploadLogo>
                   </VStack>
                 </ZItem>
@@ -95,15 +153,13 @@ function UploadMultimedia(props) {
             border={border}
             background={({ theme }) => theme.backElement}
             whileTap={{ scale: 0.96 }}
+            spacing="0px"
           >
-            <IconImg url={multimediaIcon} width="62px" height="50px"></IconImg>
+            <IconImg url={multimediaIcon} width="45px" height="40px"></IconImg>
 
             <VStack maxheight="60px" spacing="6px">
-              <BodyBold>Click Here to Upload Media</BodyBold>
-              <CaptionRegular align="Center">
-                {sizeText} <br></br>
-                Max size: 100 MB <br></br>
-              </CaptionRegular>
+              <BodyBold>{description}</BodyBold>
+              <CaptionRegular align="Center">{sizeText}</CaptionRegular>
             </VStack>
           </VStack>
         )}
@@ -119,4 +175,9 @@ const TagUpload = styled.div`
   width: 100%;
   bottom: 0px;
   cursor: pointer;
+`;
+
+const ConfirmUpload = styled.div`
+  position: absolute;
+  bottom: 15px;
 `;

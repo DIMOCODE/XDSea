@@ -9,7 +9,14 @@ import { motion } from "framer-motion/dist/framer-motion";
 import styled from "styled-components";
 
 function ConfirmationModal(props) {
-  const { actionModal, cancel, confirm } = props;
+  const {
+    actionModal,
+    cancelLabel,
+    confirmLabel,
+    iconModal,
+    onCancel,
+    onConfirm,
+  } = props;
   return (
     <FadedBack>
       <VStack
@@ -39,24 +46,22 @@ function ConfirmationModal(props) {
           }}
         >
           <VStack maxheight="150px" background="clear">
-            <IconImg url={warning} width="30px" height="30px"></IconImg>
-            <BodyRegular align="center">
-              Are you sure, do you want to {actionModal}
-            </BodyRegular>
+            <IconImg url={iconModal} width="30px" height="30px"></IconImg>
+            <BodyRegular align="center">{actionModal}</BodyRegular>
           </VStack>
 
           <HStack>
             <ButtonApp
               width="100%"
               background={appStyle.colors.darkgrey10}
-              text="Cancel"
-              onClick={cancel}
+              text={cancelLabel || "Cancel"}
+              onClick={onCancel}
             ></ButtonApp>
             <ButtonApp
               textcolor={appStyle.colors.white}
               width="100%"
-              text="Confirm"
-              onClick={confirm}
+              text={confirmLabel || "Confirm"}
+              onClick={onConfirm}
             ></ButtonApp>
           </HStack>
         </VStack>

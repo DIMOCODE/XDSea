@@ -62,8 +62,8 @@ function NftContainer(props) {
       height="450px"
       bordersize="1px"
       bordercolor={appStyle.colors.darkgrey10}
-      onHoverStart={() => setIsVisible((isVisible) => !isVisible)}
-      onHoverEnd={() => setIsVisible((isVisible) => !isVisible)}
+      onHoverStart={() => setIsVisible(true)}
+      onHoverEnd={() => setIsVisible(false)}
     >
       <ZStack overflow="hidden" border="27px">
         {/* NFT Image*/}

@@ -57,7 +57,10 @@ import { InputStyledLink } from "../../styles/InputStyledLink";
 import instagramIcon from "../../images/instagramMini.png";
 import twitterIcon from "../../images/twitter.png";
 import telegramIcon from "../../images/telegram.png";
+import warning from "../../images/alert.png";
+import discordIcon from "../../images/discordIcon.png";
 import linkIcon from "../../images/link.png";
+import loading from "../../images/loading.gif";
 import { ConfirmationModal } from "../../ConfirmationModal";
 
 const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
@@ -68,7 +71,10 @@ function CreateNft(props) {
   function NavigateTo(route) {
     history.push(`/${route}`);
   }
-
+  const [uploadStatus, setUploadStatus] = useState(false);
+  const [uploadBannerStatus, setUploadBannerStatus] = useState(false);
+  const [uploadLogoStatus, setUploadLogoStatus] = useState(false);
+  const [uploadNFT, setUploadNFT] = useState(false);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState(0);
@@ -102,39 +108,50 @@ function CreateNft(props) {
   const size = useWindowSize();
 
   const addToIPFS = async (e) => {
+    setUploadNFT(true);
     e.preventDefault();
     const file = document.getElementById("upload-button").files[0];
     try {
       const added = await client.add(file);
+      setUploadNFT(false);
+
       const url = `https://ipfs.infura.io/ipfs/${added.path}`;
+      setUploadStatus(true);
     } catch (error) {
       console.log("Error uploading file:", error);
     }
   };
 
   const addToIPFSCollectionBanner = async (e) => {
+    setUploadBannerStatus(true);
     e.preventDefault();
     const file = document.getElementById("upload-button-collection").files[0];
     try {
       const added = await client.add(file);
+
       const url = `https://ipfs.infura.io/ipfs/${added.path}`;
+      setUploadBannerStatus(true);
+      s;
     } catch (error) {
       console.log("Error uploading file:", error);
     }
   };
 
   const addToIPFSCollectionLogo = async (e) => {
+    setUploadLogoStatus(true);
     e.preventDefault();
     const file = document.getElementById("upload-button-logo").files[0];
     try {
       const added = await client.add(file);
       const url = `https://ipfs.infura.io/ipfs/${added.path}`;
+      setUploadLogoStatus(false);
     } catch (error) {
       console.log("Error uploading file:", error);
     }
   };
 
   const handleChangeUploadMultimedia = (e) => {
+    console.log(e.target.files);
     if (e.target.files.length) {
       setImage({
         preview: URL.createObjectURL(e.target.files[0]),
@@ -400,10 +417,12 @@ function CreateNft(props) {
 
   return (
     <CreationSection>
-      {!modalAlert && (
+      {modalAlert && (
         <ConfirmationModal
-          cancel={() => setModalAlert(true)}
-          actionModal="leave this page without saving"
+          iconModal={warning}
+          onCancel={() => setModalAlert(false)}
+          onConfirm={() => clearForm()}
+          actionModal="Are you sure, do you want to clear all fields?"
         ></ConfirmationModal>
       )}
 
@@ -439,7 +458,9 @@ function CreateNft(props) {
                 height={size.width < 768 ? "320px" : "489px"}
                 image={image}
                 button={"upload-button"}
-                isUploading={true}
+                isUploading={uploadNFT}
+                uploadConfirmed={uploadStatus}
+                description="Click to upload NFT Image"
               ></UploadMultimedia>
               <input
                 type="file"
@@ -447,21 +468,33 @@ function CreateNft(props) {
                 style={{ display: "none" }}
                 onChange={handleChangeUploadMultimedia}
               />
-              <HStack>
-                <ButtonApp
-                  text="Clear"
-                  textcolor={({ theme }) => theme.text}
-                  onClick={addToIPFS}
-                  background={({ theme }) => theme.backElement}
-                  width="300px"
-                ></ButtonApp>
-                <ButtonApp
-                  text="Upload"
-                  textcolor={appStyle.colors.white}
-                  onClick={addToIPFS}
-                  width="300px"
-                ></ButtonApp>
-              </HStack>
+              {image.raw !== "" && (
+                <ButtonsNFT>
+                  <HStack
+                    width={size.width < 768 ? "320px" : "489px"}
+                    height={size.width < 768 ? "320px" : "489px"}
+                    padding="15px"
+                    alignment="flex-end"
+                  >
+                    <ButtonApp
+                      text="Clear"
+                      textcolor={({ theme }) => theme.text}
+                      onClick={() => setImage({ preview: "", raw: "" })}
+                      background={({ theme }) => theme.backElement}
+                      width="90px"
+                      height="39px"
+                    ></ButtonApp>
+                    <Spacer></Spacer>
+                    <ButtonApp
+                      text="Upload"
+                      textcolor={appStyle.colors.white}
+                      onClick={addToIPFS}
+                      width="90px"
+                      height="39px"
+                    ></ButtonApp>
+                  </HStack>
+                </ButtonsNFT>
+              )}
             </VStack>
 
             {/* Form with Name, Description and Price */}
@@ -629,31 +662,6 @@ function CreateNft(props) {
 
               <VStack width="100%" alignment="flex-start">
                 <TitleBold15 textcolor={({ theme }) => theme.text}>
-                  Collection
-                </TitleBold15>
-                <BodyRegular textcolor={({ theme }) => theme.text}>
-                  If your NFT belongs to any collection, please choose one
-                </BodyRegular>
-                <SelectStyled
-                  selectClass={"nft-collection"}
-                  value={collection}
-                  collections={collections}
-                  onChange={(event) => {
-                    if (
-                      event.target.value === "newCollection-nxfgh-odjfg-hjdeb"
-                    ) {
-                      setNewCollection(true);
-                      setCollection("newCollection-nxfgh-odjfg-hjdeb");
-                    } else {
-                      setNewCollection(false);
-                      setCollection(event.target.value);
-                    }
-                  }}
-                ></SelectStyled>
-              </VStack>
-
-              <VStack width="100%" alignment="flex-start">
-                <TitleBold15 textcolor={({ theme }) => theme.text}>
                   Unlockable Content
                 </TitleBold15>
                 <BodyRegular textcolor={({ theme }) => theme.text}>
@@ -691,51 +699,185 @@ function CreateNft(props) {
             </VStack>
           </HStack>
           <Divider></Divider>
-
+          <VStack width="100%" alignment="flex-start" padding="0 30px">
+            <TitleBold15 textcolor={({ theme }) => theme.text}>
+              Collection
+            </TitleBold15>
+            <BodyRegular textcolor={({ theme }) => theme.text}>
+              If your NFT belongs to any collection, please choose one
+            </BodyRegular>
+            <SelectStyled
+              selectClass={"nft-collection"}
+              value={collection}
+              collections={collections}
+              onChange={(event) => {
+                if (event.target.value === "newCollection-nxfgh-odjfg-hjdeb") {
+                  setNewCollection(true);
+                  setCollection("newCollection-nxfgh-odjfg-hjdeb");
+                } else {
+                  setNewCollection(false);
+                  setCollection(event.target.value);
+                }
+              }}
+            ></SelectStyled>
+          </VStack>
           {isNewCollection ? (
             <>
-              <HStack backgroundimage={CreationBar}>
-                <HStack width="1200px" height="157px" padding="0px 30px">
-                  <TitleBold27 textcolor={appStyle.colors.white}>
-                    Create a Collection
-                  </TitleBold27>
-                </HStack>
-              </HStack>
-              <VStack>
-                {/* Banner Image */}
-                <VStack>
-                  <HStack>
-                    <TitleBold15>Upload your banner image</TitleBold15>
-                    <Spacer></Spacer>
-                  </HStack>
+              <HStack responsive={true} spacing="0px" alignment="flex-start">
+                <VStack minwidth="50%" padding="30px" spacing="90px">
+                  {/* Banner Image */}
+                  <VStack>
+                    <TitleBold15>
+                      Upload Banner and Collection Image
+                    </TitleBold15>
+                    <UploadMultimedia
+                      sizeText="Recommended size: 1200px x 520px"
+                      width={size.width < 768 ? "390px" : "540px"}
+                      height="210px"
+                      backsize="cover"
+                      border="9px"
+                      image={collectionBanner}
+                      button={"upload-button-collection"}
+                      description="Collection Banner"
+                      isUploading={uploadBannerStatus}
+                    ></UploadMultimedia>
+                    <input
+                      type="file"
+                      id="upload-button-collection"
+                      style={{ display: "none" }}
+                      onChange={handleChangeUploadMultimediaCollection}
+                    />
 
-                  <UploadMultimedia
-                    sizeText="Recommended size: 1200px x 520px"
-                    width="1200px"
-                    height="520px"
-                    backsize="cover"
-                    image={collectionBanner}
-                    button={"upload-button-collection"}
-                  ></UploadMultimedia>
+                    {collectionBanner.raw !== "" && (
+                      <ButtonsBanner>
+                        <HStack
+                          width="540px"
+                          padding="15px"
+                          height="213px"
+                          alignment="flex-end"
+                        >
+                          <ButtonApp
+                            text="Clear"
+                            textcolor={({ theme }) => theme.text}
+                            onClick={() =>
+                              setCollectionBanner({ preview: "", raw: "" })
+                            }
+                            background={({ theme }) => theme.backElement}
+                            width="81px"
+                            height="36px"
+                          ></ButtonApp>
+                          <Spacer></Spacer>
+                          <ButtonApp
+                            text="Upload"
+                            textcolor={appStyle.colors.white}
+                            onClick={addToIPFSCollectionBanner}
+                            width="81px"
+                            height="36px"
+                          ></ButtonApp>
+                        </HStack>
+                      </ButtonsBanner>
+                    )}
+                    <ImageCollection>
+                      <VStack width="150px" spacing="9px">
+                        <UploadMultimedia
+                          sizeText="400px x 400px"
+                          width="150px"
+                          height="150px"
+                          backsize="cover"
+                          image={collectionLogo}
+                          border="150px"
+                          button={"upload-button-logo"}
+                          description="Collection Logo"
+                          bordersize="3px"
+                          bordercolor="white"
+                          borderLoader="150px"
+                          style={{
+                            boxShadow: "0px 6px 9px 0px rgba(0, 0, 0, 1)",
+                          }}
+                          setBorder={true}
+                          isUploading={uploadLogoStatus}
+                        ></UploadMultimedia>
+
+                        {collectionLogo.raw !== "" && (
+                          <ButtonsLogo>
+                            <VStack width="150px" height="150px" spacing="6px">
+                              <ButtonApp
+                                text="Clear"
+                                textcolor={({ theme }) => theme.text}
+                                onClick={() =>
+                                  setCollectionLogo({ preview: "", raw: "" })
+                                }
+                                background={({ theme }) => theme.backElement}
+                                width="81px"
+                                height="36px"
+                              ></ButtonApp>
+
+                              <ButtonApp
+                                text="Upload"
+                                textcolor={appStyle.colors.white}
+                                onClick={addToIPFSCollectionLogo}
+                                width="81px"
+                                height="36px"
+                              ></ButtonApp>
+                            </VStack>
+                          </ButtonsLogo>
+                        )}
+                        <input
+                          type="file"
+                          id="upload-button-logo"
+                          style={{ display: "none" }}
+                          onChange={handleChangeUploadMultimediaLogo}
+                        />
+                      </VStack>
+                    </ImageCollection>
+                  </VStack>
+                  <VStack width="100%" alignment="flex-start">
+                    <TitleBold15>Social Networks and Link</TitleBold15>
+                    <HStack>
+                      <VStack width="100%">
+                        <InputStyledLink
+                          icon={instagramIcon}
+                          input={instagramLink}
+                          placeholder="Instagram Account"
+                          onChange={(event) => {
+                            setInstagramLink(event.target.value);
+                          }}
+                        ></InputStyledLink>
+                        <InputStyledLink
+                          icon={twitterIcon}
+                          input={twitterLink}
+                          placeholder="Twitter Account"
+                          onChange={(event) => {
+                            setTwitterLink(event.target.value);
+                          }}
+                        ></InputStyledLink>
+                      </VStack>
+
+                      <VStack>
+                        <InputStyledLink
+                          icon={discordIcon}
+                          input={websiteLink}
+                          placeholder="Discord Link"
+                        ></InputStyledLink>
+                        <InputStyledLink
+                          icon={linkIcon}
+                          placeholder="Website"
+                          input={websiteLink}
+                          onChange={(event) => {
+                            setWebsiteLink(event.target.value);
+                          }}
+                        ></InputStyledLink>
+                      </VStack>
+                    </HStack>
+                  </VStack>
                 </VStack>
-                <input
-                  type="file"
-                  id="upload-button-collection"
-                  style={{ display: "none" }}
-                  onChange={handleChangeUploadMultimediaCollection}
-                />
-                <br />
-                <button onClick={addToIPFSCollectionBanner}>Upload</button>
-                <Divider></Divider>
-                {/* Collection Name and URL */}
-                <HStack
-                  responsive={true}
-                  alignment="flex-start"
-                  padding="15px 15px"
-                >
-                  <VStack alignment="flex-start">
+
+                {/* Collection Name  URL and Description */}
+                <VStack minwidth="50%" padding="30px">
+                  <VStack alignment="flex-start" width="100%">
                     <TitleBold15>Collection Name</TitleBold15>
                     <InputStyled
+                      icon={loading}
                       propertyKey={"collection-name"}
                       placeholder="Name your Collection"
                       onChange={(event) => {
@@ -749,105 +891,42 @@ function CreateNft(props) {
                       }}
                       onBlur={() => checkCollectionExists()}
                     ></InputStyled>
-                    {collectionExists ? (
-                      <BodyRegular>
-                        Collection name already taken. Please choose a different
-                        name.
-                      </BodyRegular>
+                    {!collectionExists ? (
+                      <HStack
+                        background={appStyle.colors.yellow}
+                        padding="6px 15px"
+                        border="6px"
+                      >
+                        <CaptionRegular textcolor={appStyle.colors.darkYellow}>
+                          Collection name already taken. Please choose a
+                          different name.
+                        </CaptionRegular>
+                      </HStack>
                     ) : null}
                   </VStack>
-                  <VStack alignment="flex-start">
+
+                  <VStack alignment="flex-start" width="100%">
                     <TitleBold15>Collection URL</TitleBold15>
                     <InputStyledURL
                       inputClass="collection-url"
                       placeholder="collection-name"
                     ></InputStyledURL>
                   </VStack>
-                </HStack>
-                <Divider></Divider>
-                {/* Description, Social Links, Featured Image */}
-                <HStack
-                  responsive={true}
-                  alignment="center"
-                  spacing="30px"
-                  padding="30px 0"
-                >
-                  {/* Description */}
-                  <VStack alignment="flex-start">
+                  <VStack alignment="flex-start" width="100%">
                     <TitleBold15>Description</TitleBold15>
                     <TextAreaStyled
                       value={collectionDescription}
                       onChange={(event) => {
                         setCollectionDescription(event.target.value);
                       }}
-                      height="400px"
+                      height="240px"
                     ></TextAreaStyled>
                   </VStack>
-                  {/* Social Links */}
-                  <VStack spacing="45px">
-                    <VStack width="100%" alignment="flex-start">
-                      <TitleBold15>Social Networks and Link</TitleBold15>
-                      <InputStyledLink
-                        icon={instagramIcon}
-                        input={instagramLink}
-                        placeholder="Instagram Account"
-                        onChange={(event) => {
-                          setInstagramLink(event.target.value);
-                        }}
-                      ></InputStyledLink>
-                      <InputStyledLink
-                        icon={twitterIcon}
-                        input={twitterLink}
-                        placeholder="Twitter Account"
-                        onChange={(event) => {
-                          setTwitterLink(event.target.value);
-                        }}
-                      ></InputStyledLink>
-                      {/* <InputStyledLink
-                                                icon={telegramIcon}
-                                                input={telegramLink}
-                                                placeholder="Telegram Account"
-                                            ></InputStyledLink> */}
-                      <InputStyledLink
-                        icon={linkIcon}
-                        placeholder="Website"
-                        input={websiteLink}
-                        onChange={(event) => {
-                          setWebsiteLink(event.target.value);
-                        }}
-                      ></InputStyledLink>
-                    </VStack>
-                  </VStack>
-                  {/* Collection Logo */}
-                  <VStack>
-                    <VStack width="300px">
-                      <TitleBold15>Collection Logo</TitleBold15>
-                      {/* <BodyRegular>
-                                                This image will be used as the logo for your collection 
-                                            </BodyRegular> */}
-                      <UploadMultimedia
-                        sizeText="Recommended size: 400px x 400px"
-                        width="300px"
-                        height="300px"
-                        backsize="cover"
-                        image={collectionLogo}
-                        button={"upload-button-logo"}
-                      ></UploadMultimedia>
-                      <input
-                        type="file"
-                        id="upload-button-logo"
-                        style={{ display: "none" }}
-                        onChange={handleChangeUploadMultimediaLogo}
-                      />
-                      <br />
-                      <button onClick={addToIPFSCollectionLogo}>Upload</button>
-                    </VStack>
-                  </VStack>
-                </HStack>
-              </VStack>
-              <Divider></Divider>
+                </VStack>
+              </HStack>
             </>
           ) : null}
+          <Divider></Divider>
 
           {/* Blockchain and Mint Button */}
           <HStack padding="0 39px" spacing="69px" responsive={true}>
@@ -869,7 +948,7 @@ function CreateNft(props) {
                 width="100%"
                 background={({ theme }) => theme.faded}
                 textcolor={appStyle.colors.text}
-                onClick={() => clearForm()}
+                onClick={() => setModalAlert(true)}
               ></ButtonApp>
               <ButtonApp
                 text="Mint your NFT"
@@ -886,6 +965,12 @@ function CreateNft(props) {
 }
 
 export { CreateNft };
+
+const ImageCollection = styled(motion.div)`
+  position: absolute;
+  bottom: -81px;
+  filter: drop-shadow(0px 6px 9px rgba(0, 0, 0, 0.08));
+`;
 
 const CreationSection = styled(motion.div)`
   padding: 90px 0;
@@ -946,3 +1031,18 @@ const ContentCreation = styled(motion.div)`
 //     isAudio = (file) => {
 //         return !!file?.type.match('audio.*');
 //     }
+
+const ButtonsBanner = styled(motion.div)`
+  position: absolute;
+  bottom: 0;
+`;
+
+const ButtonsLogo = styled(motion.div)`
+  position: absolute;
+  bottom: 0px;
+`;
+
+const ButtonsNFT = styled(motion.div)`
+  position: absolute;
+  bottom: 3px;
+`;
