@@ -2,7 +2,7 @@ import React from "react";
 import ButtonApp from "./styles/Buttons";
 import { HStack, IconImg, VStack } from "./styles/Stacks";
 import { BodyRegular, TitleBold15 } from "./styles/TextStyles";
-import warning from "./images/alert.png";
+
 import { appStyle } from "./styles/AppStyles";
 import { Fade } from "@mui/material";
 import { motion } from "framer-motion/dist/framer-motion";
