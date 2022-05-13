@@ -131,7 +131,6 @@ function CreateNft(props) {
 
       const url = `https://ipfs.infura.io/ipfs/${added.path}`;
       setUploadBannerStatus(true);
-      s;
     } catch (error) {
       console.log("Error uploading file:", error);
     }
