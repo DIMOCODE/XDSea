@@ -52,6 +52,7 @@ function NftContainer(props) {
   };
 
   const [isVisible, setIsVisible] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   return (
     <VStack
       overflow="hidden"
@@ -62,8 +63,8 @@ function NftContainer(props) {
       height="450px"
       bordersize="1px"
       bordercolor={appStyle.colors.darkgrey10}
-      onHoverStart={() => setIsVisible(true)}
-      onHoverEnd={() => setIsVisible(false)}
+      onHoverStart={() => {setIsVisible((isVisible) => !isVisible); setIsPlaying((isPlaying) => !isPlaying)}}
+      onHoverEnd={() => {setIsVisible((isVisible) => !isVisible); setIsPlaying((isPlaying) => !isPlaying)}}
     >
       <ZStack overflow="hidden" border="27px">
         {/* NFT Image*/}
@@ -87,8 +88,8 @@ function NftContainer(props) {
               height="370px"
             >
               <ReactPlayer
-                url="https://ipfs.infura.io/ipfs/QmbHQEf8GFBpQdVcLT281XaicJPkPMzBJodYq3xzaVYHjJ"
-                playing={true}
+                url={itemImage}
+                playing={isPlaying}
                 muted={true}
                 loop={true}
                 width="100%"

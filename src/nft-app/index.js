@@ -110,7 +110,7 @@ const NFTApp = () => {
                     transactions
                   </b>
                   &nbsp; made on the developer page
-                  <b> are executed in the main network, be careful.</b>
+                  <b> are executed on the main network, please be careful.</b>
                 </CaptionRegular>
               </HStack>
             </DevMode>

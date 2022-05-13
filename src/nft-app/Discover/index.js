@@ -29,6 +29,7 @@ import { appStyle } from "../../styles/AppStyles";
 import ButtonApp from "../../styles/Buttons";
 import useWindowSize from "../../styles/useWindowSize";
 import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 const Discover = () => {
   const history = useHistory();
@@ -337,10 +338,11 @@ const Discover = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-  useEffect(() => {
-    if (!isFetching) return;
-    fetchMoreCollections();
-  }, [isFetching]);
+
+  // useEffect(() => {
+  //   if (!isFetching) return;
+  //   fetchMoreCollections();
+  // }, [isFetching]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -368,7 +370,7 @@ const Discover = () => {
   ]);
 
   return (
-    <DiscoverSection>
+    <DiscoverSection id="scrollableDiv">
       {/* Discover Top Bar */}
 
       <HStack backgroundimage={DiscoverBar}>
@@ -387,64 +389,74 @@ const Discover = () => {
 
       {/* Content Discover*/}
 
-      <ContentDiscover>
-        <VStack spacing="30px">
-          {/* <HStack>
-                <DiscoverFilter
-                textcolor={({ theme }) => theme.text}
-                background={({ theme }) => theme.backElement}
-                ></DiscoverFilter>
-            </HStack> */}
-          <HStack>
-            <HStack
-              spacing="30px"
-              flexwrap="wrap"
-              padding="0 30px"
-              justify="flex-start"
-              width={size.width < 768 ? "100%" : "1100px"}
-            >
-              {setLoading
-                ? loadingCollection.map((item) => (
-                    <VStack
-                      key={item.name}
-                      minwidth={size.width < 768 ? "100%" : "500px"}
-                      maxwidth="500px"
-                      height={size.width < 768 ? "440px" : "420px"}
-                    >
-                      <LoadingNftContainer></LoadingNftContainer>
-                    </VStack>
-                  ))
-                : collections.map((item) => (
-                    <LayoutGroup id="collection">
+      <ContentDiscover id="scrollableDiv">
+        <InfiniteScroll
+          dataLength={collections.length}
+          next={fetchMoreCollections}
+          hasMore={collections.length < collectionPage.length - 1}
+          loader={<h4>Loading...</h4>}
+          scrollableTarget= "#scrollableDiv"
+          style={{"overflow": "hidden"}}
+        >
+          <VStack spacing="30px">
+            {/* <HStack>
+                  <DiscoverFilter
+                  textcolor={({ theme }) => theme.text}
+                  background={({ theme }) => theme.backElement}
+                  ></DiscoverFilter>
+              </HStack> */}
+            <HStack>
+              <HStack
+                spacing="30px"
+                flexwrap="wrap"
+                padding="0 30px"
+                justify="flex-start"
+                width={size.width < 768 ? "100%" : "1100px"}
+                
+              >
+                {setLoading
+                  ? loadingCollection.map((item) => (
                       <VStack
+                        key={item.name}
                         minwidth={size.width < 768 ? "100%" : "500px"}
                         maxwidth="500px"
                         height={size.width < 768 ? "440px" : "420px"}
                       >
-                        <Collection
-                          key={item.name}
-                          keyContent={item.name}
-                          keyID={item.creator}
-                          collectionImage={item.banner}
-                          creatorLogo={item.logo}
-                          collectionName={item.name}
-                          collectionDescription={item.description}
-                          creatorName={item.creator}
-                          onClickCollection={() =>
-                            NavigateTo(`collection/${item.name}`)
-                          }
-                          floorprice={item.floorPrice}
-                          owners={item.owners}
-                          nfts={item.items}
-                          volumetraded={item.volumeTraded}
-                          // onClickCreator={() => NavigateTo("UserProfile")}
-                        ></Collection>
+                        <LoadingNftContainer></LoadingNftContainer>
                       </VStack>
-                    </LayoutGroup>
+                    ))
+                  : collections.map((item) => (
+                      <LayoutGroup id="collection">
+                        <VStack
+                          minwidth={size.width < 768 ? "100%" : "500px"}
+                          maxwidth="500px"
+                          height={size.width < 768 ? "440px" : "420px"}
+                        >
+                          <Collection
+                            key={item.name}
+                            keyContent={item.name}
+                            keyID={item.creator}
+                            collectionImage={item.banner}
+                            creatorLogo={item.logo}
+                            collectionName={item.name}
+                            collectionDescription={item.description}
+                            creatorName={item.creator}
+                            onClickCollection={() =>
+                              NavigateTo(`collection/${item.name}`)
+                            }
+                            floorprice={item.floorPrice}
+                            owners={item.owners}
+                            nfts={item.items}
+                            volumetraded={item.volumeTraded}
+                            // onClickCreator={() => NavigateTo("UserProfile")}
+                          ></Collection>
+                        </VStack>
+                      </LayoutGroup>
                   ))}
+              </HStack>
             </HStack>
-          </HStack>
-        </VStack>
+          </VStack>
+        </InfiniteScroll>
       </ContentDiscover>
     </DiscoverSection>
   );
