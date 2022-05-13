@@ -1,13 +1,40 @@
 import React from "react";
-import { VStack, IconImg, ZStack, HStack } from "./Stacks";
-import { BodyRegular } from "./TextStyles";
-import multimediaIcon from "../images/multimedia.png";
+import { VStack, IconImg, ZStack, HStack, ZItem } from "./Stacks";
+import {
+  BodyRegular,
+  CaptionRegular,
+  BodyBold,
+  CaptionBold,
+} from "./TextStyles";
+import multimediaIcon from "../images/uploadicon.png";
 import updateIcon from "../images/update.png";
 import styled from "styled-components";
 import { appStyle } from "./AppStyles";
+import { motion } from "framer-motion/dist/framer-motion";
+import { UploadLogo } from "./UploadLogo";
+import checkOK from "../images/checkOK.png";
+import tryAgain from "../images/tryAgain.png";
 
 function UploadMultimedia(props) {
-  const { button, width, height, sizeText, backsize, border, image } = props;
+  const {
+    button,
+    width,
+    height,
+    sizeText,
+    backsize,
+    border,
+    image,
+    isUploading,
+    description,
+    setBorder,
+    uploadConfirmed,
+    uploadFailed,
+    borderLoader,
+  } = props;
+
+  const borderColor = {
+    border: "6px solid #FFFFFF",
+  };
 
   // const handleUpload = async (e) => {
   //   e.preventDefault();
@@ -28,16 +55,77 @@ function UploadMultimedia(props) {
       <label htmlFor={button}>
         {image.preview ? (
           <ZStack>
-            <VStack
-              width={width}
-              height={height}
-              border={border}
-              background={({ theme }) => theme.backElement}
-              overflow="hidden"
-            >
-              <img src={image.preview} alt="image" width="100%" height="100%" />
-            </VStack>
-            <TagUpload>
+            <ZStack>
+              <ZItem>
+                <VStack
+                  width={width}
+                  height={height}
+                  border={border}
+                  background={({ theme }) => theme.backElement}
+                  overflow="hidden"
+                  cursor="pointer"
+                  style={setBorder && borderColor}
+                >
+                  <IconImg
+                    url={image.preview}
+                    alt="image"
+                    width="100%"
+                    height="100%"
+                    backsize="cover"
+                  />
+
+                  {uploadConfirmed && (
+                    <ConfirmUpload>
+                      <HStack
+                        spacing="6px"
+                        background={appStyle.colors.darkgrey90}
+                        border="30px"
+                        padding="6px 12px"
+                      >
+                        <BodyRegular textcolor="white">Uploaded</BodyRegular>
+                        <IconImg
+                          url={checkOK}
+                          width="30px"
+                          height="30px"
+                        ></IconImg>
+                      </HStack>
+                    </ConfirmUpload>
+                  )}
+
+                  {uploadFailed && (
+                    <ConfirmUpload>
+                      <HStack
+                        spacing="6px"
+                        background={appStyle.colors.darkgrey90}
+                        border="30px"
+                        padding="9px 12px"
+                      >
+                        <BodyRegular textcolor="white">
+                          Upload Failed, try again
+                        </BodyRegular>
+                        <IconImg
+                          url={tryAgain}
+                          width="21px"
+                          height="21px"
+                        ></IconImg>
+                      </HStack>
+                    </ConfirmUpload>
+                  )}
+                </VStack>
+              </ZItem>
+              {isUploading && (
+                <ZItem>
+                  <VStack
+                    background={appStyle.colors.darkgrey90}
+                    border={borderLoader || "15px"}
+                  >
+                    <UploadLogo></UploadLogo>
+                  </VStack>
+                </ZItem>
+              )}
+            </ZStack>
+
+            {/* <TagUpload>
               <HStack height="60px">
                 <HStack
                   height="36px"
@@ -56,7 +144,7 @@ function UploadMultimedia(props) {
                   ></IconImg>
                 </HStack>
               </HStack>
-            </TagUpload>
+            </TagUpload> */}
           </ZStack>
         ) : (
           <VStack
@@ -64,13 +152,15 @@ function UploadMultimedia(props) {
             height={height}
             border={border}
             background={({ theme }) => theme.backElement}
+            whileTap={{ scale: 0.96 }}
+            spacing="0px"
           >
-            <IconImg url={multimediaIcon} width="52px" height="40px"></IconImg>
+            <IconImg url={multimediaIcon} width="45px" height="40px"></IconImg>
 
-            <BodyRegular align="Center">
-              {sizeText} <br></br>
-              Max size: 100 MB <br></br>
-            </BodyRegular>
+            <VStack maxheight="60px" spacing="6px">
+              <BodyBold>{description}</BodyBold>
+              <CaptionRegular align="Center">{sizeText}</CaptionRegular>
+            </VStack>
           </VStack>
         )}
       </label>
@@ -85,4 +175,9 @@ const TagUpload = styled.div`
   width: 100%;
   bottom: 0px;
   cursor: pointer;
+`;
+
+const ConfirmUpload = styled.div`
+  position: absolute;
+  bottom: 15px;
 `;

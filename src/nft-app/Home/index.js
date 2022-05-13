@@ -548,14 +548,14 @@ const Home = (props) => {
               ? arrayCollection.map((item) => (
                   <LoadingSpot
                     key={item.name}
-                    width={size.width < 768 ? "100%" : "570px"}
+                    width={size.width < 768 ? "100%" : "490px"}
                   ></LoadingSpot>
                 ))
               : collections.map((item) => (
                   <LayoutGroup id={item.id + 1}>
                     <TopCollectionItem
                       key={item.id + 1}
-                      width={size.width < 768 ? "100%" : "570px"}
+                      width={size.width < 768 ? "100%" : "490px"}
                       imageCreator={item.collectionLogo}
                       collectionName={item.name}
                       position={item.id + 1}
@@ -903,4 +903,5 @@ const Content = styled(motion.div)`
   padding: 120px 0;
   max-width: 1200px;
   margin: 0 auto;
+  box-sizing: border-box;
 `;

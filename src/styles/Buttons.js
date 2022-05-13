@@ -18,7 +18,7 @@ export default function ButtonApp(props) {
     icon,
     iconWidth,
     iconHeight,
-    cursor
+    cursor,
   } = props;
 
   return (
@@ -49,13 +49,14 @@ const ButtonView = styled(motion.div).attrs((props) => ({
   height: props.height || "49px",
   textcolor: props.textcolor || appStyle.colors.white,
   border: props.border || "9px",
-  cursor: props.cursor || "default"
+  cursor: props.cursor || "default",
 }))`
   display: flex;
   flex-direction: row;
   font-weight: 500;
   gap: 6px;
   align-items: center;
+
   color: ${(props) => props.textcolor};
   border-radius: ${(props) => props.border};
   padding: ${(props) => props.padding};

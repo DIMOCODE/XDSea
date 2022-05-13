@@ -122,7 +122,11 @@ const NFTApp = () => {
             <Switch>
               <Route exact path="/" component={Home}></Route>
               <Route exact path="/discover" component={Discover}></Route>
-              <Route exact path="/UserProfile/:urlAddress" component={MyNFT}></Route>
+              <Route
+                exact
+                path="/UserProfile/:urlAddress"
+                component={MyNFT}
+              ></Route>
               <Route exact path="/CreateNFT" component={CreateNft}></Route>
               <Route
                 exact
@@ -158,11 +162,13 @@ const HomeStack = styled(motion.div)`
   display: flex;
   justify-content: center;
   height: 100vh;
-  width: 100vw;
+  width: 100%;
+  box-sizing: border-box;
 `;
 
 const ScrollView = styled(motion.div)`
   width: 100%;
+
   padding: 0px;
   margin: 0px;
 `;

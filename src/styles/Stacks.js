@@ -59,7 +59,7 @@ export const VStack = styled(motion.div).attrs((props) => ({
   @media (max-width: 768px) {
     flex-direction: ${(props) => (props.responsive ? "row" : "column")};
   }
-  margin-top: ${(props) => (props.marginTop)};
+  margin-top: ${(props) => props.marginTop};
 `;
 
 // HStack organize elements in Horizontal
@@ -83,7 +83,7 @@ export const HStack = styled(motion.div).attrs((props) => ({
   justify: props.justify || "center",
   responsive: props.responsive ?? false,
   flexwrap: props.flexwrap || "nowrap",
-  cursor: props.cursor || "default"
+  cursor: props.cursor || "default",
 }))`
   display: flex;
   flex-wrap: ${(props) => props.flexwrap};
@@ -167,6 +167,7 @@ export const IconImg = styled(motion.div).attrs((props) => ({
   bordersize: props.bordersize || "0",
   bordercolor: props.bordercolor || "rgba(255, 255, 255, 0)",
   cursor: props.cursor || "default",
+  overflow: props.overflow || "",
 }))`
   background-image: url(${(props) => props.url});
   background-size: ${(props) => props.backsize};
@@ -180,6 +181,7 @@ export const IconImg = styled(motion.div).attrs((props) => ({
   border-color: ${(props) => props.bordercolor};
   border-width: ${(props) => props.bordersize};
   cursor: ${(props) => props.cursor};
+  overflow: ${(props) => props.overflow};
 `;
 
 // Example of Styled Component with attributes
