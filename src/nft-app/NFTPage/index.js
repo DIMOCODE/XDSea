@@ -1,25 +1,40 @@
-import React, { Fragment, useEffect, useRef, useState } from 'react';
-import { useParams, useHistory, Link } from 'react-router-dom';
+import React, { Fragment, useEffect, useRef, useState } from "react";
+import { useParams, useHistory, Link } from "react-router-dom";
 import Card from "../Home/common/card";
-import Xdc3 from 'xdc3'
+import Xdc3 from "xdc3";
 import { DEFAULT_PROVIDER, NETWORK_NAME } from "../../constant";
 // import NFTMarket from '../../artifacts/contracts/NFTMarket.sol/NFTMarket.json'
 import { nftmarketaddress, nftmarketlayeraddress } from "../../config";
 // import NFT from "../../artifacts/contracts/NFT.sol/NFT.json"
-import NFT from '../../abis/NFT.json'
-import NFTMarket from '../../abis/NFTMarket.json'
-import axios from 'axios';
-import { GetWallet } from 'xdc-connect';
-import { Dialog, Transition } from '@headlessui/react';
-import { LegacyBuyNFT, BuyNFT, SellNFT, LegacyWithdrawListing, WithdrawListing, TransferNFT, EditNFT, Offer, WithdrawOffer, AcceptOffer } from '../../common';
-import {toXdc} from '../../common/common';
+import NFT from "../../abis/NFT.json";
+import NFTMarket from "../../abis/NFTMarket.json";
+import axios from "axios";
+import { GetWallet } from "xdc-connect";
+import { Dialog, Transition } from "@headlessui/react";
+import {
+  LegacyBuyNFT,
+  BuyNFT,
+  SellNFT,
+  LegacyWithdrawListing,
+  WithdrawListing,
+  TransferNFT,
+  EditNFT,
+  Offer,
+  WithdrawOffer,
+  AcceptOffer,
+} from "../../common";
+import { toXdc } from "../../common/common";
 import SkeletonCard from "../../common/skeleton/card";
-import PropertyCard from '../Home/common/propertyCard';
+import PropertyCard from "../Home/common/propertyCard";
 import SkeletonMyNFT from "../../common/skeleton/my-nft";
-import { fromXdc, isXdc } from '../../common/common';
-import NFTMarketLayer1 from '../../abis/NFTMarketLayer1.json'
-import { permaBlacklist, contractFix } from '../../blacklist';
-import Tooltip from '@mui/material/Tooltip';
+import { fromXdc, isXdc } from "../../common/common";
+import NFTMarketLayer1 from "../../abis/NFTMarketLayer1.json";
+import { permaBlacklist, contractFix } from "../../blacklist";
+import Tooltip from "@mui/material/Tooltip";
+import gold from "../../images/gold.png";
+import silver from "../../images/silver.png";
+import cupper from "../../images/cupper.png";
+import lock from "../../images/unlockable1.gif";
 
 import {
   HStack,
@@ -49,891 +64,1087 @@ import tagBlue from "../../images/offerBlue.png";
 import useWindowSize from "../../styles/useWindowSize";
 import { Discover } from "../Discover";
 import { TableActivityNft } from "../../styles/TableActivityNft";
-import xinfinLogo from "../../images/xinfinLogo.png"
+import xinfinLogo from "../../images/xinfinLogo.png";
 import styled from "styled-components";
+import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
+import loading from "../../images/loading.gif";
 
 const NFTDetails = (props) => {
-    const history = useHistory()
-    const [nfts, setNFts] = useState([]);
-    const [loadingState, setLoadingState] = useState('not-loaded');
-    const [tab, setTab] = useState('token'); //price, offers, token
-    const [metadata, setMetadata] = useState(null)
-    const [wallet, setWallet] = useState(null)
-    const [nft, setNFT] = useState(null)
-    const [collections, setCollections] = useState([])
-    const [offers, setOffers] = useState([])
+  const history = useHistory();
+  const [nfts, setNFts] = useState([]);
+  const [loadingState, setLoadingState] = useState("not-loaded");
+  const [tab, setTab] = useState("token"); //price, offers, token
+  const [metadata, setMetadata] = useState(null);
+  const [wallet, setWallet] = useState(null);
+  const [nft, setNFT] = useState(null);
+  const [collections, setCollections] = useState([]);
+  const [offers, setOffers] = useState([]);
 
-    const [sellPrice, setSellPrice] = useState('');
-    const [approved, setApproved] = useState(false)
-    const cancelButtonRef = useRef(null)
-    const cancelButtonRef2 = useRef(null)
-    const [sellData, setSellData] = useState(null)
-    const [listSuccess, setListSuccess] = useState(false);
-    const [listFailure, setListFailure] = useState(false);
-    const [listedNFT, setListedNFT] = useState(null);
-    const [listing, setListing] = useState(false);
-    const [buySuccess, setBuySuccess] = useState(false);
-    const [buyFailure, setBuyFailure] = useState(false)
-    const [boughtNFT, setBoughtNFT] = useState(null);
-    const [buying, setBuying] = useState(false);
-    const [withdrawSuccess, setWithdrawSuccess] = useState(false);
-    const [withdrawFailure, setWithdrawFailure] = useState(false)
-    const [withdrawnNFT, setWithdrawnNFT] = useState(null);
-    const [withdrawing, setWithdrawing] = useState(false);
-    const [settingPrice, setSettingPrice] = useState(false);
+  const [sellPrice, setSellPrice] = useState("");
+  const [approved, setApproved] = useState(false);
+  const cancelButtonRef = useRef(null);
+  const cancelButtonRef2 = useRef(null);
+  const [sellData, setSellData] = useState(null);
+  const [listSuccess, setListSuccess] = useState(false);
+  const [listFailure, setListFailure] = useState(false);
+  const [listedNFT, setListedNFT] = useState(null);
+  const [listing, setListing] = useState(false);
+  const [buySuccess, setBuySuccess] = useState(false);
+  const [buyFailure, setBuyFailure] = useState(false);
+  const [boughtNFT, setBoughtNFT] = useState(null);
+  const [buying, setBuying] = useState(false);
+  const [withdrawSuccess, setWithdrawSuccess] = useState(false);
+  const [withdrawFailure, setWithdrawFailure] = useState(false);
+  const [withdrawnNFT, setWithdrawnNFT] = useState(null);
+  const [withdrawing, setWithdrawing] = useState(false);
+  const [settingPrice, setSettingPrice] = useState(false);
 
-    const [transferSuccess, setTransferSuccess] = useState(false)
-    const [transferFailure, setTransferFailure] = useState(false)
-    const [transferNFT, setTransferNFT] = useState(null)
-    const [transferring, setTransferring] = useState(false)
-    const [editSuccess, setEditSuccess] = useState(false);
-    const [editFailure, setEditFailure] = useState(false)
-    const [editedNFT, setEditedNFT] = useState(null);
-    const [editing, setEditing] = useState(false);
-    const [offerSuccess, setOfferSuccess] = useState(false);
-    const [offerFailure, setOfferFailure] = useState(false);
-    const [offerData, setOfferData] = useState(null);
-    const [offering, setOffering] = useState(false);
-    const [withdrawOfferSuccess, setWithdrawOfferSuccess] = useState(false);
-    const [withdrawOfferFailure, setWithdrawOfferFailure] = useState(false)
-    const [withdrawingOffer, setWithdrawingOffer] = useState(false);
-    const [acceptOfferSuccess, setAcceptOfferSuccess] = useState(false);
-    const [acceptOfferFailure, setAcceptOfferFailure] = useState(false)
-    const [acceptingOffer, setAcceptingOffer] = useState(false);
-    const [confirmingAcceptOffer, setConfirmingAcceptOffer] = useState(false);
-    const [offerSender, setOfferSender] = useState("")
-    const [offerPrice, setOfferPrice] = useState(0)
-    const [offerTokenId, setOfferTokenId] = useState(0)
-    const [offerId, setOfferId] = useState(0)
-    const [activeCollection, setActiveCollection] = useState("");
-    const [eventHistory, setEventHistory] = useState([])
-    const [propertyProportions, setPropertyProportions] = useState([]);
-    const [transferAddress, setTransferAddress] = useState('');
-    const [nftAsset, setNftAsset] = useState(null)
-    const [moreFromCollectionNfts, setMoreFromCollectionNfts] = useState([])
-    const [blacklist, setBlacklist] = useState([])
-    const [contractFixes, setContractFixes] = useState([])
+  const [transferSuccess, setTransferSuccess] = useState(false);
+  const [transferFailure, setTransferFailure] = useState(false);
+  const [transferNFT, setTransferNFT] = useState(null);
+  const [transferring, setTransferring] = useState(false);
+  const [editSuccess, setEditSuccess] = useState(false);
+  const [editFailure, setEditFailure] = useState(false);
+  const [editedNFT, setEditedNFT] = useState(null);
+  const [editing, setEditing] = useState(false);
+  const [offerSuccess, setOfferSuccess] = useState(false);
+  const [offerFailure, setOfferFailure] = useState(false);
+  const [offerData, setOfferData] = useState(null);
+  const [offering, setOffering] = useState(false);
+  const [withdrawOfferSuccess, setWithdrawOfferSuccess] = useState(false);
+  const [withdrawOfferFailure, setWithdrawOfferFailure] = useState(false);
+  const [withdrawingOffer, setWithdrawingOffer] = useState(false);
+  const [acceptOfferSuccess, setAcceptOfferSuccess] = useState(false);
+  const [acceptOfferFailure, setAcceptOfferFailure] = useState(false);
+  const [acceptingOffer, setAcceptingOffer] = useState(false);
+  const [confirmingAcceptOffer, setConfirmingAcceptOffer] = useState(false);
+  const [offerSender, setOfferSender] = useState("");
+  const [offerPrice, setOfferPrice] = useState(0);
+  const [offerTokenId, setOfferTokenId] = useState(0);
+  const [offerId, setOfferId] = useState(0);
+  const [activeCollection, setActiveCollection] = useState("");
+  const [eventHistory, setEventHistory] = useState([]);
+  const [propertyProportions, setPropertyProportions] = useState([]);
+  const [transferAddress, setTransferAddress] = useState("");
+  const [nftAsset, setNftAsset] = useState(null);
+  const [moreFromCollectionNfts, setMoreFromCollectionNfts] = useState([]);
+  const [blacklist, setBlacklist] = useState([]);
+  const [contractFixes, setContractFixes] = useState([]);
 
-    const { id, nftaddress } = useParams()
+  const { id, nftaddress } = useParams();
 
-    const viewNFT = data => {
-        history.push(`/collection/${data.collectionName}`)
-    }
+  const viewNFT = (data) => {
+    history.push(`/collection/${data.collectionName}`);
+  };
 
-    const startSale = async (nft) =>{
-        setSellData(nft)
-        setListing(true)
-        setListFailure(false)
-        setSettingPrice(true)
+  const startSale = async (nft) => {
+    setSellData(nft);
+    setListing(true);
+    setListFailure(false);
+    setSettingPrice(true);
+  };
+  const sellNFT = async () => {
+    setSettingPrice(false);
+    var success = false;
+    if (!blacklist.includes(nft.tokenId)) {
+      success = await SellNFT(approved, sellData, sellPrice);
     }
-    const sellNFT = async () => {
-        setSettingPrice(false)
-        var success = false
-        if(!blacklist.includes(nft.tokenId)){
-            success = await SellNFT(approved, sellData, sellPrice)
-        }
-        if(success) {
-            setListedNFT(sellData)
-            setListSuccess(true)
-        }
-        else {
-            setListFailure(true)
-        }
+    if (success) {
+      setListedNFT(sellData);
+      setListSuccess(true);
+    } else {
+      setListFailure(true);
     }
-    const offer = async () => {
-        setSettingPrice(false)
-        var success = false
-        if(!blacklist.includes(nft.tokenId)){
-            success = await Offer(approved, offerData, sellPrice)
-        }
-        if(success) {
-            setOfferData(offerData)
-            setOfferSuccess(true)
-        }
-        else {
-            setOfferFailure(true)
-        }
+  };
+  const offer = async () => {
+    setSettingPrice(false);
+    var success = false;
+    if (!blacklist.includes(nft.tokenId)) {
+      success = await Offer(approved, offerData, sellPrice);
     }
-    const closeList = () => {
-        setListing(false);
-        if(!listFailure)
-            history.push(`/my-nfts`)
+    if (success) {
+      setOfferData(offerData);
+      setOfferSuccess(true);
+    } else {
+      setOfferFailure(true);
     }
-    const buyNFT = async (nft) => {
-        setBuying(true)
-        setBuyFailure(false)
-        var success = false
-        if(blacklist.includes(nft.tokenId)){
-            success = await LegacyBuyNFT(nft)
-        }
-        else{
-            success = await BuyNFT(nft)
-        }
-        if(success) {
-            setBoughtNFT(nft)
-            setBuySuccess(true)
-        }
-        else {
-            setBuyFailure(true)
-        }
+  };
+  const closeList = () => {
+    setListing(false);
+    if (!listFailure) history.push(`/my-nfts`);
+  };
+  const buyNFT = async (nft) => {
+    setBuying(true);
+    setBuyFailure(false);
+    var success = false;
+    if (blacklist.includes(nft.tokenId)) {
+      success = await LegacyBuyNFT(nft);
+    } else {
+      success = await BuyNFT(nft);
     }
-    const placeOffer = async(nft) => {
-        setOfferData(nft)
-        setOffering(true)
-        setOfferFailure(false)
-        setSettingPrice(true)
+    if (success) {
+      setBoughtNFT(nft);
+      setBuySuccess(true);
+    } else {
+      setBuyFailure(true);
     }
-    const closeOffer = () => {
-        setOffering(false);
-        if(!offerFailure)
-            history.push(`/collection/${nft.collectionName}`)
+  };
+  const placeOffer = async (nft) => {
+    setOfferData(nft);
+    setOffering(true);
+    setOfferFailure(false);
+    setSettingPrice(true);
+  };
+  const closeOffer = () => {
+    setOffering(false);
+    if (!offerFailure) history.push(`/collection/${nft.collectionName}`);
+  };
+  const closeBuy = () => {
+    setBuying(false);
+    if (!buyFailure) history.push("/my-nfts");
+  };
+  const withdrawListing = async (nft) => {
+    setWithdrawing(true);
+    setWithdrawFailure(false);
+    var success = false;
+    if (blacklist.includes(nft.tokenId)) {
+      success = await LegacyWithdrawListing(approved, nft);
+    } else {
+      success = await WithdrawListing(approved, nft);
     }
-    const closeBuy = () => {
-        setBuying(false)
-        if(!buyFailure)
-            history.push('/my-nfts')
+    if (success) {
+      setWithdrawnNFT(nft);
+      setWithdrawSuccess(true);
+    } else {
+      setWithdrawFailure(true);
     }
-    const withdrawListing = async(nft) => {
-        setWithdrawing(true)
-        setWithdrawFailure(false)
-        var success = false
-        if(blacklist.includes(nft.tokenId)) {
-            success = await LegacyWithdrawListing(approved, nft)
-        }
-        else{
-            success = await WithdrawListing(approved, nft)
-        }
-        if(success) {
-            setWithdrawnNFT(nft)
-            setWithdrawSuccess(true)
-        }
-        else{
-            setWithdrawFailure(true)
-        }
+  };
+  const closeWithdraw = () => {
+    setWithdrawing(false);
+    if (!withdrawFailure) history.push("/my-nfts");
+  };
+  const withdrawOffer = async (tokenId, i) => {
+    setWithdrawingOffer(true);
+    setWithdrawOfferFailure(false);
+    var success = false;
+    if (!blacklist.includes(nft.tokenId)) {
+      success = await WithdrawOffer(approved, tokenId, i + 1);
     }
-    const closeWithdraw = () => {
-        setWithdrawing(false); 
-        if(!withdrawFailure)
-            history.push('/my-nfts')
+    if (success) {
+      setWithdrawOfferSuccess(true);
+    } else {
+      setWithdrawOfferFailure(true);
     }
-    const withdrawOffer = async(tokenId, i) => {
-        setWithdrawingOffer(true)
-        setWithdrawOfferFailure(false)
-        var success = false
-        if(!blacklist.includes(nft.tokenId)){
-            success = await WithdrawOffer(approved, tokenId, i + 1)
-        }
-        if(success) {
-            setWithdrawOfferSuccess(true)
-        }
-        else{
-            setWithdrawOfferFailure(true)
-        }
-        // console.log(success)
+    // console.log(success)
+  };
+  const closeWithdrawOffer = () => {
+    setWithdrawingOffer(false);
+    if (!withdrawOfferFailure)
+      history.push(`/collection/${nft.collectionName}`);
+  };
+  const acceptOffer = async () => {
+    setConfirmingAcceptOffer(false);
+    var success = false;
+    if (!blacklist.includes(nft.tokenId)) {
+      success = await AcceptOffer(approved, offerTokenId, offerId);
     }
-    const closeWithdrawOffer = () => {
-        setWithdrawingOffer(false); 
-        if(!withdrawOfferFailure)
-            history.push(`/collection/${nft.collectionName}`)
+    if (success) {
+      setAcceptOfferSuccess(true);
+    } else {
+      setAcceptOfferFailure(true);
     }
-    const acceptOffer = async() => {
-        setConfirmingAcceptOffer(false)
-        var success = false
-        if(!blacklist.includes(nft.tokenId)){
-            success = await AcceptOffer(approved, offerTokenId, offerId)
-        }
-        if(success) {
-            setAcceptOfferSuccess(true)
-        }
-        else {
-            setAcceptOfferFailure(true)
-        }
+  };
+  const confirmAcceptOffer = async (tokenId, i, from, price) => {
+    setConfirmingAcceptOffer(true);
+    setAcceptingOffer(true);
+    setAcceptOfferFailure(false);
+    setOfferTokenId(tokenId);
+    setOfferId(i + 1);
+    setOfferSender(from);
+    setOfferPrice(price);
+  };
+  const closeAcceptOffer = () => {
+    setAcceptingOffer(false);
+    if (!acceptOfferFailure) history.push(`/my-nfts`);
+  };
+  const editListing = async (nft) => {
+    setSellData(nft);
+    setEditFailure(false);
+    setEditing(true);
+    setSettingPrice(true);
+  };
+  const editNFT = async () => {
+    setSettingPrice(false);
+    var success = false;
+    if (!blacklist.includes(nft.tokenId)) {
+      success = await EditNFT(approved, sellData, sellPrice);
     }
-    const confirmAcceptOffer = async(tokenId, i, from, price) => {
-        setConfirmingAcceptOffer(true)
-        setAcceptingOffer(true)
-        setAcceptOfferFailure(false)
-        setOfferTokenId(tokenId)
-        setOfferId(i + 1)
-        setOfferSender(from)
-        setOfferPrice(price)
+    if (success) {
+      setEditedNFT(sellData);
+      setEditSuccess(true);
+    } else {
+      setEditFailure(true);
     }
-    const closeAcceptOffer = () => {
-        setAcceptingOffer(false)
-        if(!acceptOfferFailure)
-            history.push(`/my-nfts`)
+  };
+  const closeEdit = () => {
+    setEditing(false);
+    if (!editFailure) history.push(`/my-nfts`);
+  };
+  const startTransfer = async (nft) => {
+    setTransferNFT(nft);
+    setTransferFailure(false);
+    setSettingPrice(true);
+    setTransferring(true);
+  };
+  const transfer = async () => {
+    setSettingPrice(false);
+    var success = false;
+    if (!blacklist.includes(nft.tokenId)) {
+      success = await TransferNFT(approved, transferNFT, transferAddress);
     }
-    const editListing = async (nft) =>{
-        setSellData(nft)
-        setEditFailure(false)
-        setEditing(true)
-        setSettingPrice(true)
+    if (success) {
+      setTransferNFT(transferNFT);
+      setTransferSuccess(true);
+    } else {
+      setTransferFailure(true);
     }
-    const editNFT = async () => {
-        setSettingPrice(false)
-        var success = false
-        if(!blacklist.includes(nft.tokenId)){
-            success = await EditNFT(approved, sellData, sellPrice)
-        }
-        if(success) {
-            setEditedNFT(sellData)
-            setEditSuccess(true)
-        }
-        else {
-            setEditFailure(true)
-        }
-    }
-    const closeEdit = () => {
-        setEditing(false);
-        if(!editFailure)
-            history.push(`/my-nfts`)
-    }
-    const startTransfer = async (nft) => {
-        setTransferNFT(nft)
-        setTransferFailure(false)
-        setSettingPrice(true)
-        setTransferring(true)
-    }
-    const transfer = async () => {
-        setSettingPrice(false)
-        var success = false
-        if(!blacklist.includes(nft.tokenId)){
-            success = await TransferNFT(approved, transferNFT, transferAddress)
-        }
-        if(success) {
-            setTransferNFT(transferNFT)
-            setTransferSuccess(true)
-        }
-        else {
-            setTransferFailure(true)
-        }
-    }
-    const closeTransfer = () => {
-        setTransferring(false);
-        if(!transferFailure)
-            history.push('/my-nfts')
-    }
+  };
+  const closeTransfer = () => {
+    setTransferring(false);
+    if (!transferFailure) history.push("/my-nfts");
+  };
 
-    const showProperties = async () => {
-        var coll = document.getElementsByClassName("nft-properties-collapsible")[0];
-        coll.className = "nft-properties-collapsible nft-properties-active";
-        var content = document.getElementsByClassName("nft-property-tags")[0];
-        // console.log(content)
-        if (content.style.maxHeight){
-            content.style.maxHeight = null;
+  const showProperties = async () => {
+    var coll = document.getElementsByClassName("nft-properties-collapsible")[0];
+    coll.className = "nft-properties-collapsible nft-properties-active";
+    var content = document.getElementsByClassName("nft-property-tags")[0];
+    // console.log(content)
+    if (content.style.maxHeight) {
+      content.style.maxHeight = null;
+    } else {
+      content.style.maxHeight = 1000 + "px";
+    }
+  };
+
+  const showUnlockableContent = async () => {
+    var coll = document.getElementsByClassName(
+      "unlockable-content-collapsible"
+    )[0];
+    coll.className = "unlockable-content-collapsible unlockable-content-active";
+    var content = document.getElementsByClassName("unlockable-content")[0];
+    // console.log(content)
+    if (content.style.maxHeight) {
+      content.style.maxHeight = null;
+    } else {
+      content.style.maxHeight = 1000 + "px";
+    }
+  };
+
+  const isImage = (fileType) => {
+    return !!fileType?.match("image.*");
+  };
+
+  const isVideo = (fileType) => {
+    return !!fileType?.match("video.*");
+  };
+
+  const isAudio = (fileType) => {
+    return !!fileType?.match("audio.*");
+  };
+
+  const getBlacklist = async () => {
+    const wallet = await GetWallet();
+    setWallet(wallet);
+    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
+    const oldMarketContract = new xdc3.eth.Contract(
+      NFTMarket.abi,
+      nftmarketaddress,
+      xdc3
+    );
+    const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
+    const data = await oldMarketContract.methods.fetchMarketItems().call();
+
+    var newBlacklist = [];
+    const marketItems = await Promise.all(
+      data.map(async (i) => {
+        if (i.isListed) {
+          newBlacklist.push(i.tokenId);
         }
-        else {
-            content.style.maxHeight = 1000 + "px";
+      })
+    );
+    // console.log(newBlacklist)
+    // setBlacklist(newBlacklist)
+  };
+
+  const getData = async () => {
+    try {
+      // console.log(permaBlacklist)
+      setBlacklist(permaBlacklist);
+      setContractFixes(contractFix);
+      const wallet = await GetWallet();
+
+      const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
+      // const marketContract = new xdc3.eth.Contract(NFTMarket.abi, nftmarketaddress, xdc3)
+      const marketContract = new xdc3.eth.Contract(
+        NFTMarketLayer1.abi,
+        nftmarketlayeraddress,
+        xdc3
+      );
+      const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
+
+      if (wallet.wallet.address !== "")
+        var getVal = await nftContract.methods
+          .isApprovedForAll(
+            isXdc(wallet.wallet.address)
+              ? fromXdc(wallet.wallet.address)
+              : wallet.wallet.address,
+            nftmarketlayeraddress
+          )
+          .call();
+
+      var item = await marketContract.methods.idToMarketItem(id).call();
+      var uri = await nftContract.methods.tokenURI(item.tokenId).call();
+      var metadata = await axios.get(uri);
+
+      var price = await xdc3.utils.fromWei(item.price, "ether");
+
+      let currentItem = {
+        price: price,
+        tokenId: item.tokenId,
+        itemId: item.itemId,
+        creator: item.creator,
+        owner: item.owner,
+        collectionName: metadata?.data?.collection?.name,
+        collectionLogo: metadata?.data?.collection?.logo,
+        image: metadata?.data?.collection?.nft?.image,
+        name: metadata?.data?.collection?.nft?.name,
+        description: metadata?.data?.collection?.nft?.description,
+        nftContract: item.nftContract,
+        itemId: item.itemId,
+        isListed: item.isListed,
+        properties: metadata?.data?.collection?.nft?.properties,
+        fileType: metadata?.data?.collection?.nft?.fileType,
+        preview: metadata?.data?.collection?.nft?.preview,
+        royalty: metadata?.data?.collection?.nft?.royalty,
+      };
+
+      setActiveCollection(metadata?.data?.collection?.name);
+
+      // console.log(currentItem)
+
+      const data = await marketContract.methods
+        .getCollectionNFTs(metadata?.data?.collection?.name)
+        .call();
+      var moreFromCollectionItems = [];
+      const collection = await Promise.all(
+        data.slice(0, 10).map(async (i) => {
+          var price = await xdc3.utils.fromWei(i.price, "ether");
+
+          const uri = await nftContract.methods.tokenURI(i.tokenId).call();
+
+          var metadata = await axios.get(uri);
+
+          let item = {
+            price: price,
+            tokenId: i.tokenId,
+            itemId: i.itemId,
+            seller: i.seller,
+            owner: i.owner,
+            collectionName: metadata?.data?.collection?.name,
+            image: metadata?.data?.collection?.nft?.image,
+            name: metadata?.data?.collection?.nft?.name,
+            description: metadata?.data?.collection?.nft?.description,
+            nftContract: i.nftContract,
+            isListed: i.isListed,
+            properties: metadata?.data?.collection?.nft?.properties,
+            fileType: metadata?.data?.collection?.nft?.fileType,
+            preview: metadata?.data?.collection?.nft?.preview,
+          };
+
+          if (
+            metadata?.data?.collection?.name === currentItem.collectionName &&
+            i.tokenId !== currentItem.tokenId &&
+            moreFromCollectionItems.length < 8 &&
+            i.tokenId !== "119" &&
+            i.tokenId !== "1778"
+          ) {
+            moreFromCollectionItems.push(item);
+          }
+          return item;
+        })
+      );
+      setCollections(collections);
+
+      const properties = await Promise.all(
+        metadata.data.collection.nft.properties.map(async (property, i) => {
+          let propertyProp = {
+            property: property.property,
+            value: property.value,
+            proportion: 0,
+          };
+          return propertyProp;
+        })
+      );
+
+      const moreFromCollection = await Promise.all(
+        collection.map(async (i) => {
+          const uri = await nftContract.methods.tokenURI(i.tokenId).call();
+          var metadata = await axios.get(uri);
+
+          var currentItemURI = await nftContract.methods
+            .tokenURI(item.tokenId)
+            .call();
+          var currentItemMetadata = await axios.get(currentItemURI);
+
+          if (
+            i.tokenId !== id &&
+            metadata?.data?.collection?.name ==
+              currentItemMetadata?.data?.collection?.name
+          ) {
+            var props = await Promise.all(
+              metadata?.data?.collection?.nft?.properties.map(async (prop) => {
+                return prop;
+              })
+            );
+            return props;
+          }
+        })
+      );
+
+      setNftAsset(metadata.data.collection.nft.fileType);
+
+      const filteredCollectionProperties = moreFromCollection.filter(
+        (element) => {
+          return element !== undefined;
         }
-    }
+      );
 
-    const showUnlockableContent = async () => {
-        var coll = document.getElementsByClassName("unlockable-content-collapsible")[0];
-        coll.className = "unlockable-content-collapsible unlockable-content-active";
-        var content = document.getElementsByClassName("unlockable-content")[0];
-        // console.log(content)
-        if (content.style.maxHeight){
-            content.style.maxHeight = null;
-        }
-        else {
-            content.style.maxHeight = 1000 + "px";
-        }
-    }
-
-    const isImage = (fileType) => {
-        return !!fileType?.match('image.*');
-    }
-      
-    const isVideo = (fileType) => {
-        return !!fileType?.match('video.*');
-    }
-
-    const isAudio = (fileType) => {
-        return !!fileType?.match('audio.*');
-    }
-
-    const getBlacklist = async () => {
-        const wallet = await GetWallet();
-        setWallet(wallet);
-        const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER))
-        const oldMarketContract = new xdc3.eth.Contract(NFTMarket.abi, nftmarketaddress, xdc3)
-        const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress)
-        const data = await oldMarketContract.methods.fetchMarketItems().call()
-
-        var newBlacklist = []
-        const marketItems = await Promise.all(data.map(async i => {
-            if(i.isListed) {
-                newBlacklist.push(i.tokenId)
+      for (var i = 0; i < properties.length; i++) {
+        var propCount = 1;
+        var totalCount = 1;
+        for (var j = 0; j < filteredCollectionProperties.length; j++) {
+          for (var k = 0; k < filteredCollectionProperties[j].length; k++) {
+            if (
+              filteredCollectionProperties[j][k].property ==
+                properties[i].property &&
+              filteredCollectionProperties[j][k].value == properties[i].value
+            ) {
+              propCount += 1;
             }
-        }))
-        // console.log(newBlacklist)
-        // setBlacklist(newBlacklist)
-    }
-
-    const getData = async () => {
-        try {
-            // console.log(permaBlacklist)
-            setBlacklist(permaBlacklist)
-            setContractFixes(contractFix)
-            const wallet = await GetWallet()
-
-            const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER))
-            // const marketContract = new xdc3.eth.Contract(NFTMarket.abi, nftmarketaddress, xdc3)
-            const marketContract = new xdc3.eth.Contract(NFTMarketLayer1.abi, nftmarketlayeraddress, xdc3)
-            const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress)
-
-            if(wallet.wallet.address !== '')
-                var getVal = await nftContract.methods.isApprovedForAll(isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address, nftmarketlayeraddress).call()
-
-            var item = await marketContract.methods.idToMarketItem(id).call()
-            var uri = await nftContract.methods.tokenURI(item.tokenId).call()
-            var metadata = await axios.get(uri)
-
-            var price = await xdc3.utils.fromWei(item.price, "ether")
-
-            let currentItem = {
-                price: price,
-                tokenId: item.tokenId,
-                itemId: item.itemId,
-                creator: item.creator,
-                owner: item.owner,
-                collectionName: metadata?.data?.collection?.name,
-                collectionLogo: metadata?.data?.collection?.logo,
-                image: metadata?.data?.collection?.nft?.image,
-                name: metadata?.data?.collection?.nft?.name,
-                description: metadata?.data?.collection?.nft?.description,
-                nftContract: item.nftContract,
-                itemId: item.itemId,
-                isListed: item.isListed,
-                properties: metadata?.data?.collection?.nft?.properties,
-                fileType: metadata?.data?.collection?.nft?.fileType,
-                preview: metadata?.data?.collection?.nft?.preview,
-                royalty: metadata?.data?.collection?.nft?.royalty
-            }
-
-            setActiveCollection(metadata?.data?.collection?.name)
-
-            // console.log(currentItem)
-
-            const data = await marketContract.methods.getCollectionNFTs(metadata?.data?.collection?.name).call()
-            var moreFromCollectionItems = []
-            const collection = await Promise.all(data.slice(0, 10).map(async i => {
-
-                var price = await xdc3.utils.fromWei(i.price, "ether")
-
-                const uri = await nftContract.methods.tokenURI(i.tokenId).call()
-
-                var metadata = await axios.get(uri)
-
-                let item = {
-                    price: price,
-                    tokenId: i.tokenId,
-                    itemId: i.itemId,
-                    seller: i.seller,
-                    owner: i.owner,
-                    collectionName: metadata?.data?.collection?.name,
-                    image: metadata?.data?.collection?.nft?.image,
-                    name: metadata?.data?.collection?.nft?.name,
-                    description: metadata?.data?.collection?.nft?.description,
-                    nftContract: i.nftContract,
-                    isListed: i.isListed,
-                    properties: metadata?.data?.collection?.nft?.properties,
-                    fileType: metadata?.data?.collection?.nft?.fileType,
-                    preview: metadata?.data?.collection?.nft?.preview
-                }
-
-                if(metadata?.data?.collection?.name === currentItem.collectionName && i.tokenId !== currentItem.tokenId
-                    && moreFromCollectionItems.length < 8 && i.tokenId !== "119" && i.tokenId !== "1778") {
-                    moreFromCollectionItems.push(item)
-                }
-                return item
-            }))
-            setCollections(collections)
-
-            const properties = await Promise.all(metadata.data.collection.nft.properties.map( async (property, i) => {
-                let propertyProp = {
-                    property: property.property,
-                    value: property.value,
-                    proportion: 0
-                }
-                return propertyProp
-            }))
-
-            const moreFromCollection = await Promise.all(collection.map(async i => {
-
-                const uri = await nftContract.methods.tokenURI(i.tokenId).call()
-                var metadata = await axios.get(uri)
-
-                var currentItemURI = await nftContract.methods.tokenURI(item.tokenId).call()
-                var currentItemMetadata = await axios.get(currentItemURI)
-
-                if(i.tokenId !== id && metadata?.data?.collection?.name == currentItemMetadata?.data?.collection?.name) {
-                    var props = await Promise.all(metadata?.data?.collection?.nft?.properties.map(async prop => {
-                        return prop
-                    }))
-                    return props
-                }
-
-            }))
-
-            setNftAsset(metadata.data.collection.nft.fileType)
-
-            const filteredCollectionProperties = moreFromCollection.filter((element) => { return element !== undefined })
-
-            for(var i = 0; i < properties.length; i++) {
-                var propCount = 1
-                var totalCount = 1
-                for(var j = 0; j < filteredCollectionProperties.length; j++) {
-                    for(var k = 0; k < filteredCollectionProperties[j].length; k++) {
-                        if(filteredCollectionProperties[j][k].property == properties[i].property && filteredCollectionProperties[j][k].value == properties[i].value) {
-                            propCount += 1
-                        }
-                    }
-                    totalCount += 1
-                }
-                properties[i].proportion = propCount * 100 / totalCount
-            }
-
-            setLoadingState('loaded')
-            setNFts(collection)
-            setNFT(currentItem)
-            setMetadata(metadata.data)
-            setPropertyProportions(properties)
-            setWallet(wallet?.wallet)
-            setApproved(getVal)
-            setMoreFromCollectionNfts(moreFromCollectionItems)
-        } catch (error) {
-            console.log(error)
+          }
+          totalCount += 1;
         }
+        properties[i].proportion = (propCount * 100) / totalCount;
+      }
+
+      setLoadingState("loaded");
+      setNFts(collection);
+      setNFT(currentItem);
+      setMetadata(metadata.data);
+      setPropertyProportions(properties);
+      setWallet(wallet?.wallet);
+      setApproved(getVal);
+      setMoreFromCollectionNfts(moreFromCollectionItems);
+    } catch (error) {
+      console.log(error);
     }
+  };
 
-    useEffect(() => {
-        setWallet(props.wallet)
-        getData()
-        getOffers()
-        getEvents()
-    }, [])
+  useEffect(() => {
+    setWallet(props.wallet);
+    getData();
+    getOffers();
+    getEvents();
+  }, []);
 
-    useEffect(() => {
-        setWallet(props.wallet)
-    }, [props.wallet])
+  useEffect(() => {
+    setWallet(props.wallet);
+  }, [props.wallet]);
 
-    React.useEffect(() => {
-        window.scrollTo(0, 0);
-    }, []);
+  React.useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
-    const size = useWindowSize();
+  const size = useWindowSize();
 
-    const [isActive, setIsActive] = useState(0);
-    const [highestOffer, setHighestOffer] = useState(0);
-    const variants = {
-        selected: { opacity: 1 },
-        normal: { opacity: 0.3 },
-    };
+  const [isActive, setIsActive] = useState(0);
+  const [highestOffer, setHighestOffer] = useState(0);
+  const variants = {
+    selected: { opacity: 1 },
+    normal: { opacity: 0.3 },
+  };
 
-    const appear = {
-        selected: { opacity: 1, y: 0 },
-        normal: { opacity: 0.3, y: 6 },
-    };
+  const appear = {
+    selected: { opacity: 1, y: 0 },
+    normal: { opacity: 0.3, y: 6 },
+  };
 
-    const truncateAddress = (address) => {
-        return address
-          ? address.substring(0, 7) + "..." + address.substring(38)
-          : "undefined";
-    };
+  const truncateAddress = (address) => {
+    return address
+      ? address.substring(0, 7) + "..." + address.substring(38)
+      : "undefined";
+  };
 
-    const getOffers = async() => {
-        const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
-        const marketContract = new xdc3.eth.Contract(NFTMarketLayer1.abi, nftmarketlayeraddress, xdc3);
-        var offers = await marketContract.methods.getTokenOfferList(id).call();
-        var highestOfferPrice = 0;
-        const getHighest = await Promise.all(offers.map(async i => {
-            if(i.price >= highestOfferPrice)
-                highestOfferPrice = i.price;
-        }));
-        setHighestOffer(highestOfferPrice === 0 ? 0 : await xdc3.utils.fromWei(highestOfferPrice, "ether"));
-        setOffers(offers);
-    };
+  const getOffers = async () => {
+    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
+    const marketContract = new xdc3.eth.Contract(
+      NFTMarketLayer1.abi,
+      nftmarketlayeraddress,
+      xdc3
+    );
+    var offers = await marketContract.methods.getTokenOfferList(id).call();
+    var highestOfferPrice = 0;
+    const getHighest = await Promise.all(
+      offers.map(async (i) => {
+        if (i.price >= highestOfferPrice) highestOfferPrice = i.price;
+      })
+    );
+    setHighestOffer(
+      highestOfferPrice === 0
+        ? 0
+        : await xdc3.utils.fromWei(highestOfferPrice, "ether")
+    );
+    setOffers(offers);
+  };
 
-    const getEvents = async() => {
-        const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
-        const marketContract = new xdc3.eth.Contract(NFTMarketLayer1.abi, nftmarketlayeraddress, xdc3);
-        var events = await marketContract.methods.getTokenEventHistory(id).call();
-        const activity = await Promise.all(events.map(async (item, i) => {
-            let event = {
-                id: i + 1,
-                event: item.eventType === '0'
-                    ? "Mint"
-                    : item.eventType === '1'
-                        ? "List"
-                        : item.eventType === '2'
-                            ? "Withdraw Listing"
-                            : item.eventType === '3'
-                                ? "Sale"
-                                : item.eventType === '4'
-                                    ? "Transfer"
-                                    : item.eventType === '5'
-                                        ? "Edit Listing"
-                                        : item.eventType === '6'
-                                            ? "Offer Placed"
-                                            : item.eventType === '7'
-                                                ? "Offer Withdrawn"
-                                                : "Offer Accepted",
-                price: xdc3.utils.fromWei(item.price, "ether"),
-                from: item.from,
-                to: item.to,
-                date: item.timestamp,
-            };
-            return event;
-        }));
-        setEventHistory(activity.reverse());
-    }
+  const getEvents = async () => {
+    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
+    const marketContract = new xdc3.eth.Contract(
+      NFTMarketLayer1.abi,
+      nftmarketlayeraddress,
+      xdc3
+    );
+    var events = await marketContract.methods.getTokenEventHistory(id).call();
+    const activity = await Promise.all(
+      events.map(async (item, i) => {
+        let event = {
+          id: i + 1,
+          event:
+            item.eventType === "0"
+              ? "Mint"
+              : item.eventType === "1"
+              ? "List"
+              : item.eventType === "2"
+              ? "Withdraw Listing"
+              : item.eventType === "3"
+              ? "Sale"
+              : item.eventType === "4"
+              ? "Transfer"
+              : item.eventType === "5"
+              ? "Edit Listing"
+              : item.eventType === "6"
+              ? "Offer Placed"
+              : item.eventType === "7"
+              ? "Offer Withdrawn"
+              : "Offer Accepted",
+          price: xdc3.utils.fromWei(item.price, "ether"),
+          from: item.from,
+          to: item.to,
+          date: item.timestamp,
+        };
+        return event;
+      })
+    );
+    setEventHistory(activity.reverse());
+  };
 
-    return (
-        <NFTPage>
-            <ContentNftPage>
-                <VStack height="auto" padding="90px 0 0 0 ">
-                    <HStack height="100%" responsive={true} alignment="flex-start">
-                        <VStack width="100%" padding="30px 15px">
-                            {/* NFT Image and owner */}
-                            <VStack width={size.width < 768 ? "100%" : "540px"}>
-                                <IconImg
-                                    url={nft?.image}
-                                    width="100%"
-                                    height={size.width < 768 ? "360px" : "540px"}
-                                    border="15px"
-                                ></IconImg>
-                                <HStack
-                                    background={({ theme }) => theme.backElement}
-                                    width="100%"
-                                    height="49px"
-                                    border="9px"
-                                >
-                                    <CaptionRegular>Owned by</CaptionRegular>
-                                    <HStack spacing="6px">
-                                        {/* <IconImg
+  return (
+    <NFTPage>
+      <ContentNftPage>
+        <VStack height="auto" padding="90px 0 0 0 ">
+          <HStack height="100%" responsive={true} alignment="flex-start">
+            <VStack width="100%" padding="30px 15px">
+              {/* NFT Image and owner */}
+              <VStack width={size.width < 768 ? "100%" : "540px"}>
+                <AnimatePresence>
+                  <ZStack>
+                    {nft?.image ? (
+                      <VStack>
+                        <IconImg
+                          url={nft?.image}
+                          width="100%"
+                          height={size.width < 768 ? "360px" : "540px"}
+                          border="15px"
+                          key="imageNFT"
+                          initial={{ opacity: 0, scale: 0.9 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ type: "spring", duration: 1.1 }}
+                          backsize="cover"
+                        ></IconImg>
+
+                        <Lock>
+                          <HStack
+                            background="white"
+                            border="6px"
+                            padding="3px 12px"
+                          >
+                            <VStack>
+                              <CaptionRegular align="flex-end">
+                                Unlockable <br></br>Content
+                              </CaptionRegular>
+                            </VStack>
+                            <IconImg
+                              url={lock}
+                              width="33px"
+                              height="33px"
+                            ></IconImg>
+                          </HStack>
+                        </Lock>
+                      </VStack>
+                    ) : (
+                      <VStack
+                        width="100%"
+                        minheight={size.width < 768 ? "360px" : "540px"}
+                        key="loader"
+                        initial={{ opacity: 0, scale: 1 }}
+                        animate={{ opacity: 1, scale: 0.9 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ type: "spring", duration: 1.1 }}
+                      >
+                        <LoadingNftContainer></LoadingNftContainer>
+                      </VStack>
+                    )}
+                  </ZStack>
+                </AnimatePresence>
+
+                <HStack
+                  background={({ theme }) => theme.backElement}
+                  width="100%"
+                  height="49px"
+                  border="9px"
+                >
+                  <CaptionRegular>Owned by</CaptionRegular>
+
+                  <HStack spacing="6px">
+                    {/* <IconImg
                                             url={""}
                                             width="18px"
                                             height="18px"
                                             border="30px"
                                         ></IconImg> */}
-                                        <Tooltip title={nft?.owner ? nft.owner : "-"}>
-                                            <BodyBold>{truncateAddress(nft?.owner)}</BodyBold>
-                                        </Tooltip>
-                                    </HStack>
-                                </HStack>
-                            </VStack>
+                    {nft?.owner ? (
+                      <Tooltip title={nft?.owner ? nft.owner : "-"}>
+                        <BodyBold>{truncateAddress(nft?.owner)}</BodyBold>
+                      </Tooltip>
+                    ) : (
+                      <IconImg
+                        url={loading}
+                        width="18px"
+                        height="18px"
+                      ></IconImg>
+                    )}
+                  </HStack>
+                </HStack>
+              </VStack>
+            </VStack>
+            <VStack width="100%" padding="30px 15px">
+              <VStack width={size.width < 768 ? "100%" : "502px"}>
+                {nft?.name ? (
+                  <VStack width="100%">
+                    {/* Name */}
+                    <VStack alignment="flex-start" width="100%" spacing="6px">
+                      <TitleBold27>{nft?.name}</TitleBold27>
+                      <ButtonApp
+                        height="30px"
+                        text={nft?.collectionName}
+                        background={({ theme }) => theme.walletButton}
+                        textcolor={({ theme }) => theme.walletText}
+                      ></ButtonApp>
+                    </VStack>
+
+                    {/* Creator */}
+                    <HStack spacing="9px" justify="flex-start">
+                      <CaptionRegular>Creator</CaptionRegular>
+                      <HStack spacing="6px">
+                        <IconImg
+                          url={nft?.collectionLogo}
+                          width="18px"
+                          height="18px"
+                          border="30px"
+                        ></IconImg>
+                        <Tooltip title={nft?.creator ? nft.creator : "-"}>
+                          <BodyBold>{truncateAddress(nft?.creator)}</BodyBold>
+                        </Tooltip>
+                      </HStack>
+                      <CaptionRegular>
+                        {nft?.royalty.replace(/^0+/, "")}% Royalty
+                      </CaptionRegular>
+                    </HStack>
+                  </VStack>
+                ) : (
+                  <VStack alignment="flex-start" width="100%" spacing="9px">
+                    <HStack
+                      background="rgba(153, 162, 175, 0.21)"
+                      key="Title"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{
+                        repeat: Infinity,
+                        repeatType: "reverse",
+                        duration: 0.6,
+                        delay: 0,
+                      }}
+                      border="9px"
+                      width="300px"
+                      height="39px"
+                    ></HStack>
+
+                    <HStack
+                      background="rgba(153, 162, 175, 0.21)"
+                      key="Collection"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{
+                        repeat: Infinity,
+                        repeatType: "reverse",
+                        duration: 0.6,
+                        delay: 0,
+                      }}
+                      border="9px"
+                      width="260px"
+                      height="30px"
+                    ></HStack>
+                    <HStack
+                      background="rgba(153, 162, 175, 0.21)"
+                      key="Creator"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{
+                        repeat: Infinity,
+                        repeatType: "reverse",
+                        duration: 0.6,
+                        delay: 0,
+                      }}
+                      border="9px"
+                      width="360px"
+                      height="26px"
+                    ></HStack>
+                  </VStack>
+                )}
+
+                {/* Properties & Description */}
+                <VStack
+                  height={size.width < 768 ? "450px" : "auto"}
+                  width="100%"
+                  spacing="0px"
+                  border="9px"
+                >
+                  <HStack height="60px" justify="flex-start">
+                    {propertyProportions[0]?.property === "" ? null : (
+                      <BodyBold
+                        animate={isActive === 1 ? "selected" : "normal"}
+                        variants={variants}
+                        onClick={() => setIsActive(1)}
+                      >
+                        Properties
+                      </BodyBold>
+                    )}
+
+                    <BodyBold
+                      animate={isActive === 0 ? "selected" : "normal"}
+                      variants={variants}
+                      onClick={() => setIsActive(0)}
+                    >
+                      Description
+                    </BodyBold>
+
+                    <BodyBold
+                      animate={isActive === 2 ? "selected" : "normal"}
+                      variants={variants}
+                      onClick={() => setIsActive(2)}
+                    >
+                      Token Details
+                    </BodyBold>
+                  </HStack>
+                  <AnimatePresence>
+                    <ZStack>
+                      {isActive === 0 && (
+                        <HStack
+                          variants={appear}
+                          key={1}
+                          initial="normal"
+                          animate="selected"
+                          layoutId={1}
+                          layout="position"
+                          exit="normal"
+                          spacing="6px"
+                          width="100%"
+                          padding="30px"
+                          height="100%"
+                          background={({ theme }) => theme.backElement}
+                          border="9px"
+                        >
+                          <BodyRegular>{nft?.description}</BodyRegular>
+                        </HStack>
+                      )}
+
+                      {isActive === 1 && (
+                        <VStack>
+                          <motion.div>
+                            <HStack
+                              variants={appear}
+                              key={2}
+                              initial="normal"
+                              animate="selected"
+                              layoutId={2}
+                              layout="position"
+                              exit="normal"
+                              flexwrap="wrap"
+                              spacing="6px"
+                              width="100%"
+                              justify="flex-start"
+                              padding={
+                                size.width < 768 ? "0 0 12px 15px" : "5px"
+                              }
+                            >
+                              {propertyProportions[0]?.property !== ""
+                                ? propertyProportions.map((property, index) => (
+                                    <Property
+                                      key={index}
+                                      Title={property.property}
+                                      Property={property.value}
+                                      Rarity={property.proportion.toFixed(2)}
+                                      rarityIcon={gold}
+                                    />
+                                  ))
+                                : null}
+                            </HStack>
+                          </motion.div>
                         </VStack>
-                        <VStack width="100%" padding="15px">
-                            <Spacer></Spacer>
-                                <VStack width={size.width < 768 ? "100%" : "502px"}>
-                                <HStack>
-                                    {/* Name */}
-                                    <VStack alignment="flex-start" maxwidth="70%">
-                                        <TitleBold27>{nft?.name}</TitleBold27>
-                                        <ButtonApp
-                                            height="39px"
-                                            text={nft?.collectionName}
-                                            background={({ theme }) => theme.backElement}
-                                        ></ButtonApp>
-                                    </VStack>
+                      )}
+                      {isActive === 2 && (
+                        <HStack
+                          variants={appear}
+                          key={3}
+                          initial="normal"
+                          animate="selected"
+                          layoutId={3}
+                          layout="position"
+                          exit="normal"
+                          flexwrap="wrap"
+                          spacing="6px"
+                          width="100%"
+                          justify="flex-start"
+                          padding={size.width < 768 ? "0 0 12px 15px" : "5px"}
+                          height={"100%"}
+                        >
+                          <VStack
+                            background={({ theme }) => theme.backElement}
+                            width="100%"
+                            height="auto"
+                            border="9px"
+                            padding="6px 15px"
+                          >
+                            <HStack width="100%" height="36px">
+                              <IconImg
+                                url={star}
+                                width="18px"
+                                height="18px"
+                              ></IconImg>
+                              <CaptionBoldShort>NFT Address</CaptionBoldShort>
+                              <Spacer></Spacer>
+                              <HStack spacing="6px">
+                                <Tooltip title={nftaddress}>
+                                  <TitleBold18>
+                                    {truncateAddress(nftaddress)}
+                                  </TitleBold18>
+                                </Tooltip>
+                              </HStack>
+                            </HStack>
 
-                                    {/* Creator */}
-                                    <VStack alignment="flex-end" spacing="9px">
-                                        <CaptionRegular>Creator</CaptionRegular>
-                                        <HStack spacing="6px" justify="flex-end">
-                                            <IconImg
-                                                url={nft?.collectionLogo}
-                                                width="18px"
-                                                height="18px"
-                                                border="30px"
-                                            ></IconImg>
-                                            <Tooltip title={nft?.creator ? nft.creator : "-"}>
-                                                <BodyBold>{truncateAddress(nft?.creator)}</BodyBold>
-                                            </Tooltip>
-                                        </HStack>
-                                        <CaptionRegular>{nft?.royalty.replace(/^0+/, '')}% Royalty</CaptionRegular>
-                                    </VStack>
-                                </HStack>
+                            <HStack width="100%" height="36px">
+                              <IconImg
+                                url={tagBlue}
+                                width="18px"
+                                height="18px"
+                              ></IconImg>
+                              <CaptionBoldShort>Token ID</CaptionBoldShort>
+                              <Spacer></Spacer>
+                              <HStack spacing="6px">
+                                <TitleBold18>{nft?.tokenId}</TitleBold18>
+                              </HStack>
+                            </HStack>
 
-                                {/* Properties & Description */}
-                                <VStack
-                                    height={size.width < 768 ? "450px" : "360px"}
-                                    width="100%"
-                                    spacing="0px"
-                                    border="9px"
-                                >
-                                    <HStack height="60px">
-                                        {propertyProportions[0]?.property === ""
-                                            ? null
-                                            : <BodyBold
-                                                animate={isActive === 1 ? "selected" : "normal"}
-                                                variants={variants}
-                                                onClick={() => setIsActive(1)}
-                                            >
-                                                Properties
-                                            </BodyBold>
-                                        }
-                                        
-                                        <BodyBold
-                                            animate={isActive === 0 ? "selected" : "normal"}
-                                            variants={variants}
-                                            onClick={() => setIsActive(0)}
-                                        >
-                                            Description
-                                        </BodyBold>
+                            <HStack width="100%" height="36px">
+                              <IconImg
+                                url={star}
+                                width="18px"
+                                height="18px"
+                              ></IconImg>
+                              <CaptionBoldShort>Blockchain</CaptionBoldShort>
+                              <Spacer></Spacer>
+                              <HStack spacing="6px">
+                                <IconImg
+                                  url={xinfinLogo}
+                                  width="18px"
+                                  height="18px"
+                                ></IconImg>
+                                <TitleBold18>XDC</TitleBold18>
+                              </HStack>
+                            </HStack>
+                          </VStack>
+                        </HStack>
+                      )}
+                    </ZStack>
+                  </AnimatePresence>
+                </VStack>
+                {/* Price */}
+                <VStack
+                  background={({ theme }) => theme.backElement}
+                  width="100%"
+                  height="auto"
+                  border="9px"
+                  padding="6px 15px"
+                >
+                  <HStack width="100%" height="36px">
+                    <IconImg url={star} width="18px" height="18px"></IconImg>
+                    <CaptionBoldShort>Price</CaptionBoldShort>
+                    <Spacer></Spacer>
+                    <HStack spacing="6px">
+                      <IconImg
+                        url={xdclogo}
+                        width="18px"
+                        height="18px"
+                      ></IconImg>
+                      <TitleBold18>{nft?.price}</TitleBold18>
+                      <CaptionBoldShort>XDC</CaptionBoldShort>
+                    </HStack>
+                  </HStack>
 
-                                        <BodyBold
-                                            animate={isActive === 2 ? "selected" : "normal"}
-                                            variants={variants}
-                                            onClick={() => setIsActive(2)}
-                                        >
-                                            Token Details
-                                        </BodyBold>
-                                    </HStack>
-                                    <AnimatePresence>
-                                        <ZStack>
-                                            {isActive === 0 ? (
-                                                <HStack
-                                                    variants={appear}
-                                                    key={1}
-                                                    initial="normal"
-                                                    animate="selected"
-                                                    layoutId={1}
-                                                    layout="position"
-                                                    exit="normal"
-                                                    spacing="6px"
-                                                    width="100%"
-                                                    padding="30px"
-                                                    height="100%"
-                                                    background={({ theme }) => theme.backElement}
-                                                    border="9px"
-                                                >
-                                                    <BodyRegular>
-                                                        {nft?.description}
-                                                    </BodyRegular>
-                                                </HStack>
-                                            ) : (
-                                                <>
-                                                {isActive === 1 ?
-                                                    <HStack
-                                                        variants={appear}
-                                                        key={2}
-                                                        initial="normal"
-                                                        animate="selected"
-                                                        layoutId={2}
-                                                        layout="position"
-                                                        exit="normal"
-                                                        flexwrap="wrap"
-                                                        spacing="6px"
-                                                        width="100%"
-                                                        justify="flex-start"
-                                                        padding={size.width < 768 ? "0 0 12px 15px" : "5px"}
-                                                        height={size.width < 768 ? "400px" : "300px"}
-                                                    >
-                                                        {propertyProportions[0]?.property !== "" 
-                                                            ? propertyProportions.map((property, index) => (
-                                                                <Property key={index} Title={property.property} Property={property.value} Rarity={property.proportion.toFixed(2)} />
-                                                            ))
-                                                            : null
-                                                        }
-                                                    </HStack>
-                                                    : <HStack
-                                                        variants={appear}
-                                                        key={3}
-                                                        initial="normal"
-                                                        animate="selected"
-                                                        layoutId={3}
-                                                        layout="position"
-                                                        exit="normal"
-                                                        flexwrap="wrap"
-                                                        spacing="6px"
-                                                        width="100%"
-                                                        justify="flex-start"
-                                                        padding={size.width < 768 ? "0 0 12px 15px" : "5px"}
-                                                        height={"100%"}
-                                                    >
-                                                        <VStack
-                                                            background={({ theme }) => theme.backElement}
-                                                            width="100%"
-                                                            height="auto"
-                                                            border="9px"
-                                                            padding="6px 15px"
-                                                        >
-                                                            <HStack width="100%" height="36px">
-                                                                <IconImg url={star} width="18px" height="18px"></IconImg>
-                                                                <CaptionBoldShort>NFT Address</CaptionBoldShort>
-                                                                <Spacer></Spacer>
-                                                                <HStack spacing="6px">
-                                                                    <Tooltip title={nftaddress}>
-                                                                        <TitleBold18>{truncateAddress(nftaddress)}</TitleBold18>
-                                                                    </Tooltip>
-                                                                </HStack>
-                                                            </HStack>
+                  <HStack width="100%" height="36px">
+                    <IconImg url={tagBlue} width="18px" height="18px"></IconImg>
+                    <CaptionBoldShort>Highest Offer</CaptionBoldShort>
+                    <Spacer></Spacer>
+                    <HStack spacing="6px">
+                      {highestOffer === 0 ? (
+                        <TitleBold18>-</TitleBold18>
+                      ) : (
+                        <>
+                          <IconImg
+                            url={xdclogo}
+                            width="18px"
+                            height="18px"
+                          ></IconImg>
+                          <TitleBold18>{highestOffer}</TitleBold18>
+                          <CaptionBoldShort>XDC</CaptionBoldShort>
+                        </>
+                      )}
+                    </HStack>
+                  </HStack>
+                </VStack>
 
-                                                            <HStack width="100%" height="36px">
-                                                                <IconImg url={tagBlue} width="18px" height="18px"></IconImg>
-                                                                <CaptionBoldShort>Token ID</CaptionBoldShort>
-                                                                <Spacer></Spacer>
-                                                                <HStack spacing="6px">
-                                                                    <TitleBold18>{nft?.tokenId}</TitleBold18>
-                                                                </HStack>
-                                                            </HStack>
-
-                                                            <HStack width="100%" height="36px">
-                                                                <IconImg url={star} width="18px" height="18px"></IconImg>
-                                                                <CaptionBoldShort>Blockchain</CaptionBoldShort>
-                                                                <Spacer></Spacer>
-                                                                <HStack spacing="6px">
-                                                                    <IconImg 
-                                                                        url={xinfinLogo} 
-                                                                        width="18px" 
-                                                                        height="18px"
-                                                                    ></IconImg>
-                                                                    <TitleBold18>XDC</TitleBold18>
-                                                                </HStack>
-                                                            </HStack>
-                                                        </VStack>
-                                                    </HStack>
-                                                    }
-                                                </>
-                                            )}
-                                        </ZStack>
-                                    </AnimatePresence>
-                                </VStack>
-                                {/* Price */}
-                                <VStack
-                                    background={({ theme }) => theme.backElement}
-                                    width="100%"
-                                    height="auto"
-                                    border="9px"
-                                    padding="6px 15px"
-                                >
-                                    <HStack width="100%" height="36px">
-                                        <IconImg url={star} width="18px" height="18px"></IconImg>
-                                        <CaptionBoldShort>Price</CaptionBoldShort>
-                                        <Spacer></Spacer>
-                                        <HStack spacing="6px">
-                                            <IconImg
-                                                url={xdclogo}
-                                                width="18px"
-                                                height="18px"
-                                            ></IconImg>
-                                            <TitleBold18>{nft?.price}</TitleBold18>
-                                            <CaptionBoldShort>XDC</CaptionBoldShort>
-                                        </HStack>
-                                    </HStack>
-
-                                    <HStack width="100%" height="36px">
-                                        <IconImg url={tagBlue} width="18px" height="18px"></IconImg>
-                                        <CaptionBoldShort>Highest Offer</CaptionBoldShort>
-                                        <Spacer></Spacer>
-                                        <HStack spacing="6px">
-                                            {highestOffer === 0
-                                                ? <TitleBold18>-</TitleBold18>
-                                                : <>
-                                                <IconImg
-                                                    url={xdclogo}
-                                                    width="18px"
-                                                    height="18px"
-                                                ></IconImg>
-                                                <TitleBold18>{highestOffer}</TitleBold18>
-                                                <CaptionBoldShort>XDC</CaptionBoldShort></>
-                                            }
-                                        </HStack>
-                                    </HStack>
-                                </VStack>
-
-                                {/* Buttons Offer & Buy  */}
-                                <HStack>
-                                    {wallet?.connected
-                                        ? nft?.isListed
-                                                ? nft?.owner !== wallet?.address
-                                                        ? <>
-                                                            <ButtonApp
-                                                                icon={tagWhite}
-                                                                iconWidth="21px"
-                                                                iconHeight="21px"
-                                                                text={contractFixes?.includes(nft?.tokenId)
-                                                                    ? "Withdraw Old"
-                                                                    : "Withdraw Listing"}
-                                                                onClick={() => {withdrawListing(nft)}}
-                                                                textcolor={appStyle.colors.white}
-                                                                width="100%"
-                                                            ></ButtonApp>
-                                                            {blacklist?.includes(nft?.tokenId)
-                                                                ? null
-                                                                : <ButtonApp
-                                                                    icon={star}
-                                                                    iconWidth="21px"
-                                                                    iconHeight="21px"
-                                                                    text="Edit Listing"
-                                                                    onClick={() => {editListing(nft)}}
-                                                                    textcolor={({ theme }) => theme.walletText}
-                                                                    width="100%"
-                                                                    background={({ theme }) => theme.walletButton}
-                                                                ></ButtonApp>
-                                                            }</>
-                                                        : <>
-                                                            {blacklist?.includes(nft?.tokenId)
-                                                                ? null
-                                                                : <ButtonApp
-                                                                    icon={star}
-                                                                    iconWidth="21px"
-                                                                    iconHeight="21px"
-                                                                    text="Place Offer"
-                                                                    onClick={() => {placeOffer(nft)}}
-                                                                    textcolor={({ theme }) => theme.walletText}
-                                                                    width="100%"
-                                                                    background={({ theme }) => theme.walletButton}
-                                                                ></ButtonApp>
-                                                            }
-                                                            <ButtonApp
-                                                                icon={tagWhite}
-                                                                iconWidth="21px"
-                                                                iconHeight="21px"
-                                                                text="Buy Now"
-                                                                onClick={() => {buyNFT(nft)}}
-                                                                textcolor={appStyle.colors.white}
-                                                                width="100%"
-                                                            ></ButtonApp>
-                                                        </>
-                                                : blacklist?.includes(nft?.tokenId)
-                                                    ? null
-                                                    : nft?.owner === wallet?.address
-                                                        ? <>
-                                                            <ButtonApp
-                                                                icon={tagWhite}
-                                                                iconWidth="21px"
-                                                                iconHeight="21px"
-                                                                text="List NFT"
-                                                                onClick={() => {startSale(nft)}}
-                                                                textcolor={appStyle.colors.white}
-                                                                width="100%"
-                                                            ></ButtonApp>
-                                                            <ButtonApp
-                                                                icon={tagWhite}
-                                                                iconWidth="21px"
-                                                                iconHeight="21px"
-                                                                text="Transfer"
-                                                                onClick={() => {startTransfer(nft)}}
-                                                                textcolor={appStyle.colors.white}
-                                                                width="100%"
-                                                            ></ButtonApp>
-                                                            </>
-                                                        : <ButtonApp
-                                                            icon={tagWhite}
-                                                            iconWidth="21px"
-                                                            iconHeight="21px"
-                                                            text="Place an Offer"
-                                                            onClick={() => {placeOffer(nft)}}
-                                                            textcolor={appStyle.colors.white}
-                                                            width="100%"
-                                                        ></ButtonApp>
-                                        : null
-                                    }
-                                </HStack>
-                    {/* <div className="nft-image">
+                {/* Buttons Offer & Buy  */}
+                <HStack>
+                  {wallet?.connected ? (
+                    nft?.isListed ? (
+                      nft?.owner !== wallet?.address ? (
+                        <>
+                          <ButtonApp
+                            icon={tagWhite}
+                            iconWidth="21px"
+                            iconHeight="21px"
+                            text={
+                              contractFixes?.includes(nft?.tokenId)
+                                ? "Withdraw Old"
+                                : "Withdraw Listing"
+                            }
+                            onClick={() => {
+                              withdrawListing(nft);
+                            }}
+                            textcolor={appStyle.colors.white}
+                            width="100%"
+                          ></ButtonApp>
+                          {blacklist?.includes(nft?.tokenId) ? null : (
+                            <ButtonApp
+                              icon={star}
+                              iconWidth="21px"
+                              iconHeight="21px"
+                              text="Edit Listing"
+                              onClick={() => {
+                                editListing(nft);
+                              }}
+                              textcolor={({ theme }) => theme.walletText}
+                              width="100%"
+                              background={({ theme }) => theme.walletButton}
+                            ></ButtonApp>
+                          )}
+                        </>
+                      ) : (
+                        <>
+                          {blacklist?.includes(nft?.tokenId) ? null : (
+                            <ButtonApp
+                              icon={star}
+                              iconWidth="21px"
+                              iconHeight="21px"
+                              text="Place Offer"
+                              onClick={() => {
+                                placeOffer(nft);
+                              }}
+                              textcolor={({ theme }) => theme.walletText}
+                              width="100%"
+                              background={({ theme }) => theme.walletButton}
+                            ></ButtonApp>
+                          )}
+                          <ButtonApp
+                            icon={tagWhite}
+                            iconWidth="21px"
+                            iconHeight="21px"
+                            text="Buy Now"
+                            onClick={() => {
+                              buyNFT(nft);
+                            }}
+                            textcolor={appStyle.colors.white}
+                            width="100%"
+                          ></ButtonApp>
+                        </>
+                      )
+                    ) : blacklist?.includes(
+                        nft?.tokenId
+                      ) ? null : nft?.owner === wallet?.address ? (
+                      <>
+                        <ButtonApp
+                          icon={tagWhite}
+                          iconWidth="21px"
+                          iconHeight="21px"
+                          text="List NFT"
+                          onClick={() => {
+                            startSale(nft);
+                          }}
+                          textcolor={appStyle.colors.white}
+                          width="100%"
+                        ></ButtonApp>
+                        <ButtonApp
+                          icon={tagWhite}
+                          iconWidth="21px"
+                          iconHeight="21px"
+                          text="Transfer"
+                          onClick={() => {
+                            startTransfer(nft);
+                          }}
+                          textcolor={appStyle.colors.white}
+                          width="100%"
+                        ></ButtonApp>
+                      </>
+                    ) : (
+                      <ButtonApp
+                        icon={tagWhite}
+                        iconWidth="21px"
+                        iconHeight="21px"
+                        text="Place an Offer"
+                        onClick={() => {
+                          placeOffer(nft);
+                        }}
+                        textcolor={appStyle.colors.white}
+                        width="100%"
+                      ></ButtonApp>
+                    )
+                  ) : null}
+                </HStack>
+                {/* <div className="nft-image">
                                             {isImage(nftAsset)
                                                 ? <img src={metadata?.collection?.nft?.image ? metadata.collection.nft.image : ""} />
                                                 : <></>
@@ -1495,77 +1706,124 @@ const NFTDetails = (props) => {
                             </div>
                         </div>
                     </div>*/}
-                                </VStack>
-                            <Spacer></Spacer>
-                        </VStack>
-                    </HStack>
+              </VStack>
+            </VStack>
+          </HStack>
 
-                    <VStack width="100%" padding="15px 30px">
-                        <TitleBold27>Activity</TitleBold27>
-                        <HStack
-                            width="100%"
-                            overflowx={size.width < 768 ? "scroll" : "visible"}
-                            overflowy={size.width < 768 ? "hidden" : "visible"}
-                            justify="flex-start"
-                        >
-                            <HStack width={size.width < 768 ? "690px" : "100%"}>
-                                <TableActivityNft activity={eventHistory}></TableActivityNft>
-                            </HStack>
-                        </HStack>
-                    </VStack>
-                </VStack>
-            </ContentNftPage>
-        </NFTPage>
-    );
+          <VStack width="100%" padding="15px 30px">
+            <TitleBold27>Activity</TitleBold27>
+            <HStack
+              width="100%"
+              overflowx={size.width < 768 ? "scroll" : "visible"}
+              overflowy={size.width < 768 ? "hidden" : "visible"}
+              justify="flex-start"
+            >
+              <HStack width={size.width < 768 ? "690px" : "100%"}>
+                <TableActivityNft activity={eventHistory}></TableActivityNft>
+              </HStack>
+            </HStack>
+          </VStack>
+        </VStack>
+      </ContentNftPage>
+    </NFTPage>
+  );
 };
 
 const Offers = (props) => {
-    return <div>
-        <table className="border-collapse table-auto w-full text-sm">
-            <tbody>
-            {props.loadingState === 'loaded' ? (
+  return (
+    <div>
+      <table className="border-collapse table-auto w-full text-sm">
+        <tbody>
+          {props.loadingState === "loaded" ? (
+            <React.Fragment>
+              {props.offers.length === 0 ? (
+                <h1 className="px-4 py-4 text-4x1">
+                  No offers have been placed yet.
+                </h1>
+              ) : (
                 <React.Fragment>
-                    {props.offers.length === 0 ? <h1 className='px-4 py-4 text-4x1'>No offers have been placed yet.</h1>
-                    :
-                    <React.Fragment>
-                        {props.offers.map((offer, i) => 
-                            <tr key={i}>
-                                <td className="border-b border-gray-300 py-3 pr-3 pl-0 font-secondary">
-                                    <div className="flex">
-                                        <div>
-                                            {offer.isWithdrawn
-                                                ? <>
-                                                    <h2 className="m-0 from-address withdrawn-offer">{offer.from} <span className="font-secondary">has placed an offer of {offer.price / 1000000000000000000} XDC</span></h2><h2 className='italic text-gray text-base'>Withdrawn</h2>
-                                                </>
-                                                : <>
-                                                    <h2 className="m-0 from-address">{offer.from} <span className="font-secondary">has placed an offer of {offer.price / 1000000000000000000} XDC</span></h2>
-                                                    {props?.wallet?.address === offer.from
-                                                        ? <button className="nft-btn-gradient h-32 py-1 my-1" onClick={() => {props?.withdrawOffer(props?.tokenId, i)}}>{"Withdraw Offer"}</button>
-                                                        : <></>
-                                                    }
-                                                    {props?.wallet?.address === offer.to
-                                                        ? <button className="nft-btn-gradient h-32 py-1 my-1" onClick={() => {props?.confirmAcceptOffer(props?.tokenId, i, offer.from, offer.price / 1000000000000000000)}}>{"Accept Offer"}</button>
-                                                        : <></>
-                                                    }
-                                                </>
-                                            }
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                        )}
-                    </React.Fragment>
-                    }
+                  {props.offers.map((offer, i) => (
+                    <tr key={i}>
+                      <td className="border-b border-gray-300 py-3 pr-3 pl-0 font-secondary">
+                        <div className="flex">
+                          <div>
+                            {offer.isWithdrawn ? (
+                              <>
+                                <h2 className="m-0 from-address withdrawn-offer">
+                                  {offer.from}{" "}
+                                  <span className="font-secondary">
+                                    has placed an offer of{" "}
+                                    {offer.price / 1000000000000000000} XDC
+                                  </span>
+                                </h2>
+                                <h2 className="italic text-gray text-base">
+                                  Withdrawn
+                                </h2>
+                              </>
+                            ) : (
+                              <>
+                                <h2 className="m-0 from-address">
+                                  {offer.from}{" "}
+                                  <span className="font-secondary">
+                                    has placed an offer of{" "}
+                                    {offer.price / 1000000000000000000} XDC
+                                  </span>
+                                </h2>
+                                {props?.wallet?.address === offer.from ? (
+                                  <button
+                                    className="nft-btn-gradient h-32 py-1 my-1"
+                                    onClick={() => {
+                                      props?.withdrawOffer(props?.tokenId, i);
+                                    }}
+                                  >
+                                    {"Withdraw Offer"}
+                                  </button>
+                                ) : (
+                                  <></>
+                                )}
+                                {props?.wallet?.address === offer.to ? (
+                                  <button
+                                    className="nft-btn-gradient h-32 py-1 my-1"
+                                    onClick={() => {
+                                      props?.confirmAcceptOffer(
+                                        props?.tokenId,
+                                        i,
+                                        offer.from,
+                                        offer.price / 1000000000000000000
+                                      );
+                                    }}
+                                  >
+                                    {"Accept Offer"}
+                                  </button>
+                                ) : (
+                                  <></>
+                                )}
+                              </>
+                            )}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
                 </React.Fragment>
-            ) : (
-                <></>
-            )}
-            </tbody>
-        </table>
+              )}
+            </React.Fragment>
+          ) : (
+            <></>
+          )}
+        </tbody>
+      </table>
     </div>
-}
+  );
+};
 
 export default NFTDetails;
+
+const Lock = styled(motion.div)`
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+`;
 
 const NFTPage = styled(motion.div)`
   padding: 30px 0;
