@@ -33,6 +33,7 @@ import { motion } from "framer-motion/dist/framer-motion";
 import styled from "styled-components";
 import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
 import { NftContainer } from "../../styles/NftContainer";
+import InfiniteScroll from 'react-infinite-scroll-component';
 
 const CollectionDetails = (props) => {
     const history = useHistory()
@@ -163,11 +164,12 @@ const CollectionDetails = (props) => {
     }
 
     const fetchMoreNFTs = async () => {
+        console.log(nfts.length < page.length, nfts.length, page.length)
         setPageCount(pageCount + 1)
         const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER))
         const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress)
         const marketContract = new xdc3.eth.Contract(NFTMarketLayer1.abi, nftmarketlayeraddress, xdc3)
-        const nfts = await Promise.all(page.slice(pageCount * 12, 12 * (pageCount + 1)).map(async i => {
+        const newNFTs = await Promise.all(page.slice(pageCount * 12, 12 * (pageCount + 1)).map(async i => {
             const uri = await nftContract.methods.tokenURI(i.tokenId).call()
             var metadata = await axios.get(uri)
             var price = await xdc3.utils.fromWei(i.price, "ether")
@@ -198,12 +200,13 @@ const CollectionDetails = (props) => {
 
             return nft
         }))
-        var filteredCollectionItems = nfts.filter((element) => {
+        var filteredCollectionItems = newNFTs.filter((element) => {
             return element?.tokenId !== "119" && element?.tokenId !== "1778"
         })
 
         setNFts(prevState => ([...prevState, ...filteredCollectionItems]));
         setIsFetching(false);
+        console.log(nfts.length < page.length, nfts.length, page.length)
     }
 
     const viewNFT = data => {
@@ -320,10 +323,10 @@ const CollectionDetails = (props) => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, [])
 
-    useEffect(() => {
-        if (!isFetching) return;
-        fetchMoreNFTs();
-    }, [isFetching]);
+    // useEffect(() => {
+    //     if (!isFetching) return;
+    //     fetchMoreNFTs();
+    // }, [isFetching]);
 
     useEffect(() => {
         setWallet(props.wallet)
@@ -532,23 +535,30 @@ const CollectionDetails = (props) => {
                     </VStack>
                 </HStack>
             </HStack>
-            <CollectionContent>
-                <VStack>
-                    {/* Filter Bar */}
+            <CollectionContent id="scrollableDiv">
+                <InfiniteScroll
+                    dataLength={nfts.length}
+                    next={fetchMoreNFTs}
+                    hasMore={collectionName == "The Lucid Women" || collectionName == "NFTHC" || collectionName == "DØP3 Punks " ? nfts.length < page.length - 1 : nfts.length < page.length}
+                    loader={<h4>Loading...</h4>}
+                    scrollableTarget="#scrollableDiv"
+                    style={{"overflow" : "hidden"}}
+                >
+                    <VStack>
+                        {/* Filter Bar */}
 
-                    {/* Collections */}
+                        {/* Collections */}
 
-                    <HStack>
-                        <HStack
-                            flexwrap="wrap"
-                            padding="0"
-                            justify={size.width < 768 ? "center" : "flex-start"}
-                            width={size.width < 1191 ? "900px" : "1191px"}
-                            spacing="9px"
-                        >
-                            {loadingState === 'loaded' ? (
-                                <>
-                                {nfts.map((item, i) => (
+                        <HStack>
+                            <HStack
+                                flexwrap="wrap"
+                                padding="0"
+                                justify={size.width < 768 ? "center" : "flex-start"}
+                                width={size.width < 1191 ? "900px" : "1191px"}
+                                spacing="9px"
+                            >
+                                {loadingState === 'loaded' 
+                                ? nfts.map((item, i) => (
                                     <VStack
                                         minwidth={size.width < 768 ? "330px" : "290px"}
                                         maxwidth={size.width < 768 ? "330px" : "290px"}
@@ -567,9 +577,6 @@ const CollectionDetails = (props) => {
                                     ></NftContainer>
                                     </VStack>
                                 ))
-                                }
-                                </>
-                                ) 
                                 : loadingNFT.map((item) => (
                                     <VStack
                                       minwidth={size.width < 768 ? "230px" : "280px"}
@@ -578,9 +585,10 @@ const CollectionDetails = (props) => {
                                       <LoadingNftContainer></LoadingNftContainer>
                                     </VStack>
                                 ))}
+                            </HStack>
                         </HStack>
-                    </HStack>
-                </VStack>
+                    </VStack>
+                </InfiniteScroll>
             </CollectionContent>
         </CollectionSection>
     )}

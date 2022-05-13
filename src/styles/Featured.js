@@ -2,6 +2,7 @@ import React from "react";
 import { useState } from "react";
 import { HStack, IconImg, VStack, Spacer, ZStack, ZItem } from "./Stacks";
 import { BodyBold, CaptionBold, CaptionRegular } from "./TextStyles";
+import ReactPlayer from "react-player";
 
 import { appStyle } from "./AppStyles";
 import {
@@ -49,6 +50,7 @@ function Featured(props) {
   };
 
   const [isVisible, setIsVisible] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   return (
     <VStack
@@ -59,8 +61,8 @@ function Featured(props) {
       height={height}
       animate={isVisible ? "hover" : "initial"}
       variants={scaleContainer}
-      onHoverStart={() => setIsVisible((isVisible) => !isVisible)}
-      onHoverEnd={() => setIsVisible((isVisible) => !isVisible)}
+      onHoverStart={() => {setIsVisible((isVisible) => !isVisible); setIsPlaying((isPlaying) => !isPlaying)}}
+      onHoverEnd={() => {setIsVisible((isVisible) => !isVisible); setIsPlaying((isPlaying) => !isPlaying)}}
     >
       {itemImage === undefined ? (
         <LoadingFeatured></LoadingFeatured>
@@ -74,6 +76,7 @@ function Featured(props) {
           {/* NFT Image*/}
 
           <ZItem>
+          {fileType.match("image.*") ? (
             <IconImg
               url={itemImage}
               width="100%"
@@ -83,6 +86,23 @@ function Featured(props) {
               variants={scaleImage}
               border="27px"
             ></IconImg>
+          ) : (
+            <VStack
+              animate={isVisible ? "hover" : "initial"}
+              variants={scaleImage}
+              background={appStyle.colors.darkgrey10}
+              height={height}
+            >
+              <ReactPlayer
+                url={itemImage}
+                playing={isPlaying}
+                muted={true}
+                loop={true}
+                width="100%"
+              />
+            </VStack>
+          )}
+            
           </ZItem>
           {/* NFT Content*/}
           <ZItem>

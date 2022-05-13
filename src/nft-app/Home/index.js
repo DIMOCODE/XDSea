@@ -450,23 +450,23 @@ const Home = (props) => {
 
           <HStack spacing="10px">
             {/* <ButtonApp
-                            height="39px"
-                            textcolor={appStyle.colors.white}
-                            background={({ theme }) => theme.blue}
-                            text="Top Collections"
-                        ></ButtonApp> */}
-            <ButtonApp
+                  height="39px"
+                  textcolor={appStyle.colors.white}
+                  background={({ theme }) => theme.blue}
+                  text="Top Collections"
+              ></ButtonApp> */}
+            <a href="#spotlightCollections"><ButtonApp
               height="45px"
               textcolor={appStyle.colors.white}
               background={({ theme }) => theme.blue}
               text="Spotlight Collections"
-            ></ButtonApp>
-            <ButtonApp
+            ></ButtonApp></a>
+            <a href="#trendingNFTs"><ButtonApp
               height="45px"
               textcolor={appStyle.colors.white}
               background={({ theme }) => theme.blue}
               text="Trending NFTs"
-            ></ButtonApp>
+            ></ButtonApp></a>
             <Spacer></Spacer>
           </HStack>
           <Spacer></Spacer>
@@ -480,7 +480,7 @@ const Home = (props) => {
           <VStack>
             <Featured
               creatorImage={featuredNFT[0]?.collectionLogo}
-              itemImage={featuredNFT[0]?.preview}
+              itemImage={featuredNFT[0]?.image}
               collectionName={featuredNFT[0]?.collectionName}
               creatorName={truncateAddress(featuredNFT[0]?.creator)}
               itemNumber={featuredNFT[0]?.name}
@@ -529,6 +529,7 @@ const Home = (props) => {
         spacing="9px"
         padding="60px 0"
         marginTop="60px"
+        id="spotlightCollections"
       >
         <HStack>
           <IconImg url={rocketCollection} width="45px" height="45px"></IconImg>
@@ -573,7 +574,7 @@ const Home = (props) => {
 
       {/* Hot NFTs */}
 
-      <VStack height={size.width < 768 ? "auto" : "1100px"} width="100%">
+      <VStack height={size.width < 768 ? "auto" : "1100px"} width="100%" id="trendingNFTs">
         <HStack>
           <IconImg url={iconTrending} width="45px" height="45px"></IconImg>
           <TitleBold27>Trending NFTs</TitleBold27>
@@ -598,9 +599,7 @@ const Home = (props) => {
                     key={item.name}
                     fileType={item.fileType}
                     creatorImage={item.collectionLogo}
-                    itemImage={
-                      isImage(item.fileType) ? item.image : item.preview
-                    }
+                    itemImage={item.image}
                     price={item.price}
                     collectionName={item.collectionName}
                     itemNumber={item.name}
