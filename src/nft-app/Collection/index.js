@@ -436,9 +436,12 @@ const CollectionDetails = (props) => {
 
       <HStack>
         <VStack
-          padding={size.width < 768 ? "90px 15px" : " 90px 30px"}
+          padding={
+            size.width < 768 ? "260px 30px 30px 30px" : "260px 30px 30px 30px"
+          }
           spacing="15px"
           maxwidth="1200px"
+          // background="rgba(126, 234, 144, 0.33)"
         >
           <CreatorAbsolute>
             <HStack
@@ -465,6 +468,7 @@ const CollectionDetails = (props) => {
               </VStack>
             </HStack>
           </CreatorAbsolute>
+
           <VStack
             width={size.width < 768 ? "100%" : "500px"}
             height={size.width < 768 ? "90px" : "290px"}
