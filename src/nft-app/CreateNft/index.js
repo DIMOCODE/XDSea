@@ -60,7 +60,7 @@ import telegramIcon from "../../images/telegram.png";
 import warning from "../../images/alert.png";
 import discordIcon from "../../images/discordIcon.png";
 import linkIcon from "../../images/link.png";
-import loading from "../../images/loading.gif";
+import loading from "../../images/loadingDots.gif";
 import { ConfirmationModal } from "../../ConfirmationModal";
 
 const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
@@ -723,7 +723,7 @@ function CreateNft(props) {
           {isNewCollection ? (
             <>
               <HStack responsive={true} spacing="0px" alignment="flex-start">
-                <VStack minwidth="50%" padding="30px" spacing="90px">
+                <VStack minwidth="50%" padding="30px" spacing="150px">
                   {/* Banner Image */}
                   <VStack>
                     <TitleBold15>
@@ -799,7 +799,12 @@ function CreateNft(props) {
 
                         {collectionLogo.raw !== "" && (
                           <ButtonsLogo>
-                            <VStack width="150px" height="150px" spacing="6px">
+                            <HStack
+                              width="180px"
+                              height="190px"
+                              spacing="6px"
+                              alignment="flex-end"
+                            >
                               <ButtonApp
                                 text="Clear"
                                 textcolor={({ theme }) => theme.text}
@@ -818,7 +823,7 @@ function CreateNft(props) {
                                 width="81px"
                                 height="36px"
                               ></ButtonApp>
-                            </VStack>
+                            </HStack>
                           </ButtonsLogo>
                         )}
                         <input
@@ -890,7 +895,7 @@ function CreateNft(props) {
                       }}
                       onBlur={() => checkCollectionExists()}
                     ></InputStyled>
-                    {!collectionExists ? (
+                    {collectionExists ? (
                       <HStack
                         background={appStyle.colors.yellow}
                         padding="6px 15px"
@@ -901,7 +906,17 @@ function CreateNft(props) {
                           different name.
                         </CaptionRegular>
                       </HStack>
-                    ) : null}
+                    ) : (
+                      <HStack
+                        background={appStyle.colors.softGreen}
+                        padding="6px 15px"
+                        border="6px"
+                      >
+                        <CaptionRegular textcolor={appStyle.colors.darkGreen}>
+                          Collection Name Available
+                        </CaptionRegular>
+                      </HStack>
+                    )}
                   </VStack>
 
                   <VStack alignment="flex-start" width="100%">
@@ -1038,7 +1053,7 @@ const ButtonsBanner = styled(motion.div)`
 
 const ButtonsLogo = styled(motion.div)`
   position: absolute;
-  bottom: 0px;
+  bottom: -45px;
 `;
 
 const ButtonsNFT = styled(motion.div)`

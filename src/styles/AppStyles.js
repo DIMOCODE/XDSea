@@ -7,6 +7,8 @@ export const appStyle = {
     yellow: "#FFE500",
     blue: "#044FC5",
     green: "#2ACA45",
+    softGreen: "#7EEA90",
+    darkGreen: "#2D7038",
     green30: "rgba(49, 236, 86, 0.3);",
     black: "#2E334D",
     darkgrey: "#5A616F",

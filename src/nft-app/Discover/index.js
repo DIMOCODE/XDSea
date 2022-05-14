@@ -29,7 +29,8 @@ import { appStyle } from "../../styles/AppStyles";
 import ButtonApp from "../../styles/Buttons";
 import useWindowSize from "../../styles/useWindowSize";
 import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
-import InfiniteScroll from 'react-infinite-scroll-component';
+import InfiniteScroll from "react-infinite-scroll-component";
+import { LoopLogo } from "../../styles/LoopLogo";
 
 const Discover = () => {
   const history = useHistory();
@@ -394,9 +395,17 @@ const Discover = () => {
           dataLength={collections.length}
           next={fetchMoreCollections}
           hasMore={collections.length < collectionPage.length - 1}
-          loader={<h4>Loading...</h4>}
-          scrollableTarget= "#scrollableDiv"
-          style={{"overflow": "hidden"}}
+          loader={
+            <HStack
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              height="210px"
+            >
+              <LoopLogo></LoopLogo>
+            </HStack>
+          }
+          scrollableTarget="#scrollableDiv"
+          style={{ overflow: "hidden" }}
         >
           <VStack spacing="30px">
             {/* <HStack>
@@ -412,7 +421,6 @@ const Discover = () => {
                 padding="0 30px"
                 justify="flex-start"
                 width={size.width < 768 ? "100%" : "1100px"}
-                
               >
                 {setLoading
                   ? loadingCollection.map((item) => (
@@ -452,7 +460,7 @@ const Discover = () => {
                           ></Collection>
                         </VStack>
                       </LayoutGroup>
-                  ))}
+                    ))}
               </HStack>
             </HStack>
           </VStack>

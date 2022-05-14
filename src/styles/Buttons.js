@@ -35,8 +35,7 @@ export default function ButtonApp(props) {
       transition={{ ease: "easeOut", duration: 0.2 }}
       cursor={cursor}
     >
-      {<BodyRegular textcolor={textcolor}>{text}</BodyRegular> ||
-        "Write your text"}
+      <BodyRegular textcolor={textcolor}>{text}</BodyRegular>
       <IconImg url={icon} width={iconWidth} height={iconHeight}></IconImg>
     </ButtonView>
   );
@@ -44,7 +43,7 @@ export default function ButtonApp(props) {
 
 const ButtonView = styled(motion.div).attrs((props) => ({
   background: props.background || appStyle.colors.blue,
-  padding: props.padding || "0px 25px",
+  padding: props.padding || "0px 25px 0 21px",
   width: props.width || "auto",
   height: props.height || "49px",
   textcolor: props.textcolor || appStyle.colors.white,
