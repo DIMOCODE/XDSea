@@ -64,6 +64,7 @@ import linkIcon from "../../images/link.png";
 import loading from "../../images/loadingDots.gif";
 import { ConfirmationModal } from "../../ConfirmationModal";
 import { TxModal } from "../../styles/TxModal";
+import { PushSpinner } from "react-spinners-kit";
 
 const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
 
@@ -73,6 +74,7 @@ function CreateNft(props) {
   function NavigateTo(route) {
     history.push(`/${route}`);
   }
+
   const [uploadStatus, setUploadStatus] = useState(false);
   const [uploadBannerStatus, setUploadBannerStatus] = useState(false);
   const [uploadLogoStatus, setUploadLogoStatus] = useState(false);
@@ -404,6 +406,7 @@ function CreateNft(props) {
       nftmarketlayeraddress,
       xdc3
     );
+    console.log(collectionName);
     const collectionData = await marketContract.methods
       .fetchCollections()
       .call();
@@ -413,6 +416,7 @@ function CreateNft(props) {
         uniqueCollections.push(i.collectionName);
       })
     );
+
     if (uniqueCollections.includes(collectionName)) setCollectionExists(true);
     else setCollectionExists(false);
   };
@@ -772,7 +776,7 @@ function CreateNft(props) {
           {isNewCollection ? (
             <>
               <HStack responsive={true} spacing="0px" alignment="flex-start">
-                <VStack minwidth="50%" padding="30px" spacing="150px">
+                <VStack width="100%" padding="30px" spacing="150px">
                   {/* Banner Image */}
                   <VStack>
                     <TitleBold15>
@@ -926,7 +930,7 @@ function CreateNft(props) {
                 </VStack>
 
                 {/* Collection Name  URL and Description */}
-                <VStack minwidth="50%" padding="30px">
+                <VStack width="100%" padding="30px">
                   <VStack alignment="flex-start" width="100%">
                     <TitleBold15>Collection Name</TitleBold15>
                     <InputStyled
@@ -944,6 +948,7 @@ function CreateNft(props) {
                       }}
                       onBlur={() => checkCollectionExists()}
                     ></InputStyled>
+
                     {collectionExists ? (
                       <HStack
                         background={appStyle.colors.yellow}
