@@ -28,9 +28,10 @@ export const VStack = styled(motion.div).attrs((props) => ({
   responsive: props.responsive ?? false,
   justify: props.justify || "center",
   marginTop: props.marginTop || "0px",
+  flex: props.flex || "1",
 }))`
   display: flex;
-  flex: 1;
+  flex: ${(props) => props.flex};
   flex-direction: ${(props) => props.direction};
   flex-wrap: ${(props) => props.flexwrap};
   align-items: ${(props) => props.alignment};

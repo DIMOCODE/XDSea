@@ -42,6 +42,7 @@ import CreationBar from "../../images/DiscoverBar.png";
 
 import { InputStyled } from "../../styles/InputStyled";
 import xdc from "../../images/miniXdcLogo.png";
+import imageTest from "../../images/imageTest.jpg";
 import { TextAreaStyled } from "../../styles/TextAreaStyled";
 import ButtonApp from "../../styles/Buttons";
 import { PropertyValue } from "../../styles/PropertyValue";
@@ -62,6 +63,7 @@ import discordIcon from "../../images/discordIcon.png";
 import linkIcon from "../../images/link.png";
 import loading from "../../images/loadingDots.gif";
 import { ConfirmationModal } from "../../ConfirmationModal";
+import { TxModal } from "../../styles/TxModal";
 
 const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
 
@@ -418,15 +420,55 @@ function CreateNft(props) {
   return (
     <CreationSection>
       {modalAlert && (
-        <ConfirmationModal
-          iconModal={warning}
-          onCancel={() => setModalAlert(false)}
-          onConfirm={() => clearForm()}
-          actionModal="Are you sure, do you want to clear all fields?"
-        ></ConfirmationModal>
-      )}
+        <FadedBack>
+          <VStack
+            background={appStyle.colors.darkgrey60}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{
+              duration: 0.3,
+              delay: 0.3,
+            }}
+          >
+            <TxModal
+              isAction="true"
+              actionMessage="Are you sure, do you want to clear all fields?"
+              cancelActionModal={() => setModalAlert(false)}
+              confirmActionModal={() => {
+                clearForm();
+                setModalAlert(false);
+              }}
+            ></TxModal>
 
-      {/* Creation Top Bar */}
+            {/* <TxModal
+             isOffer={true}
+             cancelOffer=""
+             placeOffer=""
+             onChange=""
+             offerPrice=""
+           ></TxModal> */}
+
+            {/* <TxModal isProcessing={true}></TxModal> */}
+
+            {/* <TxModal
+             isPurchaised={true}
+             PurchaisedNftName="Amazing Plug #001"
+             ListedImage={imageTest}
+             cancelBtnPurchaise=""
+             confirmBtnPurchaise=""
+           ></TxModal> */}
+
+            {/* <TxModal
+         isList={true}
+         ListedNftName="Amazing Woman #001"
+         ListedImage={imageTest}
+         cancelBtnList=""
+         confirmBtnList=""
+       ></TxModal> */}
+          </VStack>
+        </FadedBack>
+      )}
 
       <HStack backgroundimage={CreationBar}>
         <HStack width="1200px" height="157px" padding="0px 30px">
@@ -1062,4 +1104,11 @@ const ButtonsLogo = styled(motion.div)`
 const ButtonsNFT = styled(motion.div)`
   position: absolute;
   bottom: 3px;
+`;
+
+const FadedBack = styled(motion.div)`
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  z-index: 100;
 `;
