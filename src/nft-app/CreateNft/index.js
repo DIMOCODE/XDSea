@@ -87,10 +87,12 @@ function CreateNft(props) {
   const [collectionBanner, setCollectionBanner] = useState({
     preview: "",
     raw: "",
+    fileType: "",
   });
   const [collectionLogo, setCollectionLogo] = useState({
     preview: "",
     raw: "",
+    fileType: "",
   });
   const [collectionDescription, setCollectionDescription] = useState("");
   const [collectionExists, setCollectionExists] = useState(false);
@@ -167,6 +169,7 @@ function CreateNft(props) {
       setCollectionBanner({
         preview: URL.createObjectURL(e.target.files[0]),
         raw: e.target.files[0],
+        fileType: e.target.files[0].type,
       });
     }
   };
@@ -176,6 +179,7 @@ function CreateNft(props) {
       setCollectionLogo({
         preview: URL.createObjectURL(e.target.files[0]),
         raw: e.target.files[0],
+        fileType: e.target.files[0].type,
       });
     }
   };
