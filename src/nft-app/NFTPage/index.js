@@ -35,6 +35,17 @@ import gold from "../../images/cupper.png";
 import silver from "../../images/silver.png";
 import cupper from "../../images/cupper.png";
 import lock from "../../images/unlockable2.gif";
+import mint from "../../images/mintIcon.png";
+import list from "../../images/listIcon.png";
+import withdrawList from "../../images/withdrawList.png";
+import sale from "../../images/partyIcon.png";
+import transferIcon from "../../images/transferIconGray.png";
+import editListingIcon from "../../images/editListing.png";
+import offerPlacedIcon from "../../images/xdcOffer.png";
+import offerRejectedIcon from "../../images/offerRejected.png";
+import offerAcceptedIcon from "../../images/offerAccepted.png";
+import tokenIcon from "../../images/tokenID.png";
+import blockchainIcon from "../../images/blockchainIcon.png";
 
 import {
   HStack,
@@ -68,6 +79,7 @@ import xinfinLogo from "../../images/xinfinLogo.png";
 import styled from "styled-components";
 import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
 import loading from "../../images/loading.gif";
+import { stepLabelClasses } from "@mui/material";
 
 const NFTDetails = (props) => {
   const history = useHistory();
@@ -620,23 +632,76 @@ const NFTDetails = (props) => {
         let event = {
           id: i + 1,
           event:
-            item.eventType === "0"
-              ? "Mint"
-              : item.eventType === "1"
-              ? "List"
-              : item.eventType === "2"
-              ? "Withdraw Listing"
-              : item.eventType === "3"
-              ? "Sale"
-              : item.eventType === "4"
-              ? "Transfer"
-              : item.eventType === "5"
-              ? "Edit Listing"
-              : item.eventType === "6"
-              ? "Offer Placed"
-              : item.eventType === "7"
-              ? "Offer Withdrawn"
-              : "Offer Accepted",
+            item.eventType === "0" ? (
+              <HStack>
+                <IconImg url={mint} width="26px" height="26px"></IconImg>
+                <CaptionBoldShort>Mint</CaptionBoldShort>
+              </HStack>
+            ) : item.eventType === "1" ? (
+              <HStack>
+                <IconImg url={list} width="26px" height="26px"></IconImg>
+                <CaptionBoldShort>List</CaptionBoldShort>
+              </HStack>
+            ) : item.eventType === "2" ? (
+              <HStack>
+                <IconImg
+                  url={withdrawList}
+                  width="26px"
+                  height="26px"
+                ></IconImg>
+                <CaptionBoldShort>Withdraw Listing</CaptionBoldShort>
+              </HStack>
+            ) : item.eventType === "3" ? (
+              <HStack>
+                <IconImg url={sale} width="26px" height="26px"></IconImg>
+                <CaptionBoldShort>Sale</CaptionBoldShort>
+              </HStack>
+            ) : item.eventType === "4" ? (
+              <HStack>
+                <IconImg
+                  url={transferIcon}
+                  width="26px"
+                  height="26px"
+                ></IconImg>
+                <CaptionBoldShort>Transfer</CaptionBoldShort>
+              </HStack>
+            ) : item.eventType === "5" ? (
+              <HStack>
+                <IconImg
+                  url={editListingIcon}
+                  width="26px"
+                  height="26px"
+                ></IconImg>
+                <CaptionBoldShort>Edit Listing</CaptionBoldShort>
+              </HStack>
+            ) : item.eventType === "6" ? (
+              <HStack>
+                <IconImg
+                  url={offerPlacedIcon}
+                  width="26px"
+                  height="26px"
+                ></IconImg>
+                <CaptionBoldShort>Offer Placed</CaptionBoldShort>
+              </HStack>
+            ) : item.eventType === "7" ? (
+              <HStack>
+                <IconImg
+                  url={offerRejectedIcon}
+                  width="26px"
+                  height="26px"
+                ></IconImg>
+                <CaptionBoldShort>Offer Withdrawn</CaptionBoldShort>
+              </HStack>
+            ) : (
+              <HStack>
+                <IconImg
+                  url={offerAcceptedIcon}
+                  width="26px"
+                  height="26px"
+                ></IconImg>
+                <CaptionBoldShort>Offer Accepted</CaptionBoldShort>
+              </HStack>
+            ),
           price: xdc3.utils.fromWei(item.price, "ether"),
           from: item.from,
           to: item.to,
@@ -945,9 +1010,9 @@ const NFTDetails = (props) => {
                           >
                             <HStack width="100%" height="36px">
                               <IconImg
-                                url={star}
-                                width="18px"
-                                height="18px"
+                                url={mint}
+                                width="21px"
+                                height="21px"
                               ></IconImg>
                               <CaptionBoldShort>NFT Address</CaptionBoldShort>
                               <Spacer></Spacer>
@@ -962,9 +1027,9 @@ const NFTDetails = (props) => {
 
                             <HStack width="100%" height="36px">
                               <IconImg
-                                url={tagBlue}
-                                width="18px"
-                                height="18px"
+                                url={tokenIcon}
+                                width="21px"
+                                height="21px"
                               ></IconImg>
                               <CaptionBoldShort>Token ID</CaptionBoldShort>
                               <Spacer></Spacer>
@@ -975,9 +1040,9 @@ const NFTDetails = (props) => {
 
                             <HStack width="100%" height="36px">
                               <IconImg
-                                url={star}
-                                width="18px"
-                                height="18px"
+                                url={blockchainIcon}
+                                width="21px"
+                                height="21px"
                               ></IconImg>
                               <CaptionBoldShort>Blockchain</CaptionBoldShort>
                               <Spacer></Spacer>
