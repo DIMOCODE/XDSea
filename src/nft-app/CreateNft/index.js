@@ -102,7 +102,7 @@ function CreateNft(props) {
   ]);
   const [isUnlockableContent, setIsUnlockableContent] = useState(false);
   const [unlockableContent, setUnlockableContent] = useState("");
-  const [image, setImage] = useState({ preview: "", raw: "" });
+  const [file, setFile] = useState({ preview: "", raw: "", fileType: "" });
   const [modalAlert, setModalAlert] = useState(false);
 
   const size = useWindowSize();
@@ -152,9 +152,10 @@ function CreateNft(props) {
   const handleChangeUploadMultimedia = (e) => {
     console.log(e.target.files);
     if (e.target.files.length) {
-      setImage({
+      setFile({
         preview: URL.createObjectURL(e.target.files[0]),
         raw: e.target.files[0],
+        fileType: e.target.files[0].type,
       });
     }
   };
@@ -178,7 +179,7 @@ function CreateNft(props) {
   };
 
   const clearForm = async () => {
-    setImage({ preview: "", raw: "" });
+    setFile({ preview: "", raw: "", fileType: "" });
     setName("");
     setDescription("");
     setPrice(0.00001);
@@ -455,7 +456,7 @@ function CreateNft(props) {
                 sizeText="Recommended size: 490px x 490px"
                 width={size.width < 768 ? "320px" : "489px"}
                 height={size.width < 768 ? "320px" : "489px"}
-                image={image}
+                file={file}
                 button={"upload-button"}
                 isUploading={uploadNFT}
                 uploadConfirmed={uploadStatus}
@@ -467,7 +468,7 @@ function CreateNft(props) {
                 style={{ display: "none" }}
                 onChange={handleChangeUploadMultimedia}
               />
-              {image.raw !== "" && (
+              {file.raw !== "" && (
                 <ButtonsNFT>
                   <HStack
                     width={size.width < 768 ? "320px" : "489px"}
@@ -478,7 +479,9 @@ function CreateNft(props) {
                     <ButtonApp
                       text="Clear"
                       textcolor={({ theme }) => theme.text}
-                      onClick={() => setImage({ preview: "", raw: "" })}
+                      onClick={() =>
+                        setFile({ preview: "", raw: "", fileType: "" })
+                      }
                       background={({ theme }) => theme.backElement}
                       width="90px"
                       height="39px"
@@ -735,7 +738,7 @@ function CreateNft(props) {
                       height="210px"
                       backsize="cover"
                       border="9px"
-                      image={collectionBanner}
+                      file={collectionBanner}
                       button={"upload-button-collection"}
                       description="Collection Banner"
                       isUploading={uploadBannerStatus}
@@ -783,7 +786,7 @@ function CreateNft(props) {
                           width="150px"
                           height="150px"
                           backsize="cover"
-                          image={collectionLogo}
+                          file={collectionLogo}
                           border="150px"
                           button={"upload-button-logo"}
                           description="Collection Logo"

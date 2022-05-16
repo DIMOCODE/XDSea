@@ -14,6 +14,8 @@ import { motion } from "framer-motion/dist/framer-motion";
 import { UploadLogo } from "./UploadLogo";
 import checkOK from "../images/checkOK.png";
 import tryAgain from "../images/tryAgain.png";
+import { isAudio, isImage, isVideo } from "../common";
+import ReactPlayer from "react-player";
 
 function UploadMultimedia(props) {
   const {
@@ -23,7 +25,7 @@ function UploadMultimedia(props) {
     sizeText,
     backsize,
     border,
-    image,
+    file,
     isUploading,
     description,
     setBorder,
@@ -53,7 +55,23 @@ function UploadMultimedia(props) {
   return (
     <div>
       <label htmlFor={button}>
-        {image.preview ? (
+        {!file.preview ? (
+          <VStack
+            width={width}
+            height={height}
+            border={border}
+            background={({ theme }) => theme.backElement}
+            whileTap={{ scale: 0.96 }}
+            spacing="0px"
+          >
+            <IconImg url={multimediaIcon} width="45px" height="40px"></IconImg>
+
+            <VStack maxheight="60px" spacing="6px">
+              <BodyBold>{description}</BodyBold>
+              <CaptionRegular align="Center">{sizeText}</CaptionRegular>
+            </VStack>
+          </VStack>
+        ) : isImage(file.fileType) ? (
           <ZStack>
             <ZStack>
               <ZItem>
@@ -67,7 +85,7 @@ function UploadMultimedia(props) {
                   style={setBorder && borderColor}
                 >
                   <IconImg
-                    url={image.preview}
+                    url={file.preview}
                     alt="image"
                     width="100%"
                     height="100%"
@@ -146,23 +164,49 @@ function UploadMultimedia(props) {
               </HStack>
             </TagUpload> */}
           </ZStack>
-        ) : (
+        ) : isVideo(file.fileType) ? (
           <VStack
             width={width}
             height={height}
             border={border}
             background={({ theme }) => theme.backElement}
-            whileTap={{ scale: 0.96 }}
-            spacing="0px"
+            overflow="hidden"
+            cursor="pointer"
           >
-            <IconImg url={multimediaIcon} width="45px" height="40px"></IconImg>
-
-            <VStack maxheight="60px" spacing="6px">
-              <BodyBold>{description}</BodyBold>
-              <CaptionRegular align="Center">{sizeText}</CaptionRegular>
-            </VStack>
+            <ReactPlayer
+              url={
+                "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4"
+              }
+              playing={true}
+              muted={true}
+              loop={true}
+              width="100%"
+              height="100%"
+            />
           </VStack>
-        )}
+        ) : isAudio(file.fileType) ? (
+          <VStack
+            width={width}
+            height={height}
+            border={border}
+            background={({ theme }) => theme.backElement}
+            overflow="hidden"
+            cursor="pointer"
+            padding="15px 15px 66px 15px"
+          >
+            <ReactPlayer
+              url={
+                "https://storage.googleapis.com/media-session/elephants-dream/the-wires.mp3"
+              }
+              playing={true}
+              muted={true}
+              controls={true}
+              loop={true}
+              width="100%"
+              height="100%"
+            />
+          </VStack>
+        ) : null}
       </label>
     </div>
   );

@@ -658,7 +658,7 @@ const NFTDetails = (props) => {
               <VStack width={size.width < 768 ? "100%" : "540px"}>
                 <AnimatePresence>
                   <ZStack>
-                    {nft?.image ? (
+                    {isImage(nft?.fileType) ? (
                       <VStack>
                         <IconImg
                           url={nft?.image}
@@ -692,6 +692,10 @@ const NFTDetails = (props) => {
                           </HStack>
                         </Lock>
                       </VStack>
+                    ) : isVideo(nft?.fileType) ? (
+                      "VideoAqui"
+                    ) : isAudio(nft?.fileType) ? (
+                      "AudioAqui"
                     ) : (
                       <VStack
                         width="100%"
