@@ -81,6 +81,7 @@ import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
 import loading from "../../images/loading.gif";
 import { stepLabelClasses } from "@mui/material";
 import ReactPlayer from "react-player";
+import { ImpulseSpinner } from "react-spinners-kit";
 
 const NFTDetails = (props) => {
   const history = useHistory();
@@ -748,6 +749,14 @@ const NFTDetails = (props) => {
                     height="89%"
                     border="15px"
                     padding="30px 30px 60px 30px"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{
+                      type: "spring",
+                      duration: 1.1,
+                      delay: 2.1,
+                    }}
                   >
                     <Spacer></Spacer>
                     <HStack textcolor={({ theme }) => theme.walletText}>
@@ -759,7 +768,7 @@ const NFTDetails = (props) => {
                 <AnimatePresence>
                   <ZStack
                     variants={flipping}
-                    animate={isFlip ? "initial" : "finished"}
+                    animate={isFlip ? "finished" : "initial"}
                   >
                     {isImage(nft?.fileType) ? (
                       <VStack>
@@ -875,11 +884,12 @@ const NFTDetails = (props) => {
                         <BodyBold>{truncateAddress(nft?.owner)}</BodyBold>
                       </Tooltip>
                     ) : (
-                      <IconImg
-                        url={loading}
-                        width="18px"
-                        height="18px"
-                      ></IconImg>
+                      <ImpulseSpinner
+                        size={30}
+                        frontColor="#99A2AF"
+                        backColor="#686769"
+                        loading={true}
+                      />
                     )}
                   </HStack>
                 </HStack>
