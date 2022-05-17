@@ -61,8 +61,14 @@ function Featured(props) {
       height={height}
       animate={isVisible ? "hover" : "initial"}
       variants={scaleContainer}
-      onHoverStart={() => {setIsVisible((isVisible) => !isVisible); setIsPlaying((isPlaying) => !isPlaying)}}
-      onHoverEnd={() => {setIsVisible((isVisible) => !isVisible); setIsPlaying((isPlaying) => !isPlaying)}}
+      onHoverStart={() => {
+        setIsVisible((isVisible) => !isVisible);
+        setIsPlaying((isPlaying) => !isPlaying);
+      }}
+      onHoverEnd={() => {
+        setIsVisible((isVisible) => !isVisible);
+        setIsPlaying((isPlaying) => !isPlaying);
+      }}
     >
       {itemImage === undefined ? (
         <LoadingFeatured></LoadingFeatured>
@@ -76,33 +82,33 @@ function Featured(props) {
           {/* NFT Image*/}
 
           <ZItem>
-          {fileType.match("image.*") ? (
-            <IconImg
-              url={itemImage}
-              width="100%"
-              height="100%"
-              backsize="cover"
-              animate={isVisible ? "hover" : "initial"}
-              variants={scaleImage}
-              border="27px"
-            ></IconImg>
-          ) : (
-            <VStack
-              animate={isVisible ? "hover" : "initial"}
-              variants={scaleImage}
-              background={appStyle.colors.darkgrey10}
-              height={height}
-            >
-              <ReactPlayer
+            {fileType.match("image.*") ? (
+              <IconImg
                 url={itemImage}
-                playing={isPlaying}
-                muted={true}
-                loop={true}
                 width="100%"
-              />
-            </VStack>
-          )}
-            
+                height="100%"
+                backsize="cover"
+                animate={isVisible ? "hover" : "initial"}
+                variants={scaleImage}
+                border="27px"
+              ></IconImg>
+            ) : (
+              <VStack
+                animate={isVisible ? "hover" : "initial"}
+                variants={scaleImage}
+                background={appStyle.colors.darkgrey10}
+                height={height}
+              >
+                <ReactPlayer
+                  url={itemImage}
+                  playing={isPlaying}
+                  muted={true}
+                  loop={true}
+                  width="100%"
+                  height="100%"
+                />
+              </VStack>
+            )}
           </ZItem>
           {/* NFT Content*/}
           <ZItem>

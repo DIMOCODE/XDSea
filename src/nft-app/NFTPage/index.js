@@ -80,6 +80,7 @@ import styled from "styled-components";
 import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
 import loading from "../../images/loading.gif";
 import { stepLabelClasses } from "@mui/material";
+import ReactPlayer from "react-player";
 
 const NFTDetails = (props) => {
   const history = useHistory();
@@ -142,6 +143,7 @@ const NFTDetails = (props) => {
   const [moreFromCollectionNfts, setMoreFromCollectionNfts] = useState([]);
   const [blacklist, setBlacklist] = useState([]);
   const [contractFixes, setContractFixes] = useState([]);
+  const [isFlip, setIsFlip] = useState(false);
 
   const { id, nftaddress } = useParams();
 
@@ -713,6 +715,23 @@ const NFTDetails = (props) => {
     setEventHistory(activity.reverse());
   };
 
+  const flipping = {
+    initial: {
+      y: 0,
+      transition: {
+        type: "spring",
+        duration: 0.6,
+      },
+    },
+    finished: {
+      y: -150,
+      transition: {
+        type: "spring",
+        duration: 0.3,
+      },
+    },
+  };
+
   return (
     <NFTPage>
       <ContentNftPage>
@@ -720,11 +739,61 @@ const NFTDetails = (props) => {
           <HStack height="100%" responsive={true} alignment="flex-start">
             <VStack width="100%" padding="30px 15px">
               {/* NFT Image and owner */}
+
               <VStack width={size.width < 768 ? "100%" : "540px"}>
+                <LockedContent>
+                  <VStack
+                    background={({ theme }) => theme.walletButton}
+                    width="100%"
+                    height="89%"
+                    border="15px"
+                    padding="30px 30px 60px 30px"
+                  >
+                    <Spacer></Spacer>
+                    <HStack textcolor={({ theme }) => theme.walletText}>
+                      Unlockable Content Here
+                    </HStack>
+                  </VStack>
+                </LockedContent>
+
                 <AnimatePresence>
-                  <ZStack>
+                  <ZStack
+                    variants={flipping}
+                    animate={isFlip ? "initial" : "finished"}
+                  >
                     {isImage(nft?.fileType) ? (
                       <VStack>
+                        <Lock>
+                          <HStack
+                            background="white"
+                            border="6px"
+                            padding="3px 12px"
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{
+                              type: "spring",
+                              duration: 1.1,
+                              delay: 0.9,
+                            }}
+                            onClick={() => setIsFlip((isFlip) => !isFlip)}
+                            cursor="pointer"
+                          >
+                            <VStack>
+                              <CaptionRegular
+                                align="flex-end"
+                                textcolor={appStyle.colors.darkgrey}
+                              >
+                                Unlockable <br></br>Content
+                              </CaptionRegular>
+                            </VStack>
+                            <IconImg
+                              url={lock}
+                              width="33px"
+                              height="33px"
+                            ></IconImg>
+                          </HStack>
+                        </Lock>
                         <IconImg
                           url={nft?.image}
                           width="100%"
@@ -737,30 +806,39 @@ const NFTDetails = (props) => {
                           transition={{ type: "spring", duration: 1.1 }}
                           backsize="cover"
                         ></IconImg>
-
-                        <Lock>
-                          <HStack
-                            background="white"
-                            border="6px"
-                            padding="3px 12px"
-                          >
-                            <VStack>
-                              <CaptionRegular align="flex-end">
-                                Unlockable <br></br>Content
-                              </CaptionRegular>
-                            </VStack>
-                            <IconImg
-                              url={lock}
-                              width="33px"
-                              height="33px"
-                            ></IconImg>
-                          </HStack>
-                        </Lock>
                       </VStack>
                     ) : isVideo(nft?.fileType) ? (
-                      "VideoAqui"
+                      <VStack
+                        width="100%"
+                        height="100%"
+                        border="15px"
+                        background={({ theme }) => theme.backElement}
+                        overflow="hidden"
+                        cursor="pointer"
+                      >
+                        <ReactPlayer
+                          url={
+                            "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4"
+                          }
+                          playing={true}
+                          muted={true}
+                          loop={true}
+                          width="100%"
+                          height="100%"
+                        />
+                      </VStack>
                     ) : isAudio(nft?.fileType) ? (
-                      "AudioAqui"
+                      <ReactPlayer
+                        url={
+                          "https://storage.googleapis.com/media-session/elephants-dream/the-wires.mp3"
+                        }
+                        playing={true}
+                        muted={true}
+                        controls={true}
+                        loop={true}
+                        width="100%"
+                        height="100%"
+                      />
                     ) : (
                       <VStack
                         width="100%"
@@ -1892,6 +1970,13 @@ const Lock = styled(motion.div)`
   position: absolute;
   bottom: 15px;
   right: 15px;
+  z-index: 10;
+`;
+
+const LockedContent = styled(motion.div)`
+  position: absolute;
+  width: 100%;
+  height: 100%;
 `;
 
 const NFTPage = styled(motion.div)`

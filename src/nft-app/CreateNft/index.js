@@ -450,30 +450,30 @@ function CreateNft(props) {
             ></TxModal>
 
             {/* <TxModal
-             isOffer={true}
-             cancelOffer=""
-             placeOffer=""
-             onChange=""
-             offerPrice=""
-           ></TxModal> */}
+              isOffer={true}
+              cancelOffer=""
+              placeOffer=""
+              onChange=""
+              offerPrice=""
+            ></TxModal> */}
 
             {/* <TxModal isProcessing={true}></TxModal> */}
 
             {/* <TxModal
-             isPurchaised={true}
-             PurchaisedNftName="Amazing Plug #001"
-             ListedImage={imageTest}
-             cancelBtnPurchaise=""
-             confirmBtnPurchaise=""
-           ></TxModal> */}
+              isPurchaised={true}
+              PurchaisedNftName="Amazing Plug #001"
+              ListedImage={imageTest}
+              cancelBtnPurchaise=""
+              confirmBtnPurchaise=""
+            ></TxModal> */}
 
             {/* <TxModal
-         isList={true}
-         ListedNftName="Amazing Woman #001"
-         ListedImage={imageTest}
-         cancelBtnList=""
-         confirmBtnList=""
-       ></TxModal> */}
+              isList={true}
+              ListedNftName="Amazing Woman #001"
+              ListedImage={imageTest}
+              cancelBtnList=""
+              confirmBtnList=""
+            ></TxModal> */}
           </VStack>
         </FadedBack>
       )}
