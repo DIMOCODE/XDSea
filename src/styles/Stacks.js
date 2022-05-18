@@ -51,6 +51,7 @@ export const VStack = styled(motion.div).attrs((props) => ({
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   border-style: solid;
+
   border-color: ${(props) => props.bordercolor};
   border-width: ${(props) => props.bordersize};
   -webkit-backface-visibility: hidden;

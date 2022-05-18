@@ -51,6 +51,7 @@ function LogoHover() {
       onHoverEnd={() => setIsVisible((isVisible) => !isVisible)}
     >
       <CurvedText
+        initial={false}
         key="CurvedText"
         variants={rotateText}
         animate={isVisible ? "hover" : "initial"}

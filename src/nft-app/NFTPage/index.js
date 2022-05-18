@@ -832,7 +832,7 @@ const NFTDetails = (props) => {
                           playing={true}
                           muted={true}
                           loop={true}
-                          width="100%"
+                          width="180%"
                           height="100%"
                         />
                       </VStack>

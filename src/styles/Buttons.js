@@ -3,7 +3,10 @@ import styled from "styled-components";
 import { appStyle } from "./AppStyles";
 import { motion } from "framer-motion/dist/framer-motion";
 import { BodyRegular } from "./TextStyles";
-import { IconImg } from "./Stacks";
+import { HStack, IconImg } from "./Stacks";
+import { RingSpinner } from "react-spinners-kit";
+import successIcon from "../images/successIcon.png";
+import failIcon from "../images/cancelIcon.png";
 
 export default function ButtonApp(props) {
   const {
@@ -19,6 +22,8 @@ export default function ButtonApp(props) {
     iconWidth,
     iconHeight,
     cursor,
+    btnStatus,
+    hasImage,
   } = props;
 
   return (
@@ -35,15 +40,38 @@ export default function ButtonApp(props) {
       transition={{ ease: "easeOut", duration: 0.2 }}
       cursor={cursor}
     >
-      <BodyRegular textcolor={textcolor}>{text}</BodyRegular>
-      <IconImg url={icon} width={iconWidth} height={iconHeight}></IconImg>
+      {btnStatus === 1 ? (
+        <HStack spacing="6px">
+          <BodyRegular textcolor={appStyle.colors.white}>Uploading</BodyRegular>
+          <RingSpinner size={21} color={appStyle.colors.white} loading={true} />
+        </HStack>
+      ) : btnStatus === 2 ? (
+        <HStack spacing="6px">
+          <BodyRegular textcolor={appStyle.colors.white}>Uploaded</BodyRegular>
+          <IconImg url={successIcon} width="21px" height="21px"></IconImg>
+        </HStack>
+      ) : btnStatus === 3 ? (
+        <HStack spacing="6px">
+          <BodyRegular textcolor={appStyle.colors.white}>
+            Upload Failed
+          </BodyRegular>
+          <IconImg url={failIcon} width="21px" height="21px"></IconImg>
+        </HStack>
+      ) : (
+        <>
+          <BodyRegular textcolor={textcolor}>{text}</BodyRegular>
+          {hasImage && (
+            <IconImg url={icon} width={iconWidth} height={iconHeight}></IconImg>
+          )}
+        </>
+      )}
     </ButtonView>
   );
 }
 
 const ButtonView = styled(motion.div).attrs((props) => ({
   background: props.background || appStyle.colors.blue,
-  padding: props.padding || "0px 25px 0 21px",
+  padding: props.padding || "0px 21px 0 21px",
   width: props.width || "auto",
   height: props.height || "49px",
   textcolor: props.textcolor || appStyle.colors.white,

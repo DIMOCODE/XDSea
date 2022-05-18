@@ -3,6 +3,7 @@ import { useState } from "react";
 import { HStack, IconImg, VStack, Spacer, ZStack, ZItem } from "./Stacks";
 import { BodyBold, CaptionBold, CaptionRegular } from "./TextStyles";
 import ReactPlayer from "react-player";
+import styled from "styled-components";
 
 import { appStyle } from "./AppStyles";
 import {
@@ -99,14 +100,16 @@ function Featured(props) {
                 background={appStyle.colors.darkgrey10}
                 height={height}
               >
-                <ReactPlayer
-                  url={itemImage}
-                  playing={isPlaying}
-                  muted={true}
-                  loop={true}
-                  width="100%"
-                  height="100%"
-                />
+                <AbsolutePlayer>
+                  <ReactPlayer
+                    url={itemImage}
+                    playing={isPlaying}
+                    muted={true}
+                    loop={true}
+                    width="100%"
+                    height="100%"
+                  />
+                </AbsolutePlayer>
               </VStack>
             )}
           </ZItem>
@@ -182,3 +185,10 @@ function Featured(props) {
 }
 
 export { Featured };
+
+const AbsolutePlayer = styled(motion.div)`
+  position: absolute;
+  width: 560px;
+
+  top: 0px;
+`;

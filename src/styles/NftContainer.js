@@ -63,8 +63,14 @@ function NftContainer(props) {
       height="450px"
       bordersize="1px"
       bordercolor={appStyle.colors.darkgrey10}
-      onHoverStart={() => {setIsVisible((isVisible) => !isVisible); setIsPlaying((isPlaying) => !isPlaying)}}
-      onHoverEnd={() => {setIsVisible((isVisible) => !isVisible); setIsPlaying((isPlaying) => !isPlaying)}}
+      onHoverStart={() => {
+        setIsVisible((isVisible) => !isVisible);
+        setIsPlaying((isPlaying) => !isPlaying);
+      }}
+      onHoverEnd={() => {
+        setIsVisible((isVisible) => !isVisible);
+        setIsPlaying((isPlaying) => !isPlaying);
+      }}
     >
       <ZStack overflow="hidden" border="27px">
         {/* NFT Image*/}
@@ -129,6 +135,7 @@ function NftContainer(props) {
               maxheight="155px"
               animate={isVisible ? "hover" : "initial"}
               variants={moveContainer}
+              initial={false}
             >
               <BodyBold>{collectionName}</BodyBold>
 

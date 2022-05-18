@@ -18,7 +18,10 @@ export const appStyle = {
     darkgrey90: "rgba(2, 2, 2, 0.69);",
     darkBlue: "#292D41",
     yellow: "#FFDC60",
+    softRed: "#FFBCBC",
+    darkRed: "#B22D2D",
     darkYellow: "#977708",
     orange: "rgba(234, 100, 4, 1)",
+    cleanGray: "#CFD3D8",
   },
 };

@@ -59,6 +59,7 @@ import instagramIcon from "../../images/instagramMini.png";
 import twitterIcon from "../../images/twitter.png";
 import telegramIcon from "../../images/telegram.png";
 import warning from "../../images/alert.png";
+import coverAudio from "../../images/coverAudio.png";
 import discordIcon from "../../images/discordIcon.png";
 import linkIcon from "../../images/link.png";
 import loading from "../../images/loadingDots.gif";
@@ -125,6 +126,7 @@ function CreateNft(props) {
       setUploadStatus(true);
     } catch (error) {
       console.log("Error uploading file:", error);
+      setUploadStatus(false);
     }
   };
 
@@ -507,6 +509,7 @@ function CreateNft(props) {
                 width={size.width < 768 ? "320px" : "489px"}
                 height={size.width < 768 ? "320px" : "489px"}
                 file={file}
+                // Revisar aqui
                 button={"upload-button"}
                 isUploading={uploadNFT}
                 uploadConfirmed={uploadStatus}
@@ -522,9 +525,8 @@ function CreateNft(props) {
                 <ButtonsNFT>
                   <HStack
                     width={size.width < 768 ? "320px" : "489px"}
-                    height={size.width < 768 ? "320px" : "489px"}
-                    padding="15px"
-                    alignment="flex-end"
+                    height={size.width < 768 ? "30px" : "60px"}
+                    padding="0 15px"
                   >
                     <ButtonApp
                       text="Clear"
@@ -532,16 +534,19 @@ function CreateNft(props) {
                       onClick={() =>
                         setFile({ preview: "", raw: "", fileType: "" })
                       }
-                      background={({ theme }) => theme.backElement}
-                      width="90px"
+                      background={appStyle.colors.cleanGray}
+                      width="180px"
                       height="39px"
                     ></ButtonApp>
-                    <Spacer></Spacer>
+
+                    {/* btnStatus, 0 is default, 1 is uploading, 2 is success, 3 is failed */}
+
                     <ButtonApp
                       text="Upload"
+                      btnStatus={0}
                       textcolor={appStyle.colors.white}
                       onClick={addToIPFS}
-                      width="90px"
+                      width="180px"
                       height="39px"
                     ></ButtonApp>
                   </HStack>
@@ -950,26 +955,45 @@ function CreateNft(props) {
                     ></InputStyled>
 
                     {collectionExists ? (
-                      <HStack
-                        background={appStyle.colors.yellow}
-                        padding="6px 15px"
-                        border="6px"
-                      >
-                        <CaptionRegular textcolor={appStyle.colors.darkYellow}>
-                          Collection name already taken. Please choose a
-                          different name.
-                        </CaptionRegular>
-                      </HStack>
+                      <>
+                        {/* Warning Message */}
+                        <HStack
+                          background={appStyle.colors.yellow}
+                          padding="6px 15px"
+                          border="6px"
+                        >
+                          <CaptionRegular
+                            textcolor={appStyle.colors.darkYellow}
+                          >
+                            Collection name already taken. Please choose a
+                            different name.
+                          </CaptionRegular>
+                        </HStack>
+                      </>
                     ) : (
-                      <HStack
-                        background={appStyle.colors.softGreen}
-                        padding="6px 15px"
-                        border="6px"
-                      >
-                        <CaptionRegular textcolor={appStyle.colors.darkGreen}>
-                          Collection Name Available
-                        </CaptionRegular>
-                      </HStack>
+                      <>
+                        {/* Succes Message */}
+                        <HStack
+                          background={appStyle.colors.softGreen}
+                          padding="6px 15px"
+                          border="6px"
+                        >
+                          <CaptionRegular textcolor={appStyle.colors.darkGreen}>
+                            Collection Name Available
+                          </CaptionRegular>
+                        </HStack>
+
+                        {/* Error Message */}
+                        <HStack
+                          background={appStyle.colors.softRed}
+                          padding="6px 15px"
+                          border="6px"
+                        >
+                          <CaptionRegular textcolor={appStyle.colors.darkRed}>
+                            Error Message for Inputs
+                          </CaptionRegular>
+                        </HStack>
+                      </>
                     )}
                   </VStack>
 
@@ -1112,7 +1136,7 @@ const ButtonsLogo = styled(motion.div)`
 
 const ButtonsNFT = styled(motion.div)`
   position: absolute;
-  bottom: 3px;
+  bottom: 15px;
 `;
 
 const FadedBack = styled(motion.div)`

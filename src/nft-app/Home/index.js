@@ -455,18 +455,22 @@ const Home = (props) => {
                   background={({ theme }) => theme.blue}
                   text="Top Collections"
               ></ButtonApp> */}
-            <a href="#spotlightCollections"><ButtonApp
-              height="45px"
-              textcolor={appStyle.colors.white}
-              background={({ theme }) => theme.blue}
-              text="Spotlight Collections"
-            ></ButtonApp></a>
-            <a href="#trendingNFTs"><ButtonApp
-              height="45px"
-              textcolor={appStyle.colors.white}
-              background={({ theme }) => theme.blue}
-              text="Trending NFTs"
-            ></ButtonApp></a>
+            <a href="#spotlightCollections">
+              <ButtonApp
+                height="45px"
+                textcolor={appStyle.colors.white}
+                background={({ theme }) => theme.blue}
+                text="Spotlight Collections"
+              ></ButtonApp>
+            </a>
+            <a href="#trendingNFTs">
+              <ButtonApp
+                height="45px"
+                textcolor={appStyle.colors.white}
+                background={({ theme }) => theme.blue}
+                text="Trending NFTs"
+              ></ButtonApp>
+            </a>
             <Spacer></Spacer>
           </HStack>
           <Spacer></Spacer>
@@ -548,14 +552,14 @@ const Home = (props) => {
               ? arrayCollection.map((item) => (
                   <LoadingSpot
                     key={item.name}
-                    width={size.width < 768 ? "100%" : "490px"}
+                    width={size.width < 768 ? "100%" : "580px"}
                   ></LoadingSpot>
                 ))
               : collections.map((item) => (
                   <LayoutGroup id={item.id + 1}>
                     <TopCollectionItem
                       key={item.id + 1}
-                      width={size.width < 768 ? "100%" : "490px"}
+                      width={size.width < 768 ? "100%" : "580px"}
                       imageCreator={item.collectionLogo}
                       collectionName={item.name}
                       position={item.id + 1}
@@ -574,7 +578,11 @@ const Home = (props) => {
 
       {/* Hot NFTs */}
 
-      <VStack height={size.width < 768 ? "auto" : "1100px"} width="100%" id="trendingNFTs">
+      <VStack
+        height={size.width < 768 ? "auto" : "1100px"}
+        width="100%"
+        id="trendingNFTs"
+      >
         <HStack>
           <IconImg url={iconTrending} width="45px" height="45px"></IconImg>
           <TitleBold27>Trending NFTs</TitleBold27>
