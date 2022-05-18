@@ -61,6 +61,7 @@ import warning from "../../images/alert.png";
 import discordIcon from "../../images/discordIcon.png";
 import linkIcon from "../../images/link.png";
 import loading from "../../images/loading.gif";
+import empty from "../../images/empty.png";
 import { ConfirmationModal } from "../../ConfirmationModal";
 
 const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
@@ -92,6 +93,7 @@ function CreateNft(props) {
   });
   const [collectionDescription, setCollectionDescription] = useState("");
   const [collectionExists, setCollectionExists] = useState(false);
+  const [collectionEmpty, setCollectionEmpty] = useState(false);
   const [instagramLink, setInstagramLink] = useState("");
   const [twitterLink, setTwitterLink] = useState("");
   const [discordLink, setDiscordLink] = useState("");
@@ -104,6 +106,13 @@ function CreateNft(props) {
   const [unlockableContent, setUnlockableContent] = useState("");
   const [image, setImage] = useState({ preview: "", raw: "" });
   const [modalAlert, setModalAlert] = useState(false);
+  const [loadingIcon, setLoadingIcon] = useState(empty);
+  const [isPriceInvalid, setIsPriceInvalid] = useState(false);
+  const [royaltyAlert, setRoyaltyAlert] = useState(false);
+  const [isAssetEmpty, setIsAssetEmpty] = useState(false);
+  const [isNameEmpty, setIsNameEmpty] = useState(false);
+  const [isPriceZero, setIsPriceZero] = useState(false);
+  const [isCollectionNotSelected, setIsCollectionNotSelected] = useState(false);
 
   const size = useWindowSize();
 
@@ -131,7 +140,6 @@ function CreateNft(props) {
 
       const url = `https://ipfs.infura.io/ipfs/${added.path}`;
       setUploadBannerStatus(true);
-      s;
     } catch (error) {
       console.log("Error uploading file:", error);
     }
@@ -151,7 +159,7 @@ function CreateNft(props) {
   };
 
   const handleChangeUploadMultimedia = (e) => {
-    console.log(e.target.files);
+    setIsAssetEmpty(false);
     if (e.target.files.length) {
       setImage({
         preview: URL.createObjectURL(e.target.files[0]),
@@ -180,6 +188,16 @@ function CreateNft(props) {
 
   const clearForm = async () => {
     setImage({ preview: "", raw: "" });
+    document.getElementById("upload-button").value = null;
+    document.getElementById("upload-button-collection").value = null;
+    document.getElementById("upload-button-logo").value = null;
+    setCollectionEmpty(false);
+    setCollectionExists(false);
+    setIsCollectionNotSelected(false);
+    setIsAssetEmpty(false);
+    setIsNameEmpty(false);
+    setIsPriceZero(false);
+    setIsPriceInvalid(false);
     setName("");
     setDescription("");
     setPrice(0.00001);
@@ -196,113 +214,115 @@ function CreateNft(props) {
     setTwitterLink("");
     setDiscordLink("");
     setWebsiteLink("");
+    setModalAlert(false);
+    setRoyaltyAlert(false);
   };
 
   //     createMarket = async () => {
   //         try {
   //             this.setState({minting: true})
-  //             const wallet = await GetWallet()
-  //             var name = this.state.name
-  //             var description = this.state.description
-  //             var price = this.state.price
-  //             var fileUrl = this.state.fileUrl
-  //             var unlockableContent = this.state.unlockableContent
-  //             var properties = this.state.properties
-  //             this.setState({creator: isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address})
+          //     const wallet = await GetWallet()
+          //     var name = this.state.name
+          //     var description = this.state.description
+          //     var price = this.state.price
+          //     var fileUrl = this.state.fileUrl
+          //     var unlockableContent = this.state.unlockableContent
+          //     var properties = this.state.properties
+          //     this.setState({creator: isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address})
 
-  //             const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER))
-  //             // const marketContract = new xdc3.eth.Contract(NFTMarket.abi, nftmarketaddress, xdc3)
-  //             const marketContract = new xdc3.eth.Contract(NFTMarketLayer1.abi, nftmarketlayeraddress, xdc3)
-  //             const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress)
+          //     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER))
+          //     // const marketContract = new xdc3.eth.Contract(NFTMarket.abi, nftmarketaddress, xdc3)
+          //     const marketContract = new xdc3.eth.Contract(NFTMarketLayer1.abi, nftmarketlayeraddress, xdc3)
+          //     const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress)
 
-  //             // const data = await marketContract.methods.fetchCollections().call()
-  //             // const collections = await Promise.all(data.map(async i => {
-  //             //     const uri = await nftContract.methods.tokenURI(i.tokenId).call()
-  //             //     var metadata = await axios.get(uri)
-  //             //     let collection = {
-  //             //         name: metadata?.data?.collection?.name,
-  //             //         description: metadata?.data?.collection?.description,
-  //             //         creator: metadata?.data?.collection?.creator,
-  //             //         banner: metadata?.data?.collection?.banner,
-  //             //         logo: metadata?.data?.collection?.logo,
-  //             //         twitterUrl: metadata?.data?.collection?.twitterUrl,
-  //             //         instagramUrl: metadata?.data?.collection?.instagramUrl,
-  //             //         discordUrl: metadata?.data?.collection?.discordUrl,
-  //             //         websiteUrl: metadata?.data?.collection?.websiteUrl,
-  //             //     }
-  //             //     return collection
-  //             // }))
-  //             // this.setState({collections: collections})
+          //     // const data = await marketContract.methods.fetchCollections().call()
+          //     // const collections = await Promise.all(data.map(async i => {
+          //     //     const uri = await nftContract.methods.tokenURI(i.tokenId).call()
+          //     //     var metadata = await axios.get(uri)
+          //     //     let collection = {
+          //     //         name: metadata?.data?.collection?.name,
+          //     //         description: metadata?.data?.collection?.description,
+          //     //         creator: metadata?.data?.collection?.creator,
+          //     //         banner: metadata?.data?.collection?.banner,
+          //     //         logo: metadata?.data?.collection?.logo,
+          //     //         twitterUrl: metadata?.data?.collection?.twitterUrl,
+          //     //         instagramUrl: metadata?.data?.collection?.instagramUrl,
+          //     //         discordUrl: metadata?.data?.collection?.discordUrl,
+          //     //         websiteUrl: metadata?.data?.collection?.websiteUrl,
+          //     //     }
+          //     //     return collection
+          //     // }))
+          //     // this.setState({collections: collections})
 
-  //             const tokenCount = await marketContract.methods.tokenCount().call()
-  //             var collection = this.state.collection == "" || this.state.collection == undefined
-  //                                 ? `Untitled Collection ${tokenCount}` : this.state.collection
+          //     const tokenCount = await marketContract.methods.tokenCount().call()
+          //     var collection = this.state.collection == "" || this.state.collection == undefined
+          //                         ? `Untitled Collection ${tokenCount}` : this.state.collection
 
-  //             this.setState({collection: collection})
+          //     this.setState({collection: collection})
 
-  //             var bannerFile = null
-  //             await fetch("/Untitled Collection.svg")
-  //             .then(response => response.text())
-  //             .then(data => {
-  //                 bannerFile = new File([data], "Untitled Collection")
-  //             });
+          //     var bannerFile = null
+          //     await fetch("/Untitled Collection.svg")
+          //     .then(response => response.text())
+          //     .then(data => {
+          //         bannerFile = new File([data], "Untitled Collection")
+          //     });
 
-  //             if(this.state.ownedCollection !== null){
-  //                 this.setState({
-  //                     collection: this.state.ownedCollection.name,
-  //                     collectionDescription: this.state.ownedCollection.description,
-  //                     creator: this.state.ownedCollection.creator,
-  //                     collectionBannerUrl: this.state.ownedCollection.banner,
-  //                     collectionLogoUrl: this.state.ownedCollection.logo,
-  //                     twitterUrl: this.state.ownedCollection.twitterUrl,
-  //                     instagramUrl: this.state.ownedCollection.instagramUrl,
-  //                     discordUrl: this.state.ownedCollection.discordUrl,
-  //                     websiteUrl: this.state.ownedCollection.websiteUrl,
-  //                 })
-  //             }
+          //     if(this.state.ownedCollection !== null){
+          //         this.setState({
+          //             collection: this.state.ownedCollection.name,
+          //             collectionDescription: this.state.ownedCollection.description,
+          //             creator: this.state.ownedCollection.creator,
+          //             collectionBannerUrl: this.state.ownedCollection.banner,
+          //             collectionLogoUrl: this.state.ownedCollection.logo,
+          //             twitterUrl: this.state.ownedCollection.twitterUrl,
+          //             instagramUrl: this.state.ownedCollection.instagramUrl,
+          //             discordUrl: this.state.ownedCollection.discordUrl,
+          //             websiteUrl: this.state.ownedCollection.websiteUrl,
+          //         })
+          //     }
 
-  //             if(this.state.collectionBannerUrl == null && !this.state.existingCollection) {
-  //                 const added = await client.add(
-  //                     bannerFile)
-  //                 const url = `https://ipfs.infura.io/ipfs/${added.path}`
-  //                 this.setState({ collectionBannerUrl: url })
-  //             }
+          //     if(this.state.collectionBannerUrl == null && !this.state.existingCollection) {
+          //         const added = await client.add(
+          //             bannerFile)
+          //         const url = `https://ipfs.infura.io/ipfs/${added.path}`
+          //         this.setState({ collectionBannerUrl: url })
+          //     }
 
-  //             if(this.state.collectionLogoUrl == null && !this.state.existingCollection) {
-  //                 this.setState({ collectionLogoUrl: this.state.fileUrl })
-  //             }
+          //     if(this.state.collectionLogoUrl == null && !this.state.existingCollection) {
+          //         this.setState({ collectionLogoUrl: this.state.fileUrl })
+          //     }
 
-  //             const uploadData = JSON.stringify({
-  //                 collection: {
-  //                     name: this.state.collection,
-  //                     description: this.state.collectionDescription,
-  //                     creator: this.state.creator,
-  //                     banner: this.state.collectionBannerUrl,
-  //                     logo: this.state.collectionLogoUrl,
-  //                     twitterUrl: this.state.twitterUrl,
-  //                     instagramUrl: this.state.instagramUrl,
-  //                     discordUrl: this.state.discordUrl,
-  //                     websiteUrl: this.state.websiteUrl,
-  //                     nft:{
-  //                         name,
-  //                         description,
-  //                         owner: isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address,
-  //                         image: fileUrl,
-  //                         unlockableContent,
-  //                         properties: properties,
-  //                         royalty: this.state.royalty,
-  //                         fileType: this.state.file.type,
-  //                         preview: this.state.previewUrl
-  //                     }
-  //                 }
-  //             })
+          //     const uploadData = JSON.stringify({
+          //         collection: {
+          //             name: this.state.collection,
+          //             description: this.state.collectionDescription,
+          //             creator: this.state.creator,
+          //             banner: this.state.collectionBannerUrl,
+          //             logo: this.state.collectionLogoUrl,
+          //             twitterUrl: this.state.twitterUrl,
+          //             instagramUrl: this.state.instagramUrl,
+          //             discordUrl: this.state.discordUrl,
+          //             websiteUrl: this.state.websiteUrl,
+          //             nft:{
+          //                 name,
+          //                 description,
+          //                 owner: isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address,
+          //                 image: fileUrl,
+          //                 unlockableContent,
+          //                 properties: properties,
+          //                 royalty: this.state.royalty,
+          //                 fileType: this.state.file.type,
+          //                 preview: this.state.previewUrl
+          //             }
+          //         }
+          //     })
 
-  //             const added = await client.add(uploadData)
-  //             const url = `https://ipfs.infura.io/ipfs/${added.path}`
-  //             this.createSale(url)
-  //         } catch (error) {
-  //             console.log('Error uploading file:', error)
-  //             this.setState({mintFailure: true})
+          //     const added = await client.add(uploadData)
+          //     const url = `https://ipfs.infura.io/ipfs/${added.path}`
+          //     this.createSale(url)
+          // } catch (error) {
+          //     console.log('Error uploading file:', error)
+          //     this.setState({mintFailure: true})
   //         }
   //     }
 
@@ -390,6 +410,7 @@ function CreateNft(props) {
   };
 
   const checkCollectionExists = async () => {
+    setLoadingIcon(loading);
     const collectionName =
       document.getElementsByClassName("collection-name")[0].value;
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
@@ -398,6 +419,7 @@ function CreateNft(props) {
       nftmarketlayeraddress,
       xdc3
     );
+    const tokenCount = await marketContract.methods.tokenCount().call();
     const collectionData = await marketContract.methods
       .fetchCollections()
       .call();
@@ -407,9 +429,184 @@ function CreateNft(props) {
         uniqueCollections.push(i.collectionName);
       })
     );
-    if (uniqueCollections.includes(collectionName)) setCollectionExists(true);
-    else setCollectionExists(false);
+    if (uniqueCollections.includes(collectionName)) {
+      setCollectionExists(true);
+      setLoadingIcon(empty)
+      return true;
+    }
+    else if (collectionName === "") {
+      setCollectionExists(false);
+      setCollectionEmpty(true)
+      document
+        .getElementById("collection-name-input")
+        .setAttribute(
+          "placeholder",
+          `Untitled Collection ${tokenCount}`
+        );
+      document
+        .getElementsByClassName("collection-url")[0]
+        .setAttribute(
+          "placeholder",
+          `Untitled Collection ${tokenCount}`.replace(/\s+/g, "%20")
+        );
+    }
+    else {
+      setCollectionExists(false);
+      setCollectionEmpty(false);
+    }
+    setLoadingIcon(empty)
+    return false;
   };
+
+  const mintNFT = async () => {
+    setRoyaltyAlert(false);
+    
+    if(image.raw === "") {
+      setIsAssetEmpty(true);
+      document.getElementById("nft-asset").scrollIntoView();
+    }
+    else {
+      if(name === "") {
+        setIsNameEmpty(true);
+        document.getElementById("creation-banner").scrollIntoView();
+      }
+      else {
+        if(price === 0) {
+          setIsPriceZero(true);
+          document.getElementsByClassName("nft-description")[0].scrollIntoView();
+        }
+        else {
+          if(document.getElementsByClassName("nft-collection")[0].value === "") {
+            setIsCollectionNotSelected(true);
+            document.getElementById("nft-unlockable").scrollIntoView();
+          }
+          else {
+            const check = await checkCollectionExists();
+            if(check)
+              document.getElementsByClassName("nft-collection")[0].scrollIntoView();
+            else {
+              // this.setState({minting: true})
+              const wallet = await GetWallet()
+              console.log(wallet)
+            }
+          }
+        }
+      }
+    }
+      
+  //     var name = this.state.name
+  //     var description = this.state.description
+  //     var price = this.state.price
+  //     var fileUrl = this.state.fileUrl
+  //     var unlockableContent = this.state.unlockableContent
+  //     var properties = this.state.properties
+  //     this.setState({creator: isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address})
+
+  //     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER))
+  //     // const marketContract = new xdc3.eth.Contract(NFTMarket.abi, nftmarketaddress, xdc3)
+  //     const marketContract = new xdc3.eth.Contract(NFTMarketLayer1.abi, nftmarketlayeraddress, xdc3)
+  //     const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress)
+
+  //     // const data = await marketContract.methods.fetchCollections().call()
+  //     // const collections = await Promise.all(data.map(async i => {
+  //     //     const uri = await nftContract.methods.tokenURI(i.tokenId).call()
+  //     //     var metadata = await axios.get(uri)
+  //     //     let collection = {
+  //     //         name: metadata?.data?.collection?.name,
+  //     //         description: metadata?.data?.collection?.description,
+  //     //         creator: metadata?.data?.collection?.creator,
+  //     //         banner: metadata?.data?.collection?.banner,
+  //     //         logo: metadata?.data?.collection?.logo,
+  //     //         twitterUrl: metadata?.data?.collection?.twitterUrl,
+  //     //         instagramUrl: metadata?.data?.collection?.instagramUrl,
+  //     //         discordUrl: metadata?.data?.collection?.discordUrl,
+  //     //         websiteUrl: metadata?.data?.collection?.websiteUrl,
+  //     //     }
+  //     //     return collection
+  //     // }))
+  //     // this.setState({collections: collections})
+
+  //     const tokenCount = await marketContract.methods.tokenCount().call()
+  //     var collection = this.state.collection == "" || this.state.collection == undefined
+  //                         ? `Untitled Collection ${tokenCount}` : this.state.collection
+
+  //     this.setState({collection: collection})
+
+  //     var bannerFile = null
+  //     await fetch("/Untitled Collection.svg")
+  //     .then(response => response.text())
+  //     .then(data => {
+  //         bannerFile = new File([data], "Untitled Collection")
+  //     });
+
+  //     if(this.state.ownedCollection !== null){
+  //         this.setState({
+  //             collection: this.state.ownedCollection.name,
+  //             collectionDescription: this.state.ownedCollection.description,
+  //             creator: this.state.ownedCollection.creator,
+  //             collectionBannerUrl: this.state.ownedCollection.banner,
+  //             collectionLogoUrl: this.state.ownedCollection.logo,
+  //             twitterUrl: this.state.ownedCollection.twitterUrl,
+  //             instagramUrl: this.state.ownedCollection.instagramUrl,
+  //             discordUrl: this.state.ownedCollection.discordUrl,
+  //             websiteUrl: this.state.ownedCollection.websiteUrl,
+  //         })
+  //     }
+
+  //     if(this.state.collectionBannerUrl == null && !this.state.existingCollection) {
+  //         const added = await client.add(
+  //             bannerFile)
+  //         const url = `https://ipfs.infura.io/ipfs/${added.path}`
+  //         this.setState({ collectionBannerUrl: url })
+  //     }
+
+  //     if(this.state.collectionLogoUrl == null && !this.state.existingCollection) {
+  //         this.setState({ collectionLogoUrl: this.state.fileUrl })
+  //     }
+
+  //     const uploadData = JSON.stringify({
+  //         collection: {
+  //             name: this.state.collection,
+  //             description: this.state.collectionDescription,
+  //             creator: this.state.creator,
+  //             banner: this.state.collectionBannerUrl,
+  //             logo: this.state.collectionLogoUrl,
+  //             twitterUrl: this.state.twitterUrl,
+  //             instagramUrl: this.state.instagramUrl,
+  //             discordUrl: this.state.discordUrl,
+  //             websiteUrl: this.state.websiteUrl,
+  //             nft:{
+  //                 name,
+  //                 description,
+  //                 owner: isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address,
+  //                 image: fileUrl,
+  //                 unlockableContent,
+  //                 properties: properties,
+  //                 royalty: this.state.royalty,
+  //                 fileType: this.state.file.type,
+  //                 preview: this.state.previewUrl
+  //             }
+  //         }
+  //     })
+
+  //     const added = await client.add(uploadData)
+  //     const url = `https://ipfs.infura.io/ipfs/${added.path}`
+  //     this.createSale(url)
+  // } catch (error) {
+  //     console.log('Error uploading file:', error)
+  //     this.setState({mintFailure: true})
+    // }
+  }
+
+  const checkRoyalty = function(){
+    if(royalty === 0) {
+      setRoyaltyAlert(true);
+    }
+    else{
+      setRoyaltyAlert(false);
+      mintNFT();
+    }
+  }
 
   useEffect(() => {
     fetchCollection();
@@ -422,13 +619,23 @@ function CreateNft(props) {
           iconModal={warning}
           onCancel={() => setModalAlert(false)}
           onConfirm={() => clearForm()}
-          actionModal="Are you sure, do you want to clear all fields?"
+          actionModal="Are you sure you want to clear all the fields?"
+        ></ConfirmationModal>
+      )}
+
+      {royaltyAlert && (
+        <ConfirmationModal
+          iconModal={warning}
+          onCancel={() => setRoyaltyAlert(false)}
+          onConfirm={() => mintNFT()}
+          actionModal="Are you sure you want to proceed with minting your NFT
+            with 0% royalty?"
         ></ConfirmationModal>
       )}
 
       {/* Creation Top Bar */}
 
-      <HStack backgroundimage={CreationBar}>
+      <HStack id={"creation-banner"} backgroundimage={CreationBar}>
         <HStack width="1200px" height="157px" padding="0px 30px">
           <TitleBold27 textcolor={appStyle.colors.white}>
             Create an NFT
@@ -442,7 +649,7 @@ function CreateNft(props) {
           <HStack padding="0 39px" spacing="69px" responsive={true}>
             {/* Preview Square */}
             <VStack maxwidth={size.width < 768 ? "320px" : "489px"}>
-              <HStack>
+              <HStack id={"nft-asset"}>
                 <TitleBold15 textcolor={({ theme }) => theme.text}>
                   Upload you Image, Video or Audio
                 </TitleBold15>
@@ -479,22 +686,37 @@ function CreateNft(props) {
                     <ButtonApp
                       text="Clear"
                       textcolor={({ theme }) => theme.text}
-                      onClick={() => setImage({ preview: "", raw: "" })}
+                      onClick={() => {
+                        document.getElementById("upload-button").value = null;
+                        setImage({ preview: "", raw: "" });
+                      }}
                       background={({ theme }) => theme.backElement}
                       width="90px"
                       height="39px"
                     ></ButtonApp>
                     <Spacer></Spacer>
-                    <ButtonApp
+                    {/* <ButtonApp
                       text="Upload"
                       textcolor={appStyle.colors.white}
                       onClick={addToIPFS}
                       width="90px"
                       height="39px"
-                    ></ButtonApp>
+                    ></ButtonApp> */}
                   </HStack>
                 </ButtonsNFT>
               )}
+              {isAssetEmpty ? (
+                <HStack
+                  background={appStyle.colors.yellow}
+                  padding="6px 15px"
+                  border="6px"
+                >
+                  <CaptionRegular textcolor={appStyle.colors.darkYellow}>
+                    Asset cannot be empty.
+                    Please upload an asset before proceeding with the minting process.
+                  </CaptionRegular>
+                </HStack>
+              ) : null}
             </VStack>
 
             {/* Form with Name, Description and Price */}
@@ -514,18 +736,28 @@ function CreateNft(props) {
                 input={name}
                 placeholder="Name your NFT"
                 onChange={(event) => {
+                  setIsNameEmpty(false);
                   setName(event.target.value);
                 }}
               ></InputStyled>
+              {isNameEmpty ? (
+                <HStack
+                  background={appStyle.colors.yellow}
+                  padding="6px 15px"
+                  border="6px"
+                >
+                  <CaptionRegular textcolor={appStyle.colors.darkYellow}>
+                    Name cannot be empty.
+                    Please choose a name for your asset before proceeding with the minting process.
+                  </CaptionRegular>
+                </HStack>
+              ) : null}
 
               <HStack>
                 <TitleBold15 textcolor={({ theme }) => theme.text}>
                   Description
                 </TitleBold15>
                 <Spacer></Spacer>
-                <CaptionRegular textcolor={({ theme }) => theme.text}>
-                  Required
-                </CaptionRegular>
               </HStack>
               <TextAreaStyled
                 textClass={"nft-description"}
@@ -545,6 +777,7 @@ function CreateNft(props) {
                 </CaptionRegular>
               </HStack>
               <InputStyled
+                inputId="price-input"
                 type="number"
                 placeholder="0.00"
                 propertyKey={"nft-price"}
@@ -552,9 +785,40 @@ function CreateNft(props) {
                 min={"0.0001"}
                 icon={xdc}
                 onChange={(event) => {
+                  setIsPriceZero(false);
                   setPrice(event.target.value);
                 }}
+                onBlur={() => {
+                  if(isNaN(parseFloat(price)) && price !== 0)
+                    setIsPriceInvalid(true);
+                  else
+                    setIsPriceInvalid(false);
+                }}
               ></InputStyled>
+              {isPriceInvalid ? (
+                <HStack
+                  background={appStyle.colors.yellow}
+                  padding="6px 15px"
+                  border="6px"
+                >
+                  <CaptionRegular textcolor={appStyle.colors.darkYellow}>
+                    The input in the price field is not a number. Please 
+                    use numeric characters with a maximum of one decimal point only.
+                  </CaptionRegular>
+                </HStack>
+              ) : null}
+              {isPriceZero ? (
+                <HStack
+                  background={appStyle.colors.yellow}
+                  padding="6px 15px"
+                  border="6px"
+                >
+                  <CaptionRegular textcolor={appStyle.colors.darkYellow}>
+                    Price cannot be zero.
+                    Please set a price for your asset before proceeding with the minting process.
+                  </CaptionRegular>
+                </HStack>
+              ) : null}
             </VStack>
           </HStack>
           <Divider></Divider>
@@ -648,13 +912,11 @@ function CreateNft(props) {
                   icon={percent}
                   input={royalty}
                   onChange={(event) => {
-                    setRoyalty(event.target.value);
+                    setRoyalty(Math.ceil(event.target.value));
                   }}
                   onBlur={() => {
                     if (parseInt(royalty) > 100) {
                       setRoyalty(100);
-                    } else if (isNaN(parseInt(royalty))) {
-                      setRoyalty(0);
                     }
                   }}
                 ></InputStyled>
@@ -681,6 +943,7 @@ function CreateNft(props) {
                 ) : null}
                 <ButtonApp
                   icon={lock}
+                  buttonId = {"nft-unlockable"}
                   iconWidth="39px"
                   iconHeight="18px"
                   text={
@@ -703,6 +966,18 @@ function CreateNft(props) {
             <TitleBold15 textcolor={({ theme }) => theme.text}>
               Collection
             </TitleBold15>
+            {isPriceInvalid ? (
+                <HStack
+                  background={appStyle.colors.yellow}
+                  padding="6px 15px"
+                  border="6px"
+                >
+                  <CaptionRegular textcolor={appStyle.colors.darkYellow}>
+                    The input in the price field is not a number. Please 
+                    use numeric characters with a maximum of one decimal point only.
+                  </CaptionRegular>
+                </HStack>
+              ) : null}
             <BodyRegular textcolor={({ theme }) => theme.text}>
               If your NFT belongs to any collection, please choose one
             </BodyRegular>
@@ -718,8 +993,20 @@ function CreateNft(props) {
                   setNewCollection(false);
                   setCollection(event.target.value);
                 }
+                setIsCollectionNotSelected(false);
               }}
             ></SelectStyled>
+            {isCollectionNotSelected ? (
+                <HStack
+                  background={appStyle.colors.yellow}
+                  padding="6px 15px"
+                  border="6px"
+                >
+                  <CaptionRegular textcolor={appStyle.colors.darkYellow}>
+                    Please choose a collection to add your NFT to.
+                  </CaptionRegular>
+                </HStack>
+              ) : null}
           </VStack>
           {isNewCollection ? (
             <>
@@ -759,21 +1046,22 @@ function CreateNft(props) {
                           <ButtonApp
                             text="Clear"
                             textcolor={({ theme }) => theme.text}
-                            onClick={() =>
+                            onClick={() => {
+                              document.getElementById("upload-button-collection").value = null;
                               setCollectionBanner({ preview: "", raw: "" })
-                            }
+                            }}
                             background={({ theme }) => theme.backElement}
                             width="81px"
                             height="36px"
                           ></ButtonApp>
                           <Spacer></Spacer>
-                          <ButtonApp
+                          {/* <ButtonApp
                             text="Upload"
                             textcolor={appStyle.colors.white}
                             onClick={addToIPFSCollectionBanner}
                             width="81px"
                             height="36px"
-                          ></ButtonApp>
+                          ></ButtonApp> */}
                         </HStack>
                       </ButtonsBanner>
                     )}
@@ -804,21 +1092,22 @@ function CreateNft(props) {
                               <ButtonApp
                                 text="Clear"
                                 textcolor={({ theme }) => theme.text}
-                                onClick={() =>
+                                onClick={() => {
+                                  document.getElementById("upload-button-logo").value = null;
                                   setCollectionLogo({ preview: "", raw: "" })
-                                }
+                                }}
                                 background={({ theme }) => theme.backElement}
                                 width="81px"
                                 height="36px"
                               ></ButtonApp>
 
-                              <ButtonApp
+                              {/* <ButtonApp
                                 text="Upload"
                                 textcolor={appStyle.colors.white}
                                 onClick={addToIPFSCollectionLogo}
                                 width="81px"
                                 height="36px"
-                              ></ButtonApp>
+                              ></ButtonApp> */}
                             </VStack>
                           </ButtonsLogo>
                         )}
@@ -877,7 +1166,8 @@ function CreateNft(props) {
                   <VStack alignment="flex-start" width="100%">
                     <TitleBold15>Collection Name</TitleBold15>
                     <InputStyled
-                      icon={loading}
+                      inputId="collection-name-input"
+                      icon={loadingIcon}
                       propertyKey={"collection-name"}
                       placeholder="Name your Collection"
                       onChange={(event) => {
@@ -891,7 +1181,7 @@ function CreateNft(props) {
                       }}
                       onBlur={() => checkCollectionExists()}
                     ></InputStyled>
-                    {!collectionExists ? (
+                    {collectionExists ? (
                       <HStack
                         background={appStyle.colors.yellow}
                         padding="6px 15px"
@@ -900,6 +1190,17 @@ function CreateNft(props) {
                         <CaptionRegular textcolor={appStyle.colors.darkYellow}>
                           Collection name already taken. Please choose a
                           different name.
+                        </CaptionRegular>
+                      </HStack>
+                    ) : null}
+                    {collectionEmpty ? (
+                      <HStack
+                        background={appStyle.colors.yellow}
+                        padding="6px 15px"
+                        border="6px"
+                      >
+                        <CaptionRegular textcolor={appStyle.colors.darkYellow}>
+                          Collection name is empty. Collection will be assigned an Untitled Collection name.
                         </CaptionRegular>
                       </HStack>
                     ) : null}
@@ -951,10 +1252,12 @@ function CreateNft(props) {
                 onClick={() => setModalAlert(true)}
               ></ButtonApp>
               <ButtonApp
+                buttonId="mint-button"
                 text="Mint your NFT"
                 height="39px"
                 width="100%"
                 textcolor={appStyle.colors.white}
+                onClick={checkRoyalty}
               ></ButtonApp>
             </HStack>
           </HStack>

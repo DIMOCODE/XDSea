@@ -19,6 +19,7 @@ export default function ButtonApp(props) {
     iconWidth,
     iconHeight,
     cursor,
+    buttonId
   } = props;
 
   return (
@@ -34,6 +35,7 @@ export default function ButtonApp(props) {
       border={border}
       transition={{ ease: "easeOut", duration: 0.2 }}
       cursor={cursor}
+      id={buttonId}
     >
       {<BodyRegular textcolor={textcolor}>{text}</BodyRegular> ||
         "Write your text"}

@@ -25,12 +25,14 @@ function InputStyled(props) {
     fontsize,
     texttransform,
     height,
+    inputId
   } = props;
   const [hasURL, setHasUrl] = useState(false);
 
   return (
     <ZStack>
       <Input
+        id={inputId}
         type={type}
         name={name}
         placeholder={placeholder}
