@@ -2,6 +2,7 @@ import React from "react";
 import { HStack, IconImg, VStack, Spacer, ZStack, ZItem } from "./Stacks";
 import loaderLogo from "../images/logoLoading.png";
 import curvedText from "../images/curvedText.png";
+import loadingCurved from "../images/loadingCurved.png";
 import styled from "styled-components";
 import {
   motion,
@@ -9,7 +10,8 @@ import {
   LayoutGroup,
 } from "framer-motion/dist/framer-motion";
 
-function LoopLogo() {
+function LoopLogo(props) {
+  const { loading } = props;
   return (
     <LayoutGroup id="loopLogo">
       <AnimatePresence>
@@ -43,7 +45,7 @@ function LoopLogo() {
 
                   duration: 1,
                 }}
-                url={curvedText}
+                url={loading ? curvedText : loadingCurved}
                 width="138px"
                 height="138px"
               ></IconImg>

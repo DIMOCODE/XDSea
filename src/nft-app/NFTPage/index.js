@@ -35,6 +35,17 @@ import gold from "../../images/cupper.png";
 import silver from "../../images/silver.png";
 import cupper from "../../images/cupper.png";
 import lock from "../../images/unlockable2.gif";
+import mint from "../../images/mintIcon.png";
+import list from "../../images/listIcon.png";
+import withdrawList from "../../images/withdrawList.png";
+import sale from "../../images/partyIcon.png";
+import transferIcon from "../../images/transferIconGray.png";
+import editListingIcon from "../../images/editListing.png";
+import offerPlacedIcon from "../../images/xdcOffer.png";
+import offerRejectedIcon from "../../images/offerRejected.png";
+import offerAcceptedIcon from "../../images/offerAccepted.png";
+import tokenIcon from "../../images/tokenID.png";
+import blockchainIcon from "../../images/blockchainIcon.png";
 
 import {
   HStack,
@@ -68,6 +79,9 @@ import xinfinLogo from "../../images/xinfinLogo.png";
 import styled from "styled-components";
 import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
 import loading from "../../images/loading.gif";
+import { stepLabelClasses } from "@mui/material";
+import ReactPlayer from "react-player";
+import { ImpulseSpinner } from "react-spinners-kit";
 
 const NFTDetails = (props) => {
   const history = useHistory();
@@ -130,6 +144,7 @@ const NFTDetails = (props) => {
   const [moreFromCollectionNfts, setMoreFromCollectionNfts] = useState([]);
   const [blacklist, setBlacklist] = useState([]);
   const [contractFixes, setContractFixes] = useState([]);
+  const [isFlip, setIsFlip] = useState(false);
 
   const { id, nftaddress } = useParams();
 
@@ -620,23 +635,76 @@ const NFTDetails = (props) => {
         let event = {
           id: i + 1,
           event:
-            item.eventType === "0"
-              ? "Mint"
-              : item.eventType === "1"
-              ? "List"
-              : item.eventType === "2"
-              ? "Withdraw Listing"
-              : item.eventType === "3"
-              ? "Sale"
-              : item.eventType === "4"
-              ? "Transfer"
-              : item.eventType === "5"
-              ? "Edit Listing"
-              : item.eventType === "6"
-              ? "Offer Placed"
-              : item.eventType === "7"
-              ? "Offer Withdrawn"
-              : "Offer Accepted",
+            item.eventType === "0" ? (
+              <HStack>
+                <IconImg url={mint} width="26px" height="26px"></IconImg>
+                <CaptionBoldShort>Mint</CaptionBoldShort>
+              </HStack>
+            ) : item.eventType === "1" ? (
+              <HStack>
+                <IconImg url={list} width="26px" height="26px"></IconImg>
+                <CaptionBoldShort>List</CaptionBoldShort>
+              </HStack>
+            ) : item.eventType === "2" ? (
+              <HStack>
+                <IconImg
+                  url={withdrawList}
+                  width="26px"
+                  height="26px"
+                ></IconImg>
+                <CaptionBoldShort>Withdraw Listing</CaptionBoldShort>
+              </HStack>
+            ) : item.eventType === "3" ? (
+              <HStack>
+                <IconImg url={sale} width="26px" height="26px"></IconImg>
+                <CaptionBoldShort>Sale</CaptionBoldShort>
+              </HStack>
+            ) : item.eventType === "4" ? (
+              <HStack>
+                <IconImg
+                  url={transferIcon}
+                  width="26px"
+                  height="26px"
+                ></IconImg>
+                <CaptionBoldShort>Transfer</CaptionBoldShort>
+              </HStack>
+            ) : item.eventType === "5" ? (
+              <HStack>
+                <IconImg
+                  url={editListingIcon}
+                  width="26px"
+                  height="26px"
+                ></IconImg>
+                <CaptionBoldShort>Edit Listing</CaptionBoldShort>
+              </HStack>
+            ) : item.eventType === "6" ? (
+              <HStack>
+                <IconImg
+                  url={offerPlacedIcon}
+                  width="26px"
+                  height="26px"
+                ></IconImg>
+                <CaptionBoldShort>Offer Placed</CaptionBoldShort>
+              </HStack>
+            ) : item.eventType === "7" ? (
+              <HStack>
+                <IconImg
+                  url={offerRejectedIcon}
+                  width="26px"
+                  height="26px"
+                ></IconImg>
+                <CaptionBoldShort>Offer Withdrawn</CaptionBoldShort>
+              </HStack>
+            ) : (
+              <HStack>
+                <IconImg
+                  url={offerAcceptedIcon}
+                  width="26px"
+                  height="26px"
+                ></IconImg>
+                <CaptionBoldShort>Offer Accepted</CaptionBoldShort>
+              </HStack>
+            ),
           price: xdc3.utils.fromWei(item.price, "ether"),
           from: item.from,
           to: item.to,
@@ -648,6 +716,23 @@ const NFTDetails = (props) => {
     setEventHistory(activity.reverse());
   };
 
+  const flipping = {
+    initial: {
+      y: 0,
+      transition: {
+        type: "spring",
+        duration: 0.6,
+      },
+    },
+    finished: {
+      y: -150,
+      transition: {
+        type: "spring",
+        duration: 0.3,
+      },
+    },
+  };
+
   return (
     <NFTPage>
       <ContentNftPage>
@@ -655,11 +740,69 @@ const NFTDetails = (props) => {
           <HStack height="100%" responsive={true} alignment="flex-start">
             <VStack width="100%" padding="30px 15px">
               {/* NFT Image and owner */}
+
               <VStack width={size.width < 768 ? "100%" : "540px"}>
+                <LockedContent>
+                  <VStack
+                    background={({ theme }) => theme.walletButton}
+                    width="100%"
+                    height="89%"
+                    border="15px"
+                    padding="30px 30px 60px 30px"
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{
+                      type: "spring",
+                      duration: 1.1,
+                      delay: 2.1,
+                    }}
+                  >
+                    <Spacer></Spacer>
+                    <HStack textcolor={({ theme }) => theme.walletText}>
+                      Unlockable Content Here
+                    </HStack>
+                  </VStack>
+                </LockedContent>
+
                 <AnimatePresence>
-                  <ZStack>
-                    {nft?.image ? (
+                  <ZStack
+                    variants={flipping}
+                    animate={isFlip ? "finished" : "initial"}
+                  >
+                    {isImage(nft?.fileType) ? (
                       <VStack>
+                        <Lock>
+                          <HStack
+                            background="white"
+                            border="6px"
+                            padding="3px 12px"
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{
+                              type: "spring",
+                              duration: 1.1,
+                              delay: 0.9,
+                            }}
+                            onClick={() => setIsFlip((isFlip) => !isFlip)}
+                            cursor="pointer"
+                          >
+                            <VStack>
+                              <CaptionRegular
+                                align="flex-end"
+                                textcolor={appStyle.colors.darkgrey}
+                              >
+                                Unlockable <br></br>Content
+                              </CaptionRegular>
+                            </VStack>
+                            <IconImg
+                              url={lock}
+                              width="33px"
+                              height="33px"
+                            ></IconImg>
+                          </HStack>
+                        </Lock>
                         <IconImg
                           url={nft?.image}
                           width="100%"
@@ -672,26 +815,39 @@ const NFTDetails = (props) => {
                           transition={{ type: "spring", duration: 1.1 }}
                           backsize="cover"
                         ></IconImg>
-
-                        <Lock>
-                          <HStack
-                            background="white"
-                            border="6px"
-                            padding="3px 12px"
-                          >
-                            <VStack>
-                              <CaptionRegular align="flex-end">
-                                Unlockable <br></br>Content
-                              </CaptionRegular>
-                            </VStack>
-                            <IconImg
-                              url={lock}
-                              width="33px"
-                              height="33px"
-                            ></IconImg>
-                          </HStack>
-                        </Lock>
                       </VStack>
+                    ) : isVideo(nft?.fileType) ? (
+                      <VStack
+                        width="100%"
+                        height="100%"
+                        border="15px"
+                        background={({ theme }) => theme.backElement}
+                        overflow="hidden"
+                        cursor="pointer"
+                      >
+                        <ReactPlayer
+                          url={
+                            "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4"
+                          }
+                          playing={true}
+                          muted={true}
+                          loop={true}
+                          width="180%"
+                          height="100%"
+                        />
+                      </VStack>
+                    ) : isAudio(nft?.fileType) ? (
+                      <ReactPlayer
+                        url={
+                          "https://storage.googleapis.com/media-session/elephants-dream/the-wires.mp3"
+                        }
+                        playing={true}
+                        muted={true}
+                        controls={true}
+                        loop={true}
+                        width="100%"
+                        height="100%"
+                      />
                     ) : (
                       <VStack
                         width="100%"
@@ -728,11 +884,12 @@ const NFTDetails = (props) => {
                         <BodyBold>{truncateAddress(nft?.owner)}</BodyBold>
                       </Tooltip>
                     ) : (
-                      <IconImg
-                        url={loading}
-                        width="18px"
-                        height="18px"
-                      ></IconImg>
+                      <ImpulseSpinner
+                        size={30}
+                        frontColor="#99A2AF"
+                        backColor="#686769"
+                        loading={true}
+                      />
                     )}
                   </HStack>
                 </HStack>
@@ -941,9 +1098,9 @@ const NFTDetails = (props) => {
                           >
                             <HStack width="100%" height="36px">
                               <IconImg
-                                url={star}
-                                width="18px"
-                                height="18px"
+                                url={mint}
+                                width="21px"
+                                height="21px"
                               ></IconImg>
                               <CaptionBoldShort>NFT Address</CaptionBoldShort>
                               <Spacer></Spacer>
@@ -958,9 +1115,9 @@ const NFTDetails = (props) => {
 
                             <HStack width="100%" height="36px">
                               <IconImg
-                                url={tagBlue}
-                                width="18px"
-                                height="18px"
+                                url={tokenIcon}
+                                width="21px"
+                                height="21px"
                               ></IconImg>
                               <CaptionBoldShort>Token ID</CaptionBoldShort>
                               <Spacer></Spacer>
@@ -971,9 +1128,9 @@ const NFTDetails = (props) => {
 
                             <HStack width="100%" height="36px">
                               <IconImg
-                                url={star}
-                                width="18px"
-                                height="18px"
+                                url={blockchainIcon}
+                                width="21px"
+                                height="21px"
                               ></IconImg>
                               <CaptionBoldShort>Blockchain</CaptionBoldShort>
                               <Spacer></Spacer>
@@ -1823,6 +1980,13 @@ const Lock = styled(motion.div)`
   position: absolute;
   bottom: 15px;
   right: 15px;
+  z-index: 10;
+`;
+
+const LockedContent = styled(motion.div)`
+  position: absolute;
+  width: 100%;
+  height: 100%;
 `;
 
 const NFTPage = styled(motion.div)`
