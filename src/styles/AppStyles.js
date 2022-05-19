@@ -17,6 +17,7 @@ export const appStyle = {
     darkgrey60: "rgba(2, 2, 2, 0.6);",
     darkgrey90: "rgba(2, 2, 2, 0.69);",
     darkBlue: "#292D41",
+    softBlue: "#C2D8FB",
     yellow: "#FFDC60",
     softRed: "#FFBCBC",
     darkRed: "#B22D2D",

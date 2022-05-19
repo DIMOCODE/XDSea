@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { appStyle } from "./AppStyles";
 import { motion } from "framer-motion/dist/framer-motion";
-import { BodyRegular } from "./TextStyles";
+import { BodyBold, BodyRegular } from "./TextStyles";
 import { HStack, IconImg } from "./Stacks";
 import { RingSpinner } from "react-spinners-kit";
 import successIcon from "../images/successIcon.png";
@@ -59,7 +59,7 @@ export default function ButtonApp(props) {
         </HStack>
       ) : (
         <>
-          <BodyRegular textcolor={textcolor}>{text}</BodyRegular>
+          <BodyBold textcolor={textcolor}>{text}</BodyBold>
           {hasImage && (
             <IconImg url={icon} width={iconWidth} height={iconHeight}></IconImg>
           )}
