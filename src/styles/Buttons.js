@@ -22,6 +22,7 @@ export default function ButtonApp(props) {
     iconWidth,
     iconHeight,
     cursor,
+    buttonId,
     btnStatus,
     hasImage,
   } = props;
@@ -39,21 +40,27 @@ export default function ButtonApp(props) {
       border={border}
       transition={{ ease: "easeOut", duration: 0.2 }}
       cursor={cursor}
+      id={buttonId}
     >
       {btnStatus === 1 ? (
         <HStack spacing="6px">
-          <BodyRegular textcolor={appStyle.colors.white}>Uploading</BodyRegular>
+          <BodyRegular textcolor={appStyle.colors.white}>Minting</BodyRegular>
           <RingSpinner size={21} color={appStyle.colors.white} loading={true} />
         </HStack>
-      ) : btnStatus === 2 ? (
+      ) : btnStatus === 2 ? ( 
         <HStack spacing="6px">
-          <BodyRegular textcolor={appStyle.colors.white}>Uploaded</BodyRegular>
-          <IconImg url={successIcon} width="21px" height="21px"></IconImg>
+          <BodyRegular textcolor={appStyle.colors.white}>Updating Ledger</BodyRegular>
+          <RingSpinner size={21} color={appStyle.colors.white} loading={true} />
         </HStack>
       ) : btnStatus === 3 ? (
         <HStack spacing="6px">
+          <BodyRegular textcolor={appStyle.colors.white}>Minted</BodyRegular>
+          <IconImg url={successIcon} width="21px" height="21px"></IconImg>
+        </HStack>
+      ) : btnStatus === 4 ? (
+        <HStack spacing="6px">
           <BodyRegular textcolor={appStyle.colors.white}>
-            Upload Failed
+            Mint Failed
           </BodyRegular>
           <IconImg url={failIcon} width="21px" height="21px"></IconImg>
         </HStack>

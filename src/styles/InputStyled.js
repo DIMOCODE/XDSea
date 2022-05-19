@@ -18,6 +18,7 @@ function InputStyled(props) {
     onBlur,
     min,
     max,
+    step,
     propertyKey,
     background,
     textalign,
@@ -25,12 +26,14 @@ function InputStyled(props) {
     fontsize,
     texttransform,
     height,
+    inputId
   } = props;
   const [hasURL, setHasUrl] = useState(false);
 
   return (
     <ZStack>
       <Input
+        id={inputId}
         type={type}
         name={name}
         placeholder={placeholder}
@@ -38,6 +41,7 @@ function InputStyled(props) {
         onBlur={onBlur}
         min={min}
         max={max}
+        step={step}
         className={propertyKey}
         value={input}
         background={background}

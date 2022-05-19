@@ -27,6 +27,9 @@ function TxModal(props) {
     isProcessing,
     isMint,
     isPurchaised,
+    isNotice,
+    noticeActionModal,
+    noticeMessage,
     PurchaisedNftName,
     cancelBtnPurchaise,
     confirmBtnPurchaise,
@@ -85,6 +88,29 @@ function TxModal(props) {
                   width="100%"
                   textcolor={appStyle.colors.white}
                   onClick={confirmActionModal}
+                ></ButtonApp>
+              </HStack>
+            </>
+          )}
+          {isNotice && (
+            <>
+              <IconImg url={warning} width="59px" height="59px"></IconImg>
+
+              <HStack padding="0 30px">
+                <BodyRegular
+                  textcolor={({ theme }) => theme.text}
+                  align="center"
+                >
+                  {noticeMessage}
+                </BodyRegular>
+              </HStack>
+
+              <HStack>
+                <ButtonApp
+                  text="Okay"
+                  textcolor={({ theme }) => theme.text}
+                  width="100%"
+                  onClick={noticeActionModal}
                 ></ButtonApp>
               </HStack>
             </>

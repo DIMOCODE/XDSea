@@ -144,7 +144,7 @@ function UploadMultimedia(props) {
             <ZItem>
               <ReactPlayer
                 url={
-                  "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4"
+                  file.preview
                 }
                 playing={true}
                 muted={true}
@@ -245,7 +245,7 @@ function UploadMultimedia(props) {
             <PlayerAbsolute>
               <ReactPlayer
                 url={
-                  "https://storage.googleapis.com/media-session/elephants-dream/the-wires.mp3"
+                  file.preview
                 }
                 playing={true}
                 muted={true}
