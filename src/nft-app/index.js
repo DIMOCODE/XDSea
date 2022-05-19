@@ -76,6 +76,10 @@ const NFTApp = () => {
     setRandomNumber(Math.floor(Math.random() * 2));
   });
 
+  const handleWallet = (connectedWallet) => {
+    setWallet(connectedWallet);
+  }
+
   return (
     <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
       <>
@@ -116,7 +120,7 @@ const NFTApp = () => {
             </DevMode>
           ) : null}
 
-          <TopBar devMode={isDevMode} themeToggler={themeToggler}></TopBar>
+          <TopBar onWalletChange={handleWallet} devMode={isDevMode} themeToggler={themeToggler}></TopBar>
 
           <ScrollView>
             <Switch>
@@ -127,7 +131,7 @@ const NFTApp = () => {
                 path="/UserProfile/:urlAddress"
                 component={MyNFT}
               ></Route>
-              <Route exact path="/CreateNFT" component={CreateNft}></Route>
+              <Route exact path="/CreateNFT" render={() => <CreateNft wallet={wallet} />}></Route>
               <Route
                 exact
                 path="/collection/:collectionName"

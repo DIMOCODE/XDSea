@@ -16,7 +16,7 @@ import { appStyle } from "../../styles/AppStyles";
 import "../../styles/App.css";
 
 function TopBar(props) {
-  const { themeToggler, devMode } = props;
+  const { themeToggler, devMode, onWalletChange } = props;
 
   const history = useHistory();
 
@@ -87,12 +87,15 @@ function TopBar(props) {
           btnClass={`walletConnect ${wallet?.connected ? "hide" : ""}`}
           onConnect={(wallet) => {
             setWallet(wallet);
+            onWalletChange(wallet);
           }}
           onAddressChange={(wallet) => {
             setWallet(wallet);
+            onWalletChange(wallet);
           }}
           onDisconnect={(wallet) => {
             setWallet(wallet);
+            onWalletChange(wallet);
           }}
         />
 

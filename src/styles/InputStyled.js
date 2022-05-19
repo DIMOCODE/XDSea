@@ -18,6 +18,7 @@ function InputStyled(props) {
     onBlur,
     min,
     max,
+    step,
     propertyKey,
     background,
     textalign,
@@ -40,6 +41,7 @@ function InputStyled(props) {
         onBlur={onBlur}
         min={min}
         max={max}
+        step={step}
         className={propertyKey}
         value={input}
         background={background}
