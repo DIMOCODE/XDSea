@@ -7,6 +7,7 @@ import ButtonApp from "../../styles/Buttons";
 import { BodyBold, CaptionRegular } from "../../styles/TextStyles";
 import XDSealogo from "../../images/LogoXDSEA.png";
 import { WalletButton } from "../../styles/walletButton";
+import { fromXdc, isXdc } from "../../common/common";
 
 import { SwitchButton } from "../../styles/SwitchButton";
 import { motion } from "framer-motion/dist/framer-motion";
@@ -93,10 +94,12 @@ function TopBar(props) {
           onAddressChange={(wallet) => {
             setWallet(wallet);
             onWalletChange(wallet);
+            NavigateTo('');
           }}
           onDisconnect={(wallet) => {
             setWallet(wallet);
             onWalletChange(wallet);
+            NavigateTo('');
           }}
         />
 
@@ -108,9 +111,9 @@ function TopBar(props) {
 
         <SwitchButton clickOnSwitch={themeToggler}></SwitchButton>
 
-        {wallet?.address ? 
+        {wallet?.connected ? 
           <UserMenuButton
-            clickOnUser={() => NavigateTo(`UserProfile/${wallet?.address}`)}
+            clickOnUser={() => NavigateTo(`UserProfile/${isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address}`)}
             // clickOnSettings={() => NavigateTo("Settings")}
             wallet={wallet}
           ></UserMenuButton>

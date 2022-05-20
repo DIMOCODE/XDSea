@@ -3,3 +3,5 @@ export const contractFix = ["760", "890", "1124", "1126", "1308", "1310", "1383"
 export const featuredNFTList = ["1772", "1", "2525"];
 export const spotlightCollectionList = ["XDSEA MONKEYS ORIGINAL ART", "The Lucid Women", "CoinCowArt", "Six Capital NFT's", "XDC: The Members Who Started It All ", "XDC Loose CAT", "DØP3 Punks ", "Bibliomp: ULTRA RARE", "\"Zodiac Animal Knights & Sea Color Flower\"", "WWNFTVERSE"];
 export const trendingItemList = ["97", "760", "1772", "1883", "2462", "2525"];
+export const burnedCollections = ["The Lucid Women", "NFTHC", "DØP3 Punks "];
+export const burnedNFTs = ["119", "1778", "2756"];

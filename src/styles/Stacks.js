@@ -128,6 +128,7 @@ export const ZStack = styled(motion.div).attrs((props) => ({
   height: props.height || "100%",
   overflow: props.overflow || "visible",
   border: props.border || "0",
+  cursor: props.cursor || "default",
 }))`
   position: relative;
   display: grid;

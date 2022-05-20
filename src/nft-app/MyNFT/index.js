@@ -15,6 +15,13 @@ import NFTMarket from "../../abis/NFTMarket.json";
 import Card from "../Home/common/card";
 import { GetWallet, SendTransaction } from "xdc-connect";
 import detectEthereumProvider from "@metamask/detect-provider";
+import { AnimatePresence } from "framer-motion/dist/framer-motion";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { LoopLogo } from "../../styles/LoopLogo";
+import { Collection } from "../../styles/Collection";
+import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
+import { LayoutGroup } from "framer-motion/dist/framer-motion";
+
 import axios from "axios";
 import {
   LegacyBuyNFT,
@@ -27,7 +34,7 @@ import { fromXdc, toXdc, isXdc } from "../../common/common";
 import { XdcConnect } from "xdc-connect";
 import SkeletonCard from "../../common/skeleton/card";
 import NFTMarketLayer1 from "../../abis/NFTMarketLayer1.json";
-import { permaBlacklist } from "../../blacklist";
+import { burnedNFTs, permaBlacklist } from "../../blacklist";
 import banner1 from "../../images/Banner1.jpg";
 import copyIcon from "../../images/copyAddress.png";
 
@@ -66,33 +73,37 @@ import { TableOffersNft } from "../../styles/TableOffersNft";
 import { TableUserProfile } from "../../styles/TableUserProfile";
 
 const MyNFT = (props) => {
-  const history = useHistory();
-  const [nfts, setNFts] = useState([]);
-  const [address, setAddress] = useState("");
-  const [loadingState, setLoadingState] = useState("not-loaded");
-  const [wallet, setWallet] = useState(null);
-  const [page, setPage] = useState([]);
-  const [pageCount, setPageCount] = useState(1);
-  const [isFetching, setIsFetching] = useState(false);
+    const { urlAddress } = useParams();
+    const history = useHistory();
+    const [nfts, setNFts] = useState([]);
+    const [loadingState, setLoadingState] = useState("not-loaded");
+    const [wallet, setWallet] = useState(null);
+    const [page, setPage] = useState([]);
+    const [pageCount, setPageCount] = useState(1);
+    const [isFetching, setIsFetching] = useState(false);
 
-  const [sellPrice, setSellPrice] = useState("");
-  const [approved, setApproved] = useState(false);
-  const cancelButtonRef = useRef(null);
-  const [sellData, setSellData] = useState(null);
-  const [listSuccess, setListSuccess] = useState(false);
-  const [listFailure, setListFailure] = useState(false);
-  const [listedNFT, setListedNFT] = useState(null);
-  const [listing, setListing] = useState(false);
-  const [buySuccess, setBuySuccess] = useState(false);
-  const [buyFailure, setBuyFailure] = useState(false);
-  const [boughtNFT, setBoughtNFT] = useState(null);
-  const [buying, setBuying] = useState(false);
-  const [withdrawSuccess, setWithdrawSuccess] = useState(false);
-  const [withdrawFailure, setWithdrawFailure] = useState(false);
-  const [withdrawnNFT, setWithdrawnNFT] = useState(null);
-  const [withdrawing, setWithdrawing] = useState(false);
-  const [settingPrice, setSettingPrice] = useState(false);
-  const [blacklist, setBlacklist] = useState([]);
+    const [sellPrice, setSellPrice] = useState("");
+    const [approved, setApproved] = useState(false);
+    const cancelButtonRef = useRef(null);
+    const [sellData, setSellData] = useState(null);
+    const [listSuccess, setListSuccess] = useState(false);
+    const [listFailure, setListFailure] = useState(false);
+    const [listedNFT, setListedNFT] = useState(null);
+    const [listing, setListing] = useState(false);
+    const [buySuccess, setBuySuccess] = useState(false);
+    const [buyFailure, setBuyFailure] = useState(false);
+    const [boughtNFT, setBoughtNFT] = useState(null);
+    const [buying, setBuying] = useState(false);
+    const [withdrawSuccess, setWithdrawSuccess] = useState(false);
+    const [withdrawFailure, setWithdrawFailure] = useState(false);
+    const [withdrawnNFT, setWithdrawnNFT] = useState(null);
+    const [withdrawing, setWithdrawing] = useState(false);
+    const [settingPrice, setSettingPrice] = useState(false);
+    const [blacklist, setBlacklist] = useState([]);
+    const [collectionGroup, setCollectionGroup] = useState([]);
+    const [ownedGroup, setOwnedGroup] = useState({});
+    const [ownedCollections, setOwnedCollections] = useState([]);
+    const [showAllCollection, setShowAllCollection] = useState({});
 
   const startSale = async (nft) => {
     setSellData(nft);
@@ -163,12 +174,15 @@ const MyNFT = (props) => {
       );
   };
 
+  const [setLoading, isSetLoading] = useState(false);
+
   const getData = async () => {
     try {
       // console.log(permaBlacklist)
+      isSetLoading(true);
       setBlacklist(permaBlacklist);
       const wallet = await GetWallet();
-      if (wallet.wallet.connected) {
+      if (true) {
         const xdc3 = new Xdc3(
           new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER)
         );
@@ -180,12 +194,12 @@ const MyNFT = (props) => {
         );
         const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
 
-        if (wallet.wallet.address !== "")
+        if (urlAddress !== "")
           var getVal = await nftContract.methods
             .isApprovedForAll(
-              isXdc(wallet.wallet.address)
-                ? fromXdc(wallet.wallet.address)
-                : wallet.wallet.address,
+                isXdc(urlAddress)
+                ? fromXdc(urlAddress)
+                : urlAddress,
               nftmarketlayeraddress
             )
             .call();
@@ -193,13 +207,13 @@ const MyNFT = (props) => {
 
         const data = await marketContract.methods
           .fetchMyNFTs(
-            isXdc(wallet.wallet.address)
-              ? fromXdc(wallet.wallet.address)
-              : wallet.wallet.address
+            isXdc(urlAddress)
+              ? fromXdc(urlAddress)
+              : urlAddress
           )
           .call();
         const items = await Promise.all(
-          data.slice(0, 12).map(async (i) => {
+          data.slice(0, 20).map(async (i) => {
             const uri = await nftContract.methods.tokenURI(i.tokenId).call();
 
             var metadata = await axios.get(uri);
@@ -225,10 +239,13 @@ const MyNFT = (props) => {
             return item;
           })
         );
+
+        console.log()
         setLoadingState("loaded");
         setApproved(getVal);
         setPage(data);
         setNFts(items);
+        isSetLoading(false);
       } else {
         // console.log(wallet);
       }
@@ -251,7 +268,7 @@ const MyNFT = (props) => {
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
     const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
     const nfts = await Promise.all(
-      page.slice(pageCount * 12, 12 * (pageCount + 1)).map(async (i) => {
+      page.slice(pageCount * 20, 20 * (pageCount + 1)).map(async (i) => {
         const uri = await nftContract.methods.tokenURI(i.tokenId).call();
         var metadata = await axios.get(uri);
         var price = await xdc3.utils.fromWei(i.price, "ether");
@@ -283,21 +300,6 @@ const MyNFT = (props) => {
     history.push(`/nft/${nftaddress}/${data.tokenId}`);
   };
 
-  const checkWalletConnection = async () => {
-    try {
-      await window.ethereum.enable();
-
-      const provider = await detectEthereumProvider();
-
-      const xdc3 = new Xdc3(provider);
-      // console.log('==========', xdc3)
-      const accounts = await xdc3.eth.getAccounts();
-      setAddress(accounts[0]);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
   const getBlacklist = async () => {
     const wallet = await GetWallet();
     setWallet(wallet);
@@ -322,33 +324,152 @@ const MyNFT = (props) => {
     // setBlacklist(newBlacklist)
   };
 
+  const getCreatedCollections = async () => {
+    const xdc3 = new Xdc3(
+        new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER)
+    );
+    const marketContract = new xdc3.eth.Contract(
+        NFTMarketLayer1.abi,
+        nftmarketlayeraddress,
+        xdc3
+    );
+    const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
+    const data = await marketContract.methods.fetchItemsCreated(urlAddress).call();
+
+    var uniqueCollections = [];
+    const createdCollections = await Promise.all(data.map( async i => {
+        if(!uniqueCollections.includes(i.collectionName)) {
+            uniqueCollections.push(i.collectionName);
+        }
+    }))
+
+    const collectionGroups = []
+
+    for(var i = 0; i < uniqueCollections.length; i++) {
+        const collectionNFTs = await marketContract.methods.getCollectionNFTs(uniqueCollections[i]).call();
+
+        var collectionNFTsList = [];
+        const collectionNFTsData = await Promise.all(collectionNFTs.slice(0, 4).map( async j => {
+            const uri = await nftContract.methods.tokenURI(j.tokenId).call();
+            var metadata = await axios.get(uri);
+            let nft = {
+                tokenId: j.tokenId,
+                image: metadata?.data?.collection?.nft?.image,
+                name: j.name,
+                logo: metadata?.data?.collection?.logo
+            }
+            collectionNFTsList.push(nft);
+        }));
+        let group = {
+            name: uniqueCollections[i],
+            nfts: collectionNFTsList,
+            logo: collectionNFTsList[0].logo,
+            items: uniqueCollections[i] === "The Lucid Women" || uniqueCollections[i] === "NFTHC" || uniqueCollections[i] === "DØP3 Punks " ? collectionNFTs.length - 1 : collectionNFTs.length
+        };
+        collectionGroups.push(group);
+    }
+    
+    setCollectionGroup(collectionGroups);
+  }
+
+  const getOwnedNFTs = async () => {
+    const xdc3 = new Xdc3(
+        new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER)
+    );
+    const marketContract = new xdc3.eth.Contract(
+        NFTMarketLayer1.abi,
+        nftmarketlayeraddress,
+        xdc3
+    );
+    const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
+    const data = await marketContract.methods.fetchMyNFTs(urlAddress).call();
+
+    var uniqueCollections = [];
+    const uniqueCollectionsData = [];
+    var showAllGroups = {}
+    const collectionGroups = {};
+    const ownedCollections = await Promise.all(data.map( async i => {
+        if(!burnedNFTs.includes(i.tokenId)) {
+            const uri = await nftContract.methods.tokenURI(i.tokenId).call();
+            var metadata = await axios.get(uri);
+            if(!uniqueCollections.includes(i.collectionName)) {
+                uniqueCollections.push(i.collectionName);
+                collectionGroups[i.collectionName] = [];
+                showAllGroups[i.collectionName] = false;
+            }
+            
+            let nft = {
+                tokenId: i.tokenId,
+                image: metadata?.data?.collection?.nft?.image,
+                name: i.name
+            }
+            collectionGroups[i.collectionName].push(nft);
+        }
+    }))
+
+    for(var i = 0; i < uniqueCollections.length; i++) {
+        const collectionNFTs = await marketContract.methods.getCollectionNFTs(uniqueCollections[i]).call();
+        const uri = await nftContract.methods.tokenURI(collectionNFTs[0].tokenId).call();
+        var metadata = await axios.get(uri);
+        let collection = {
+            name: uniqueCollections[i],
+            logo: metadata?.data?.collection?.logo,
+            items: uniqueCollections[i] === "The Lucid Women" || uniqueCollections[i] === "NFTHC" || uniqueCollections[i] === "DØP3 Punks " ? collectionNFTs.length - 1 : collectionNFTs.length,
+            owned: collectionGroups[uniqueCollections[i]].length
+        };
+        uniqueCollections[i] = collection;
+    }
+
+    setOwnedCollections(uniqueCollections);
+    setOwnedGroup(collectionGroups);
+    setShowAllCollection(showAllGroups);
+  }
+
+  const [loadingCollection, setIsLoadingCollection] = useState([
+    { id: 1, name: "Collection 1" },
+    { id: 2, name: "Collection 2" },
+    { id: 3, name: "Collection 3" },
+    { id: 4, name: "Collection 4" },
+    { id: 5, name: "Collection 5" },
+    { id: 6, name: "Collection 6" },
+    { id: 7, name: "Collection 7" },
+    { id: 8, name: "Collection 8" },
+    { id: 9, name: "Collection 9" },
+    { id: 10, name: "Collection 10" },
+    { id: 11, name: "Collection 11" },
+    { id: 12, name: "Collection 12" },
+  ]);
+  
+
+  const [subMenu, setSubMenu] = useState(0);
+
   useEffect(() => {
-    setWallet(props.wallet);
+    getCreatedCollections();
+    // getOwnedNFTs();
+    // setWallet(props.wallet);
     getData();
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    // window.addEventListener("scroll", handleScroll);
+    // return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-  useEffect(() => {
-    if (!isFetching) return;
-    fetchMoreNFTs();
-  }, [isFetching]);
-  useEffect(() => {
-    setWallet(props.wallet);
-  }, [props.wallet]);
+//   useEffect(() => {
+//     if (!isFetching) return;
+//     fetchMoreNFTs();
+//   }, [isFetching]);
+//   useEffect(() => {
+//     setWallet(props.wallet);
+//   }, [props.wallet]);
 
   React.useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const [subMenu, setSubMenu] = useState(0);
+ 
 
   function NavigateTo(route) {
     history.push(`/${route}`);
   }
 
   const size = useWindowSize();
-
-  const { urlAddress } = useParams();
 
   const truncateAddress = (address) => {
     return address
@@ -358,7 +479,7 @@ const MyNFT = (props) => {
 
   return (
     <UserSection>
-      <Content>
+      <Content id="scrollableDiv">
         <VStack padding="30px 30px 300px 30px" spacing="36px">
           <VStack>
             <VStack direction={size.width < 768 ? "row" : "column"}>
@@ -392,14 +513,14 @@ const MyNFT = (props) => {
                   <IconImg url={xdcLogo} width="21px" height="21px"></IconImg>
                   <Spacer></Spacer>
                   <CaptionBoldShort textcolor={({ theme }) => theme.text}>
-                    0xdcsdasd...dasde23a
+                    {truncateAddress(urlAddress)}
                   </CaptionBoldShort>
                   <Spacer></Spacer>
                   <IconImg url={copyIcon} width="21px" height="21px"></IconImg>
                 </HStack>
-                <CaptionBoldShort textcolor={({ theme }) => theme.text}>
+                {/* <CaptionBoldShort textcolor={({ theme }) => theme.text}>
                   Joined 31 March 22
-                </CaptionBoldShort>
+                </CaptionBoldShort> */}
               </VStack>
             </VStack>
                             {/* <HStack
@@ -490,9 +611,10 @@ const MyNFT = (props) => {
                     : "transparent"
                 }
                 textcolor={({ theme }) => theme.text}
-                text="My Collections"
+                text="Created Collections"
                 height="39px"
                 onClick={() => setSubMenu(0)}
+                cursor={"pointer"}
               ></ButtonApp>
 
               <ButtonApp
@@ -502,12 +624,13 @@ const MyNFT = (props) => {
                     : "transparent"
                 }
                 textcolor={({ theme }) => theme.text}
-                text="Purchaised"
+                text="Owned"
                 height="39px"
                 onClick={() => setSubMenu(1)}
+                cursor={"pointer"}
               ></ButtonApp>
 
-              <ButtonApp
+              {/* <ButtonApp
                 background={
                   subMenu === 2
                     ? ({ theme }) => theme.backElement
@@ -517,6 +640,7 @@ const MyNFT = (props) => {
                 text="Offers Received"
                 height="39px"
                 onClick={() => setSubMenu(2)}
+                cursor={"pointer"}
               ></ButtonApp>
 
               <ButtonApp
@@ -529,7 +653,8 @@ const MyNFT = (props) => {
                 text="Offers Placed"
                 height="39px"
                 onClick={() => setSubMenu(3)}
-              ></ButtonApp>
+                cursor={"pointer"}
+              ></ButtonApp> */}
 
               {/* <BodyBold textcolor={({ theme }) => theme.text}>Like</BodyBold>
                             <BodyBold textcolor={({ theme }) => theme.text}>
@@ -542,547 +667,377 @@ const MyNFT = (props) => {
                             </HStack> */}
             </HStack>
           </VStack>
-          {subMenu === 0 && (
-            <VStack
-              width="100%"
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-            >
-              <VStack width="100%" padding="30px" spacing="30px">
-                <HStack width="100%">
-                  <IconImg
-                    url={banner1}
-                    width="60px"
-                    height="60px"
-                    backsize="cover"
-                    border="36px"
-                  ></IconImg>
-                  <VStack spacing="6px" alignment="flex-start">
-                    <TitleBold18>The Lucid Women</TitleBold18>
-                    <BodyRegular>152 Items</BodyRegular>
-                  </VStack>
-                </HStack>
-                <HStack justify="flex-start">
-                  <VStack
-                    maxwidth="186px"
-                    height="186px"
-                    border="15px"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    <ZStack>
-                      <ZItem>
-                        <IconImg
-                          url={banner1}
-                          width="100%"
-                          height="100%"
-                          backsize="cover"
-                          border="15px"
-                        ></IconImg>
-                      </ZItem>
-                      <ZItem>
-                        <VStack padding="15px">
-                          <HStack>
-                            <Spacer></Spacer>
-                            <IconImg
-                              url={banner1}
-                              width="45px"
-                              height="45px"
-                              backsize="cover"
-                              border="45px"
-                              bordersize="3px"
-                              bordercolor="white"
-                            ></IconImg>
-                          </HStack>
-                          <Spacer></Spacer>
-                          <TitleBold15 textcolor={appStyle.colors.white}>
-                            Valencia 001
-                          </TitleBold15>
-                        </VStack>
-                      </ZItem>
-                    </ZStack>
-                  </VStack>
-                  <VStack
-                    maxwidth="186px"
-                    height="186px"
-                    border="15px"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    <ZStack>
-                      <ZItem>
-                        <IconImg
-                          url={banner1}
-                          width="100%"
-                          height="100%"
-                          backsize="cover"
-                          border="15px"
-                        ></IconImg>
-                      </ZItem>
-                      <ZItem>
-                        <VStack padding="15px">
-                          <HStack>
-                            <Spacer></Spacer>
-                            <IconImg
-                              url={banner1}
-                              width="45px"
-                              height="45px"
-                              backsize="cover"
-                              border="45px"
-                              bordersize="3px"
-                              bordercolor="white"
-                            ></IconImg>
-                          </HStack>
-                          <Spacer></Spacer>
-                          <TitleBold15 textcolor={appStyle.colors.white}>
-                            Valencia 001
-                          </TitleBold15>
-                        </VStack>
-                      </ZItem>
-                    </ZStack>
-                  </VStack>
-                  <VStack
-                    maxwidth="186px"
-                    height="186px"
-                    border="15px"
-                    whileHover={{ scale: 1.05 }}
-                    background={({ theme }) => theme.backElement}
-                    spacing="6px"
-                    cursor="pointer"
-                  >
-                    <IconImg url={seeAll} width="45px" height="45px"></IconImg>
-                    <BodyBold>See All</BodyBold>
-                  </VStack>
-                </HStack>
-              </VStack>
-              <VStack width="100%" padding="30px" spacing="30px">
-                <HStack width="100%">
-                  <IconImg
-                    url={banner1}
-                    width="60px"
-                    height="60px"
-                    backsize="cover"
-                    border="36px"
-                  ></IconImg>
-                  <VStack spacing="6px" alignment="flex-start">
-                    <TitleBold18>The Lucid Women</TitleBold18>
-                    <BodyRegular>152 Items</BodyRegular>
-                  </VStack>
-                </HStack>
-                <HStack justify="flex-start">
-                  <VStack
-                    maxwidth="186px"
-                    height="186px"
-                    border="15px"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    <ZStack>
-                      <ZItem>
-                        <IconImg
-                          url={banner1}
-                          width="100%"
-                          height="100%"
-                          backsize="cover"
-                          border="15px"
-                        ></IconImg>
-                      </ZItem>
-                      <ZItem>
-                        <VStack padding="15px">
-                          <HStack>
-                            <Spacer></Spacer>
-                            <IconImg
-                              url={banner1}
-                              width="45px"
-                              height="45px"
-                              backsize="cover"
-                              border="45px"
-                              bordersize="3px"
-                              bordercolor="white"
-                            ></IconImg>
-                          </HStack>
-                          <Spacer></Spacer>
-                          <TitleBold15 textcolor={appStyle.colors.white}>
-                            Valencia 001
-                          </TitleBold15>
-                        </VStack>
-                      </ZItem>
-                    </ZStack>
-                  </VStack>
-                  <VStack
-                    maxwidth="186px"
-                    height="186px"
-                    border="15px"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    <ZStack>
-                      <ZItem>
-                        <IconImg
-                          url={banner1}
-                          width="100%"
-                          height="100%"
-                          backsize="cover"
-                          border="15px"
-                        ></IconImg>
-                      </ZItem>
-                      <ZItem>
-                        <VStack padding="15px">
-                          <HStack>
-                            <Spacer></Spacer>
-                            <IconImg
-                              url={banner1}
-                              width="45px"
-                              height="45px"
-                              backsize="cover"
-                              border="45px"
-                              bordersize="3px"
-                              bordercolor="white"
-                            ></IconImg>
-                          </HStack>
-                          <Spacer></Spacer>
-                          <TitleBold15 textcolor={appStyle.colors.white}>
-                            Valencia 001
-                          </TitleBold15>
-                        </VStack>
-                      </ZItem>
-                    </ZStack>
-                  </VStack>
-                  <VStack
-                    maxwidth="186px"
-                    height="186px"
-                    border="15px"
-                    whileHover={{ scale: 1.05 }}
-                    background={({ theme }) => theme.backElement}
-                    spacing="6px"
-                    cursor="pointer"
-                  >
-                    <IconImg url={seeAll} width="45px" height="45px"></IconImg>
-                    <BodyBold>See All</BodyBold>
-                  </VStack>
-                </HStack>
-              </VStack>
-            </VStack>
-          )}
-          {subMenu === 1 && (
-            <VStack
-              width="100%"
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-            >
-              <VStack width="100%" padding="30px" spacing="30px">
-                <HStack width="100%">
-                  <IconImg
-                    url={banner1}
-                    width="60px"
-                    height="60px"
-                    backsize="cover"
-                    border="36px"
-                  ></IconImg>
-                  <VStack spacing="6px" alignment="flex-start">
-                    <TitleBold18>The Lucid Women</TitleBold18>
-                    <BodyRegular>Owning 2 pieces of 152</BodyRegular>
-                  </VStack>
-                </HStack>
-                <HStack justify="flex-start">
-                  <VStack
-                    maxwidth="186px"
-                    height="186px"
-                    border="15px"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    <ZStack>
-                      <OwnerTag>OWNER</OwnerTag>
-                      <ZItem>
-                        <IconImg
-                          url={banner1}
-                          width="100%"
-                          height="100%"
-                          backsize="cover"
-                          border="15px"
-                        ></IconImg>
-                      </ZItem>
-                      <ZItem>
-                        <VStack padding="15px">
-                          <HStack>
-                            <Spacer></Spacer>
-                            <IconImg
-                              url={banner1}
-                              width="45px"
-                              height="45px"
-                              backsize="cover"
-                              border="45px"
-                              bordersize="3px"
-                              bordercolor="white"
-                            ></IconImg>
-                          </HStack>
-                          <Spacer></Spacer>
-                          <TitleBold15 textcolor={appStyle.colors.white}>
-                            Valencia 001
-                          </TitleBold15>
-                        </VStack>
-                      </ZItem>
-                    </ZStack>
-                  </VStack>
-                  <VStack
-                    maxwidth="186px"
-                    height="186px"
-                    border="15px"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    <ZStack>
-                      <OwnerTag>OWNER</OwnerTag>
-                      <ZItem>
-                        <IconImg
-                          url={banner1}
-                          width="100%"
-                          height="100%"
-                          backsize="cover"
-                          border="15px"
-                        ></IconImg>
-                      </ZItem>
-                      <ZItem>
-                        <VStack padding="15px">
-                          <HStack>
-                            <Spacer></Spacer>
-                            <IconImg
-                              url={banner1}
-                              width="45px"
-                              height="45px"
-                              backsize="cover"
-                              border="45px"
-                              bordersize="3px"
-                              bordercolor="white"
-                            ></IconImg>
-                          </HStack>
-                          <Spacer></Spacer>
-                          <TitleBold15 textcolor={appStyle.colors.white}>
-                            Valencia 001
-                          </TitleBold15>
-                        </VStack>
-                      </ZItem>
-                    </ZStack>
-                  </VStack>
-                  <VStack
-                    maxwidth="186px"
-                    height="186px"
-                    border="15px"
-                    whileHover={{ scale: 1.05 }}
-                    background={({ theme }) => theme.backElement}
-                    spacing="6px"
-                    cursor="pointer"
-                  >
-                    <IconImg url={seeAll} width="45px" height="45px"></IconImg>
-                    <BodyBold>See All</BodyBold>
-                  </VStack>
-                </HStack>
-              </VStack>
-              <VStack width="100%" padding="30px" spacing="30px">
-                <HStack width="100%">
-                  <IconImg
-                    url={banner1}
-                    width="60px"
-                    height="60px"
-                    backsize="cover"
-                    border="36px"
-                  ></IconImg>
-                  <VStack spacing="6px" alignment="flex-start">
-                    <TitleBold18>The Lucid Women</TitleBold18>
-                    <BodyRegular>Owning 2 pieces of 152</BodyRegular>
-                  </VStack>
-                </HStack>
-                <HStack justify="flex-start">
-                  <VStack
-                    maxwidth="186px"
-                    height="186px"
-                    border="15px"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    <ZStack>
-                      <OwnerTag>OWNER</OwnerTag>
-                      <ZItem>
-                        <IconImg
-                          url={banner1}
-                          width="100%"
-                          height="100%"
-                          backsize="cover"
-                          border="15px"
-                        ></IconImg>
-                      </ZItem>
-                      <ZItem>
-                        <VStack padding="15px">
-                          <HStack>
-                            <Spacer></Spacer>
-                            <IconImg
-                              url={banner1}
-                              width="45px"
-                              height="45px"
-                              backsize="cover"
-                              border="45px"
-                              bordersize="3px"
-                              bordercolor="white"
-                            ></IconImg>
-                          </HStack>
-                          <Spacer></Spacer>
-                          <TitleBold15 textcolor={appStyle.colors.white}>
-                            Valencia 001
-                          </TitleBold15>
-                        </VStack>
-                      </ZItem>
-                    </ZStack>
-                  </VStack>
-                  <VStack
-                    maxwidth="186px"
-                    height="186px"
-                    border="15px"
-                    whileHover={{ scale: 1.05 }}
-                  >
-                    <ZStack>
-                      <OwnerTag>OWNER</OwnerTag>
-                      <ZItem>
-                        <IconImg
-                          url={banner1}
-                          width="100%"
-                          height="100%"
-                          backsize="cover"
-                          border="15px"
-                        ></IconImg>
-                      </ZItem>
-                      <ZItem>
-                        <VStack padding="15px">
-                          <HStack>
-                            <Spacer></Spacer>
-                            <IconImg
-                              url={banner1}
-                              width="45px"
-                              height="45px"
-                              backsize="cover"
-                              border="45px"
-                              bordersize="3px"
-                              bordercolor="white"
-                            ></IconImg>
-                          </HStack>
-                          <Spacer></Spacer>
-                          <TitleBold15 textcolor={appStyle.colors.white}>
-                            Valencia 001
-                          </TitleBold15>
-                        </VStack>
-                      </ZItem>
-                    </ZStack>
-                  </VStack>
-                  <VStack
-                    maxwidth="186px"
-                    height="186px"
-                    border="15px"
-                    whileHover={{ scale: 1.05 }}
-                    background={({ theme }) => theme.backElement}
-                    spacing="6px"
-                    cursor="pointer"
-                  >
-                    <IconImg url={seeAll} width="45px" height="45px"></IconImg>
-                    <BodyBold>See All</BodyBold>
-                  </VStack>
-                </HStack>
-              </VStack>
-            </VStack>
-          )}
-          {subMenu === 2 && (
-            <VStack
-              width="100%"
-              padding="15px 30px"
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-            >
-              <HStack
-                width="100%"
-                overflowx={size.width < 768 ? "scroll" : "visible"}
-                overflowy={size.width < 768 ? "hidden" : "visible"}
-                justify="flex-start"
-              >
+          <AnimatePresence>
+            {subMenu === 0 && (
                 <VStack
-                  width={size.width < 768 ? "690px" : "100%"}
-                  spacing="0px"
-                  background={({ theme }) => theme.backElement}
-                  padding="9px"
-                  border="9px"
+                width="100%"
+                key={"Created"}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 15 }}
                 >
-                  <TableUserProfile
-                    imageBuyer={banner1}
-                    offerBy="Team Woman"
-                    offerTime="Today 9:00 am"
-                    offerAmount="3200"
-                    collectionName="Elite Collection"
-                    nftName="Alice #003"
-                    nftImage={banner1}
-                    isPlaced={false}
-                    rejectOffer=""
-                    acceptOffer=""
-                  ></TableUserProfile>
-                  <Divider></Divider>
-                  <TableUserProfile
-                    imageBuyer={banner1}
-                    offerBy="Team Woman"
-                    offerTime="Today 9:00 am"
-                    offerAmount="3200"
-                    collectionName="Elite Collection"
-                    nftName="Alice #003"
-                    nftImage={banner1}
-                    isPlaced={false}
-                    rejectOffer=""
-                    acceptOffer=""
-                  ></TableUserProfile>
+                    {collectionGroup.map((item, i) => (
+                        <VStack width="100%" padding="30px" spacing="30px">
+                            <HStack width="100%">
+                                <IconImg
+                                    url={item.logo}
+                                    width="60px"
+                                    height="60px"
+                                    backsize="cover"
+                                    border="36px"
+                                ></IconImg>
+                                <VStack spacing="6px" alignment="flex-start">
+                                    <TitleBold18>{item.name}</TitleBold18>
+                                    <BodyRegular>{item.items} Items</BodyRegular>
+                                </VStack>
+                            </HStack>
+                            <HStack justify="flex-start">
+                                {item.nfts.map((nft, j) => (
+                                    <VStack
+                                        maxwidth="186px"
+                                        height="186px"
+                                        border="15px"
+                                        whileHover={{ scale: 1.05 }}
+                                        onClick={() => {
+                                            NavigateTo(`nft/${nftaddress}/${nft.tokenId}`)
+                                        }}
+                                        
+                                    >
+                                        <ZStack cursor={"pointer"}>
+                                            <CreatorTag>CREATOR</CreatorTag>
+                                            <ZItem>
+                                                <IconImg
+                                                    url={nft.image}
+                                                    width="100%"
+                                                    height="100%"
+                                                    backsize="cover"
+                                                    border="15px"
+                                                    
+                                                ></IconImg>
+                                            </ZItem>
+                                            <ZItem>
+                                                <VStack padding="15px">
+                                                    <HStack>
+                                                        <Spacer></Spacer>
+                                                        <IconImg
+                                                            url={banner1}
+                                                            width="45px"
+                                                            height="45px"
+                                                            backsize="cover"
+                                                            border="45px"
+                                                            bordersize="3px"
+                                                            bordercolor="white"
+                                                        ></IconImg>
+                                                    </HStack>
+                                                    <Spacer></Spacer>
+                                                    <TitleBold15 textcolor={appStyle.colors.white}>
+                                                        {nft.name}
+                                                    </TitleBold15>
+                                                </VStack>
+                                            </ZItem>
+                                        </ZStack>
+                                    </VStack>
+                                ))}
+                                <VStack
+                                    maxwidth="186px"
+                                    height="186px"
+                                    border="15px"
+                                    whileHover={{ scale: 1.05 }}
+                                    background={({ theme }) => theme.backElement}
+                                    spacing="6px"
+                                    cursor="pointer"
+                                    onClick={() => {
+                                        NavigateTo(`collection/${item.name}`)
+                                    }}
+                                >
+                                    <IconImg url={seeAll} width="45px" height="45px"></IconImg>
+                                    <BodyBold>See All</BodyBold>
+                                </VStack>
+                            </HStack>
+                        </VStack>
+                    ))}
                 </VStack>
-              </HStack>
-            </VStack>
-          )}
-          {subMenu === 3 && (
-            <VStack
-              width="100%"
-              padding="15px 30px"
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-            >
-              <HStack
-                width="100%"
-                overflowx={size.width < 768 ? "scroll" : "visible"}
-                overflowy={size.width < 768 ? "hidden" : "visible"}
-                justify="flex-start"
-              >
+            )}
+            {subMenu === 1 && (
                 <VStack
-                  width={size.width < 768 ? "690px" : "100%"}
-                  spacing="0px"
-                  background={({ theme }) => theme.backElement}
-                  padding="9px"
-                  border="9px"
+                    width="100%"
+                    key={"Owned"}
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 15 }}
+                    
                 >
-                  <TableUserProfile
-                    imageBuyer={banner1}
-                    offerBy="Team Woman"
-                    offerTime="Today 10:00 am"
-                    offerAmount="3600"
-                    collectionName="Elite Collection"
-                    nftName="Alice #003"
-                    nftImage={banner1}
-                    isPlaced={true}
-                    isRejected={true}
-                    onClickRejected=""
-                    onClickWithdraw=""
-                  ></TableUserProfile>
-                  <Divider></Divider>
+                    {/* {ownedCollections.map((item) => (
+                        <VStack width="100%" padding="30px" spacing="30px">
+                            <HStack width="100%">
+                                <IconImg
+                                    url={item.logo}
+                                    width="60px"
+                                    height="60px"
+                                    backsize="cover"
+                                    border="36px"
+                                ></IconImg>
+                                <VStack spacing="6px" alignment="flex-start">
+                                    <TitleBold18>{item.name}</TitleBold18>
+                                    <BodyRegular>Owning {item.owned} pieces of {item.items} total items</BodyRegular>
+                                </VStack>
+                            </HStack>
+                            <HStack justify="flex-start">
+                                {showAllCollection[item.name] 
+                                    ? ownedGroup[item.name]?.map((nft, i) => (
+                                        <VStack
+                                            maxwidth="186px"
+                                            height="186px"
+                                            border="15px"
+                                            whileHover={{ scale: 1.05 }}
+                                            onClick={() => {
+                                                NavigateTo(`nft/${nftaddress}/${nft.tokenId}`)
+                                            }}
+                                        >
+                                            <ZStack>
+                                                <OwnerTag>OWNER</OwnerTag>
+                                                <ZItem>
+                                                    <IconImg
+                                                        url={nft.image}
+                                                        width="100%"
+                                                        height="100%"
+                                                        backsize="cover"
+                                                        border="15px"
+                                                    ></IconImg>
+                                                </ZItem>
+                                                <ZItem>
+                                                    <VStack padding="15px">
+                                                        <HStack>
+                                                            <Spacer></Spacer>
+                                                            <IconImg
+                                                                url={banner1}
+                                                                width="45px"
+                                                                height="45px"
+                                                                backsize="cover"
+                                                                border="45px"
+                                                                bordersize="3px"
+                                                                bordercolor="white"
+                                                            ></IconImg>
+                                                        </HStack>
+                                                        <Spacer></Spacer>
+                                                        <TitleBold15 textcolor={appStyle.colors.white}>
+                                                            {nft.name}
+                                                        </TitleBold15>
+                                                    </VStack>
+                                                </ZItem>
+                                            </ZStack>
+                                        </VStack>
+                                    ))
+                                    : null 
+                                }
+                                <VStack
+                                    maxwidth="186px"
+                                    height="186px"
+                                    border="15px"
+                                    whileHover={{ scale: 1.05 }}
+                                    background={({ theme }) => theme.backElement}
+                                    spacing="6px"
+                                    cursor="pointer"
+                                    onClick={() => {
+                                        if(showAllCollection[item.name]) {
+                                            var showAllGroups = showAllCollection;
+                                            showAllGroups[item.name] = false;
+                                            setShowAllCollection(showAllGroups);
+                                        }
+                                        else{
+                                            console.log(ownedGroup)
+                                            var showAllGroups = showAllCollection;
+                                            showAllGroups[item.name] = true;
+                                            setShowAllCollection(showAllGroups);
+                                            console.log(showAllCollection)
+                                        }
+                                    }}
+                                >
+                                    <IconImg url={seeAll} width="45px" height="45px"></IconImg>
+                                    <BodyBold>{showAllCollection[item.name] ? "See Less" : "See All"}</BodyBold>
+                                </VStack>   
+                            </HStack>
+                        </VStack>
+                    ))} */}
 
-                  <TableUserProfile
-                    imageBuyer={banner1}
-                    offerBy="Team Woman"
-                    offerTime="Today 9:00 am"
-                    offerAmount="3200"
-                    collectionName="Elite Collection"
-                    nftName="Alice #003"
-                    nftImage={banner1}
-                    isPlaced={true}
-                    isRejected={false}
-                    onClickRejected=""
-                    onClickWithdraw=""
-                  ></TableUserProfile>
+                    <InfiniteScroll
+                        dataLength={nfts.length}
+                        next={fetchMoreNFTs}
+                        hasMore={nfts.length < page.length - 1}
+                        loader={
+                            <HStack
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                height="210px"
+                            >
+                                <LoopLogo></LoopLogo>
+                            </HStack>
+                        }
+                        scrollableTarget="#scrollableDiv"
+                        style={{ overflow: "hidden" }}
+                    >
+                        <VStack spacing="30px">
+                            {/* <HStack>
+                                <DiscoverFilter
+                                textcolor={({ theme }) => theme.text}
+                                background={({ theme }) => theme.backElement}
+                                ></DiscoverFilter>
+                            </HStack> */}
+                            <HStack>
+                            <HStack
+                                spacing="30px"
+                                flexwrap="wrap"
+                                padding="0 30px"
+                                justify="flex-start"
+                                width={size.width < 768 ? "100%" : "1100px"}
+                            >
+                                {setLoading
+                                ? loadingCollection.map((item) => (
+                                    <VStack
+                                        key={item.name}
+                                        minwidth={size.width < 768 ? "100%" : "500px"}
+                                        maxwidth="500px"
+                                        height={size.width < 768 ? "440px" : "420px"}
+                                    >
+                                        <LoadingNftContainer></LoadingNftContainer>
+                                    </VStack>
+                                    ))
+                                : nfts.map((item) => (
+                                    <LayoutGroup id="collection">
+                                        <VStack
+                                        minwidth={size.width < 768 ? "100%" : "500px"}
+                                        maxwidth="500px"
+                                        height={size.width < 768 ? "440px" : "420px"}
+                                        >
+                                        <Collection
+                                            key={item.name}
+                                            keyContent={item.name}
+                                            keyID={item.creator}
+                                            collectionImage={item.banner}
+                                            creatorLogo={item.logo}
+                                            collectionName={item.name}
+                                            collectionDescription={item.description}
+                                            creatorName={item.creator}
+                                            onClickCollection={() =>
+                                            NavigateTo(`collection/${item.name}`)
+                                            }
+                                            floorprice={item.floorPrice}
+                                            owners={item.owners}
+                                            nfts={item.items}
+                                            volumetraded={item.volumeTraded}
+                                            // onClickCreator={() => NavigateTo("UserProfile")}
+                                        ></Collection>
+                                        </VStack>
+                                    </LayoutGroup>
+                                    ))}
+                            </HStack>
+                            </HStack>
+                        </VStack>
+                        </InfiniteScroll>
                 </VStack>
-              </HStack>
-            </VStack>
-          )}
+            )}
+            {/* {subMenu === 2 && (
+                <VStack
+                width="100%"
+                padding="15px 30px"
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                >
+                <HStack
+                    width="100%"
+                    overflowx={size.width < 768 ? "scroll" : "visible"}
+                    overflowy={size.width < 768 ? "hidden" : "visible"}
+                    justify="flex-start"
+                >
+                    <VStack
+                    width={size.width < 768 ? "690px" : "100%"}
+                    spacing="0px"
+                    background={({ theme }) => theme.backElement}
+                    padding="9px"
+                    border="9px"
+                    >
+                    <TableUserProfile
+                        imageBuyer={banner1}
+                        offerBy="Team Woman"
+                        offerTime="Today 9:00 am"
+                        offerAmount="3200"
+                        collectionName="Elite Collection"
+                        nftName="Alice #003"
+                        nftImage={banner1}
+                        isPlaced={false}
+                        rejectOffer=""
+                        acceptOffer=""
+                    ></TableUserProfile>
+                    <Divider></Divider>
+                    <TableUserProfile
+                        imageBuyer={banner1}
+                        offerBy="Team Woman"
+                        offerTime="Today 9:00 am"
+                        offerAmount="3200"
+                        collectionName="Elite Collection"
+                        nftName="Alice #003"
+                        nftImage={banner1}
+                        isPlaced={false}
+                        rejectOffer=""
+                        acceptOffer=""
+                    ></TableUserProfile>
+                    </VStack>
+                </HStack>
+                </VStack>
+            )}
+            {subMenu === 3 && (
+                <VStack
+                width="100%"
+                padding="15px 30px"
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                >
+                <HStack
+                    width="100%"
+                    overflowx={size.width < 768 ? "scroll" : "visible"}
+                    overflowy={size.width < 768 ? "hidden" : "visible"}
+                    justify="flex-start"
+                >
+                    <VStack
+                    width={size.width < 768 ? "690px" : "100%"}
+                    spacing="0px"
+                    background={({ theme }) => theme.backElement}
+                    padding="9px"
+                    border="9px"
+                    >
+                    <TableUserProfile
+                        imageBuyer={banner1}
+                        offerBy="Team Woman"
+                        offerTime="Today 10:00 am"
+                        offerAmount="3600"
+                        collectionName="Elite Collection"
+                        nftName="Alice #003"
+                        nftImage={banner1}
+                        isPlaced={true}
+                        isRejected={true}
+                        onClickRejected=""
+                        onClickWithdraw=""
+                    ></TableUserProfile>
+                    <Divider></Divider>
+
+                    <TableUserProfile
+                        imageBuyer={banner1}
+                        offerBy="Team Woman"
+                        offerTime="Today 9:00 am"
+                        offerAmount="3200"
+                        collectionName="Elite Collection"
+                        nftName="Alice #003"
+                        nftImage={banner1}
+                        isPlaced={true}
+                        isRejected={false}
+                        onClickRejected=""
+                        onClickWithdraw=""
+                    ></TableUserProfile>
+                    </VStack>
+                </HStack>
+                </VStack>
+            )} */}
+          </AnimatePresence>
         </VStack>
         {/* <div>
           <header className="secondary-page-header">
@@ -1480,6 +1435,18 @@ const OwnerTag = styled(motion.div)`
   position: absolute;
   top: 50px;
   right: 12px;
+  background: white;
+  padding: 3px 6px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: bold;
+  z-index: 1;
+`;
+
+const CreatorTag = styled(motion.div)`
+  position: absolute;
+  top: 50px;
+  right: 8px;
   background: white;
   padding: 3px 6px;
   border-radius: 6px;
