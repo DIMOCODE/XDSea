@@ -79,6 +79,7 @@ function CreateNft(props) {
 
   const [uploadBannerStatus, setUploadBannerStatus] = useState(false);
   const [uploadLogoStatus, setUploadLogoStatus] = useState(false);
+  const [uploadPreviewStatus, setUploadPreviewStatus] = useState(false);
   const [uploadNFT, setUploadNFT] = useState(false);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -111,7 +112,7 @@ function CreateNft(props) {
   const [isUnlockableContent, setIsUnlockableContent] = useState(false);
   const [unlockableContent, setUnlockableContent] = useState("");
   const [file, setFile] = useState({ preview: "", raw: "", fileType: "" });
-  const [preview, setPreview] = useState({ preview: "", raw: ""})
+  const [preview, setPreview] = useState({ preview: "", raw: "", fileType: "" });
   const [modalAlert, setModalAlert] = useState(false);
   const [loadingIcon, setLoadingIcon] = useState(empty);
   const [isPriceInvalid, setIsPriceInvalid] = useState(false);
@@ -126,6 +127,7 @@ function CreateNft(props) {
   const [assetURL, setAssetURL] = useState("");
   const [collectionBannerURL, setCollectionBannerURL] = useState("");
   const [collectionLogoURL, setCollectionLogoURL] = useState("");
+  const [previewURL, setPreviewURL] = useState("");
 
   const size = useWindowSize();
 
@@ -170,6 +172,19 @@ function CreateNft(props) {
     }
   };
 
+  const addToIPFSPreview = async () => {
+    setUploadPreviewStatus(true);
+    const file = document.getElementById("preview-file").files[0];
+    try{
+      const added = await client.add(file);
+      const url = `https://ipfs.infura.io/ipfs/${added.path}`;
+      setPreviewURL(url);
+      setUploadPreviewStatus(false);
+    } catch (error) {
+      console.log("Error uploading file:", error);
+    }
+  }
+
   const handleChangeUploadMultimedia = (e) => {
     setIsAssetEmpty(false);
     if (e.target.files.length) {
@@ -203,6 +218,17 @@ function CreateNft(props) {
     }
     addToIPFSCollectionLogo();
   };
+
+  const handleChangeUploadMultimediaPreview = (e) => {
+    if (e.target.files.length) {
+      setPreview({
+        preview: URL.createObjectURL(e.target.files[0]),
+        raw: e.target.files[0],
+        fileType: e.target.files[0].type,
+      });
+    }
+    addToIPFSPreview();
+  }
 
   const clearForm = async () => {
     document.getElementById("upload-button").value = null;
@@ -238,60 +264,6 @@ function CreateNft(props) {
     setModalAlert(false);
     setRoyaltyAlert(false);
   };
-
-  //     createSale = async (url) => {
-  //         try {
-  //             const wallet = await GetWallet()
-  //             const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER))
-
-  //             const contract = new xdc3.eth.Contract(NFT.abi, nftaddress, isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address)
-  //             let data = contract.methods.createToken(url).encodeABI()
-
-  //             const tx = {
-  //                 from: isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address,
-  //                 to: nftaddress,
-  //                 data
-  //             }
-  //             let gasLimit = await xdc3.eth.estimateGas(tx);
-
-  //             tx["gas"] = gasLimit
-
-  //             let transaction = await SendTransaction(tx)
-
-  //             this.setState({updatingLedger: true})
-
-  //             var txReceipt = await xdc3.eth.getTransactionReceipt(transaction.transactionHash)
-  //             var tokenId = await txReceipt.logs[0].topics[3]
-
-  //             const price = await xdc3.utils.toWei(this.state.price, "ether")
-
-  //             var metadata = await axios.get(url)
-
-  //             var tokenName = metadata?.data?.collection?.nft?.name;
-  //             var collectionName = metadata?.data?.collection?.name;
-
-  //             // const contract2 = new xdc3.eth.Contract(NFTMarket.abi, nftmarketaddress, isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address)
-  //             const contract2 = new xdc3.eth.Contract(NFTMarketLayer1.abi, nftmarketlayeraddress, isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address)
-  //             data = contract2.methods.createMarketItem(Number(tokenId), 0, isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address, isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address, price, false, this.state.royalty, 1, tokenName, collectionName).encodeABI()
-
-  //             const tx2 = {
-  //                 from: isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address,
-  //                 to: nftmarketlayeraddress,
-  //                 value: "",
-  //                 data
-  //             }
-
-  //             gasLimit = await xdc3.eth.estimateGas(tx2);
-
-  //             tx2["gas"] = gasLimit
-
-  //             transaction = await SendTransaction(tx2)
-  //             this.setState({mintSuccess: true})
-  //         } catch (error) {
-  //             console.log(error)
-  //             this.setState({mintFailure: true})
-  //         }
-  //     }
 
   const fetchCollection = async () => {
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
@@ -379,42 +351,78 @@ function CreateNft(props) {
           }
           else {
             setMintButtonStatus(1);
+            const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
+            const marketContract = new xdc3.eth.Contract(
+              NFTMarketLayer1.abi,
+              nftmarketlayeraddress,
+              xdc3
+            );
+            const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
             if(props?.wallet?.connected) {
-              const check = await checkCollectionExists();
-              if(check) {
-                const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
-                const marketContract = new xdc3.eth.Contract(
-                  NFTMarketLayer1.abi,
-                  nftmarketlayeraddress,
-                  xdc3
-                );
-                const collectionData = await marketContract.methods.fetchCollection(document.getElementsByClassName("collection-name")[0].value).call();
-                if(collectionData.creator === (isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address)) {
-                  setCollectionExists(false);
-                  var add = await addToIPFS();
-                  const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
-                  const collectionUri = await nftContract.methods
-                    .tokenURI(collectionData.tokenId)
-                    .call();
-                  var collectionMetadata = await axios.get(collectionUri);
-                  setCollectionBannerURL(collectionMetadata?.data?.collection?.banner);
-                  setCollectionLogoURL(collectionMetadata?.data?.collection?.logo);
-                  setCollectionDescription(collectionMetadata?.data?.collection?.description);
-                  setInstagramLink(collectionMetadata?.data?.collection?.instagramUrl);
-                  setTwitterLink(collectionMetadata?.data?.collection?.twitterUrl);
-                  setDiscordLink(collectionMetadata?.data?.collection?.discordUrl);
-                  setWebsiteLink(collectionMetadata?.data?.collection?.websiteUrl);
+              try{
+                const check = await checkCollectionExists();
+                if(check) {
+                  
+                  const collectionData = await marketContract.methods.fetchCollection(document.getElementsByClassName("collection-name")[0].value).call();
+                  if(collectionData.creator === (isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address)) {
+                    setCollectionExists(false);                    
+                    const collectionUri = await nftContract.methods
+                      .tokenURI(collectionData.tokenId)
+                      .call();
+                    var collectionMetadata = await axios.get(collectionUri);
+                    setCollectionBannerURL(collectionMetadata?.data?.collection?.banner);
+                    setCollectionLogoURL(collectionMetadata?.data?.collection?.logo);
+                    setCollectionDescription(collectionMetadata?.data?.collection?.description);
+                    setInstagramLink(collectionMetadata?.data?.collection?.instagramUrl);
+                    setTwitterLink(collectionMetadata?.data?.collection?.twitterUrl);
+                    setDiscordLink(collectionMetadata?.data?.collection?.discordUrl);
+                    setWebsiteLink(collectionMetadata?.data?.collection?.websiteUrl);
+                    const uploadData = JSON.stringify({
+                      collection: {
+                        name: document.getElementById("collection-name-input").value,
+                        description: collectionMetadata?.data?.collection?.description,
+                        creator: isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address,
+                        banner: collectionMetadata?.data?.collection?.banner,
+                        logo: collectionMetadata?.data?.collection?.logo,
+                        twitterUrl: collectionMetadata?.data?.collection?.twitterUrl,
+                        instagramUrl: collectionMetadata?.data?.collection?.instagramUrl,
+                        discordUrl: collectionMetadata?.data?.collection?.discordUrl,
+                        websiteUrl: collectionMetadata?.data?.collection?.websiteUrl,
+                        nft:{
+                            name,
+                            description,
+                            owner: isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address,
+                            image: assetURL,
+                            unlockableContent,
+                            properties: properties,
+                            royalty: royalty,
+                            fileType: file.fileType,
+                            preview: previewURL
+                        }
+                      }
+                    })
+                    console.log(uploadData);
+                    const added = await client.add(uploadData)
+                    const url = `https://ipfs.infura.io/ipfs/${added.path}`
+                    updateMarketplace(url);
+                  }
+                  else {
+                    document.getElementsByClassName("nft-collection")[0].scrollIntoView();
+                    return;
+                  }
+                }
+                else{
                   const uploadData = JSON.stringify({
                     collection: {
                       name: document.getElementById("collection-name-input").value,
-                      description: collectionMetadata?.data?.collection?.description,
+                      description: collectionDescription,
                       creator: isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address,
-                      banner: collectionMetadata?.data?.collection?.banner,
-                      logo: collectionMetadata?.data?.collection?.logo,
-                      twitterUrl: collectionMetadata?.data?.collection?.twitterUrl,
-                      instagramUrl: collectionMetadata?.data?.collection?.instagramUrl,
-                      discordUrl: collectionMetadata?.data?.collection?.discordUrl,
-                      websiteUrl: collectionMetadata?.data?.collection?.websiteUrl,
+                      banner: collectionBannerURL,
+                      logo: collectionLogoURL,
+                      twitterUrl: twitterLink,
+                      instagramUrl: instagramLink,
+                      discordUrl: discordLink,
+                      websiteUrl: websiteLink,
                       nft:{
                           name,
                           description,
@@ -424,46 +432,20 @@ function CreateNft(props) {
                           properties: properties,
                           royalty: royalty,
                           fileType: file.fileType,
-                          preview: document.getElementById("upload-button")
+                          preview: previewURL
                       }
                     }
                   })
-                  console.log(uploadData, document.getElementById("upload-button"));
+                  console.log(uploadData);
+                  const added = await client.add(uploadData);
+                  const url = `https://ipfs.infura.io/ipfs/${added.path}`;
+                  updateMarketplace(url);
                 }
-                else {
-                  document.getElementsByClassName("nft-collection")[0].scrollIntoView();
-                  return;
-                }
+              } catch (error) {
+                console.log(error);
+                setMintButtonStatus(4);
+                return;
               }
-              else{
-                const uploadData = JSON.stringify({
-                  collection: {
-                    name: document.getElementById("collection-name-input").value,
-                    description: collectionDescription,
-                    creator: isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address,
-                    banner: collectionBannerURL,
-                    logo: collectionLogoURL,
-                    twitterUrl: twitterLink,
-                    instagramUrl: instagramLink,
-                    discordUrl: discordLink,
-                    websiteUrl: websiteLink,
-                    nft:{
-                        name,
-                        description,
-                        owner: isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address,
-                        image: assetURL,
-                        unlockableContent,
-                        properties: properties,
-                        royalty: royalty,
-                        fileType: file.fileType,
-                        preview: document.getElementById("upload-button").value
-                    }
-                  }
-              })
-              console.log(uploadData, document.getElementById("upload-button"));
-              }
-              
-              setMintButtonStatus(2);
             }
             else {
               setIsWalletDisconnected(true);
@@ -473,14 +455,64 @@ function CreateNft(props) {
         }
       }
     }
+  }
 
-  //     const added = await client.add(uploadData)
-  //     const url = `https://ipfs.infura.io/ipfs/${added.path}`
-  //     this.createSale(url)
-  // } catch (error) {
-  //     console.log('Error uploading file:', error)
-  //     this.setState({mintFailure: true})
-    // }
+  const updateMarketplace = async (url) => {
+    try {
+        const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
+
+        const contract = new xdc3.eth.Contract(NFT.abi, nftaddress, isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address);
+        let data = contract.methods.createToken(url).encodeABI();
+
+        const tx = {
+            from: isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address,
+            to: nftaddress,
+            data
+        };
+        let gasLimit = await xdc3.eth.estimateGas(tx);
+
+        tx["gas"] = gasLimit
+
+        let transaction = await SendTransaction(tx)
+
+        setMintButtonStatus(2);
+
+        var txReceipt = await xdc3.eth.getTransactionReceipt(transaction.transactionHash)
+        var tokenId = await txReceipt.logs[0].topics[3]
+
+        const weiprice = await xdc3.utils.toWei(price, "ether");
+
+        const contract2 = new xdc3.eth.Contract(NFTMarketLayer1.abi, nftmarketlayeraddress, isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address);
+        data = contract2.methods.createMarketItem(
+          Number(tokenId), 
+          0, 
+          isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address, 
+          isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address, 
+          weiprice, 
+          false, 
+          royalty, 
+          1, 
+          name, 
+          collection
+        ).encodeABI()
+
+        const tx2 = {
+            from: isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address,
+            to: nftmarketlayeraddress,
+            value: "",
+            data
+        }
+
+        gasLimit = await xdc3.eth.estimateGas(tx2);
+
+        tx2["gas"] = gasLimit;
+
+        transaction = await SendTransaction(tx2);
+        setMintButtonStatus(3);
+    } catch (error) {
+        console.log(error)
+        setMintButtonStatus(4);
+    }
   }
 
   const checkRoyalty = function(){
@@ -627,9 +659,16 @@ function CreateNft(props) {
                 width={size.width < 768 ? "320px" : "489px"}
                 height={size.width < 768 ? "320px" : "489px"}
                 file={file}
+                secondaryFile={preview}
                 // Revisar aqui
                 button={"upload-button"}
+                secondaryButton={"preview-file"}
                 isUploading={uploadNFT}
+                secondaryUploading={uploadPreviewStatus}
+                onClickSecondary={() => {
+                  document.getElementById("preview-file").value = null;
+                  setPreview({ preview: "", raw: "", fileType: "" })
+                }}
                 description="Click to upload NFT Image"
               ></UploadMultimedia>
               <input
@@ -637,6 +676,12 @@ function CreateNft(props) {
                 id="upload-button"
                 style={{ display: "none" }}
                 onChange={handleChangeUploadMultimedia}
+              />
+              <input
+                type="file"
+                id="preview-file"
+                style={{ display: "none" }}
+                onChange={handleChangeUploadMultimediaPreview}
               />
               {file.raw !== "" && (
                 <ButtonsNFT>

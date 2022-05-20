@@ -16,10 +16,17 @@ import { LayoutGroup, motion } from "framer-motion/dist/framer-motion";
 import { Link } from "../../styles/Link";
 import useWindowSize from "../../styles/useWindowSize";
 import styled from "styled-components";
+import { useHistory } from "react-router-dom";
 
 function Footer(props) {
   const { textcolor } = props;
   const size = useWindowSize();
+
+  const history = useHistory();
+
+  function NavigateTo(route) {
+    history.push(`/${route}`);
+  }
 
   return (
     <FooterSection>
@@ -31,11 +38,12 @@ function Footer(props) {
               alignment="flex-start"
               padding={size.width < 768 ? "0 60px" : "0 30px"}
             >
-              <VStack alignment="flex-start" spacing="6px">
+              <VStack alignment="flex-start" spacing="6px" onClick={() => NavigateTo('')}>
                 <IconImg
                   url={XDSeaWhite}
                   width={size.width < 768 ? "60px" : "90px"}
                   height={size.width < 768 ? "60px" : "90px"}
+                  cursor={"pointer"}
                 ></IconImg>
 
                 <TitleBold27 textcolor={appStyle.colors.white}>
@@ -53,8 +61,8 @@ function Footer(props) {
                 </TitleBold21>
 
                 <LayoutGroup id="MarketPlaceLink">
-                  <Link text="Home"></Link>
-                  <Link text="Discover"></Link>
+                  <Link cursor={"pointer"} text="Home"></Link>
+                  <Link cursor={"pointer"} text="Discover"></Link>
                   {/* <Link text="Terms of Service"></Link>
                 <Link text="Build on Xinfin"></Link> */}
                 </LayoutGroup>
@@ -94,7 +102,7 @@ function Footer(props) {
                     ></IconImg>
                   </a>
 
-                  <a href="mailto: abc@example.com">
+                  <a href="mailto:support@xdsea.com">
                     <IconImg
                       url={mail}
                       width="52px"

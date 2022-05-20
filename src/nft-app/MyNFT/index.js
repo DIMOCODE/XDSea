@@ -330,9 +330,9 @@ const MyNFT = (props) => {
                                 <TitleBold21 textcolor={({ theme }) => theme.text}>
                                     {truncateAddress(isXdc(urlAddress) ? fromXdc(urlAddress) : urlAddress)}
                                 </TitleBold21>
-                                <CaptionBoldShort textcolor={({ theme }) => theme.text}>
+                                {/* <CaptionBoldShort textcolor={({ theme }) => theme.text}>
                                     Joined 31 March 22
-                                </CaptionBoldShort>
+                                </CaptionBoldShort> */}
                             </VStack>
                         </VStack>
                         <VStack

@@ -29,8 +29,8 @@ function TopBar(props) {
   return (
     <ContentBar>
       <HStack height="90px" width="1200px">
-        <HStack>
-          <IconImg url={XDSealogo} width="66px" height="66px"></IconImg>
+        <HStack onClick={() => NavigateTo('')} cursor={"pointer"}>
+          <IconImg url={XDSealogo} width="66px" height="66px" cursor={"pointer"}></IconImg>
           <VStack spacing="1px" alignment="flex-start">
             <BodyBold textcolor={({ theme }) => theme.text}>XDSea</BodyBold>
             {!devMode ? (
@@ -42,6 +42,7 @@ function TopBar(props) {
                 background="linear-gradient(180deg, #044DC4 0%, #192EA6 100%)"
                 border="6px"
                 padding="3px 6px"
+                cursor={"pointer"}
               >
                 <CaptionRegular textcolor={appStyle.colors.white}>
                   Developer
@@ -107,10 +108,15 @@ function TopBar(props) {
 
         <SwitchButton clickOnSwitch={themeToggler}></SwitchButton>
 
-        <UserMenuButton
-          clickOnUser={() => NavigateTo("UserProfile")}
-          // clickOnSettings={() => NavigateTo("Settings")}
-        ></UserMenuButton>
+        {wallet?.address ? 
+          <UserMenuButton
+            clickOnUser={() => NavigateTo(`UserProfile/${wallet?.address}`)}
+            // clickOnSettings={() => NavigateTo("Settings")}
+            wallet={wallet}
+          ></UserMenuButton>
+          : null
+        }
+        
       </HStack>
     </ContentBar>
   );

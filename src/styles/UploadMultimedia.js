@@ -27,6 +27,10 @@ function UploadMultimedia(props) {
     height,
     sizeText,
     backsize,
+    secondaryFile,
+    secondaryButton,
+    secondaryUploading,
+    onClickSecondary,
     border,
     file,
     isUploading,
@@ -37,7 +41,6 @@ function UploadMultimedia(props) {
     borderLoader,
   } = props;
 
-  const [selectedImage, setSelectedImage] = useState(null);
   const borderColor = {
     border: "6px solid #FFFFFF",
   };
@@ -178,10 +181,10 @@ function UploadMultimedia(props) {
           style={{ zIndex: 100 }}
         >
           <ZStack>
-            {selectedImage ? (
+            {secondaryFile.raw !== "" ? (
               <ZItem>
                 <IconImg
-                  url={URL.createObjectURL(selectedImage)}
+                  url={secondaryFile.preview}
                   width="100%"
                   height="100%"
                   backsize="cover"
@@ -190,7 +193,7 @@ function UploadMultimedia(props) {
                 <AbsoluteCoverBtn>
                   <HStack
                     background={appStyle.colors.yellow}
-                    onClick={() => setSelectedImage(null)}
+                    onClick={onClickSecondary}
                     border="9px"
                     height="39px"
                   >
@@ -203,7 +206,7 @@ function UploadMultimedia(props) {
             ) : (
               <ZItem>
                 <label
-                  htmlFor="my-file"
+                  htmlFor={secondaryButton}
                   style={{ width: "100%", height: "100%" }}
                 >
                   <VStack padding="30px" whileTap={{ scale: 0.96 }}>
@@ -225,20 +228,19 @@ function UploadMultimedia(props) {
                         Compatible: jpg, png, gif
                       </BodyRegular>
                     </VStack>
-
-                    <input
-                      type="file"
-                      name="myImage"
-                      id="my-file"
-                      style={{ display: "none" }}
-                      onChange={(event) => {
-                        console.log(event.target.files[0]);
-                        setSelectedImage(event.target.files[0]);
-                      }}
-                    />
                     <Spacer></Spacer>
                   </VStack>
                 </label>
+              </ZItem>
+            )}
+            {secondaryUploading && (
+              <ZItem>
+                <VStack
+                  background={appStyle.colors.darkgrey90}
+                  border={borderLoader || "15px"}
+                >
+                  <UploadLogo></UploadLogo>
+                </VStack>
               </ZItem>
             )}
 

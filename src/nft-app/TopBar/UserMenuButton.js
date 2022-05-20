@@ -11,7 +11,7 @@ import {
 import { BodyBold } from "../../styles/TextStyles";
 
 function UserMenuButton(props) {
-  const { clickOnUser, clickOnSettings, clickOnLogout } = props;
+  const { clickOnUser, clickOnSettings, clickOnLogout, wallet } = props;
 
   const appear = {
     selected: { y: 0, opacity: 1 },
@@ -41,7 +41,7 @@ function UserMenuButton(props) {
           bordercolor="#99A2AF"
           bordersize="3px"
           whileTap={{ scale: 0.9 }}
-          onClick={() => NavigateTo(`UserProfile/${1}`)}
+          onClick={() => NavigateTo(`UserProfile/${wallet?.address}`)}
           // onClick={() => setShowMenu((showMenu) => !showMenu)}
 
           // animate={showMenu ? "normal" : "selected"}
