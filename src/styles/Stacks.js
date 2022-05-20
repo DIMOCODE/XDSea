@@ -8,6 +8,7 @@ export const Spacer = styled.div`
 `;
 // VStack organize elements in vertical
 export const VStack = styled(motion.div).attrs((props) => ({
+  backgroundimage: props.backgroundimage || "rgba(255, 255, 255, 0)",
   background: props.background || "rgba(255, 255, 255, 0)",
   alignment: props.alignment || "center",
   content: props.content || "center",
@@ -29,6 +30,7 @@ export const VStack = styled(motion.div).attrs((props) => ({
   justify: props.justify || "center",
   marginTop: props.marginTop || "0px",
   flex: props.flex || "1",
+  cursor: props.cursor || "default",
 }))`
   display: flex;
   flex: ${(props) => props.flex};
@@ -42,6 +44,7 @@ export const VStack = styled(motion.div).attrs((props) => ({
   min-height: ${(props) => props.minheight};
   gap: ${(props) => props.spacing};
   background: ${(props) => props.background};
+  background-image: url(${(props) => props.backgroundimage});
   padding: ${(props) => props.padding};
   max-width: ${(props) => props.maxwidth};
   min-width: ${(props) => props.minwidth};
@@ -51,7 +54,7 @@ export const VStack = styled(motion.div).attrs((props) => ({
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   border-style: solid;
-
+  background-size: contain;
   border-color: ${(props) => props.bordercolor};
   border-width: ${(props) => props.bordersize};
   -webkit-backface-visibility: hidden;
@@ -62,6 +65,7 @@ export const VStack = styled(motion.div).attrs((props) => ({
     flex-direction: ${(props) => (props.responsive ? "row" : "column")};
   }
   margin-top: ${(props) => props.marginTop};
+  cursor: ${(props) => props.cursor};
 `;
 
 // HStack organize elements in Horizontal

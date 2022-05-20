@@ -46,6 +46,7 @@ import offerRejectedIcon from "../../images/offerRejected.png";
 import offerAcceptedIcon from "../../images/offerAccepted.png";
 import tokenIcon from "../../images/tokenID.png";
 import blockchainIcon from "../../images/blockchainIcon.png";
+import banner1 from "../../images/Banner1.jpg";
 
 import {
   HStack,
@@ -82,6 +83,7 @@ import loading from "../../images/loading.gif";
 import { stepLabelClasses } from "@mui/material";
 import ReactPlayer from "react-player";
 import { ImpulseSpinner } from "react-spinners-kit";
+import { TableOffersNft } from "../../styles/TableOffersNft";
 
 const NFTDetails = (props) => {
   const history = useHistory();
@@ -1866,6 +1868,43 @@ const NFTDetails = (props) => {
               </VStack>
             </VStack>
           </HStack>
+
+          <VStack width="100%" padding="15px 30px">
+            <TitleBold27>Offers</TitleBold27>
+            <HStack
+              width="100%"
+              overflowx={size.width < 768 ? "scroll" : "visible"}
+              overflowy={size.width < 768 ? "hidden" : "visible"}
+              justify="flex-start"
+            >
+              <VStack
+                width={size.width < 768 ? "690px" : "100%"}
+                spacing="0px"
+                background={({ theme }) => theme.backElement}
+                padding="9px"
+                border="9px"
+              >
+                <TableOffersNft
+                  imageBuyer={banner1}
+                  offerBy="Team Woman"
+                  offerTime="Today 10:00 am"
+                  offerAmount="3600"
+                  isRejected={true}
+                  onClickRejected=""
+                ></TableOffersNft>
+                <Divider></Divider>
+
+                <TableOffersNft
+                  imageBuyer={banner1}
+                  offerBy="Team Woman"
+                  offerTime="Today 9:00 am"
+                  offerAmount="3200"
+                  isRejected={false}
+                  onClickWithdraw=""
+                ></TableOffersNft>
+              </VStack>
+            </HStack>
+          </VStack>
 
           <VStack width="100%" padding="15px 30px">
             <TitleBold27>Activity</TitleBold27>

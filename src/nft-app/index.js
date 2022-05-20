@@ -78,7 +78,7 @@ const NFTApp = () => {
 
   const handleWallet = (connectedWallet) => {
     setWallet(connectedWallet);
-  }
+  };
 
   return (
     <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
@@ -120,7 +120,11 @@ const NFTApp = () => {
             </DevMode>
           ) : null}
 
-          <TopBar onWalletChange={handleWallet} devMode={isDevMode} themeToggler={themeToggler}></TopBar>
+          <TopBar
+            onWalletChange={handleWallet}
+            devMode={isDevMode}
+            themeToggler={themeToggler}
+          ></TopBar>
 
           <ScrollView>
             <Switch>
@@ -131,7 +135,11 @@ const NFTApp = () => {
                 path="/UserProfile/:urlAddress"
                 component={MyNFT}
               ></Route>
-              <Route exact path="/CreateNFT" render={() => <CreateNft wallet={wallet} />}></Route>
+              <Route
+                exact
+                path="/CreateNFT"
+                render={() => <CreateNft wallet={wallet} />}
+              ></Route>
               <Route
                 exact
                 path="/collection/:collectionName"
@@ -165,9 +173,10 @@ export default NFTApp;
 const HomeStack = styled(motion.div)`
   display: flex;
   justify-content: center;
-  height: 100vh;
+  height: 100%;
   width: 100%;
   box-sizing: border-box;
+  background: ${({ theme }) => theme.background};
 `;
 
 const ScrollView = styled(motion.div)`
