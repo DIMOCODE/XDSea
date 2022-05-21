@@ -166,7 +166,9 @@ const Discover = () => {
             preview: metadata?.data?.collection?.nft?.preview,
             floorPrice: lowestPrice,
             volumeTraded: volumeTraded,
-            items: !burnedCollections.includes(metadata?.data?.collection?.name) ? collectionData2.length : collectionData2.length - 1,
+            items: !burnedCollections.includes(metadata?.data?.collection?.name)
+              ? collectionData2.length
+              : collectionData2.length - 1,
             owners: uniqueOwners.length,
           };
           return collection;
@@ -240,7 +242,9 @@ const Discover = () => {
             preview: metadata?.data?.collection?.nft?.preview,
             floorPrice: lowestPrice,
             volumeTraded: volumeTraded,
-            items: !burnedCollections.includes(metadata?.data?.collection?.name) ? collectionData2.length : collectionData2.length - 1,
+            items: !burnedCollections.includes(metadata?.data?.collection?.name)
+              ? collectionData2.length
+              : collectionData2.length - 1,
             owners: uniqueOwners.length,
           };
           return collection;
@@ -302,7 +306,7 @@ const Discover = () => {
               <HStack
                 spacing="30px"
                 flexwrap="wrap"
-                padding="0 30px"
+                padding="15px 30px"
                 justify="flex-start"
                 width={size.width < 768 ? "100%" : "1100px"}
               >
@@ -340,7 +344,9 @@ const Discover = () => {
                             owners={item.owners}
                             nfts={item.items}
                             volumetraded={item.volumeTraded}
-                            onClickCreator={() => NavigateTo(`UserProfile/${item.creator}`)}
+                            onClickCreator={() =>
+                              NavigateTo(`UserProfile/${item.creator}`)
+                            }
                           ></Collection>
                         </VStack>
                       </LayoutGroup>

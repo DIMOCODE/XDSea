@@ -44,6 +44,7 @@ function NftContainer(props) {
 
   return (
     <VStack
+      cursor={"pointer"}
       overflow="hidden"
       border="27px"
       background={appStyle.colors.darkgrey10}
@@ -72,6 +73,7 @@ function NftContainer(props) {
               animate={isVisible ? "hover" : "initial"}
               variants={scaleImage}
               border="27px"
+              cursor={"pointer"}
             ></IconImg>
           ) : (
             <VStack

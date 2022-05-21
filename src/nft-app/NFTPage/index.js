@@ -39,6 +39,7 @@ import offerAcceptedIcon from "../../images/offerAccepted.png";
 import tokenIcon from "../../images/tokenID.png";
 import blockchainIcon from "../../images/blockchainIcon.png";
 import banner1 from "../../images/Banner1.jpg";
+import audioCover from "../../images/audioCover0.png";
 import {
   HStack,
   IconImg,
@@ -729,28 +730,31 @@ const NFTDetails = (props) => {
           <HStack height="100%" responsive={true} alignment="flex-start">
             <VStack width="100%" padding="30px 15px">
               <VStack width={size.width < 768 ? "100%" : "540px"}>
-                <LockedContent>
-                  <VStack
-                    background={({ theme }) => theme.walletButton}
-                    width="100%"
-                    height="89%"
-                    border="15px"
-                    padding="30px 30px 60px 30px"
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{
-                      type: "spring",
-                      duration: 1.1,
-                      delay: 2.1,
-                    }}
-                  >
-                    <Spacer></Spacer>
-                    <HStack textcolor={({ theme }) => theme.walletText}>
-                      Unlockable Content Here
-                    </HStack>
-                  </VStack>
-                </LockedContent>
+                {nft?.owner ? (
+                  <LockedContent>
+                    <VStack
+                      background={({ theme }) => theme.walletButton}
+                      width="100%"
+                      height="89%"
+                      border="15px"
+                      padding="30px 30px 60px 30px"
+                      initial={{ opacity: 0, scale: 0.9 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{
+                        type: "spring",
+                        duration: 1.1,
+                        delay: 2.1,
+                      }}
+                    >
+                      <Spacer></Spacer>
+                      <HStack textcolor={({ theme }) => theme.walletText}>
+                        Unlockable Content Here
+                      </HStack>
+                    </VStack>
+                  </LockedContent>
+                ) : null}
+
                 <AnimatePresence>
                   <ZStack
                     variants={flipping}
@@ -805,35 +809,43 @@ const NFTDetails = (props) => {
                     ) : isVideo(nft?.fileType) ? (
                       <VStack
                         width="100%"
-                        height="100%"
+                        height="540px"
                         border="15px"
                         background={({ theme }) => theme.backElement}
                         overflow="hidden"
                         cursor="pointer"
                       >
                         <ReactPlayer
-                          url={
-                            nft?.image
-                          }
+                          url={nft?.image}
                           playing={true}
                           muted={true}
                           loop={true}
-                          width="180%"
+                          controls={true}
+                          width="100%"
                           height="100%"
                         />
                       </VStack>
                     ) : isAudio(nft?.fileType) ? (
-                      <ReactPlayer
-                        url={
-                          nft?.image
-                        }
-                        playing={true}
-                        muted={true}
-                        controls={true}
-                        loop={true}
+                      <VStack
                         width="100%"
-                        height="100%"
-                      />
+                        height="540px"
+                        border="15px"
+                        backgroundimage={audioCover}
+                        // background={({ theme }) => theme.backElement}
+                        overflow="hidden"
+                        cursor="pointer"
+                        padding="15px"
+                      >
+                        <ReactPlayer
+                          url={nft?.image}
+                          playing={true}
+                          muted={true}
+                          controls={true}
+                          loop={true}
+                          width="100%"
+                          height="100%"
+                        />
+                      </VStack>
                     ) : (
                       <VStack
                         width="100%"
