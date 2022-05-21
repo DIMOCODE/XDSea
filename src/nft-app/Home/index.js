@@ -2,10 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import Xdc3 from "xdc3";
 import { DEFAULT_PROVIDER } from "../../constant";
-import {
-  nftaddress,
-  nftmarketlayeraddress,
-} from "../../config";
+import { nftaddress, nftmarketlayeraddress } from "../../config";
 import NFT from "../../abis/NFT.json";
 import NFTMarketLayer1 from "../../abis/NFTMarketLayer1.json";
 import axios from "axios";
@@ -15,7 +12,7 @@ import {
   featuredNFTList,
   spotlightCollectionList,
   trendingItemList,
-  burnedCollections
+  burnedCollections,
 } from "../../blacklist";
 import styled from "styled-components";
 import rocketCollection from "../../images/rocketCollection.png";
@@ -73,9 +70,7 @@ const Home = () => {
       const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
       const featuredNFTs = await Promise.all(
         featuredNFTList.map(async (i) => {
-          var featuredNFTUri = await nftContract.methods
-            .tokenURI(i)
-            .call();
+          var featuredNFTUri = await nftContract.methods.tokenURI(i).call();
           var featuredNFTMetadata = await axios.get(featuredNFTUri);
           let featuredNFTData = {
             collectionName: featuredNFTMetadata?.data?.collection?.name,
@@ -85,7 +80,7 @@ const Home = () => {
             fileType: featuredNFTMetadata?.data?.collection?.nft?.fileType,
             preview: featuredNFTMetadata?.data?.collection?.nft?.preview,
             creator: featuredNFTMetadata?.data?.collection?.creator,
-            tokenId: i
+            tokenId: i,
           };
           return featuredNFTData;
         })
@@ -137,7 +132,11 @@ const Home = () => {
             collectionLogo: collectionMetadata?.data?.collection?.logo,
             floorPrice: lowestPrice,
             volumeTraded: volumeTraded,
-            items:!burnedCollections.includes(collectionMetadata?.data?.collection?.name) ? collectionData2.length : collectionData2.length - 1,
+            items: !burnedCollections.includes(
+              collectionMetadata?.data?.collection?.name
+            )
+              ? collectionData2.length
+              : collectionData2.length - 1,
             owners: uniqueOwners.length,
           };
           return collection;
@@ -146,9 +145,7 @@ const Home = () => {
       const trendingItems = await Promise.all(
         trendingItemList.map(async (i) => {
           var itemData = await marketContract.methods.idToMarketItem(i).call();
-          const trendingItemUri = await nftContract.methods
-            .tokenURI(i)
-            .call();
+          const trendingItemUri = await nftContract.methods.tokenURI(i).call();
           var trendingItemMetadata = await axios.get(trendingItemUri);
           var price = await xdc3.utils.fromWei(itemData.price, "ether");
           let item = {
@@ -276,7 +273,9 @@ const Home = () => {
               onClickCreator={() =>
                 NavigateTo(`collection/${featuredNFT[0]?.collectionName}`)
               }
-              onClick={() => NavigateTo(`nft/${nftaddress}/${featuredNFT[0]?.tokenId}`)}
+              onClick={() =>
+                NavigateTo(`nft/${nftaddress}/${featuredNFT[0]?.tokenId}`)
+              }
             ></Featured>
           </VStack>
           <VStack>
@@ -291,7 +290,9 @@ const Home = () => {
                 onClickCreator={() =>
                   NavigateTo(`collection/${featuredNFT[1]?.collectionName}`)
                 }
-                onClick={() => NavigateTo(`nft/${nftaddress}/${featuredNFT[1]?.tokenId}`)}
+                onClick={() =>
+                  NavigateTo(`nft/${nftaddress}/${featuredNFT[1]?.tokenId}`)
+                }
               ></Featured>
             </LayoutGroup>
             <LayoutGroup id="number3">
@@ -305,7 +306,9 @@ const Home = () => {
                 onClickCreator={() =>
                   NavigateTo(`collection/${featuredNFT[2]?.collectionName}`)
                 }
-                onClick={() => NavigateTo(`nft/${nftaddress}/${featuredNFT[2]?.tokenId}`)}
+                onClick={() =>
+                  NavigateTo(`nft/${nftaddress}/${featuredNFT[2]?.tokenId}`)
+                }
               ></Featured>
             </LayoutGroup>
           </VStack>
