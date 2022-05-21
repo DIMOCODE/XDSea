@@ -25,7 +25,6 @@ import { fromXdc, isXdc } from "../../common/common";
 import NFTMarketLayer1 from "../../abis/NFTMarketLayer1.json";
 import { permaBlacklist, contractFix } from "../../blacklist";
 import Tooltip from "@mui/material/Tooltip";
-import gold from "../../images/cupper.png";
 import lock from "../../images/unlockable2.gif";
 import mint from "../../images/mintIcon.png";
 import list from "../../images/listIcon.png";
@@ -723,6 +722,10 @@ const NFTDetails = (props) => {
     },
   };
 
+  function NavigateTo(route) {
+    history.push(`/${route}`);
+  }
+
   return (
     <NFTPage>
       <ContentNftPage>
@@ -869,14 +872,14 @@ const NFTDetails = (props) => {
                   border="9px"
                 >
                   <CaptionRegular>Owned by</CaptionRegular>
-
-                  <HStack spacing="6px">
-                    {/* <IconImg
-                                            url={""}
-                                            width="18px"
-                                            height="18px"
-                                            border="30px"
-                                        ></IconImg> */}
+                  <HStack spacing="6px" cursor="pointer" onClick={() => NavigateTo(`UserProfile/${nft?.owner}`)}>
+                    <IconImg
+                        url={banner1}
+                        width="18px"
+                        height="18px"
+                        backsize="cover"
+                        border="18px"
+                    ></IconImg>
                     {nft?.owner ? (
                       <Tooltip title={nft?.owner ? nft.owner : "-"}>
                         <BodyBold>{truncateAddress(nft?.owner)}</BodyBold>
@@ -897,7 +900,6 @@ const NFTDetails = (props) => {
               <VStack width={size.width < 768 ? "100%" : "502px"}>
                 {nft?.name ? (
                   <VStack width="100%">
-                    {/* Name */}
                     <VStack alignment="flex-start" width="100%" spacing="6px">
                       <TitleBold27>{nft?.name}</TitleBold27>
                       <ButtonApp
@@ -905,18 +907,18 @@ const NFTDetails = (props) => {
                         text={nft?.collectionName}
                         background={({ theme }) => theme.walletButton}
                         textcolor={({ theme }) => theme.walletText}
+                        cursor="pointer"
                       ></ButtonApp>
                     </VStack>
-
-                    {/* Creator */}
                     <HStack spacing="9px" justify="flex-start">
                       <CaptionRegular>Creator</CaptionRegular>
-                      <HStack spacing="6px">
+                      <HStack spacing="6px" cursor={"pointer"} onClick={() => NavigateTo(`UserProfile/${nft?.creator}`)}>
                         <IconImg
                           url={nft?.collectionLogo}
                           width="18px"
                           height="18px"
                           border="30px"
+                          cursor={"pointer"}
                         ></IconImg>
                         <Tooltip title={nft?.creator ? nft.creator : "-"}>
                           <BodyBold>{truncateAddress(nft?.creator)}</BodyBold>
@@ -945,7 +947,6 @@ const NFTDetails = (props) => {
                       width="300px"
                       height="39px"
                     ></HStack>
-
                     <HStack
                       background="rgba(153, 162, 175, 0.21)"
                       key="Collection"
@@ -980,8 +981,6 @@ const NFTDetails = (props) => {
                     ></HStack>
                   </VStack>
                 )}
-
-                {/* Properties & Description */}
                 <VStack
                   height={size.width < 768 ? "450px" : "auto"}
                   width="100%"
@@ -994,23 +993,24 @@ const NFTDetails = (props) => {
                         animate={isActive === 1 ? "selected" : "normal"}
                         variants={variants}
                         onClick={() => setIsActive(1)}
+                        cursor="pointer"
                       >
                         Properties
                       </BodyBold>
                     )}
-
                     <BodyBold
                       animate={isActive === 0 ? "selected" : "normal"}
                       variants={variants}
                       onClick={() => setIsActive(0)}
+                      cursor="pointer"
                     >
                       Description
                     </BodyBold>
-
                     <BodyBold
                       animate={isActive === 2 ? "selected" : "normal"}
                       variants={variants}
                       onClick={() => setIsActive(2)}
+                      cursor="pointer"
                     >
                       Token Details
                     </BodyBold>
@@ -1036,7 +1036,6 @@ const NFTDetails = (props) => {
                           <BodyRegular>{nft?.description}</BodyRegular>
                         </HStack>
                       )}
-
                       {isActive === 1 && (
                         <VStack>
                           <motion.div>
@@ -1063,7 +1062,6 @@ const NFTDetails = (props) => {
                                       Title={property.property}
                                       Property={property.value}
                                       Rarity={property.proportion.toFixed(2)}
-                                      rarityIcon={gold}
                                     />
                                   ))
                                 : null}
@@ -1880,23 +1878,23 @@ const NFTDetails = (props) => {
                 padding="9px"
                 border="9px"
               >
+                {offers?.map((item, i) => {
+                    <TableOffersNft
+                      imageBuyer={banner1}
+                      offerBy={truncateAddress(item.from)}
+                      offerTime={item.timestamp}
+                      offerAmount={item.price}
+                      isWithdrawn={item.isWithdrawn}
+                      onClickRejected=""
+                    ></TableOffersNft>
+                })}
                 <TableOffersNft
                   imageBuyer={banner1}
-                  offerBy="Team Woman"
-                  offerTime="Today 10:00 am"
-                  offerAmount="3600"
-                  isRejected={true}
+                  offerBy={truncateAddress(nft?.owner)}
+                  offerTime={16421949849}
+                  offerAmount={1500}
+                  isWithdrawn={true}
                   onClickRejected=""
-                ></TableOffersNft>
-                <Divider></Divider>
-
-                <TableOffersNft
-                  imageBuyer={banner1}
-                  offerBy="Team Woman"
-                  offerTime="Today 9:00 am"
-                  offerAmount="3200"
-                  isRejected={false}
-                  onClickWithdraw=""
                 ></TableOffersNft>
               </VStack>
             </HStack>

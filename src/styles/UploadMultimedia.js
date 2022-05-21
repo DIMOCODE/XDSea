@@ -48,9 +48,10 @@ function UploadMultimedia(props) {
             background={({ theme }) => theme.backElement}
             whileTap={{ scale: 0.96 }}
             spacing="0px"
+            cursor="pointer"
           >
-            <IconImg url={multimediaIcon} width="45px" height="40px"></IconImg>
-            <VStack maxheight="60px" spacing="6px">
+            <IconImg url={multimediaIcon} width="45px" height="40px" cursor="pointer"></IconImg>
+            <VStack maxheight="60px" spacing="6px" cursor="pointer">
               <BodyBold>{description}</BodyBold>
               <CaptionRegular align="Center">{sizeText}</CaptionRegular>
             </VStack>

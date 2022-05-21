@@ -80,12 +80,14 @@ function TxModal(props) {
                   background={appStyle.colors.darkgrey10}
                   width="100%"
                   onClick={cancelActionModal}
+                  cursor="pointer"
                 ></ButtonApp>
                 <ButtonApp
                   text="Confirm"
                   width="100%"
                   textcolor={appStyle.colors.white}
                   onClick={confirmActionModal}
+                  cursor="pointer"
                 ></ButtonApp>
               </HStack>
             </>
@@ -107,6 +109,7 @@ function TxModal(props) {
                   textcolor={({ theme }) => theme.text}
                   width="100%"
                   onClick={noticeActionModal}
+                  cursor="pointer"
                 ></ButtonApp>
               </HStack>
             </>

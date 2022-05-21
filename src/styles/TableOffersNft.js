@@ -30,6 +30,7 @@ function TableOffersNft(props) {
   const heightRow = "69px";
 
   return (
+    <>
     <HStack width="100%" height={heightRow} spacing="6px">
       <HStack background={debugColor} width={widthRow}>
         <VStack alignment="flex-start" padding="3px 30px" spacing="3px">
@@ -84,6 +85,8 @@ function TableOffersNft(props) {
         )}
       </HStack>
     </HStack>
+    <Divider></Divider>
+    </>
   );
 }
 export { TableOffersNft };

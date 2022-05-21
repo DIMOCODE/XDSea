@@ -3,10 +3,13 @@ import { VStack, IconImg } from "./Stacks";
 import { BodyBold, CaptionBoldShort, CaptionRegular } from "./TextStyles";
 import styled from "styled-components";
 import { motion } from "framer-motion/dist/framer-motion";
+import gold from "../images/gold.png";
+import silver from "../images/silver.png";
+import copper from "../images/cupper.png";
 
 function Property(props) {
-  const { Title, Property, Rarity, rarityIcon } = props;
-  
+  const { Title, Property, Rarity } = props;
+
   return (
     <VStack
       background={({ theme }) => theme.backElement}
@@ -17,7 +20,7 @@ function Property(props) {
       spacing="6px"
     >
       <RarityIcon>
-        <IconImg url={rarityIcon} width="18px" height="18px"></IconImg>
+        <IconImg url={Rarity <= 5.00 ? gold : Rarity <= 10.00 ? silver : Rarity <= 25.00 ? copper : null} width="18px" height="18px"></IconImg>
       </RarityIcon>
       <CaptionBoldShort textcolor={({ theme }) => theme.blue}>
         {Title || "Title"}

@@ -822,6 +822,7 @@ function CreateNft(props) {
                   textcolor={({ theme }) => theme.text}
                   background={appStyle.colors.darkgrey10}
                   onClick={() => setProperties(properties.slice(0, -1))}
+                  cursor="pointer"
                 ></ButtonApp>
                 <ButtonApp
                   height="39px"
@@ -831,6 +832,7 @@ function CreateNft(props) {
                   onClick={() =>
                     setProperties([...properties, { property: "", value: "" }])
                   }
+                  cursor="pointer"
                 ></ButtonApp>
               </HStack>
             </VStack>
@@ -895,6 +897,7 @@ function CreateNft(props) {
                   onClick={() => {
                     setIsUnlockableContent(!isUnlockableContent);
                   }}
+                  cursor="pointer"
                 ></ButtonApp>
               </VStack>
             </VStack>
@@ -1177,6 +1180,7 @@ function CreateNft(props) {
                 background={({ theme }) => theme.faded}
                 textcolor={appStyle.colors.text}
                 onClick={() => setModalAlert(true)}
+                cursor="pointer"
               ></ButtonApp>
               <ButtonApp
                 buttonId="mint-button"
@@ -1186,6 +1190,7 @@ function CreateNft(props) {
                 width="100%"
                 textcolor={appStyle.colors.white}
                 onClick={checkRoyalty}
+                cursor="pointer"
               ></ButtonApp>
             </HStack>
           </HStack>
