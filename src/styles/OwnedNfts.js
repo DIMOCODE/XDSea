@@ -124,6 +124,7 @@ function OwnedNfts(props) {
             textcolor={appStyle.colors.white}
             border="30px"
             onClick={() => setIsExpand((value) => !value)}
+            btnStatus={0}
           ></ButtonApp>
         </VStack>
       ))}

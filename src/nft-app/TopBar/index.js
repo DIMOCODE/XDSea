@@ -55,13 +55,15 @@ function TopBar(props) {
           text="Home"
           cursor="pointer"
           onClick={() => NavigateTo("")}
+          btnStatus={0}
         ></ButtonApp>
         <ButtonApp
           background="rgba(255, 255, 255, 0)"
           textcolor={({ theme }) => theme.text}
           text="Discover"
           cursor="pointer"
-          onClick={() => NavigateTo("discover")}
+          onClick={() => NavigateTo("Discover")}
+          btnStatus={0}
         ></ButtonApp>
         <ButtonApp
           background="rgba(255, 255, 255, 0)"
@@ -69,6 +71,7 @@ function TopBar(props) {
           text="How To Start"
           cursor="pointer"
           onClick={() => NavigateTo("HowToStart")}
+          btnStatus={0}
         ></ButtonApp>
         <ButtonApp
           background="rgba(255, 255, 255, 0)"
@@ -76,6 +79,7 @@ function TopBar(props) {
           text="Create an NFT"
           cursor="pointer"
           onClick={() => NavigateTo("CreateNFT")}
+          btnStatus={0}
         ></ButtonApp>
         <Spacer></Spacer>
         <XdcConnect

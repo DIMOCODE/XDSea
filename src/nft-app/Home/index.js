@@ -240,6 +240,7 @@ const Home = () => {
           <HStack spacing="10px">
             <a href="#spotlightCollections">
               <ButtonApp
+                btnStatus={0}
                 height="45px"
                 textcolor={appStyle.colors.white}
                 background={({ theme }) => theme.blue}
@@ -252,6 +253,7 @@ const Home = () => {
                 textcolor={appStyle.colors.white}
                 background={({ theme }) => theme.blue}
                 text="Trending NFTs"
+                btnStatus={0}
               ></ButtonApp>
             </a>
             <Spacer></Spacer>
@@ -411,6 +413,7 @@ const Home = () => {
           textcolor={appStyle.colors.white}
           onClick={() => NavigateTo(`discover`)}
           cursor="pointer"
+          btnStatus={0}
         ></ButtonApp>
       </VStack>
     </Content>

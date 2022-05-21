@@ -36,6 +36,7 @@ function ModalAds(props) {
             background={({ theme }) => theme.backElement}
             height="39px"
             onClick={onClickCancel}
+            btnStatus={0}
           ></ButtonApp>
           <ButtonApp
             width="150px"
@@ -43,6 +44,7 @@ function ModalAds(props) {
             textcolor={appStyle.colors.white}
             height="39px"
             onClick={onClick}
+            btnStatus={0}
           ></ButtonApp>
         </HStack>
       </VStack>

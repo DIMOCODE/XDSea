@@ -136,6 +136,7 @@ function CollectionUserProfile(props) {
           text="Visit Collection"
           textcolor={appStyle.colors.white}
           onClick={onClick}
+          btnStatus={0}
         ></ButtonApp>
       </VStack>
     </HStack>

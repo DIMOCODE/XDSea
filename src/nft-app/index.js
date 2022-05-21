@@ -101,7 +101,7 @@ const NFTApp = () => {
               <Route
                 exact
                 path="/nft/:nftaddress/:id"
-                component={NFTPage}
+                render={() => <NFTPage wallet={wallet} />}
               ></Route>
               <Route exact path="/HowToStart" component={HowToStart}></Route>
               <Route path="**" component={Home}></Route>

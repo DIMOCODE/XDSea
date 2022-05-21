@@ -152,7 +152,6 @@ function NftContainer(props) {
                     height="18px"
                   ></IconImg>
                   <TitleBold18 textcolor={appStyle.colors.white}>
-                    {console.log(typeof price)}
                     {Number(price).toLocaleString(undefined, {
                       maximumFractionDigits: 2,
                     }) || "0"}
@@ -167,6 +166,7 @@ function NftContainer(props) {
                 width="100%"
                 onClick={onClick}
                 cursor="pointer"
+                btnStatus={0}
               ></ButtonApp> */}
             </VStack>
           </VStack>

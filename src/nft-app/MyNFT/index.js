@@ -603,6 +603,7 @@ const MyNFT = (props) => {
                                     text="Create NFT"
                                     textcolor={appStyle.colors.white}
                                     onClick={() => NavigateTo("CreateNFT")}
+                                    btnStatus={0}
                                 ></ButtonApp>
                                 <ButtonApp
                                     width="100%"
@@ -610,6 +611,7 @@ const MyNFT = (props) => {
                                     text="Create Collection"
                                     textcolor={appStyle.colors.white}
                                     onClick={() => NavigateTo("CreateCollection")}
+                                    btnStatus={0}
                                 ></ButtonApp>
                             </VStack> */}
           </VStack>
@@ -631,6 +633,7 @@ const MyNFT = (props) => {
                 height="39px"
                 onClick={() => setSubMenu(0)}
                 cursor={"pointer"}
+                btnStatus={0}
               ></ButtonApp>
 
               <ButtonApp
@@ -647,6 +650,7 @@ const MyNFT = (props) => {
                   getOwnedNFTs();
                 }}
                 cursor={"pointer"}
+                btnStatus={0}
               ></ButtonApp>
 
               {/* <ButtonApp
@@ -660,6 +664,7 @@ const MyNFT = (props) => {
                 height="39px"
                 onClick={() => setSubMenu(2)}
                 cursor={"pointer"}
+                btnStatus={0}
               ></ButtonApp>
 
               <ButtonApp
@@ -673,6 +678,7 @@ const MyNFT = (props) => {
                 height="39px"
                 onClick={() => setSubMenu(3)}
                 cursor={"pointer"}
+                btnStatus={0}
               ></ButtonApp> */}
 
               {/* <BodyBold textcolor={({ theme }) => theme.text}>Like</BodyBold>

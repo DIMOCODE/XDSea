@@ -56,12 +56,14 @@ function ConfirmationModal(props) {
               background={appStyle.colors.darkgrey10}
               text={cancelLabel || "Cancel"}
               onClick={onCancel}
+              btnStatus={0}
             ></ButtonApp>
             <ButtonApp
               textcolor={appStyle.colors.white}
               width="100%"
               text={confirmLabel || "Confirm"}
               onClick={onConfirm}
+              btnStatus={0}
             ></ButtonApp>
           </HStack>
         </VStack>

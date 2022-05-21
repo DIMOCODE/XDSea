@@ -139,6 +139,7 @@ function WalletButton(props) {
                               iconWidth="18px"
                               iconHeight="18px"
                               onClick={logout}
+                              btnStatus={0}
                             ></ButtonApp>
                           </VStack>
                         </OptionsTooltip>

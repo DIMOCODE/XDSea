@@ -101,6 +101,7 @@ function CreateNft(props) {
   const [collectionBannerURL, setCollectionBannerURL] = useState("");
   const [collectionLogoURL, setCollectionLogoURL] = useState("");
   const [previewURL, setPreviewURL] = useState("");
+  const [wallet, setWallet] = useState(null);
   const size = useWindowSize();
 
   const addToIPFS = async () => {
@@ -250,9 +251,7 @@ function CreateNft(props) {
     try {
       const data = await marketContract.methods
         .fetchItemsCreated(
-          isXdc(props?.wallet?.address)
-            ? fromXdc(props?.wallet?.address)
-            : props?.wallet?.address
+          isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address
         )
         .call();
       var uniqueCollections = [];
@@ -330,13 +329,13 @@ function CreateNft(props) {
               xdc3
             );
             const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
-            if(props?.wallet?.connected) {
+            if(wallet?.connected) {
               try{
                 const check = await checkCollectionExists();
                 if(check) {
                   
                   const collectionData = await marketContract.methods.fetchCollection(document.getElementsByClassName("collection-name")[0].value).call();
-                  if(collectionData.creator === (isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address)) {
+                  if(collectionData.creator === (isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address)) {
                     setCollectionExists(false);                    
                     const collectionUri = await nftContract.methods
                       .tokenURI(collectionData.tokenId)
@@ -353,7 +352,7 @@ function CreateNft(props) {
                       collection: {
                         name: document.getElementById("collection-name-input").value,
                         description: collectionMetadata?.data?.collection?.description,
-                        creator: isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address,
+                        creator: isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address,
                         banner: collectionMetadata?.data?.collection?.banner,
                         logo: collectionMetadata?.data?.collection?.logo,
                         twitterUrl: collectionMetadata?.data?.collection?.twitterUrl,
@@ -363,7 +362,7 @@ function CreateNft(props) {
                         nft:{
                             name,
                             description,
-                            owner: isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address,
+                            owner: isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address,
                             image: assetURL,
                             unlockableContent,
                             properties: properties,
@@ -388,7 +387,7 @@ function CreateNft(props) {
                     collection: {
                       name: document.getElementById("collection-name-input").value,
                       description: collectionDescription,
-                      creator: isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address,
+                      creator: isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address,
                       banner: collectionBannerURL,
                       logo: collectionLogoURL,
                       twitterUrl: twitterLink,
@@ -398,7 +397,7 @@ function CreateNft(props) {
                       nft:{
                           name,
                           description,
-                          owner: isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address,
+                          owner: isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address,
                           image: assetURL,
                           unlockableContent,
                           properties: properties,
@@ -432,10 +431,10 @@ function CreateNft(props) {
   const updateMarketplace = async (url) => {
     try {
         const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
-        const contract = new xdc3.eth.Contract(NFT.abi, nftaddress, isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address);
+        const contract = new xdc3.eth.Contract(NFT.abi, nftaddress, isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address);
         let data = contract.methods.createToken(url).encodeABI();
         const tx = {
-            from: isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address,
+            from: isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address,
             to: nftaddress,
             data
         };
@@ -446,12 +445,12 @@ function CreateNft(props) {
         var txReceipt = await xdc3.eth.getTransactionReceipt(transaction.transactionHash)
         var tokenId = await txReceipt.logs[0].topics[3]
         const weiprice = await xdc3.utils.toWei(price, "ether");
-        const contract2 = new xdc3.eth.Contract(NFTMarketLayer1.abi, nftmarketlayeraddress, isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address);
+        const contract2 = new xdc3.eth.Contract(NFTMarketLayer1.abi, nftmarketlayeraddress, isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address);
         data = contract2.methods.createMarketItem(
           Number(tokenId), 
           0, 
-          isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address, 
-          isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address, 
+          isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address, 
+          isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address, 
           weiprice, 
           false, 
           royalty, 
@@ -460,7 +459,7 @@ function CreateNft(props) {
           collection
         ).encodeABI()
         const tx2 = {
-            from: isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address,
+            from: isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address,
             to: nftmarketlayeraddress,
             value: "",
             data
@@ -473,6 +472,7 @@ function CreateNft(props) {
         console.log(error)
         setMintButtonStatus(4);
     }
+    setTimeout(() => { setMintButtonStatus(0) }, 1500);
   }
 
   const checkRoyalty = function(){
@@ -486,8 +486,13 @@ function CreateNft(props) {
   }
 
   useEffect(() => {
+    setWallet(props?.wallet);
     fetchCollection();
   }, []);
+
+  useEffect(() => {
+    setWallet(props?.wallet);
+  }, [props?.wallet])
 
   return (
     <CreationSection>
@@ -534,28 +539,6 @@ function CreateNft(props) {
                 clearForm();
               }}
             ></TxModal>
-            {/* <TxModal
-              isOffer={true}
-              cancelOffer=""
-              placeOffer=""
-              onChange=""
-              offerPrice=""
-            ></TxModal> */}
-            {/* <TxModal isProcessing={true}></TxModal> */}
-            {/* <TxModal
-              isPurchaised={true}
-              PurchaisedNftName="Amazing Plug #001"
-              ListedImage={imageTest}
-              cancelBtnPurchaise=""
-              confirmBtnPurchaise=""
-            ></TxModal> */}
-            {/* <TxModal
-              isList={true}
-              ListedNftName="Amazing Woman #001"
-              ListedImage={imageTest}
-              cancelBtnList=""
-              confirmBtnList=""
-            ></TxModal> */}
           </VStack>
         </FadedBack>
       )}
@@ -649,6 +632,7 @@ function CreateNft(props) {
                       background={({ theme }) => theme.backElement}
                       width="90px"
                       height="39px"
+                      btnStatus={0}
                     ></ButtonApp>
                     <Spacer></Spacer>
                   </HStack>
@@ -823,6 +807,7 @@ function CreateNft(props) {
                   background={appStyle.colors.darkgrey10}
                   onClick={() => setProperties(properties.slice(0, -1))}
                   cursor="pointer"
+                  btnStatus={0}
                 ></ButtonApp>
                 <ButtonApp
                   height="39px"
@@ -833,6 +818,7 @@ function CreateNft(props) {
                     setProperties([...properties, { property: "", value: "" }])
                   }
                   cursor="pointer"
+                  btnStatus={0}
                 ></ButtonApp>
               </HStack>
             </VStack>
@@ -882,6 +868,7 @@ function CreateNft(props) {
                   ></InputStyled>
                 ) : null}
                 <ButtonApp
+                  btnStatus={0}
                   icon={lock}
                   buttonId = {"nft-unlockable"}
                   iconWidth="39px"
@@ -995,6 +982,7 @@ function CreateNft(props) {
                             background={({ theme }) => theme.backElement}
                             width="81px"
                             height="36px"
+                            btnStatus={0}
                           ></ButtonApp>
                           <Spacer></Spacer>
                         </HStack>
@@ -1029,6 +1017,7 @@ function CreateNft(props) {
                               alignment="flex-end"
                             >
                               <ButtonApp
+                                btnStatus={0}
                                 text="Clear"
                                 textcolor={({ theme }) => theme.text}
                                 onClick={() => {
@@ -1181,11 +1170,13 @@ function CreateNft(props) {
                 textcolor={appStyle.colors.text}
                 onClick={() => setModalAlert(true)}
                 cursor="pointer"
+                btnStatus={0}
               ></ButtonApp>
               <ButtonApp
                 buttonId="mint-button"
                 text="Mint your NFT"
                 btnStatus={mintButtonStatus}
+                func={"Mint"}
                 height="39px"
                 width="100%"
                 textcolor={appStyle.colors.white}

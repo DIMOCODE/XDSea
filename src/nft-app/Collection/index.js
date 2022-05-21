@@ -424,6 +424,7 @@ const CollectionDetails = (props) => {
                       boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
                     }}
                     cursor={"pointer"}
+                    btnStatus={0}
                   ></ButtonApp>
                 </a>
               ) : (
@@ -450,6 +451,7 @@ const CollectionDetails = (props) => {
                       boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
                     }}
                     cursor={"pointer"}
+                    btnStatus={0}
                   ></ButtonApp>
                 </a>
               ) : (
@@ -476,6 +478,7 @@ const CollectionDetails = (props) => {
                         boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
                     }}
                     cursor={"pointer"}
+                    btnStatus={0}
                   ></ButtonApp>
                 </a>
               ) : (
@@ -502,6 +505,7 @@ const CollectionDetails = (props) => {
                         boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
                     }}
                     cursor={"pointer"}
+                    btnStatus={0}
                   ></ButtonApp>
                 </a>
               ) : (

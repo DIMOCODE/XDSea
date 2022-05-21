@@ -98,6 +98,7 @@ function TableUserProfile(props) {
               textcolor={appStyle.colors.blue}
               background={appStyle.colors.softBlue}
               onClick={onClickRejected}
+              btnStatus={0}
             ></ButtonApp>
           ) : (
             <ButtonApp
@@ -106,6 +107,7 @@ function TableUserProfile(props) {
               width="180px"
               textcolor="white"
               onClick={onClickWithdraw}
+              btnStatus={0}
             ></ButtonApp>
           )
         ) : (
@@ -117,6 +119,7 @@ function TableUserProfile(props) {
               textcolor={appStyle.colors.blue}
               background={appStyle.colors.softBlue}
               onClick={rejectOffer}
+              btnStatus={0}
             ></ButtonApp>
             <ButtonApp
               text="Accept"
@@ -124,6 +127,7 @@ function TableUserProfile(props) {
               width="90px"
               textcolor="white"
               onClick={acceptOffer}
+              btnStatus={0}
             ></ButtonApp>
           </HStack>
         )}

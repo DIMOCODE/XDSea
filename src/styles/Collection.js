@@ -266,6 +266,7 @@ function Collection(props) {
                           textcolor={appStyle.colors.white}
                           onClick={onClickCollection}
                           cursor={"pointer"}
+                          btnStatus={0}
                         ></ButtonApp> */}
                       </VStack>
                     </VStack>
