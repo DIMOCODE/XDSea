@@ -2,10 +2,11 @@ import React from "react";
 import { VStack, IconImg } from "./Stacks";
 import { BodyBold, CaptionBoldShort, CaptionRegular } from "./TextStyles";
 import styled from "styled-components";
-import { AnimatePresence, motion } from "framer-motion/dist/framer-motion";
+import { motion } from "framer-motion/dist/framer-motion";
 
 function Property(props) {
   const { Title, Property, Rarity, rarityIcon } = props;
+  
   return (
     <VStack
       background={({ theme }) => theme.backElement}

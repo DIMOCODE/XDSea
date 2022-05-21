@@ -1,8 +1,7 @@
-import React, { Fragment, useEffect, useRef, useState } from "react";
-import { useParams, useHistory, Link } from "react-router-dom";
-import Card from "../Home/common/card";
+import React, { useEffect, useRef, useState } from "react";
+import { useParams, useHistory } from "react-router-dom";
 import Xdc3 from "xdc3";
-import { DEFAULT_PROVIDER, NETWORK_NAME } from "../../constant";
+import { DEFAULT_PROVIDER } from "../../constant";
 // import NFTMarket from '../../artifacts/contracts/NFTMarket.sol/NFTMarket.json'
 import { nftmarketaddress, nftmarketlayeraddress } from "../../config";
 // import NFT from "../../artifacts/contracts/NFT.sol/NFT.json"
@@ -10,7 +9,6 @@ import NFT from "../../abis/NFT.json";
 import NFTMarket from "../../abis/NFTMarket.json";
 import axios from "axios";
 import { GetWallet } from "xdc-connect";
-import { Dialog, Transition } from "@headlessui/react";
 import {
   LegacyBuyNFT,
   BuyNFT,
@@ -23,17 +21,11 @@ import {
   WithdrawOffer,
   AcceptOffer,
 } from "../../common";
-import { toXdc } from "../../common/common";
-import SkeletonCard from "../../common/skeleton/card";
-import PropertyCard from "../Home/common/propertyCard";
-import SkeletonMyNFT from "../../common/skeleton/my-nft";
 import { fromXdc, isXdc } from "../../common/common";
 import NFTMarketLayer1 from "../../abis/NFTMarketLayer1.json";
 import { permaBlacklist, contractFix } from "../../blacklist";
 import Tooltip from "@mui/material/Tooltip";
 import gold from "../../images/cupper.png";
-import silver from "../../images/silver.png";
-import cupper from "../../images/cupper.png";
 import lock from "../../images/unlockable2.gif";
 import mint from "../../images/mintIcon.png";
 import list from "../../images/listIcon.png";
@@ -47,14 +39,12 @@ import offerAcceptedIcon from "../../images/offerAccepted.png";
 import tokenIcon from "../../images/tokenID.png";
 import blockchainIcon from "../../images/blockchainIcon.png";
 import banner1 from "../../images/Banner1.jpg";
-
 import {
   HStack,
   IconImg,
   VStack,
   Spacer,
   ZStack,
-  ZItem,
   Divider,
 } from "../../styles/Stacks";
 import xdclogo from "../../images/miniXdcLogo.png";
@@ -74,13 +64,10 @@ import { appStyle } from "../../styles/AppStyles";
 import tagWhite from "../../images/tagWhite.png";
 import tagBlue from "../../images/offerBlue.png";
 import useWindowSize from "../../styles/useWindowSize";
-import { Discover } from "../Discover";
 import { TableActivityNft } from "../../styles/TableActivityNft";
 import xinfinLogo from "../../images/xinfinLogo.png";
 import styled from "styled-components";
 import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
-import loading from "../../images/loading.gif";
-import { stepLabelClasses } from "@mui/material";
 import ReactPlayer from "react-player";
 import { ImpulseSpinner } from "react-spinners-kit";
 import { TableOffersNft } from "../../styles/TableOffersNft";
@@ -741,8 +728,6 @@ const NFTDetails = (props) => {
         <VStack height="auto" padding="90px 0 0 0 ">
           <HStack height="100%" responsive={true} alignment="flex-start">
             <VStack width="100%" padding="30px 15px">
-              {/* NFT Image and owner */}
-
               <VStack width={size.width < 768 ? "100%" : "540px"}>
                 <LockedContent>
                   <VStack
@@ -766,7 +751,6 @@ const NFTDetails = (props) => {
                     </HStack>
                   </VStack>
                 </LockedContent>
-
                 <AnimatePresence>
                   <ZStack
                     variants={flipping}
@@ -829,7 +813,7 @@ const NFTDetails = (props) => {
                       >
                         <ReactPlayer
                           url={
-                            "https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/360/Big_Buck_Bunny_360_10s_1MB.mp4"
+                            nft?.image
                           }
                           playing={true}
                           muted={true}
@@ -841,7 +825,7 @@ const NFTDetails = (props) => {
                     ) : isAudio(nft?.fileType) ? (
                       <ReactPlayer
                         url={
-                          "https://storage.googleapis.com/media-session/elephants-dream/the-wires.mp3"
+                          nft?.image
                         }
                         playing={true}
                         muted={true}
