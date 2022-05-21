@@ -34,6 +34,7 @@ import { appStyle } from "../../styles/AppStyles";
 import { LoopLogo } from "../../styles/LoopLogo";
 import { burnedNFTs, burnedCollections } from "../../blacklist";
 import banner1 from "../../images/Banner1.jpg"
+import { Tooltip } from "@mui/material";
 
 const CollectionDetails = (props) => {
   const history = useHistory();
@@ -44,7 +45,7 @@ const CollectionDetails = (props) => {
   const [collectionOwners, setCollectionOwners] = useState([]);
   const [floorPrice, setFloorPrice] =
     useState(999999999999999999999999999999999999999999999);
-  const [volume, setVolume] = useState(0.0);
+  const [volume, setVolume] = useState(-1);
   const size = useWindowSize();
   const [loadingNFT, setIsLoadingNFT] = useState([
     { id: 1, name: "NFT 1" },
@@ -240,9 +241,11 @@ const CollectionDetails = (props) => {
                   CREATOR
                 </CaptionBold>
                 {nfts[0]?.collectionCreator ? (
-                  <CaptionBold textcolor={({ theme }) => theme.text}>
-                    {truncateAddress(nfts[0]?.collectionCreator)}
-                  </CaptionBold>
+                    <Tooltip title={nfts[0]?.collectionCreator}>
+                        <CaptionBold textcolor={({ theme }) => theme.text}>
+                            {truncateAddress(nfts[0]?.collectionCreator)}
+                        </CaptionBold>
+                    </Tooltip>
                 ) : (
                   <LoopBars width="115px" heigth="90px"></LoopBars>
                 )}
@@ -369,7 +372,7 @@ const CollectionDetails = (props) => {
                     width="18px"
                     height="18px"
                   ></IconImg>
-                  {volume === 0 ? (
+                  {volume === -1 ? (
                     <LoopBars width="54px"></LoopBars>
                   ) : (
                     <BodyBold textcolor={({ theme }) => theme.text}>
@@ -389,7 +392,7 @@ const CollectionDetails = (props) => {
             </HStack>
           </VStack>
           <VStack width={size.width < 768 ? "100%" : "60%"} padding="15px">
-            {nfts[0]?.collectionDescription ? (
+            {nfts[0]?.collectionDescription !== "null" ? (
               <BodyRegular textcolor={({ theme }) => theme.text} align="center">
                 {nfts[0]?.collectionDescription}
               </BodyRegular>
@@ -467,6 +470,7 @@ const CollectionDetails = (props) => {
                     icon={discord}
                     iconWidth="18px"
                     iconHeight="18px"
+                    hasImage={true}
                     background={({ theme }) => theme.backElement}
                     style={{
                         boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",

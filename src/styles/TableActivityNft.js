@@ -1,5 +1,4 @@
 import React from "react";
-import { useState } from "react";
 import { HStack, IconImg, VStack, Spacer, Divider } from "./Stacks";
 import { BodyBold, BodyRegular } from "./TextStyles";
 import transferIcon from "../images/transferIcon.png";
@@ -58,7 +57,6 @@ function TableActivityNft(props) {
         <HStack background={debugColor} width={widthRow}>
           <BodyBold>EVENT</BodyBold>
         </HStack>
-
         <Spacer></Spacer>
         <HStack background={debugColor} width={widthRow}>
           <BodyBold>PRICE</BodyBold>
@@ -78,7 +76,6 @@ function TableActivityNft(props) {
         <Spacer></Spacer>
       </HStack>
       <Divider></Divider>
-
       {props?.activity.map((item) => (
         <HStack key={item.id} width="100%" height={heightRow}>
           <Spacer></Spacer>
@@ -95,12 +92,13 @@ function TableActivityNft(props) {
               height="18px"
               border="30px"
             ></IconImg>
-
             <BodyRegular>{item.event}</BodyRegular>
           </HStack>
           <Spacer></Spacer>
           <HStack width={widthRow} background={debugColor}>
-            {item.event === "Transfer" || item.event === "Mint" || item.event === "Withdraw Listing" || item.event === "Offer Withdrawn" ? (
+            {item.event.props.children[1].props.children === "Transfer" || item.event.props.children[1].props.children === "Mint" || 
+            item.event.props.children[1].props.children === "Withdraw Listing" || 
+            item.event.props.children[1].props.children === "Offer Withdrawn" ? (
               <BodyBold></BodyBold>
             ) : (
               <HStack spacing="6px">
@@ -109,7 +107,6 @@ function TableActivityNft(props) {
               </HStack>
             )}
           </HStack>
-
           <Spacer></Spacer>
           <HStack spacing="6px" width={widthRow} background={debugColor}>
             <IconImg
@@ -146,7 +143,7 @@ function TableActivityNft(props) {
                 second: "2-digit",
               })}
             >
-              <BodyRegular>{determineAgoTime(new Date(item.date * 1000))}</BodyRegular>
+              <BodyRegular>{item.event.props.children[1].props.children !== "Mint" ? determineAgoTime(new Date(item.date * 1000)) : null}</BodyRegular>
             </Tooltip>
           </HStack>
           <Spacer></Spacer>
