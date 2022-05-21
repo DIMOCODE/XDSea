@@ -47,9 +47,11 @@ export default function ButtonApp(props) {
           <BodyRegular textcolor={appStyle.colors.white}>Minting</BodyRegular>
           <RingSpinner size={21} color={appStyle.colors.white} loading={true} />
         </HStack>
-      ) : btnStatus === 2 ? ( 
+      ) : btnStatus === 2 ? (
         <HStack spacing="6px">
-          <BodyRegular textcolor={appStyle.colors.white}>Updating Ledger</BodyRegular>
+          <BodyRegular textcolor={appStyle.colors.white}>
+            Updating Ledger
+          </BodyRegular>
           <RingSpinner size={21} color={appStyle.colors.white} loading={true} />
         </HStack>
       ) : btnStatus === 3 ? (
@@ -66,9 +68,10 @@ export default function ButtonApp(props) {
         </HStack>
       ) : (
         <>
-          <BodyBold textcolor={textcolor}>{text}</BodyBold>
-          {hasImage && (
+          {hasImage ? (
             <IconImg url={icon} width={iconWidth} height={iconHeight}></IconImg>
+          ) : (
+            <BodyBold textcolor={textcolor}>{text}</BodyBold>
           )}
         </>
       )}
