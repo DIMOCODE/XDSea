@@ -415,6 +415,7 @@ const CollectionDetails = (props) => {
                     icon={twitter}
                     iconWidth="18px"
                     iconHeight="18px"
+                    hasImage={true}
                     background={({ theme }) => theme.backElement}
                     style={{
                       boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
@@ -440,6 +441,7 @@ const CollectionDetails = (props) => {
                     icon={instagram}
                     iconWidth="18px"
                     iconHeight="18px"
+                    hasImage={true}
                     background={({ theme }) => theme.backElement}
                     style={{
                       boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
@@ -490,6 +492,7 @@ const CollectionDetails = (props) => {
                     icon={link}
                     iconWidth="18px"
                     iconHeight="18px"
+                    hasImage={true}
                     background={({ theme }) => theme.backElement}
                     style={{
                         boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",

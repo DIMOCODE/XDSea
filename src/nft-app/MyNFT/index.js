@@ -71,39 +71,40 @@ import seeAll from "../../images/seeAll.png";
 import { TableActivityNft } from "../../styles/TableActivityNft";
 import { TableOffersNft } from "../../styles/TableOffersNft";
 import { TableUserProfile } from "../../styles/TableUserProfile";
+import { OwnedNfts } from "../../styles/OwnedNfts";
 
 const MyNFT = (props) => {
-    const { urlAddress } = useParams();
-    const history = useHistory();
-    const [nfts, setNFts] = useState([]);
-    const [loadingState, setLoadingState] = useState("not-loaded");
-    const [wallet, setWallet] = useState(null);
-    const [page, setPage] = useState([]);
-    const [pageCount, setPageCount] = useState(1);
-    const [isFetching, setIsFetching] = useState(false);
+  const { urlAddress } = useParams();
+  const history = useHistory();
+  const [nfts, setNFts] = useState([]);
+  const [loadingState, setLoadingState] = useState("not-loaded");
+  const [wallet, setWallet] = useState(null);
+  const [page, setPage] = useState([]);
+  const [pageCount, setPageCount] = useState(1);
+  const [isFetching, setIsFetching] = useState(false);
 
-    const [sellPrice, setSellPrice] = useState("");
-    const [approved, setApproved] = useState(false);
-    const cancelButtonRef = useRef(null);
-    const [sellData, setSellData] = useState(null);
-    const [listSuccess, setListSuccess] = useState(false);
-    const [listFailure, setListFailure] = useState(false);
-    const [listedNFT, setListedNFT] = useState(null);
-    const [listing, setListing] = useState(false);
-    const [buySuccess, setBuySuccess] = useState(false);
-    const [buyFailure, setBuyFailure] = useState(false);
-    const [boughtNFT, setBoughtNFT] = useState(null);
-    const [buying, setBuying] = useState(false);
-    const [withdrawSuccess, setWithdrawSuccess] = useState(false);
-    const [withdrawFailure, setWithdrawFailure] = useState(false);
-    const [withdrawnNFT, setWithdrawnNFT] = useState(null);
-    const [withdrawing, setWithdrawing] = useState(false);
-    const [settingPrice, setSettingPrice] = useState(false);
-    const [blacklist, setBlacklist] = useState([]);
-    const [collectionGroup, setCollectionGroup] = useState([]);
-    const [ownedGroup, setOwnedGroup] = useState({});
-    const [ownedCollections, setOwnedCollections] = useState([]);
-    const [showAllCollection, setShowAllCollection] = useState({});
+  const [sellPrice, setSellPrice] = useState("");
+  const [approved, setApproved] = useState(false);
+  const cancelButtonRef = useRef(null);
+  const [sellData, setSellData] = useState(null);
+  const [listSuccess, setListSuccess] = useState(false);
+  const [listFailure, setListFailure] = useState(false);
+  const [listedNFT, setListedNFT] = useState(null);
+  const [listing, setListing] = useState(false);
+  const [buySuccess, setBuySuccess] = useState(false);
+  const [buyFailure, setBuyFailure] = useState(false);
+  const [boughtNFT, setBoughtNFT] = useState(null);
+  const [buying, setBuying] = useState(false);
+  const [withdrawSuccess, setWithdrawSuccess] = useState(false);
+  const [withdrawFailure, setWithdrawFailure] = useState(false);
+  const [withdrawnNFT, setWithdrawnNFT] = useState(null);
+  const [withdrawing, setWithdrawing] = useState(false);
+  const [settingPrice, setSettingPrice] = useState(false);
+  const [blacklist, setBlacklist] = useState([]);
+  const [collectionGroup, setCollectionGroup] = useState([]);
+  const [ownedGroup, setOwnedGroup] = useState({});
+  const [ownedCollections, setOwnedCollections] = useState([]);
+  const [showAllCollection, setShowAllCollection] = useState({});
 
   const startSale = async (nft) => {
     setSellData(nft);
@@ -197,20 +198,14 @@ const MyNFT = (props) => {
         if (urlAddress !== "")
           var getVal = await nftContract.methods
             .isApprovedForAll(
-                isXdc(urlAddress)
-                ? fromXdc(urlAddress)
-                : urlAddress,
+              isXdc(urlAddress) ? fromXdc(urlAddress) : urlAddress,
               nftmarketlayeraddress
             )
             .call();
         // console.log(getVal)
 
         const data = await marketContract.methods
-          .fetchMyNFTs(
-            isXdc(urlAddress)
-              ? fromXdc(urlAddress)
-              : urlAddress
-          )
+          .fetchMyNFTs(isXdc(urlAddress) ? fromXdc(urlAddress) : urlAddress)
           .call();
         const items = await Promise.all(
           data.slice(0, 20).map(async (i) => {
@@ -240,7 +235,7 @@ const MyNFT = (props) => {
           })
         );
 
-        console.log()
+        console.log();
         setLoadingState("loaded");
         setApproved(getVal);
         setPage(data);
@@ -325,105 +320,129 @@ const MyNFT = (props) => {
   };
 
   const getCreatedCollections = async () => {
-    const xdc3 = new Xdc3(
-        new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER)
-    );
+    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
     const marketContract = new xdc3.eth.Contract(
-        NFTMarketLayer1.abi,
-        nftmarketlayeraddress,
-        xdc3
+      NFTMarketLayer1.abi,
+      nftmarketlayeraddress,
+      xdc3
     );
     const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
-    const data = await marketContract.methods.fetchItemsCreated(urlAddress).call();
+    const data = await marketContract.methods
+      .fetchItemsCreated(urlAddress)
+      .call();
 
     var uniqueCollections = [];
-    const createdCollections = await Promise.all(data.map( async i => {
-        if(!uniqueCollections.includes(i.collectionName)) {
-            uniqueCollections.push(i.collectionName);
+    const createdCollections = await Promise.all(
+      data.map(async (i) => {
+        if (!uniqueCollections.includes(i.collectionName)) {
+          uniqueCollections.push(i.collectionName);
         }
-    }))
+      })
+    );
 
-    const collectionGroups = []
+    const collectionGroups = [];
 
-    for(var i = 0; i < uniqueCollections.length; i++) {
-        const collectionNFTs = await marketContract.methods.getCollectionNFTs(uniqueCollections[i]).call();
+    for (var i = 0; i < uniqueCollections.length; i++) {
+      const collectionNFTs = await marketContract.methods
+        .getCollectionNFTs(uniqueCollections[i])
+        .call();
 
-        var collectionNFTsList = [];
-        const collectionNFTsData = await Promise.all(collectionNFTs.slice(0, 4).map( async j => {
-            const uri = await nftContract.methods.tokenURI(j.tokenId).call();
-            var metadata = await axios.get(uri);
-            let nft = {
-                tokenId: j.tokenId,
-                image: metadata?.data?.collection?.nft?.image,
-                name: j.name,
-                logo: metadata?.data?.collection?.logo
-            }
-            collectionNFTsList.push(nft);
-        }));
-        let group = {
-            name: uniqueCollections[i],
-            nfts: collectionNFTsList,
-            logo: collectionNFTsList[0].logo,
-            items: uniqueCollections[i] === "The Lucid Women" || uniqueCollections[i] === "NFTHC" || uniqueCollections[i] === "DØP3 Punks " ? collectionNFTs.length - 1 : collectionNFTs.length
-        };
-        collectionGroups.push(group);
+      var collectionNFTsList = [];
+      const collectionNFTsData = await Promise.all(
+        collectionNFTs.slice(0, 4).map(async (j) => {
+          const uri = await nftContract.methods.tokenURI(j.tokenId).call();
+          var metadata = await axios.get(uri);
+          let nft = {
+            tokenId: j.tokenId,
+            image: metadata?.data?.collection?.nft?.image,
+            name: j.name,
+            logo: metadata?.data?.collection?.logo,
+          };
+          collectionNFTsList.push(nft);
+        })
+      );
+      let group = {
+        name: uniqueCollections[i],
+        nfts: collectionNFTsList,
+        logo: collectionNFTsList[0].logo,
+        items:
+          uniqueCollections[i] === "The Lucid Women" ||
+          uniqueCollections[i] === "NFTHC" ||
+          uniqueCollections[i] === "DØP3 Punks "
+            ? collectionNFTs.length - 1
+            : collectionNFTs.length,
+      };
+      collectionGroups.push(group);
     }
-    
+
     setCollectionGroup(collectionGroups);
-  }
+  };
 
   const getOwnedNFTs = async () => {
-    const xdc3 = new Xdc3(
-        new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER)
-    );
+    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
     const marketContract = new xdc3.eth.Contract(
-        NFTMarketLayer1.abi,
-        nftmarketlayeraddress,
-        xdc3
+      NFTMarketLayer1.abi,
+      nftmarketlayeraddress,
+      xdc3
     );
     const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
     const data = await marketContract.methods.fetchMyNFTs(urlAddress).call();
 
     var uniqueCollections = [];
     const uniqueCollectionsData = [];
-    var showAllGroups = {}
+    var showAllGroups = {};
     const collectionGroups = {};
-    const ownedCollections = await Promise.all(data.map( async i => {
-        if(!burnedNFTs.includes(i.tokenId)) {
-            const uri = await nftContract.methods.tokenURI(i.tokenId).call();
-            var metadata = await axios.get(uri);
-            if(!uniqueCollections.includes(i.collectionName)) {
-                uniqueCollections.push(i.collectionName);
-                collectionGroups[i.collectionName] = [];
-                showAllGroups[i.collectionName] = false;
-            }
-            
-            let nft = {
-                tokenId: i.tokenId,
-                image: metadata?.data?.collection?.nft?.image,
-                name: i.name
-            }
-            collectionGroups[i.collectionName].push(nft);
-        }
-    }))
+    const ownedCollections = await Promise.all(
+      data.map(async (i) => {
+        if (!burnedNFTs.includes(i.tokenId)) {
+          const uri = await nftContract.methods.tokenURI(i.tokenId).call();
+          var metadata = await axios.get(uri);
+          if (!uniqueCollections.includes(i.collectionName)) {
+            uniqueCollections.push(i.collectionName);
+            collectionGroups[i.collectionName] = [];
+            showAllGroups[i.collectionName] = false;
+          }
 
-    for(var i = 0; i < uniqueCollections.length; i++) {
-        const collectionNFTs = await marketContract.methods.getCollectionNFTs(uniqueCollections[i]).call();
-        const uri = await nftContract.methods.tokenURI(collectionNFTs[0].tokenId).call();
-        var metadata = await axios.get(uri);
-        let collection = {
-            name: uniqueCollections[i],
+          let nft = {
+            tokenId: i.tokenId,
+            image: metadata?.data?.collection?.nft?.image,
+            name: i.name,
             logo: metadata?.data?.collection?.logo,
-            items: uniqueCollections[i] === "The Lucid Women" || uniqueCollections[i] === "NFTHC" || uniqueCollections[i] === "DØP3 Punks " ? collectionNFTs.length - 1 : collectionNFTs.length,
-            owned: collectionGroups[uniqueCollections[i]].length
-        };
-        uniqueCollections[i] = collection;
+          };
+          collectionGroups[i.collectionName].push(nft);
+        }
+      })
+    );
+
+    for (var i = 0; i < uniqueCollections.length; i++) {
+      const collectionNFTs = await marketContract.methods
+        .getCollectionNFTs(uniqueCollections[i])
+        .call();
+      const uri = await nftContract.methods
+        .tokenURI(collectionNFTs[0].tokenId)
+        .call();
+      var metadata = await axios.get(uri);
+      let collection = {
+        name: uniqueCollections[i],
+        logo: metadata?.data?.collection?.logo,
+        items:
+          uniqueCollections[i] === "The Lucid Women" ||
+          uniqueCollections[i] === "NFTHC" ||
+          uniqueCollections[i] === "DØP3 Punks "
+            ? collectionNFTs.length - 1
+            : collectionNFTs.length,
+        owned: collectionGroups[uniqueCollections[i]].length,
+        nfts: collectionGroups[uniqueCollections[i]],
+      };
+      uniqueCollections[i] = collection;
     }
 
     setOwnedCollections(uniqueCollections);
+    console.log(uniqueCollections);
+
     setOwnedGroup(collectionGroups);
     setShowAllCollection(showAllGroups);
-  }
+  };
 
   const [loadingCollection, setIsLoadingCollection] = useState([
     { id: 1, name: "Collection 1" },
@@ -439,7 +458,6 @@ const MyNFT = (props) => {
     { id: 11, name: "Collection 11" },
     { id: 12, name: "Collection 12" },
   ]);
-  
 
   const [subMenu, setSubMenu] = useState(0);
 
@@ -451,19 +469,17 @@ const MyNFT = (props) => {
     // window.addEventListener("scroll", handleScroll);
     // return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-//   useEffect(() => {
-//     if (!isFetching) return;
-//     fetchMoreNFTs();
-//   }, [isFetching]);
-//   useEffect(() => {
-//     setWallet(props.wallet);
-//   }, [props.wallet]);
+  //   useEffect(() => {
+  //     if (!isFetching) return;
+  //     fetchMoreNFTs();
+  //   }, [isFetching]);
+  //   useEffect(() => {
+  //     setWallet(props.wallet);
+  //   }, [props.wallet]);
 
   React.useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-
- 
 
   function NavigateTo(route) {
     history.push(`/${route}`);
@@ -523,7 +539,7 @@ const MyNFT = (props) => {
                 </CaptionBoldShort> */}
               </VStack>
             </VStack>
-                            {/* <HStack
+            {/* <HStack
             {/* <HStack
                                 background={({ theme }) => theme.backElement}
                                 border="9px"
@@ -626,7 +642,10 @@ const MyNFT = (props) => {
                 textcolor={({ theme }) => theme.text}
                 text="Owned"
                 height="39px"
-                onClick={() => setSubMenu(1)}
+                onClick={() => {
+                  setSubMenu(1);
+                  getOwnedNFTs();
+                }}
                 cursor={"pointer"}
               ></ButtonApp>
 
@@ -668,274 +687,106 @@ const MyNFT = (props) => {
             </HStack>
           </VStack>
           <AnimatePresence>
-            {subMenu === 0 && (
+            <ZStack>
+              {subMenu === 0 && (
                 <VStack
-                width="100%"
-                key={"Created"}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: 15 }}
+                  width="100%"
+                  key={"Created"}
+                  initial={{ opacity: 0, y: 15 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 15 }}
                 >
-                    {collectionGroup.map((item, i) => (
-                        <VStack width="100%" padding="30px" spacing="30px">
-                            <HStack width="100%">
-                                <IconImg
-                                    url={item.logo}
-                                    width="60px"
-                                    height="60px"
-                                    backsize="cover"
-                                    border="36px"
-                                ></IconImg>
-                                <VStack spacing="6px" alignment="flex-start">
-                                    <TitleBold18>{item.name}</TitleBold18>
-                                    <BodyRegular>{item.items} Items</BodyRegular>
-                                </VStack>
-                            </HStack>
-                            <HStack justify="flex-start">
-                                {item.nfts.map((nft, j) => (
-                                    <VStack
-                                        maxwidth="186px"
-                                        height="186px"
-                                        border="15px"
-                                        whileHover={{ scale: 1.05 }}
-                                        onClick={() => {
-                                            NavigateTo(`nft/${nftaddress}/${nft.tokenId}`)
-                                        }}
-                                        
-                                    >
-                                        <ZStack cursor={"pointer"}>
-                                            <CreatorTag>CREATOR</CreatorTag>
-                                            <ZItem>
-                                                <IconImg
-                                                    url={nft.image}
-                                                    width="100%"
-                                                    height="100%"
-                                                    backsize="cover"
-                                                    border="15px"
-                                                    
-                                                ></IconImg>
-                                            </ZItem>
-                                            <ZItem>
-                                                <VStack padding="15px">
-                                                    <HStack>
-                                                        <Spacer></Spacer>
-                                                        <IconImg
-                                                            url={banner1}
-                                                            width="45px"
-                                                            height="45px"
-                                                            backsize="cover"
-                                                            border="45px"
-                                                            bordersize="3px"
-                                                            bordercolor="white"
-                                                        ></IconImg>
-                                                    </HStack>
-                                                    <Spacer></Spacer>
-                                                    <TitleBold15 textcolor={appStyle.colors.white}>
-                                                        {nft.name}
-                                                    </TitleBold15>
-                                                </VStack>
-                                            </ZItem>
-                                        </ZStack>
-                                    </VStack>
-                                ))}
-                                <VStack
-                                    maxwidth="186px"
-                                    height="186px"
-                                    border="15px"
-                                    whileHover={{ scale: 1.05 }}
-                                    background={({ theme }) => theme.backElement}
-                                    spacing="6px"
-                                    cursor="pointer"
-                                    onClick={() => {
-                                        NavigateTo(`collection/${item.name}`)
-                                    }}
-                                >
-                                    <IconImg url={seeAll} width="45px" height="45px"></IconImg>
-                                    <BodyBold>See All</BodyBold>
-                                </VStack>
-                            </HStack>
+                  {collectionGroup.map((item, i) => (
+                    <VStack width="100%" padding="30px" spacing="30px">
+                      <HStack width="100%">
+                        <IconImg
+                          url={item.logo}
+                          width="60px"
+                          height="60px"
+                          backsize="cover"
+                          border="36px"
+                        ></IconImg>
+                        <VStack spacing="6px" alignment="flex-start">
+                          <TitleBold18>{item.name}</TitleBold18>
+                          <BodyRegular>{item.items} Items</BodyRegular>
                         </VStack>
-                    ))}
+                      </HStack>
+                      <HStack justify="flex-start">
+                        {item.nfts.map((nft, j) => (
+                          <VStack
+                            maxwidth="186px"
+                            height="186px"
+                            border="15px"
+                            whileHover={{ scale: 1.05 }}
+                            onClick={() => {
+                              NavigateTo(`nft/${nftaddress}/${nft.tokenId}`);
+                            }}
+                          >
+                            <ZStack cursor={"pointer"}>
+                              <CreatorTag>CREATOR</CreatorTag>
+                              <ZItem>
+                                <IconImg
+                                  url={nft.image}
+                                  width="100%"
+                                  height="100%"
+                                  backsize="cover"
+                                  border="15px"
+                                ></IconImg>
+                              </ZItem>
+                              <ZItem>
+                                <VStack padding="15px">
+                                  <HStack>
+                                    <Spacer></Spacer>
+                                    <IconImg
+                                      url={banner1}
+                                      width="45px"
+                                      height="45px"
+                                      backsize="cover"
+                                      border="45px"
+                                      bordersize="3px"
+                                      bordercolor="white"
+                                    ></IconImg>
+                                  </HStack>
+                                  <Spacer></Spacer>
+                                  <TitleBold15
+                                    textcolor={appStyle.colors.white}
+                                  >
+                                    {nft.name}
+                                  </TitleBold15>
+                                </VStack>
+                              </ZItem>
+                            </ZStack>
+                          </VStack>
+                        ))}
+                        <VStack
+                          maxwidth="186px"
+                          height="186px"
+                          border="15px"
+                          whileHover={{ scale: 1.05 }}
+                          background={({ theme }) => theme.backElement}
+                          spacing="6px"
+                          cursor="pointer"
+                          onClick={() => {
+                            NavigateTo(`collection/${item.name}`);
+                          }}
+                        >
+                          <IconImg
+                            url={seeAll}
+                            width="45px"
+                            height="45px"
+                          ></IconImg>
+                          <BodyBold>See All</BodyBold>
+                        </VStack>
+                      </HStack>
+                    </VStack>
+                  ))}
                 </VStack>
-            )}
-            {subMenu === 1 && (
-                <VStack
-                    width="100%"
-                    key={"Owned"}
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 15 }}
-                    
-                >
-                    {/* {ownedCollections.map((item) => (
-                        <VStack width="100%" padding="30px" spacing="30px">
-                            <HStack width="100%">
-                                <IconImg
-                                    url={item.logo}
-                                    width="60px"
-                                    height="60px"
-                                    backsize="cover"
-                                    border="36px"
-                                ></IconImg>
-                                <VStack spacing="6px" alignment="flex-start">
-                                    <TitleBold18>{item.name}</TitleBold18>
-                                    <BodyRegular>Owning {item.owned} pieces of {item.items} total items</BodyRegular>
-                                </VStack>
-                            </HStack>
-                            <HStack justify="flex-start">
-                                {showAllCollection[item.name] 
-                                    ? ownedGroup[item.name]?.map((nft, i) => (
-                                        <VStack
-                                            maxwidth="186px"
-                                            height="186px"
-                                            border="15px"
-                                            whileHover={{ scale: 1.05 }}
-                                            onClick={() => {
-                                                NavigateTo(`nft/${nftaddress}/${nft.tokenId}`)
-                                            }}
-                                        >
-                                            <ZStack>
-                                                <OwnerTag>OWNER</OwnerTag>
-                                                <ZItem>
-                                                    <IconImg
-                                                        url={nft.image}
-                                                        width="100%"
-                                                        height="100%"
-                                                        backsize="cover"
-                                                        border="15px"
-                                                    ></IconImg>
-                                                </ZItem>
-                                                <ZItem>
-                                                    <VStack padding="15px">
-                                                        <HStack>
-                                                            <Spacer></Spacer>
-                                                            <IconImg
-                                                                url={banner1}
-                                                                width="45px"
-                                                                height="45px"
-                                                                backsize="cover"
-                                                                border="45px"
-                                                                bordersize="3px"
-                                                                bordercolor="white"
-                                                            ></IconImg>
-                                                        </HStack>
-                                                        <Spacer></Spacer>
-                                                        <TitleBold15 textcolor={appStyle.colors.white}>
-                                                            {nft.name}
-                                                        </TitleBold15>
-                                                    </VStack>
-                                                </ZItem>
-                                            </ZStack>
-                                        </VStack>
-                                    ))
-                                    : null 
-                                }
-                                <VStack
-                                    maxwidth="186px"
-                                    height="186px"
-                                    border="15px"
-                                    whileHover={{ scale: 1.05 }}
-                                    background={({ theme }) => theme.backElement}
-                                    spacing="6px"
-                                    cursor="pointer"
-                                    onClick={() => {
-                                        if(showAllCollection[item.name]) {
-                                            var showAllGroups = showAllCollection;
-                                            showAllGroups[item.name] = false;
-                                            setShowAllCollection(showAllGroups);
-                                        }
-                                        else{
-                                            console.log(ownedGroup)
-                                            var showAllGroups = showAllCollection;
-                                            showAllGroups[item.name] = true;
-                                            setShowAllCollection(showAllGroups);
-                                            console.log(showAllCollection)
-                                        }
-                                    }}
-                                >
-                                    <IconImg url={seeAll} width="45px" height="45px"></IconImg>
-                                    <BodyBold>{showAllCollection[item.name] ? "See Less" : "See All"}</BodyBold>
-                                </VStack>   
-                            </HStack>
-                        </VStack>
-                    ))} */}
+              )}
+              {subMenu === 1 && (
+                <OwnedNfts collectionGroup={ownedCollections}></OwnedNfts>
+              )}
+            </ZStack>
 
-                    <InfiniteScroll
-                        dataLength={nfts.length}
-                        next={fetchMoreNFTs}
-                        hasMore={nfts.length < page.length - 1}
-                        loader={
-                            <HStack
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                height="210px"
-                            >
-                                <LoopLogo></LoopLogo>
-                            </HStack>
-                        }
-                        scrollableTarget="#scrollableDiv"
-                        style={{ overflow: "hidden" }}
-                    >
-                        <VStack spacing="30px">
-                            {/* <HStack>
-                                <DiscoverFilter
-                                textcolor={({ theme }) => theme.text}
-                                background={({ theme }) => theme.backElement}
-                                ></DiscoverFilter>
-                            </HStack> */}
-                            <HStack>
-                            <HStack
-                                spacing="30px"
-                                flexwrap="wrap"
-                                padding="0 30px"
-                                justify="flex-start"
-                                width={size.width < 768 ? "100%" : "1100px"}
-                            >
-                                {setLoading
-                                ? loadingCollection.map((item) => (
-                                    <VStack
-                                        key={item.name}
-                                        minwidth={size.width < 768 ? "100%" : "500px"}
-                                        maxwidth="500px"
-                                        height={size.width < 768 ? "440px" : "420px"}
-                                    >
-                                        <LoadingNftContainer></LoadingNftContainer>
-                                    </VStack>
-                                    ))
-                                : nfts.map((item) => (
-                                    <LayoutGroup id="collection">
-                                        <VStack
-                                        minwidth={size.width < 768 ? "100%" : "500px"}
-                                        maxwidth="500px"
-                                        height={size.width < 768 ? "440px" : "420px"}
-                                        >
-                                        <Collection
-                                            key={item.name}
-                                            keyContent={item.name}
-                                            keyID={item.creator}
-                                            collectionImage={item.banner}
-                                            creatorLogo={item.logo}
-                                            collectionName={item.name}
-                                            collectionDescription={item.description}
-                                            creatorName={item.creator}
-                                            onClickCollection={() =>
-                                            NavigateTo(`collection/${item.name}`)
-                                            }
-                                            floorprice={item.floorPrice}
-                                            owners={item.owners}
-                                            nfts={item.items}
-                                            volumetraded={item.volumeTraded}
-                                            // onClickCreator={() => NavigateTo("UserProfile")}
-                                        ></Collection>
-                                        </VStack>
-                                    </LayoutGroup>
-                                    ))}
-                            </HStack>
-                            </HStack>
-                        </VStack>
-                        </InfiniteScroll>
-                </VStack>
-            )}
             {/* {subMenu === 2 && (
                 <VStack
                 width="100%"
