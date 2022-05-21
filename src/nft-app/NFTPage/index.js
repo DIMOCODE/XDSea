@@ -678,7 +678,7 @@ const NFTDetails = (props) => {
                       height="89%"
                       border="15px"
                       padding="30px 30px 60px 30px"
-                      initial={{ opacity: 0, scale: 0.9 }}
+                      initial={{ opacity: 0, scale: 1 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0 }}
                       transition={{

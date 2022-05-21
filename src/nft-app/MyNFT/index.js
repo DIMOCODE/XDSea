@@ -36,6 +36,7 @@ import SkeletonCard from "../../common/skeleton/card";
 import NFTMarketLayer1 from "../../abis/NFTMarketLayer1.json";
 import { burnedNFTs, permaBlacklist } from "../../blacklist";
 import banner1 from "../../images/Banner1.jpg";
+import checkOk from "../../images/checkOkIcon.png";
 import copyIcon from "../../images/copyAddress.png";
 
 import styled from "styled-components";
@@ -72,6 +73,7 @@ import { TableActivityNft } from "../../styles/TableActivityNft";
 import { TableOffersNft } from "../../styles/TableOffersNft";
 import { TableUserProfile } from "../../styles/TableUserProfile";
 import { OwnedNfts } from "../../styles/OwnedNfts";
+import { BubbleCopied } from "../../styles/BubbleCopied";
 
 const MyNFT = (props) => {
   const { urlAddress } = useParams();
@@ -520,20 +522,11 @@ const MyNFT = (props) => {
                     isXdc(urlAddress) ? fromXdc(urlAddress) : urlAddress
                   )}
                 </TitleBold21> */}{" "}
-                <HStack
-                  background={({ theme }) => theme.backElement}
-                  border="30px"
-                  spacing="6px"
-                  padding="6px 12px"
-                >
-                  <IconImg url={xdcLogo} width="21px" height="21px"></IconImg>
-                  <Spacer></Spacer>
-                  <CaptionBoldShort textcolor={({ theme }) => theme.text}>
-                    {truncateAddress(urlAddress)}
-                  </CaptionBoldShort>
-                  <Spacer></Spacer>
-                  <IconImg url={copyIcon} width="21px" height="21px"></IconImg>
-                </HStack>
+                <BubbleCopied
+                  logo={xdcLogo}
+                  address={truncateAddress(urlAddress)}
+                  icon={copyIcon}
+                ></BubbleCopied>
                 {/* <CaptionBoldShort textcolor={({ theme }) => theme.text}>
                   Joined 31 March 22
                 </CaptionBoldShort> */}
