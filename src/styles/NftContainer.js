@@ -20,7 +20,7 @@ function NftContainer(props) {
     onClick,
     onClickCreator,
     fileType,
-    owner
+    owner,
   } = props;
 
   const scaleImage = {
@@ -36,7 +36,7 @@ function NftContainer(props) {
       y: 69,
     },
     hover: {
-      y: 10,
+      y: 69,
     },
   };
   const [isVisible, setIsVisible] = useState(false);
@@ -78,14 +78,14 @@ function NftContainer(props) {
               animate={isVisible ? "hover" : "initial"}
               variants={scaleImage}
               background={appStyle.colors.darkgrey10}
-              height="370px"
+              height="100%"
             >
               <ReactPlayer
                 url={itemImage}
                 playing={isPlaying}
                 muted={true}
                 loop={true}
-                width="100%"
+                width="123%"
                 height="100%"
               />
             </VStack>
@@ -99,7 +99,11 @@ function NftContainer(props) {
             onClick={onClick}
           >
             <HStack padding="15px">
-              {owner ? <OwnerTag>OWNER</OwnerTag> : <CreatorTag>CREATOR</CreatorTag>}
+              {owner ? (
+                <OwnerTag>OWNER</OwnerTag>
+              ) : (
+                <CreatorTag>CREATOR</CreatorTag>
+              )}
               <Spacer></Spacer>
               <IconImg
                 url={creatorImage}
@@ -115,7 +119,7 @@ function NftContainer(props) {
             </HStack>
             <Spacer></Spacer>
             <VStack
-              background={background}
+              // background={background}
               width="100%"
               alignment="flex-start"
               padding="21px 21px 30px 21px"
@@ -125,13 +129,16 @@ function NftContainer(props) {
               variants={moveContainer}
               initial={false}
             >
-              <BodyBold>{collectionName}</BodyBold>
+              <BodyBold textcolor={appStyle.colors.white}>
+                {collectionName}
+              </BodyBold>
               <HStack padding="9px 0" height="30px">
                 <BodyRegular
                   display={"-webkit-box"}
                   overflow={"hidden"}
                   clamp={"1"}
                   orient={"vertical"}
+                  textcolor={appStyle.colors.white}
                 >
                   {itemNumber}
                 </BodyRegular>
@@ -142,22 +149,23 @@ function NftContainer(props) {
                     width="18px"
                     height="18px"
                   ></IconImg>
-                  <TitleBold18>
-                    {price.toLocaleString(undefined, {
+                  <TitleBold18 textcolor={appStyle.colors.white}>
+                    {console.log(typeof price)}
+                    {Number(price).toLocaleString(undefined, {
                       maximumFractionDigits: 2,
                     }) || "0"}
                   </TitleBold18>
                 </HStack>
               </HStack>
               <Spacer></Spacer>
-              <ButtonApp
+              {/* <ButtonApp
                 height="39px"
                 text="Buy Now"
                 textcolor={appStyle.colors.white}
                 width="100%"
                 onClick={onClick}
                 cursor="pointer"
-              ></ButtonApp>
+              ></ButtonApp> */}
             </VStack>
           </VStack>
         </ZItem>
