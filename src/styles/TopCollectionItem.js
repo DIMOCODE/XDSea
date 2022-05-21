@@ -63,6 +63,7 @@ function TopCollectionItem(props) {
         bordersize="3px"
         bordercolor="white"
         cursor={"pointer"}
+        backsize="cover"
       ></IconImg>
       <VStack spacing="6px" alignment="flex-start" cursor={"pointer"}>
         <TitleBold15>{collectionName || "Collection Name"}</TitleBold15>

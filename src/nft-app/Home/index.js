@@ -209,6 +209,15 @@ const Home = () => {
     window.scrollTo(0, 0);
   }, []);
 
+  const linkStyle = {
+    textDecoration: "none",
+    color: "transparent",
+
+    ":hover": {
+      textDecoration: "none",
+      backgroundColor: "red",
+    },
+  };
   return (
     <Content>
       <HStack
@@ -238,20 +247,24 @@ const Home = () => {
             blockchain.
           </BodyRegular>
           <HStack spacing="10px">
-            <a href="#spotlightCollections">
+            <a href="#spotlightCollections" style={linkStyle}>
               <ButtonApp
-                height="45px"
+                height="52px"
+                width="160px"
                 textcolor={appStyle.colors.white}
                 background={({ theme }) => theme.blue}
                 text="Spotlight Collections"
+                cursor={"pointer"}
               ></ButtonApp>
             </a>
-            <a href="#trendingNFTs">
+            <a href="#trendingNFTs" style={linkStyle}>
               <ButtonApp
-                height="45px"
+                height="52px"
+                width="160px"
                 textcolor={appStyle.colors.white}
                 background={({ theme }) => theme.blue}
                 text="Trending NFTs"
+                cursor={"pointer"}
               ></ButtonApp>
             </a>
             <Spacer></Spacer>
