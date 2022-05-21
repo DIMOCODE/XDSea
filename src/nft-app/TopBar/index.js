@@ -8,19 +8,15 @@ import { BodyBold, CaptionRegular } from "../../styles/TextStyles";
 import XDSealogo from "../../images/LogoXDSEA.png";
 import { WalletButton } from "../../styles/walletButton";
 import { fromXdc, isXdc } from "../../common/common";
-
 import { SwitchButton } from "../../styles/SwitchButton";
 import { motion } from "framer-motion/dist/framer-motion";
 import { UserMenuButton } from "./UserMenuButton";
 import { appStyle } from "../../styles/AppStyles";
-
 import "../../styles/App.css";
 
 function TopBar(props) {
   const { themeToggler, devMode, onWalletChange } = props;
-
   const history = useHistory();
-
   const [wallet, setWallet] = useState({});
 
   function NavigateTo(route) {
@@ -32,7 +28,7 @@ function TopBar(props) {
       <HStack height="90px" width="1200px">
         <HStack onClick={() => NavigateTo('')} cursor={"pointer"}>
           <IconImg url={XDSealogo} width="66px" height="66px" cursor={"pointer"}></IconImg>
-          <VStack spacing="1px" alignment="flex-start">
+          <VStack cursor={"pointer"} spacing="1px" alignment="flex-start">
             <BodyBold textcolor={({ theme }) => theme.text}>XDSea</BodyBold>
             {!devMode ? (
               <BodyBold textcolor={({ theme }) => theme.blue}>
@@ -52,7 +48,6 @@ function TopBar(props) {
             )}
           </VStack>
         </HStack>
-
         <Spacer></Spacer>
         <ButtonApp
           background="rgba(255, 255, 255, 0)"
@@ -71,7 +66,7 @@ function TopBar(props) {
         <ButtonApp
           background="rgba(255, 255, 255, 0)"
           textcolor={({ theme }) => theme.text}
-          text="How to Start"
+          text="How To Start"
           cursor="pointer"
           onClick={() => NavigateTo("HowToStart")}
         ></ButtonApp>
@@ -82,9 +77,7 @@ function TopBar(props) {
           cursor="pointer"
           onClick={() => NavigateTo("CreateNFT")}
         ></ButtonApp>
-
         <Spacer></Spacer>
-
         <XdcConnect
           btnClass={`walletConnect ${wallet?.connected ? "hide" : ""}`}
           onConnect={(wallet) => {
@@ -94,7 +87,6 @@ function TopBar(props) {
           onAddressChange={(wallet) => {
             setWallet(wallet);
             onWalletChange(wallet);
-            NavigateTo('');
           }}
           onDisconnect={(wallet) => {
             setWallet(wallet);
@@ -102,24 +94,19 @@ function TopBar(props) {
             NavigateTo('');
           }}
         />
-
         <WalletButton
           logout={Disconnect}
           status={wallet?.connected}
           wallet={wallet}
         ></WalletButton>
-
         <SwitchButton clickOnSwitch={themeToggler}></SwitchButton>
-
         {wallet?.connected ? 
           <UserMenuButton
             clickOnUser={() => NavigateTo(`UserProfile/${isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address}`)}
-            // clickOnSettings={() => NavigateTo("Settings")}
             wallet={wallet}
           ></UserMenuButton>
           : null
         }
-        
       </HStack>
     </ContentBar>
   );

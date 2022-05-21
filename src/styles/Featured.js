@@ -24,6 +24,7 @@ function Featured(props) {
     height,
     onClickCreator,
     fileType,
+    onClick
   } = props;
   const scaleImage = {
     initial: {
@@ -70,6 +71,7 @@ function Featured(props) {
         setIsVisible((isVisible) => !isVisible);
         setIsPlaying((isPlaying) => !isPlaying);
       }}
+      onClick={onClick}
     >
       {itemImage === undefined ? (
         <LoadingFeatured></LoadingFeatured>
@@ -80,8 +82,6 @@ function Featured(props) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          {/* NFT Image*/}
-
           <ZItem>
             {fileType.match("image.*") ? (
               <IconImg
@@ -113,15 +113,14 @@ function Featured(props) {
               </VStack>
             )}
           </ZItem>
-          {/* NFT Content*/}
           <ZItem>
             <VStack
               padding="15px 0px"
               spacing="9px"
               background="linear-gradient(180.3deg, rgba(0, 0, 0, 0) 64.14%, rgba(0, 0, 0, 0.3) 78.31%, #000000 96.66%)"
+              cursor={"pointer"}
             >
               <HStack padding="0 15px">
-                {/* Creator Bubble*/}
                 <Spacer></Spacer>
                 <AnimatePresence>
                   <HStack
@@ -165,6 +164,7 @@ function Featured(props) {
                       width="48px"
                       height="48px"
                       border="120px"
+                      cursor={"pointer"}
                     ></IconImg>
                   </HStack>
                 </AnimatePresence>

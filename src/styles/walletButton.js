@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Tooltip from "@mui/material/Tooltip";
 import { HStack, IconImg, VStack, ZItem, ZStack } from "./Stacks";
 import XDClogo from "../images/miniXdcLogo.png";
 import copyIcon from "../images/copyIcon.png";
@@ -13,31 +12,25 @@ import { LayoutGroup } from "framer-motion/dist/framer-motion";
 
 function WalletButton(props) {
   const { status, wallet, logout } = props;
-
   const [isVisible, setIsVisible] = useState(false);
-
   const opacityAnim = {
     initial: {
       opacity: 1,
     },
-
     hover: {
       opacity: 0.3,
     },
   };
-
   const connectedWallet = {
     initial: {
       x: 10,
       opacity: 0,
     },
-
     hover: {
       x: 0,
       opacity: 1,
     },
   };
-
   const tooltipAnim = {
     initial: {
       opacity: 0,
@@ -46,7 +39,6 @@ function WalletButton(props) {
       scale: 0.96,
       transition: { type: "spring", stiffness: 100, delay: 0 },
     },
-
     hover: {
       opacity: 1,
       y: 10,
@@ -67,6 +59,7 @@ function WalletButton(props) {
           onClick={props.onClick}
           onTap={() => setIsVisible(true)}
           onHoverEnd={() => setIsVisible(false)}
+          cursor={"pointer"}
         >
           <HStack
             height="49px"
@@ -87,6 +80,7 @@ function WalletButton(props) {
                     exit="initial"
                     justify="flex-start"
                     spacing="6px"
+                    cursor={"pointer"}
                   >
                     <LedStatus
                       key="led"
@@ -103,7 +97,6 @@ function WalletButton(props) {
                       Connected
                     </CaptionRegular>
                   </HStack>
-
                   <ZStack key="Wallet" height="20px">
                     {isVisible && (
                       <ZItem>
@@ -121,7 +114,6 @@ function WalletButton(props) {
                               background={({ theme }) => theme.walletButton}
                               padding="9px 12px"
                               border="6px"
-                              cursor="pointer"
                             >
                               <BodyRegular
                                 textcolor={({ theme }) => theme.walletText}
@@ -132,9 +124,10 @@ function WalletButton(props) {
                                 url={copyIcon}
                                 width="18px"
                                 height="18px"
+                                cursor={"pointer"}
+                                onClick={() => {navigator.clipboard.writeText(wallet?.address)}}
                               ></IconImg>
                             </HStack>
-
                             <ButtonApp
                               cursor="pointer"
                               height="39px"
@@ -156,6 +149,7 @@ function WalletButton(props) {
                       animate={isVisible ? "hover" : "initial"}
                       variants={opacityAnim}
                       exit="initial"
+                      cursor={"pointer"}
                     >
                       <BodyRegular textcolor={({ theme }) => theme.walletText}>
                         {truncateAddress(wallet?.address)}
@@ -180,7 +174,7 @@ function WalletButton(props) {
                 </motion.div>
               )}
             </VStack>
-            <IconImg url={XDClogo} width="30px" height="30px"></IconImg>
+            <IconImg cursor={"pointer"} url={XDClogo} width="30px" height="30px"></IconImg>
           </HStack>
         </VStack>
       </AnimatePresence>

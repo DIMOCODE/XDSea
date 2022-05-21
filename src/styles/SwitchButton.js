@@ -11,16 +11,10 @@ function SwitchButton(props) {
       background: "#FFFFFF",
       scale: 0.9,
     },
-
     moon: {
       background: "#2E334D",
       scale: 1,
     },
-  };
-
-  const creator = {
-    visible: { opacity: 1, x: 0 },
-    hidden: { opacity: 0, x: 0 },
   };
 
   return (
@@ -38,14 +32,16 @@ function SwitchButton(props) {
         animate={isVisible ? "sun" : "moon"}
         variants={scaleContainer}
         onTap={() => setIsVisible((isVisible) => !isVisible)}
+        cursor={"pointer"}
       >
         {isVisible ? (
-          <IconImg url={sun} width="18px" height="18px"></IconImg>
+          <IconImg cursor={"pointer"} url={sun} width="18px" height="18px"></IconImg>
         ) : (
-          <IconImg url={moon} width="18px" height="18px"></IconImg>
+          <IconImg cursor={"pointer"} url={moon} width="18px" height="18px"></IconImg>
         )}
       </VStack>
     </VStack>
   );
 }
+
 export { SwitchButton };

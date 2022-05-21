@@ -1,19 +1,12 @@
 import React from "react";
-import { HStack, IconImg, Spacer, VStack } from "./Stacks";
+import { HStack, IconImg, VStack } from "./Stacks";
 import {
   TitleBold15,
   TitleRegular33,
   BodyBold,
   CaptionBoldShort,
 } from "./TextStyles";
-import { appStyle } from "./AppStyles";
-
 import miniXdcLogo from "../images/miniXdcLogo.png";
-import {
-  motion,
-  AnimatePresence,
-  LayoutGroup,
-} from "framer-motion/dist/framer-motion";
 import { useState } from "react";
 
 function TopCollectionItem(props) {
@@ -34,12 +27,10 @@ function TopCollectionItem(props) {
     initial: {
       background: "rgba(77, 88, 143, 0)",
     },
-
     hover: {
       background: "rgba(77, 88, 143, 0.14)",
     },
   };
-
   const opacity = {
     hover: { background: "rgba(255, 255, 255, 0)", opacity: 1, x: 3 },
     initial: { background: "rgba(255, 255, 255, 0)", opacity: 0.3, x: 0 },
@@ -56,6 +47,7 @@ function TopCollectionItem(props) {
       onHoverStart={() => setIsVisible((isVisible) => !isVisible)}
       onHoverEnd={() => setIsVisible((isVisible) => !isVisible)}
       onClick={onClick}
+      cursor={"pointer"}
     >
       <TitleRegular33
         animate={isVisible ? "hover" : "initial"}
@@ -70,13 +62,13 @@ function TopCollectionItem(props) {
         border="90px"
         bordersize="3px"
         bordercolor="white"
+        cursor={"pointer"}
       ></IconImg>
-      <VStack spacing="6px" alignment="flex-start">
+      <VStack spacing="6px" alignment="flex-start" cursor={"pointer"}>
         <TitleBold15>{collectionName || "Collection Name"}</TitleBold15>
-        <HStack>
-          <VStack spacing="3px">
+        <HStack cursor={"pointer"}>
+          <VStack spacing="3px" cursor={"pointer"}>
             <CaptionBoldShort>Floor Price</CaptionBoldShort>
-
             <HStack spacing="6px">
               <IconImg url={miniXdcLogo} width="18px" height="18px"></IconImg>
               <BodyBold>
@@ -86,18 +78,15 @@ function TopCollectionItem(props) {
               </BodyBold>
             </HStack>
           </VStack>
-
-          <VStack spacing="3px">
+          <VStack spacing="3px" cursor={"pointer"}>
             <CaptionBoldShort>Owners</CaptionBoldShort>
             <BodyBold>{owners || "0"}</BodyBold>
           </VStack>
-
-          <VStack spacing="3px">
+          <VStack spacing="3px" cursor={"pointer"}>
             <CaptionBoldShort>NFT's</CaptionBoldShort>
             <BodyBold>{nfts || "0"}</BodyBold>
           </VStack>
-
-          <VStack spacing="3px">
+          <VStack spacing="3px" cursor={"pointer"}>
             <CaptionBoldShort align="center">Volume Traded</CaptionBoldShort>
             <HStack spacing="6px">
               <IconImg url={miniXdcLogo} width="18px" height="18px"></IconImg>
