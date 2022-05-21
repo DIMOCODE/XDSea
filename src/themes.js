@@ -15,6 +15,7 @@ export const lightTheme = {
   faded: "rgba(0, 0, 0, 0.06)",
   backgroundModal: "rgba(214, 214, 219, 0.84)",
 };
+
 export const darkTheme = {
   body: "#363537",
   text: "#FAFAFA",

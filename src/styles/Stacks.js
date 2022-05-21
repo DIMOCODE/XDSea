@@ -141,12 +141,14 @@ export const ZStack = styled(motion.div).attrs((props) => ({
   height: ${(props) => props.height};
   padding: ${(props) => props.padding}px;
   border-radius: ${(props) => props.border};
+  cursor: ${(props) => props.cursor};
 `;
 
 // ZItem
 
 export const ZItem = styled(motion.div).attrs((props) => ({
   zindex: props.zindex || "0",
+  cursor: props.cursor || "default",
   // heigth: props.height || "auto",
   // width: props.width || "auto",
 }))`
@@ -154,6 +156,7 @@ export const ZItem = styled(motion.div).attrs((props) => ({
   width: 100%;
   height: 100%;
   z-index: ${(props) => props.zindex};
+  cursor: ${(props) => props.cursor};
 `;
 
 // Divider

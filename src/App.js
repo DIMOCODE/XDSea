@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-// import { CookiesProvider } from 'react-cookie';
 import {BrowserRouter} from 'react-router-dom';
 import web3Context from './context/web3Context';
 
@@ -18,13 +17,11 @@ export class App extends Component {
 
     render() {
         return <div className='App'>
-            {/* <CookiesProvider> */}
-                <web3Context.Provider value={this.state}>
-                    <BrowserRouter>
-                        <NFTApp/>
-                    </BrowserRouter>
-                </web3Context.Provider>
-            {/* </CookiesProvider> */}
+            <web3Context.Provider value={this.state}>
+                <BrowserRouter>
+                    <NFTApp/>
+                </BrowserRouter>
+            </web3Context.Provider>
         </div>;
     }
 }

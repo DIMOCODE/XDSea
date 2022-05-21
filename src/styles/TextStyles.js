@@ -1,15 +1,6 @@
 import styled from "styled-components";
 import { appStyle } from "./AppStyles";
-import { AnimatePresence, motion } from "framer-motion/dist/framer-motion";
-
-// export const TitleBold60 = styled.h1`
-//   font-style: normal;
-//   font-weight: 600;
-//   font-size: 66px;
-//   line-height: 100%;
-//   letter-spacing: -0.06em;
-//   color: #ffffff;
-// `;
+import { motion } from "framer-motion/dist/framer-motion";
 
 export const TitleBold60 = styled(motion.h1).attrs((props) => ({
   textcolor: props.textcolor || props.theme.text,

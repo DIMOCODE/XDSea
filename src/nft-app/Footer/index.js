@@ -3,25 +3,20 @@ import XDSeaWhite from "../../images/logoXDSEAWhite.png";
 import twitter from "../../images/twitterLogoWhite.png";
 import instagram from "../../images/InstagramLogoWhite.png";
 import mail from "../../images/mailWhite.png";
-import discord from "../../images/DiscordLogoWhite.png";
 import {
   BodyRegular,
   TitleBold21,
   TitleBold27,
-  TitleRegular18,
 } from "../../styles/TextStyles";
 import { appStyle } from "../../styles/AppStyles";
 import { LayoutGroup, motion } from "framer-motion/dist/framer-motion";
-
 import { Link } from "../../styles/Link";
 import useWindowSize from "../../styles/useWindowSize";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 
 function Footer(props) {
-  const { textcolor } = props;
   const size = useWindowSize();
-
   const history = useHistory();
 
   function NavigateTo(route) {
@@ -45,7 +40,6 @@ function Footer(props) {
                   height={size.width < 768 ? "60px" : "90px"}
                   cursor={"pointer"}
                 ></IconImg>
-
                 <TitleBold27 textcolor={appStyle.colors.white}>
                   XDSea
                 </TitleBold27>
@@ -54,19 +48,17 @@ function Footer(props) {
                 </BodyRegular>
                 <Spacer></Spacer>
               </VStack>
-
               <VStack alignment="flex-start">
                 <TitleBold21 textcolor={appStyle.colors.white}>
                   Marketplace
                 </TitleBold21>
-
                 <LayoutGroup id="MarketPlaceLink">
                   <Link cursor={"pointer"} text="Home"></Link>
                   <Link cursor={"pointer"} text="Discover"></Link>
+                  <Link cursor={"pointer"} text="How To Start"></Link>
                   {/* <Link text="Terms of Service"></Link>
                 <Link text="Build on Xinfin"></Link> */}
                 </LayoutGroup>
-
                 <Spacer></Spacer>
               </VStack>
               <VStack alignment="flex-start">
@@ -77,7 +69,6 @@ function Footer(props) {
                 <Link text="Create NFT"></Link>
                 {/* <Link text="User Profile"></Link> */}
                 {/* <Link text="Collections"></Link> */}
-
                 <Spacer></Spacer>
               </VStack>
               <VStack alignment="flex-start">
@@ -101,7 +92,6 @@ function Footer(props) {
                       cursor="pointer"
                     ></IconImg>
                   </a>
-
                   <a href="mailto:support@xdsea.com">
                     <IconImg
                       url={mail}
@@ -115,7 +105,6 @@ function Footer(props) {
                 <Spacer></Spacer>
               </VStack>
             </HStack>
-
             <VStack
               background={appStyle.colors.darkgrey10}
               padding="6px 9px"

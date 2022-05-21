@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "styled-components";
 import { appStyle } from "./AppStyles";
 import { motion } from "framer-motion/dist/framer-motion";
@@ -93,7 +93,6 @@ const ButtonView = styled(motion.div).attrs((props) => ({
   font-weight: 500;
   gap: 6px;
   align-items: center;
-
   color: ${(props) => props.textcolor};
   border-radius: ${(props) => props.border};
   padding: ${(props) => props.padding};
@@ -107,6 +106,6 @@ const ButtonView = styled(motion.div).attrs((props) => ({
   -moz-user-select: none; /* Old versions of Firefox */
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none; /* Non-prefixed version, currently
-                                supported by Chrome, Edge, Opera and Firefox */
+    supported by Chrome, Edge, Opera and Firefox */
   cursor: ${(props) => props.cursor};
 `;
