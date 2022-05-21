@@ -1,11 +1,9 @@
 import React from "react";
 import { useState } from "react";
-import { VStack, HStack, Spacer, IconImg, ZStack, ZItem } from "./Stacks";
+import { IconImg, ZStack } from "./Stacks";
 import styled from "styled-components";
 import empty from "../images/empty.png";
-import { BodyBold, BodyRegular } from "./TextStyles";
-import { appStyle } from "./AppStyles";
-import { textTransform } from "@mui/system";
+import { BodyBold } from "./TextStyles";
 
 function InputStyled(props) {
   const {
@@ -28,7 +26,8 @@ function InputStyled(props) {
     height,
     inputId
   } = props;
-  const [hasURL, setHasUrl] = useState(false);
+
+  const [hasURL] = useState(false);
 
   return (
     <ZStack>
@@ -56,41 +55,14 @@ function InputStyled(props) {
       </InputIcon>
       {hasURL ? (
         <InputURL>
-          <BodyBold>https://xdsea.io/collection/</BodyBold>
+          <BodyBold>https://xdsea.com/collection/</BodyBold>
         </InputURL>
       ) : null}
     </ZStack>
   );
 }
+
 export { InputStyled };
-
-// const Input = styled.input`
-
-//   width: 100%;
-//   height: 39px;
-//   border-radius: 9px;
-//   padding: 0px 36px 0px 12px;
-//   border-style: solid;
-//   border-color: rgba(255, 255, 255, 0);
-//   text-align:left;
-//   border-size: 0px
-//   -moz-box-sizing: border-box;
-//   box-sizing: border-box;
-//   font-style: normal;
-//   font-weight: normal;
-//   font-size: 15px;
-//   letter-spacing: -0.01em;
-
-//   color:${({ theme }) => theme.text};
-//   background:${({ theme }) => theme.backElement};
-
-//   &:focus {
-//     outline: none;
-
-//     border-color: rgba(153, 162, 175, 0.36);
-
-//   }
-// `;
 
 const InputIcon = styled.div`
   position: absolute;
@@ -112,8 +84,6 @@ const Input = styled.input.attrs((props) => ({
   texttransform: props.texttransform || "none",
   height: props.height || "39px",
 }))`
-  
-
   background: ${(props) => props.background};
   width: 100%;
   height: ${(props) => props.height};
@@ -130,15 +100,9 @@ const Input = styled.input.attrs((props) => ({
   font-size: ${(props) => props.fontsize};
   letter-spacing: -0.01em;
   text-transform: ${(props) => props.texttransform};
-  
   color:${({ theme }) => theme.text};
-
-
   &:focus {
     outline: none;
-    
     border-color: rgba(153, 162, 175, 0.36);
-    
   }
-  
 `;

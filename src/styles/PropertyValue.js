@@ -1,19 +1,16 @@
 import React from "react";
 import { InputStyled } from "./InputStyled";
-import { HStack, VStack } from "./Stacks";
-import { TitleBold15 } from "./TextStyles";
-import ButtonApp from "./Buttons";
-import styled from "styled-components";
+import { VStack } from "./Stacks";
 
 function PropertyValue(props) {
   const {
     property,
     value,
-    onClick,
     onChangeProperty,
     onChangeValue,
     propertyKey,
   } = props;
+
   return (
     <VStack
       minwidth="168px"
@@ -24,8 +21,6 @@ function PropertyValue(props) {
       border="15px"
       spacing="0px"
     >
-      {/* Property Input with Label */}
-
       <InputStyled
         propertyKey={propertyKey}
         type="text"
@@ -38,9 +33,6 @@ function PropertyValue(props) {
         texttransform="uppercase"
         height="26px"
       ></InputStyled>
-
-      {/* Value Input with Label */}
-
       <InputStyled
         propertyKey={propertyKey}
         type="text"

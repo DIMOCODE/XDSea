@@ -20,6 +20,7 @@ function InputStyledLink(props) {
     </ZStack>
   );
 }
+
 export { InputStyledLink };
 
 const Input = styled.input`
@@ -37,17 +38,11 @@ const Input = styled.input`
   font-weight: normal;
   font-size: 15px;
   letter-spacing: -0.01em;
-
-  
   color:${({ theme }) => theme.text};
   background:${({ theme }) => theme.backElement};
-
-
   &:focus {
     outline: none;
-    
     border-color: rgba(153, 162, 175, 0.36);
-    
   }
 `;
 

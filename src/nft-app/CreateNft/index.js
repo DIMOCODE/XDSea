@@ -1,32 +1,22 @@
 import React, {
   useState,
   useEffect,
-  createContext,
-  useContext,
-  Component,
-  Fragment,
-  useRef,
 } from "react";
 import { create as ipfsHttpClient } from "ipfs-http-client";
-import { GetWallet, SendTransaction } from "xdc-connect";
+import { SendTransaction } from "xdc-connect";
 import Xdc3 from "xdc3";
 import { DEFAULT_PROVIDER } from "../../constant";
 import NFT from "../../abis/NFT.json";
-import NFTMarket from "../../abis/NFTMarket.json";
 import {
   nftaddress,
-  nftmarketaddress,
   nftmarketlayeraddress,
 } from "../../config";
 import { fromXdc, isXdc } from "../../common/common";
-import { Dialog, Transition } from "@headlessui/react";
 import axios from "axios";
 import NFTMarketLayer1 from "../../abis/NFTMarketLayer1.json";
-
 import styled from "styled-components";
 import { Divider, HStack, IconImg, Spacer, VStack } from "../../styles/Stacks";
 import {
-  BodyBold,
   BodyRegular,
   CaptionRegular,
   TitleBold15,
@@ -34,15 +24,11 @@ import {
 } from "../../styles/TextStyles";
 import {
   motion,
-  AnimatePresence,
-  LayoutGroup,
 } from "framer-motion/dist/framer-motion";
 import { appStyle } from "../../styles/AppStyles";
 import CreationBar from "../../images/DiscoverBar.png";
-
 import { InputStyled } from "../../styles/InputStyled";
 import xdc from "../../images/miniXdcLogo.png";
-import imageTest from "../../images/imageTest.jpg";
 import { TextAreaStyled } from "../../styles/TextAreaStyled";
 import ButtonApp from "../../styles/Buttons";
 import { PropertyValue } from "../../styles/PropertyValue";
@@ -52,31 +38,19 @@ import lock from "../../images/lock.png";
 import { UploadMultimedia } from "../../styles/UploadMultimedia";
 import xinfinLogo from "../../images/xinfinLogo.png";
 import useWindowSize from "../../styles/useWindowSize";
-import { useHistory } from "react-router-dom";
 import { InputStyledURL } from "../../styles/InputStyledURL";
 import { InputStyledLink } from "../../styles/InputStyledLink";
 import instagramIcon from "../../images/instagramMini.png";
 import twitterIcon from "../../images/twitter.png";
-import telegramIcon from "../../images/telegram.png";
-import warning from "../../images/alert.png";
-import coverAudio from "../../images/coverAudio.png";
 import discordIcon from "../../images/discordIcon.png";
 import linkIcon from "../../images/link.png";
 import loading from "../../images/loadingDots.gif";
 import empty from "../../images/empty.png";
-import { ConfirmationModal } from "../../ConfirmationModal";
 import { TxModal } from "../../styles/TxModal";
-import { PushSpinner } from "react-spinners-kit";
 
 const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
 
 function CreateNft(props) {
-  const history = useHistory();
-
-  function NavigateTo(route) {
-    history.push(`/${route}`);
-  }
-
   const [uploadBannerStatus, setUploadBannerStatus] = useState(false);
   const [uploadLogoStatus, setUploadLogoStatus] = useState(false);
   const [uploadPreviewStatus, setUploadPreviewStatus] = useState(false);
@@ -123,12 +97,10 @@ function CreateNft(props) {
   const [isCollectionNotSelected, setIsCollectionNotSelected] = useState(false);
   const [mintButtonStatus, setMintButtonStatus] = useState(0);
   const [isWalletDisconnected, setIsWalletDisconnected] = useState(false);
-  const [creator, setCreator] = useState(null);
   const [assetURL, setAssetURL] = useState("");
   const [collectionBannerURL, setCollectionBannerURL] = useState("");
   const [collectionLogoURL, setCollectionLogoURL] = useState("");
   const [previewURL, setPreviewURL] = useState("");
-
   const size = useWindowSize();
 
   const addToIPFS = async () => {
@@ -243,19 +215,21 @@ function CreateNft(props) {
     setIsPriceInvalid(false);
     setCollectionBannerURL("");
     setCollectionLogoURL("");
+    setPreviewURL("");
     setAssetURL("");
     setFile({ preview: "", raw: "", fileType: "" });
+    setPreview({ preview: "", raw: "", fileType: "" });
     setName("");
     setDescription("");
     setPrice(0.00001);
-    setProperties([]);
+    setProperties([{ property: "", value: "" }, { property: "", value: "" }]);
     setRoyalty(0);
     setIsUnlockableContent(false);
     setUnlockableContent("");
     setCollection("");
     setNewCollection(false);
-    setCollectionBanner({ preview: "", raw: "" });
-    setCollectionLogo({ preview: "", raw: "" });
+    setCollectionBanner({ preview: "", raw: "", fileType: "" });
+    setCollectionLogo({ preview: "", raw: "", fileType: "" });
     setCollectionDescription("");
     setInstagramLink("");
     setTwitterLink("");
@@ -263,6 +237,7 @@ function CreateNft(props) {
     setWebsiteLink("");
     setModalAlert(false);
     setRoyaltyAlert(false);
+    setMintButtonStatus(0);
   };
 
   const fetchCollection = async () => {
@@ -303,7 +278,6 @@ function CreateNft(props) {
       nftmarketlayeraddress,
       xdc3
     );
-    const tokenCount = await marketContract.methods.tokenCount().call();
     const collectionData = await marketContract.methods
       .fetchCollections()
       .call();
@@ -323,13 +297,11 @@ function CreateNft(props) {
       setCollectionEmpty(false);
     }
     setLoadingIcon(empty);
-
     return false;
   };
 
   const mintNFT = async () => {
     setRoyaltyAlert(false);
-    
     if(file.raw === "") {
       setIsAssetEmpty(true);
       document.getElementById("nft-asset").scrollIntoView();
@@ -460,28 +432,20 @@ function CreateNft(props) {
   const updateMarketplace = async (url) => {
     try {
         const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
-
         const contract = new xdc3.eth.Contract(NFT.abi, nftaddress, isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address);
         let data = contract.methods.createToken(url).encodeABI();
-
         const tx = {
             from: isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address,
             to: nftaddress,
             data
         };
         let gasLimit = await xdc3.eth.estimateGas(tx);
-
         tx["gas"] = gasLimit
-
         let transaction = await SendTransaction(tx)
-
         setMintButtonStatus(2);
-
         var txReceipt = await xdc3.eth.getTransactionReceipt(transaction.transactionHash)
         var tokenId = await txReceipt.logs[0].topics[3]
-
         const weiprice = await xdc3.utils.toWei(price, "ether");
-
         const contract2 = new xdc3.eth.Contract(NFTMarketLayer1.abi, nftmarketlayeraddress, isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address);
         data = contract2.methods.createMarketItem(
           Number(tokenId), 
@@ -495,18 +459,14 @@ function CreateNft(props) {
           name, 
           collection
         ).encodeABI()
-
         const tx2 = {
             from: isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address,
             to: nftmarketlayeraddress,
             value: "",
             data
         }
-
         gasLimit = await xdc3.eth.estimateGas(tx2);
-
         tx2["gas"] = gasLimit;
-
         transaction = await SendTransaction(tx2);
         setMintButtonStatus(3);
     } catch (error) {
@@ -554,7 +514,6 @@ function CreateNft(props) {
           </VStack>
         </FadedBack>
       )}
-
       {modalAlert && (
         <FadedBack>
           <VStack
@@ -575,7 +534,6 @@ function CreateNft(props) {
                 clearForm();
               }}
             ></TxModal>
-
             {/* <TxModal
               isOffer={true}
               cancelOffer=""
@@ -583,9 +541,7 @@ function CreateNft(props) {
               onChange=""
               offerPrice=""
             ></TxModal> */}
-
             {/* <TxModal isProcessing={true}></TxModal> */}
-
             {/* <TxModal
               isPurchaised={true}
               PurchaisedNftName="Amazing Plug #001"
@@ -593,7 +549,6 @@ function CreateNft(props) {
               cancelBtnPurchaise=""
               confirmBtnPurchaise=""
             ></TxModal> */}
-
             {/* <TxModal
               isList={true}
               ListedNftName="Amazing Woman #001"
@@ -604,7 +559,6 @@ function CreateNft(props) {
           </VStack>
         </FadedBack>
       )}
-
       {royaltyAlert && (
         <FadedBack>
           <VStack
@@ -629,7 +583,6 @@ function CreateNft(props) {
           </VStack>
         </FadedBack>
       )}
-
       <HStack id={"creation-banner"} backgroundimage={CreationBar}>
         <HStack width="1200px" height="157px" padding="0px 30px">
           <TitleBold27 textcolor={appStyle.colors.white}>
@@ -638,11 +591,8 @@ function CreateNft(props) {
         </HStack>
       </HStack>
       <ContentCreation>
-        {/* Creation Content */}
-
         <VStack spacing="51px">
           <HStack padding="0 39px" spacing="69px" responsive={true}>
-            {/* Preview Square */}
             <VStack maxwidth={size.width < 768 ? "320px" : "489px"}>
               <HStack id={"nft-asset"}>
                 <TitleBold15 textcolor={({ theme }) => theme.text}>
@@ -660,7 +610,6 @@ function CreateNft(props) {
                 height={size.width < 768 ? "320px" : "489px"}
                 file={file}
                 secondaryFile={preview}
-                // Revisar aqui
                 button={"upload-button"}
                 secondaryButton={"preview-file"}
                 isUploading={uploadNFT}
@@ -702,25 +651,6 @@ function CreateNft(props) {
                       height="39px"
                     ></ButtonApp>
                     <Spacer></Spacer>
-                    {/* <ButtonApp
-                      onClick={() =>
-                        setFile({ preview: "", raw: "", fileType: "" })
-                      }
-                      background={appStyle.colors.cleanGray}
-                      width="180px"
-                      height="39px"
-                    ></ButtonApp>*/}
-
-                    {/* btnStatus, 0 is default, 1 is uploading, 2 is success, 3 is failed */}
-
-                    {/* <ButtonApp
-                      text="Upload"
-                      btnStatus={0}
-                      textcolor={appStyle.colors.white}
-                      onClick={addToIPFS}
-                      width="180px"
-                      height="39px"
-                    ></ButtonApp> */}
                   </HStack>
                 </ButtonsNFT>
               )}
@@ -737,8 +667,6 @@ function CreateNft(props) {
                 </HStack>
               ) : null}
             </VStack>
-
-            {/* Form with Name, Description and Price */}
             <VStack spacing="18px" width="100%">
               <HStack>
                 <TitleBold15 textcolor={({ theme }) => theme.text}>
@@ -771,7 +699,6 @@ function CreateNft(props) {
                   </CaptionRegular>
                 </HStack>
               ) : null}
-
               <HStack>
                 <TitleBold15 textcolor={({ theme }) => theme.text}>
                   Description
@@ -785,7 +712,6 @@ function CreateNft(props) {
                   setDescription(event.target.value);
                 }}
               ></TextAreaStyled>
-
               <HStack>
                 <TitleBold15 textcolor={({ theme }) => theme.text}>
                   Price
@@ -842,14 +768,12 @@ function CreateNft(props) {
             </VStack>
           </HStack>
           <Divider></Divider>
-
           <HStack
             padding="0 39px"
             spacing="69px"
             responsive={true}
             alignment="flex-start"
           >
-            {/* Properties */}
             <VStack alignment="flex-start">
               <TitleBold15 textcolor={({ theme }) => theme.text}>
                 Properties
@@ -858,7 +782,6 @@ function CreateNft(props) {
                 Create custom properties that define the Rarity of your NFT.
                 Properties are shown underneath your piece.
               </BodyRegular>
-
               <HStack
                 flexwrap="wrap"
                 height="auto"
@@ -866,7 +789,6 @@ function CreateNft(props) {
                 padding="0"
                 justify={size.width < 768 ? "center" : "flex-start"}
               >
-                {/* Value variables are "Property" and "Value", user can add or erase as many they wish */}
                 {properties.map((property, i) => (
                   <PropertyValue
                     propertyKey={i}
@@ -892,7 +814,6 @@ function CreateNft(props) {
                   ></PropertyValue>
                 ))}
               </HStack>
-
               <HStack>
                 <ButtonApp
                   height="39px"
@@ -913,8 +834,6 @@ function CreateNft(props) {
                 ></ButtonApp>
               </HStack>
             </VStack>
-
-            {/* Royalties, Collection Selector and Unlockables */}
             <VStack spacing="39px">
               <VStack width="100%" alignment="flex-start">
                 <TitleBold15 textcolor={({ theme }) => theme.text}>
@@ -941,7 +860,6 @@ function CreateNft(props) {
                   }}
                 ></InputStyled>
               </VStack>
-
               <VStack width="100%" alignment="flex-start">
                 <TitleBold15 textcolor={({ theme }) => theme.text}>
                   Unlockable Content
@@ -1035,7 +953,6 @@ function CreateNft(props) {
             <>
               <HStack responsive={true} spacing="0px" alignment="flex-start">
                 <VStack width="100%" padding="30px" spacing="150px">
-                  {/* Banner Image */}
                   <VStack>
                     <TitleBold15>
                       Upload Banner and Collection Image
@@ -1057,7 +974,6 @@ function CreateNft(props) {
                       style={{ display: "none" }}
                       onChange={handleChangeUploadMultimediaCollection}
                     />
-
                     {collectionBanner.raw !== "" && (
                       <ButtonsBanner>
                         <HStack
@@ -1078,13 +994,6 @@ function CreateNft(props) {
                             height="36px"
                           ></ButtonApp>
                           <Spacer></Spacer>
-                          {/* <ButtonApp
-                            text="Upload"
-                            textcolor={appStyle.colors.white}
-                            onClick={addToIPFSCollectionBanner}
-                            width="81px"
-                            height="36px"
-                          ></ButtonApp> */}
                         </HStack>
                       </ButtonsBanner>
                     )}
@@ -1108,7 +1017,6 @@ function CreateNft(props) {
                           setBorder={true}
                           isUploading={uploadLogoStatus}
                         ></UploadMultimedia>
-
                         {collectionLogo.raw !== "" && (
                           <ButtonsLogo>
                             <HStack
@@ -1128,14 +1036,6 @@ function CreateNft(props) {
                                 width="81px"
                                 height="36px"
                               ></ButtonApp>
-
-                              {/* <ButtonApp
-                                text="Upload"
-                                textcolor={appStyle.colors.white}
-                                onClick={addToIPFSCollectionLogo}
-                                width="81px"
-                                height="36px"
-                              ></ButtonApp>*/}
                             </HStack>
                           </ButtonsLogo>
                         )}
@@ -1191,8 +1091,6 @@ function CreateNft(props) {
                     </HStack>
                   </VStack>
                 </VStack>
-
-                {/* Collection Name  URL and Description */}
                 <VStack width="100%" padding="30px">
                   <VStack alignment="flex-start" width="100%">
                     <TitleBold15>Collection Name</TitleBold15>
@@ -1236,47 +1134,7 @@ function CreateNft(props) {
                         </CaptionRegular>
                       </HStack>
                     ) : null}
-
-                    {/* {collectionExists ? (
-                      <>
-                        <HStack
-                          background={appStyle.colors.yellow}
-                          padding="6px 15px"
-                          border="6px"
-                        >
-                          <CaptionRegular
-                            textcolor={appStyle.colors.darkYellow}
-                          >
-                            Collection name already taken. Please choose a
-                            different name.
-                          </CaptionRegular>
-                        </HStack>
-                      </>
-                    ) : (
-                      <>
-                        <HStack
-                          background={appStyle.colors.softGreen}
-                          padding="6px 15px"
-                          border="6px"
-                        >
-                          <CaptionRegular textcolor={appStyle.colors.darkGreen}>
-                            Collection Name Available
-                          </CaptionRegular>
-                        </HStack>
-
-                        <HStack
-                          background={appStyle.colors.softRed}
-                          padding="6px 15px"
-                          border="6px"
-                        >
-                          <CaptionRegular textcolor={appStyle.colors.darkRed}>
-                            Error Message for Inputs
-                          </CaptionRegular>
-                        </HStack>
-                      </>
-                    )} */}
                   </VStack>
-
                   <VStack alignment="flex-start" width="100%">
                     <TitleBold15>Collection URL</TitleBold15>
                     <InputStyledURL
@@ -1299,8 +1157,6 @@ function CreateNft(props) {
             </>
           ) : null}
           <Divider></Divider>
-
-          {/* Blockchain and Mint Button */}
           <HStack padding="0 39px" spacing="69px" responsive={true}>
             <HStack width="100%">
               <IconImg url={xinfinLogo} width="45px" height="45px"></IconImg>
@@ -1358,54 +1214,6 @@ const ContentCreation = styled(motion.div)`
   max-width: 1200px;
   margin: 0 auto;
 `;
-
-//         this.state = {
-//             fileUrl: null,
-//             file: null,
-//             name: "",
-//             price: 0,
-//             description: "",
-//             hasUnlockableContent: false,
-//             unlockableContent: "",
-//             hasProperties: false,
-//             properties: [{ property: "", value : "" }],
-//             collection: "",
-//             collectionDescription: "",
-//             creator: "",
-//             collectionBannerUrl: null,
-//             collectionLogoUrl: null,
-//             twitterUrl: "",
-//             instagramUrl: "",
-//             discordUrl: "",
-//             websiteUrl: "",
-//             royalty: 0,
-//             existingCollection: false,
-//             ownedCollections: false,
-//             mintSuccess: false,
-//             nftContract: "",
-//             nftItemID: "",
-//             uploading: false,
-//             minting: false,
-//             updatingLedger: false,
-//             ownedCollection: null,
-//             uploadProgress: 0.00,
-//             uploadFailure: false,
-//             mintFailure: false,
-//             previewUrl: ""
-//         }
-//     }
-
-//     isImage = (file) => {
-//         return !!file?.type.match('image.*');
-//     }
-
-//     isVideo = (file) => {
-//         return !!file?.type.match('video.*');
-//     }
-
-//     isAudio = (file) => {
-//         return !!file?.type.match('audio.*');
-//     }
 
 const ButtonsBanner = styled(motion.div)`
   position: absolute;

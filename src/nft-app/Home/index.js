@@ -64,7 +64,6 @@ const Home = () => {
   const getData = async () => {
     try {
       isSetLoading(true);
-      const wallet = await GetWallet();
       const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
       const marketContract = new xdc3.eth.Contract(
         NFTMarketLayer1.abi,
@@ -72,23 +71,10 @@ const Home = () => {
         xdc3
       );
       const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
-      if (wallet.wallet.address !== "")
-        var getVal = await nftContract.methods
-          .isApprovedForAll(
-            isXdc(wallet.wallet.address)
-              ? fromXdc(wallet.wallet.address)
-              : wallet.wallet.address,
-            nftmarketlayeraddress
-          )
-          .call();
-
       const featuredNFTs = await Promise.all(
         featuredNFTList.map(async (i) => {
-          var featuredNFT = await marketContract.methods
-            .idToMarketItem(i)
-            .call();
           var featuredNFTUri = await nftContract.methods
-            .tokenURI(featuredNFT.tokenId)
+            .tokenURI(i)
             .call();
           var featuredNFTMetadata = await axios.get(featuredNFTUri);
           let featuredNFTData = {
@@ -104,7 +90,6 @@ const Home = () => {
           return featuredNFTData;
         })
       );
-
       const spotlightCollections = await Promise.all(
         spotlightCollectionList.map(async (name, i) => {
           var collectionData = await marketContract.methods
@@ -129,7 +114,6 @@ const Home = () => {
               if (parseInt(price) < lowestPrice) {
                 lowestPrice = parseInt(price);
               }
-              var eventCount = item.eventCount;
               var events = [];
               var tokenEvents = await marketContract.methods
                 .getTokenEventHistory(item.tokenId)
@@ -151,8 +135,6 @@ const Home = () => {
             id: i,
             name: collectionMetadata?.data?.collection?.name,
             collectionLogo: collectionMetadata?.data?.collection?.logo,
-            fileType: collectionMetadata?.data?.collection?.nft?.fileType,
-            preview: collectionMetadata?.data?.collection?.nft?.preview,
             floorPrice: lowestPrice,
             volumeTraded: volumeTraded,
             items:!burnedCollections.includes(collectionMetadata?.data?.collection?.name) ? collectionData2.length : collectionData2.length - 1,
@@ -161,12 +143,11 @@ const Home = () => {
           return collection;
         })
       );
-
       const trendingItems = await Promise.all(
         trendingItemList.map(async (i) => {
           var itemData = await marketContract.methods.idToMarketItem(i).call();
           const trendingItemUri = await nftContract.methods
-            .tokenURI(itemData.tokenId)
+            .tokenURI(i)
             .call();
           var trendingItemMetadata = await axios.get(trendingItemUri);
           var price = await xdc3.utils.fromWei(itemData.price, "ether");
@@ -175,21 +156,14 @@ const Home = () => {
             collectionLogo: trendingItemMetadata?.data?.collection?.logo,
             collectionName: trendingItemMetadata?.data?.collection?.name,
             tokenId: itemData.tokenId,
-            itemId: itemData.itemId,
-            owner: itemData.owner,
             image: trendingItemMetadata?.data?.collection?.nft?.image,
             name: trendingItemMetadata?.data?.collection?.nft?.name,
-            description:
-              trendingItemMetadata?.data?.collection?.nft?.description,
-            nftContract: itemData.nftContract,
-            isListed: itemData.isListed,
             fileType: trendingItemMetadata?.data?.collection?.nft?.fileType,
             preview: trendingItemMetadata?.data?.collection?.nft?.preview,
           };
           return item;
         })
       );
-
       setCollections(spotlightCollections);
       setNFts(trendingItems);
       setFeaturedNFT(featuredNFTs);
@@ -200,8 +174,6 @@ const Home = () => {
   };
 
   // const getBlacklist = async () => {
-  //   const wallet = await GetWallet();
-  //   setWallet(wallet);
   //   const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
   //   const oldMarketContract = new xdc3.eth.Contract(
   //     NFTMarket.abi,
@@ -210,7 +182,6 @@ const Home = () => {
   //   );
   //   const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
   //   const data = await oldMarketContract.methods.fetchMarketItems().call();
-
   //   var newBlacklist = [];
   //   const marketItems = await Promise.all(
   //     data.map(async (i) => {
@@ -219,7 +190,7 @@ const Home = () => {
   //       }
   //     })
   //   );
-  //   // console.log(newBlacklist)
+  //   console.log(newBlacklist)
   // };
 
   const truncateAddress = (address) => {
@@ -235,6 +206,10 @@ const Home = () => {
   useEffect(() => {
     getData();
     // getBlacklist()
+  }, []);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
   }, []);
 
   return (

@@ -6,6 +6,8 @@ import { BodyBold, BodyRegular, TitleBold18 } from "./TextStyles";
 import ReactPlayer from "react-player";
 import { appStyle } from "./AppStyles";
 import ButtonApp from "./Buttons";
+import styled from "styled-components";
+import { motion } from "framer-motion/dist/framer-motion";
 
 function NftContainer(props) {
   const {
@@ -18,6 +20,7 @@ function NftContainer(props) {
     onClick,
     onClickCreator,
     fileType,
+    owner
   } = props;
 
   const scaleImage = {
@@ -96,6 +99,7 @@ function NftContainer(props) {
             onClick={onClick}
           >
             <HStack padding="15px">
+              {owner ? <OwnerTag>OWNER</OwnerTag> : <CreatorTag>CREATOR</CreatorTag>}
               <Spacer></Spacer>
               <IconImg
                 url={creatorImage}
@@ -141,7 +145,7 @@ function NftContainer(props) {
                   <TitleBold18>
                     {price.toLocaleString(undefined, {
                       maximumFractionDigits: 2,
-                    })}
+                    }) || "0"}
                   </TitleBold18>
                 </HStack>
               </HStack>
@@ -163,3 +167,27 @@ function NftContainer(props) {
 }
 
 export { NftContainer };
+
+const OwnerTag = styled(motion.div)`
+  position: absolute;
+  top: 50px;
+  right: 13px;
+  background: white;
+  padding: 3px 6px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: bold;
+  z-index: 1;
+`;
+
+const CreatorTag = styled(motion.div)`
+  position: absolute;
+  top: 50px;
+  right: 8px;
+  background: white;
+  padding: 3px 6px;
+  border-radius: 6px;
+  font-size: 10px;
+  font-weight: bold;
+  z-index: 1;
+`;

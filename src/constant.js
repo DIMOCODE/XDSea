@@ -1,7 +1,7 @@
 
 export const HTTP_PROVIDER = {
     50: "https://xdsearpc.blocksscan.io",
-    51: "https://apothemrpc.blocksscan.io",
+    51: "https://rpc.apothem.network",
 };
 
 const NETWORK_DICT = {

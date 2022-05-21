@@ -2,7 +2,6 @@ import React from "react";
 import { useState } from "react";
 import { IconImg, VStack, HStack, Spacer, ZStack, ZItem } from "./Stacks";
 import { appStyle } from "./AppStyles";
-
 import miniXdcLogo from "../images/miniXdcLogo.png";
 import {
   BodyBold,
@@ -14,8 +13,7 @@ import {
 import ButtonApp from "./Buttons";
 import {
   motion,
-  AnimatePresence,
-  LayoutGroup,
+  AnimatePresence
 } from "framer-motion/dist/framer-motion";
 
 function Collection(props) {
@@ -34,11 +32,11 @@ function Collection(props) {
     keyContent,
     keyID,
   } = props;
+
   const scaleImage = {
     initial: {
       scale: 1,
     },
-
     hover: {
       scale: 1.05,
       transition: {
@@ -47,12 +45,10 @@ function Collection(props) {
       },
     },
   };
-
   const scaleContainer = {
     initial: {
       scale: 1,
     },
-
     hover: {
       scale: 1.02,
       transition: {
@@ -61,13 +57,11 @@ function Collection(props) {
       },
     },
   };
-
   const background = {
     initial: {
       background:
         "linear-gradient(359.63deg, rgba(2, 2, 2, 0.74) 5.27%, rgba(2, 2, 2, 0.602581) 20.13%, rgba(2, 2, 2, 0) 40.93%)",
     },
-
     hover: {
       transition: {
         type: "spring",
@@ -77,7 +71,6 @@ function Collection(props) {
         "linear-gradient(359.63deg, rgba(2, 2, 2, 0.74) 5.27%, rgba(2, 2, 2, 0.74) 20.13%, rgba(2, 2, 2, 0.74) 40.93%)",
     },
   };
-
   const [isVisible, setIsVisible] = useState(false);
 
   const truncateAddress = (address) => {
@@ -110,7 +103,6 @@ function Collection(props) {
             ></IconImg>
           </ZItem>
         </ZItem>
-
         <ZItem>
           <AnimatePresence>
             <VStack
@@ -148,6 +140,8 @@ function Collection(props) {
                       bordercolor="white"
                       bordersize="3px"
                       backsize="cover"
+                      onClick={onClickCreator}
+                      cursor={"pointer"}
                     ></IconImg>
                     <CaptionBold textcolor={appStyle.colors.white}>
                       CREATOR
@@ -199,7 +193,7 @@ function Collection(props) {
                       align="center"
                       textcolor={appStyle.colors.white}
                     >
-                      {collectionDescription || "Collection Description"}
+                      {collectionDescription || null}
                     </BodyRegular>
                     <HStack spacing="6px">
                       <VStack
@@ -222,7 +216,6 @@ function Collection(props) {
                           Floor Price
                         </CaptionBoldShort>
                       </VStack>
-
                       <VStack
                         border="9px"
                         padding="18px 0"
@@ -236,7 +229,6 @@ function Collection(props) {
                           Owners
                         </CaptionBoldShort>
                       </VStack>
-
                       <VStack
                         border="9px"
                         padding="18px 0"
@@ -250,7 +242,6 @@ function Collection(props) {
                           NFT's
                         </CaptionBoldShort>{" "}
                       </VStack>
-
                       <VStack
                         border="9px"
                         padding="18px 0"
@@ -275,7 +266,6 @@ function Collection(props) {
                         </CaptionBoldShort>
                       </VStack>
                     </HStack>
-
                     <ButtonApp
                       height="39px"
                       background={appStyle.colors.blue}
@@ -289,141 +279,6 @@ function Collection(props) {
               )}
             </VStack>
           </AnimatePresence>
-
-          {/* <AnimatePresence>
-              <VStack
-                variants={creator}
-                layout
-                padding="26px 26px"
-                height="100%"
-                background={appStyle.colors.darkgrey90}
-              >
-                <VStack spacing="9px" background="red">
-                  <motion.div whileTap={onClickCreator}>
-                    <IconImg
-                      url={creatorLogo}
-                      width="60px"
-                      height="60px"
-                      border="60px"
-                      bordercolor="white"
-                      bordersize="3px"
-                      backsize="cover"
-                    ></IconImg>
-                  </motion.div>
-                  <CaptionBold textcolor={appStyle.colors.white}>
-                    CREATOR
-                  </CaptionBold>
-                  <CaptionBoldShort textcolor={appStyle.colors.white}>
-                    {truncateAddress(creatorName)}
-                  </CaptionBoldShort>
-                  <TitleBold21
-                    display={"-webkit-box"}
-                    overflow={"hidden"}
-                    clamp={"1"}
-                    orient={"vertical"}
-                  >
-                    {collectionName || "Collection Name"}
-                  </TitleBold21>
-                </VStack>
-                {isVisible && (
-                  <VStack width="100%">
-                    <BodyRegular
-                      display={"-webkit-box"}
-                      overflow={"hidden"}
-                      clamp={"1"}
-                      orient={"vertical"}
-                      align="center"
-                      textcolor={appStyle.colors.white}
-                    >
-                      {collectionDescription || "Collection Description"}
-                    </BodyRegular>
-                    <HStack spacing="6px">
-                      <VStack
-                        spacing="9px"
-                        border="9px"
-                        padding="18px 0"
-                        background={appStyle.colors.white30}
-                      >
-                        <HStack spacing="6px">
-                          <IconImg
-                            url={miniXdcLogo}
-                            width="18px"
-                            height="18px"
-                          ></IconImg>
-                          <BodyBold textcolor={appStyle.colors.white}>
-                            {floorprice || "0"}
-                          </BodyBold>
-                        </HStack>{" "}
-                        <CaptionBoldShort textcolor={appStyle.colors.white}>
-                          Floor Price
-                        </CaptionBoldShort>
-                      </VStack>
-
-                      <VStack
-                        border="9px"
-                        padding="18px 0"
-                        spacing="9px"
-                        background={appStyle.colors.white30}
-                      >
-                        <BodyBold textcolor={appStyle.colors.white}>
-                          {owners || "0"}
-                        </BodyBold>{" "}
-                        <CaptionBoldShort textcolor={appStyle.colors.white}>
-                          Owners
-                        </CaptionBoldShort>
-                      </VStack>
-
-                      <VStack
-                        border="9px"
-                        padding="18px 0"
-                        background={appStyle.colors.white30}
-                        spacing="9px"
-                      >
-                        <BodyBold textcolor={appStyle.colors.white}>
-                          {nfts || "0"}
-                        </BodyBold>
-                        <CaptionBoldShort textcolor={appStyle.colors.white}>
-                          NFT's
-                        </CaptionBoldShort>{" "}
-                      </VStack>
-
-                      <VStack
-                        border="9px"
-                        padding="18px 0"
-                        background={appStyle.colors.white30}
-                        spacing="9px"
-                      >
-                        <HStack spacing="6px">
-                          <IconImg
-                            url={miniXdcLogo}
-                            width="18px"
-                            height="18px"
-                          ></IconImg>
-                          <BodyBold textcolor={appStyle.colors.white}>
-                            {volumetraded || "0"}
-                          </BodyBold>
-                        </HStack>
-                        <CaptionBoldShort
-                          textcolor={appStyle.colors.white}
-                          align="center"
-                        >
-                          Volume Traded
-                        </CaptionBoldShort>
-                      </VStack>
-                    </HStack>
-
-                    <ButtonApp
-                      height="39px"
-                      background={appStyle.colors.blue}
-                      text="Visit Collection"
-                      textcolor={appStyle.colors.white}
-                      onClick={onClickCollection}
-                      cursor={"pointer"}
-                    ></ButtonApp>
-                  </VStack>
-                )}
-              </VStack>
-            </AnimatePresence> */}
         </ZItem>
       </ZStack>
     </VStack>

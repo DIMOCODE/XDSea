@@ -1,5 +1,4 @@
 import React from "react";
-import { useState } from "react";
 import {
   HStack,
   IconImg,
@@ -15,6 +14,7 @@ function ModalAds(props) {
   const { onClick, onClickCancel, imageAd } = props;
 
   const size = useWindowSize();
+
   return (
     <FixedScreen>
       <VStack
@@ -28,7 +28,6 @@ function ModalAds(props) {
           height={size.width < 768 ? "360px" : "510px"}
           border="15px"
         ></IconImg>
-
         <HStack>
           <ButtonApp
             width="150px"
@@ -50,6 +49,7 @@ function ModalAds(props) {
     </FixedScreen>
   );
 }
+
 export { ModalAds };
 
 const FixedScreen = styled(motion.div)`

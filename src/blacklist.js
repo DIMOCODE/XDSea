@@ -5,3 +5,4 @@ export const spotlightCollectionList = ["XDSEA MONKEYS ORIGINAL ART", "The Lucid
 export const trendingItemList = ["97", "760", "1772", "1883", "2462", "2525"];
 export const burnedCollections = ["The Lucid Women", "NFTHC", "DØP3 Punks "];
 export const burnedNFTs = ["119", "1778", "2756"];
+export const deletedCollections = ["Untitled Collection 7"];

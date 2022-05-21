@@ -1,21 +1,16 @@
 import React from "react";
-import { useState } from "react";
 import { VStack, IconImg, ZStack, HStack, ZItem, Spacer } from "./Stacks";
 import {
   BodyRegular,
   CaptionRegular,
   BodyBold,
-  CaptionBold,
   TitleBold15,
 } from "./TextStyles";
 import multimediaIcon from "../images/uploadicon.png";
-import updateIcon from "../images/update.png";
 import styled from "styled-components";
 import { appStyle } from "./AppStyles";
 import { motion } from "framer-motion/dist/framer-motion";
 import { UploadLogo } from "./UploadLogo";
-import checkOK from "../images/checkOK.png";
-import tryAgain from "../images/tryAgain.png";
 import { isAudio, isImage, isVideo } from "../common";
 import ReactPlayer from "react-player";
 import audioCover from "../images/coverAudio.png";
@@ -26,7 +21,6 @@ function UploadMultimedia(props) {
     width,
     height,
     sizeText,
-    backsize,
     secondaryFile,
     secondaryButton,
     secondaryUploading,
@@ -36,28 +30,12 @@ function UploadMultimedia(props) {
     isUploading,
     description,
     setBorder,
-    uploadConfirmed,
-    uploadFailed,
     borderLoader,
   } = props;
 
   const borderColor = {
     border: "6px solid #FFFFFF",
   };
-
-  // const handleUpload = async (e) => {
-  //   e.preventDefault();
-  //   const formData = new FormData();
-  //   formData.append("image", image.raw);
-
-  //   await fetch("YOUR_URL", {
-  //     method: "POST",
-  //     headers: {
-  //       "Content-Type": "multipart/form-data",
-  //     },
-  //     body: formData,
-  //   });
-  // };
 
   return (
     <MultimediaBox>
@@ -72,7 +50,6 @@ function UploadMultimedia(props) {
             spacing="0px"
           >
             <IconImg url={multimediaIcon} width="45px" height="40px"></IconImg>
-
             <VStack maxheight="60px" spacing="6px">
               <BodyBold>{description}</BodyBold>
               <CaptionRegular align="Center">{sizeText}</CaptionRegular>
@@ -112,27 +89,6 @@ function UploadMultimedia(props) {
               </ZItem>
             )}
           </ZStack>
-
-          {/* <TagUpload>
-              <HStack height="60px">
-                <HStack
-                  height="36px"
-                  background={appStyle.colors.darkgrey60}
-                  border="9px"
-                  width="160px"
-                  spacing="6px"
-                >
-                  <BodyRegular textcolor={appStyle.colors.white}>
-                    Change Content
-                  </BodyRegular>
-                  <IconImg
-                    url={updateIcon}
-                    width="18px"
-                    height="18px"
-                  ></IconImg>
-                </HStack>
-              </HStack>
-            </TagUpload> */}
         </ZStack>
       ) : isVideo(file.fileType) ? (
         <VStack
@@ -156,7 +112,6 @@ function UploadMultimedia(props) {
                 height="100%"
               />
             </ZItem>
-
             {isUploading && (
               <ZItem>
                 <VStack
@@ -211,7 +166,6 @@ function UploadMultimedia(props) {
                 >
                   <VStack padding="30px" whileTap={{ scale: 0.96 }}>
                     <Spacer></Spacer>
-
                     <VStack width="180px">
                       <IconImg
                         url={audioCover}
@@ -243,7 +197,6 @@ function UploadMultimedia(props) {
                 </VStack>
               </ZItem>
             )}
-
             <PlayerAbsolute>
               <ReactPlayer
                 url={
@@ -275,18 +228,6 @@ function UploadMultimedia(props) {
 }
 
 export { UploadMultimedia };
-
-const TagUpload = styled.div`
-  position: absolute;
-  width: 100%;
-  bottom: 0px;
-  cursor: pointer;
-`;
-
-const ConfirmUpload = styled.div`
-  position: absolute;
-  bottom: 15px;
-`;
 
 const MultimediaBox = styled(motion.div)``;
 

@@ -1,7 +1,6 @@
 import React from "react";
 import { HStack, IconImg, Spacer, VStack } from "./Stacks";
 import xdcOffer from "../../src/images/xdcOffer.png";
-import successIcon from "../../src/images/successIcon.png";
 import partyIcon from "../../src/images/partyIcon.png";
 import errorIcon from "../../src/images/cancelIcon.png";
 import mintIcon from "../../src/images/mintIcon.png";
@@ -43,6 +42,7 @@ function TxModal(props) {
     cancelActionModal,
     confirmActionModal,
   } = props;
+
   return (
     <FadedBack>
       <VStack>
@@ -65,7 +65,6 @@ function TxModal(props) {
           {isAction && (
             <>
               <IconImg url={warning} width="59px" height="59px"></IconImg>
-
               <HStack padding="0 30px">
                 <BodyRegular
                   textcolor={({ theme }) => theme.text}
@@ -74,7 +73,6 @@ function TxModal(props) {
                   {actionMessage}
                 </BodyRegular>
               </HStack>
-
               <HStack>
                 <ButtonApp
                   text="Cancel"
@@ -95,7 +93,6 @@ function TxModal(props) {
           {isNotice && (
             <>
               <IconImg url={warning} width="59px" height="59px"></IconImg>
-
               <HStack padding="0 30px">
                 <BodyRegular
                   textcolor={({ theme }) => theme.text}
@@ -104,7 +101,6 @@ function TxModal(props) {
                   {noticeMessage}
                 </BodyRegular>
               </HStack>
-
               <HStack>
                 <ButtonApp
                   text="Okay"
@@ -119,7 +115,6 @@ function TxModal(props) {
             <>
               <VStack flex="0" spacing="6px">
                 <IconImg url={errorIcon} width="54px" height="54px"></IconImg>
-
                 <TitleBold21 textcolor={({ theme }) => theme.text}>
                   Transaction Failed
                 </TitleBold21>
@@ -142,17 +137,14 @@ function TxModal(props) {
               ></ButtonApp>
             </>
           )}
-
           {isOffer && (
             <>
               <VStack flex="0" spacing="0px">
                 <IconImg url={xdcOffer} width="59px" height="59px"></IconImg>
-
                 <TitleBold21 textcolor={({ theme }) => theme.text}>
                   Place an Offer
                 </TitleBold21>
               </VStack>
-
               <InputStyled
                 type="number"
                 placeholder="0.00"
@@ -166,7 +158,6 @@ function TxModal(props) {
                 onChange={onChangeOffer}
                 background={appStyle.colors.darkgrey10}
               ></InputStyled>
-
               <HStack>
                 <ButtonApp
                   text="Cancel"
@@ -184,12 +175,10 @@ function TxModal(props) {
               </HStack>
             </>
           )}
-
           {isMint && (
             <>
               <VStack flex="0" spacing="0px">
                 <IconImg url={mintIcon} width="54px" height="54px"></IconImg>
-
                 <TitleBold21 textcolor={({ theme }) => theme.text}>
                   Mint is in Processing
                 </TitleBold21>
@@ -204,14 +193,11 @@ function TxModal(props) {
               </HStack>
             </>
           )}
-
           {isProcessing && (
             <>
               <VStack flex="0" spacing="6px">
                 <PongSpinner size={60} color="#99A2AF" loading={true} />
-
                 {/* <IconImg url={successIcon} width="54px" height="54px"></IconImg> */}
-
                 <TitleBold21 textcolor={({ theme }) => theme.text}>
                   Processing your Purchaise
                 </TitleBold21>
@@ -226,12 +212,10 @@ function TxModal(props) {
               </HStack>
             </>
           )}
-
           {isList && (
             <>
               <VStack flex="0" spacing="0px">
                 <IconImg url={listIcon} width="54px" height="54px"></IconImg>
-
                 <TitleBold21 textcolor={({ theme }) => theme.text}>
                   List Confirmed{" "}
                 </TitleBold21>
@@ -244,7 +228,6 @@ function TxModal(props) {
                   You listed <b>{ListedNftName}</b>, everyone can buy it now
                 </BodyRegular>
               </HStack>
-
               <IconImg
                 url={ListedImage}
                 backsize="cover"
@@ -269,12 +252,10 @@ function TxModal(props) {
               </HStack>
             </>
           )}
-
           {isPurchaised && (
             <>
               <VStack flex="0" spacing="0px">
                 <IconImg url={partyIcon} width="54px" height="54px"></IconImg>
-
                 <TitleBold21 textcolor={({ theme }) => theme.text}>
                   Congrats
                 </TitleBold21>
@@ -287,7 +268,6 @@ function TxModal(props) {
                   You purchaised <b>{PurchaisedNftName}</b>
                 </BodyRegular>
               </HStack>
-
               <IconImg
                 url={ListedImage}
                 backsize="cover"
@@ -313,7 +293,6 @@ function TxModal(props) {
             </>
           )}
         </VStack>
-
         <Spacer></Spacer>
       </VStack>
     </FadedBack>

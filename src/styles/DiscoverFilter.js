@@ -7,6 +7,7 @@ import { BodyRegular } from "./TextStyles";
 
 function DiscoverFilter(props) {
   const { textcolor, background } = props;
+  
   return (
     <HStack
       spacing="36px"

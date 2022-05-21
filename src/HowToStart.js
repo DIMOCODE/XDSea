@@ -1,6 +1,5 @@
 import { VStack, HStack, Spacer, IconImg } from "./styles/Stacks";
 import styled from "styled-components";
-
 import { motion } from "framer-motion/dist/framer-motion";
 import {
   BodyRegular,
@@ -17,6 +16,7 @@ import useWindowSize from "./styles/useWindowSize";
 
 function HowToStart() {
   const size = useWindowSize();
+  
   return (
     <HowToSection>
       <HStack backgroundimage={backBar}>
@@ -33,7 +33,6 @@ function HowToStart() {
       </HStack>
       <ContentHowTo>
         <VStack padding="30px 30px">
-          {/* Step1 */}
           <HStack
             spacing="0px"
             height={size.width < 768 ? "auto" : "390px"}
@@ -43,7 +42,6 @@ function HowToStart() {
           >
             <VStack width="100%">
               <VStack width="60%">
-                {/* Steps */}
                 <VStack alignment="flex-start" width="100%" maxheight="auto">
                   <Spacer></Spacer>
                   <VStack
@@ -62,7 +60,6 @@ function HowToStart() {
                     Safety First
                   </TitleBold18>
                 </VStack>
-                {/* Bullets */}
                 <VStack alignment="flex-start" width="100%">
                   <BodyRegular>• Setup the wallet of your choice</BodyRegular>
                   <BodyRegular>• Click on Connect</BodyRegular>
@@ -73,13 +70,10 @@ function HowToStart() {
                 </VStack>
               </VStack>
             </VStack>
-            {/* Image Step */}
             <VStack width="100%">
               <IconImg url={Step1} width="390px" height="390px"></IconImg>
             </VStack>
           </HStack>
-
-          {/* Step2 */}
           <HStack
             spacing="0px"
             height={size.width < 768 ? "auto" : "390px"}
@@ -93,8 +87,6 @@ function HowToStart() {
                 height={size.width < 768 ? "390px" : "auto"}
                 spacing="30px"
               >
-                {/* Steps */}
-
                 <VStack alignment="flex-start" width="100%" maxheight="120px">
                   <VStack
                     background={({ theme }) => theme.blue}
@@ -112,7 +104,6 @@ function HowToStart() {
                     Let’s get creative
                   </TitleBold18>
                 </VStack>
-                {/* Bullets */}
                 <VStack alignment="flex-start" width="100%" maxheight="120px">
                   <BodyRegular>
                     • Click on create and select Collection
@@ -127,12 +118,10 @@ function HowToStart() {
                 </VStack>
               </VStack>
             </VStack>
-            {/* Image Step */}
             <VStack width="100%">
               <IconImg url={Step2} width="390px" height="390px"></IconImg>
             </VStack>
           </HStack>
-          {/* Step3 */}
           <HStack
             spacing="0px"
             height={size.width < 768 ? "auto" : "390px"}
@@ -146,8 +135,6 @@ function HowToStart() {
                 height={size.width < 768 ? "390px" : "auto"}
                 spacing="30px"
               >
-                {/* Steps */}
-
                 <VStack alignment="flex-start" width="100%" maxheight="120px">
                   <VStack
                     background={({ theme }) => theme.blue}
@@ -165,7 +152,6 @@ function HowToStart() {
                     Time to show off
                   </TitleBold18>
                 </VStack>
-                {/* Bullets */}
                 <VStack alignment="flex-start" width="100%" maxheight="160px">
                   <BodyRegular>• Click on create and select NFT</BodyRegular>
                   <BodyRegular>
@@ -181,13 +167,10 @@ function HowToStart() {
                 </VStack>
               </VStack>
             </VStack>
-            {/* Image Step */}
             <VStack width="100%">
               <IconImg url={Step3} width="390px" height="390px"></IconImg>
             </VStack>
           </HStack>
-
-          {/* Step4 */}
           <HStack
             spacing="0px"
             height={size.width < 768 ? "auto" : "390px"}
@@ -197,7 +180,6 @@ function HowToStart() {
           >
             <VStack width="100%">
               <VStack width="60%">
-                {/* Steps */}
                 <VStack alignment="flex-start" width="100%" maxheight="auto">
                   <Spacer></Spacer>
                   <VStack
@@ -216,16 +198,13 @@ function HowToStart() {
                     Let’s make some money and change the world
                   </TitleBold18>
                 </VStack>
-                {/* Bullets */}
                 <VStack alignment="flex-start" width="100%">
                   <BodyRegular>• Set your custom price and mint it</BodyRegular>
                   <BodyRegular>• Wait for the magic to happen</BodyRegular>
-
                   <Spacer></Spacer>
                 </VStack>
               </VStack>
             </VStack>
-            {/* Image Step */}
             <VStack width="100%">
               <IconImg url={Step4} width="390px" height="390px"></IconImg>
             </VStack>

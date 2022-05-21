@@ -20,6 +20,7 @@ function SelectStyled(props) {
     </ZStack>
   );
 }
+
 export { SelectStyled };
 
 const SelectInput = styled.select`
@@ -29,7 +30,6 @@ border-radius: 9px;
 padding: 0px 45px 0px 12px;
 border-style: solid;
 border-color: rgba(255, 255, 255, 0);
-
 border-size: 0px
 -moz-box-sizing: border-box; 
 box-sizing: border-box;
@@ -40,11 +40,8 @@ letter-spacing: -0.01em;
 -moz-appearance:none !important;
 -webkit-appearance: none !important; 
 appearance: none !important;
-
 color:${({ theme }) => theme.text};
 background:${({ theme }) => theme.backElement};
-
-
 `;
 
 const IconSelect = styled.div`
