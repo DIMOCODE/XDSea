@@ -91,7 +91,6 @@ export const TitleBold18 = styled(motion.h3).attrs((props) => ({
   font-weight: bold;
   letter-spacing: -0.04em;
   font-size: 18px;
-
   color: ${(props) => props.textcolor};
 `;
 
@@ -137,6 +136,7 @@ export const BodyBold = styled(motion.p).attrs((props) => ({
   textcolor: props.textcolor || props.theme.text,
   align: props.align || "Left",
   marginBottom: props.marginBottom || "0px",
+  cursor: props.cursor || "default"
 }))`
   font-style: normal;
   font-weight: bold;
@@ -144,6 +144,7 @@ export const BodyBold = styled(motion.p).attrs((props) => ({
   line-height: 18px;
   letter-spacing: -0.01em;
   text-align: ${(props) => props.align};
+  cursor: ${(props) => props.cursor};
   color: ${(props) => props.textcolor};
   margin-bottom: ${(props) => props.marginBottom};
 `;
