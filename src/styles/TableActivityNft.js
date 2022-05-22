@@ -36,7 +36,7 @@ function TableActivityNft(props) {
       return Math.floor(interval) + " minutes ago";
     }
     return Math.floor(seconds) + " seconds ago";
-  };
+  }
 
   const truncateAddress = (address) => {
     return address
@@ -77,77 +77,90 @@ function TableActivityNft(props) {
       </HStack>
       <Divider></Divider>
       {props?.activity.map((item) => (
-        <HStack key={item.id} width="100%" height={heightRow}>
-          <Spacer></Spacer>
-          <HStack spacing="6px" width={widthRow} background={debugColor}>
-            <IconImg
-              url={
-                item.event === "Transfer"
-                  ? transferIcon
-                  : item.event === "Price"
+        <VStack width="100%" spacing="0">
+          <HStack key={item.id} width="100%" height={heightRow}>
+            <HStack
+              spacing="6px"
+              width={widthRow}
+              background={debugColor}
+              justify="flex-start"
+            >
+              <IconImg
+                url={
+                  item.event === "Transfer"
+                    ? transferIcon
+                    : item.event === "Price"
                     ? star
                     : null
-              }
-              width="18px"
-              height="18px"
-              border="30px"
-            ></IconImg>
-            <BodyRegular>{item.event}</BodyRegular>
+                }
+                width="18px"
+                height="18px"
+                border="30px"
+              ></IconImg>
+              <BodyRegular>{item.event}</BodyRegular>
+            </HStack>
+
+            <HStack width={widthRow} background={debugColor}>
+              {item.event.props.children[1].props.children === "Transfer" ||
+              item.event.props.children[1].props.children === "Mint" ||
+              item.event.props.children[1].props.children ===
+                "Withdraw Listing" ||
+              item.event.props.children[1].props.children ===
+                "Offer Withdrawn" ? (
+                <BodyBold></BodyBold>
+              ) : (
+                <HStack spacing="6px">
+                  <IconImg url={xdclogo} width="18px" height="18px"></IconImg>
+                  <BodyRegular>{item.price}</BodyRegular>
+                </HStack>
+              )}
+            </HStack>
+
+            <HStack spacing="6px" width={widthRow} background={debugColor}>
+              <IconImg
+                url={""}
+                width="18px"
+                height="18px"
+                border="30px"
+              ></IconImg>
+              <Tooltip title={item.from}>
+                <BodyRegular>{truncateAddress(item.from)}</BodyRegular>
+              </Tooltip>
+            </HStack>
+
+            <HStack spacing="6px" width={widthRow} background={debugColor}>
+              <IconImg
+                url={""}
+                width="18px"
+                height="18px"
+                border="30px"
+              ></IconImg>
+              <Tooltip title={item.to}>
+                <BodyRegular>{truncateAddress(item.to)}</BodyRegular>
+              </Tooltip>
+            </HStack>
+
+            <HStack background={debugColor} width={widthRow}>
+              <Tooltip
+                title={new Date(item.date * 1000).toLocaleDateString("en-US", {
+                  day: "2-digit",
+                  month: "short",
+                  year: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  second: "2-digit",
+                })}
+              >
+                <BodyRegular>
+                  {item.event.props.children[1].props.children !== "Mint"
+                    ? determineAgoTime(new Date(item.date * 1000))
+                    : null}
+                </BodyRegular>
+              </Tooltip>
+            </HStack>
           </HStack>
-          <Spacer></Spacer>
-          <HStack width={widthRow} background={debugColor}>
-            {item.event.props.children[1].props.children === "Transfer" || item.event.props.children[1].props.children === "Mint" || 
-            item.event.props.children[1].props.children === "Withdraw Listing" || 
-            item.event.props.children[1].props.children === "Offer Withdrawn" ? (
-              <BodyBold></BodyBold>
-            ) : (
-              <HStack spacing="6px">
-                <IconImg url={xdclogo} width="18px" height="18px"></IconImg>
-                <BodyRegular>{item.price}</BodyRegular>
-              </HStack>
-            )}
-          </HStack>
-          <Spacer></Spacer>
-          <HStack spacing="6px" width={widthRow} background={debugColor}>
-            <IconImg
-              url={""}
-              width="18px"
-              height="18px"
-              border="30px"
-            ></IconImg>
-            <Tooltip title={item.from}>
-              <BodyRegular>{truncateAddress(item.from)}</BodyRegular>
-            </Tooltip>
-          </HStack>
-          <Spacer></Spacer>
-          <HStack spacing="6px" width={widthRow} background={debugColor}>
-            <IconImg
-              url={""}
-              width="18px"
-              height="18px"
-              border="30px"
-            ></IconImg>
-            <Tooltip title={item.to}>
-              <BodyRegular>{truncateAddress(item.to)}</BodyRegular>
-            </Tooltip>
-          </HStack>
-          <Spacer></Spacer>
-          <HStack background={debugColor} width={widthRow}>
-            <Tooltip
-              title={new Date(item.date * 1000).toLocaleDateString("en-US", { 
-                day: "2-digit", 
-                month: "short",
-                year: "2-digit",
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-              })}
-            >
-              <BodyRegular>{item.event.props.children[1].props.children !== "Mint" ? determineAgoTime(new Date(item.date * 1000)) : null}</BodyRegular>
-            </Tooltip>
-          </HStack>
-          <Spacer></Spacer>
-        </HStack>
+          <Divider></Divider>
+        </VStack>
       ))}
 
       {/* Table Content */}

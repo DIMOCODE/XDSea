@@ -38,13 +38,7 @@ import tokenIcon from "../../images/tokenID.png";
 import blockchainIcon from "../../images/blockchainIcon.png";
 import banner1 from "../../images/Banner1.jpg";
 import audioCover from "../../images/audioCover0.png";
-import {
-  HStack,
-  IconImg,
-  VStack,
-  Spacer,
-  ZStack,
-} from "../../styles/Stacks";
+import { HStack, IconImg, VStack, Spacer, ZStack } from "../../styles/Stacks";
 import xdclogo from "../../images/miniXdcLogo.png";
 import { AnimatePresence, motion } from "framer-motion/dist/framer-motion";
 import {
@@ -90,15 +84,15 @@ const NFTDetails = (props) => {
   const [buyButtonStatus, setBuyButtonStatus] = useState(0);
   const [placingOffer, setPlacingOffer] = useState(false);
   const [offerButtonStatus, setOfferButtonStatus] = useState(0);
-  const [offerPrice, setOfferPrice] = useState(0.00);
+  const [offerPrice, setOfferPrice] = useState(0.0);
   const [priceIsInvalid, setPriceIsInvalid] = useState(false);
   const [withdrawButtonStatus, setWithdrawButtonStatus] = useState(0);
   const [editingListing, setEditingListing] = useState(false);
   const [editButtonStatus, setEditButtonStatus] = useState(0);
-  const [editPrice, setEditPrice] = useState(0.00);
+  const [editPrice, setEditPrice] = useState(0.0);
   const [listingNFT, setListingNFT] = useState(false);
   const [listButtonStatus, setListButtonStatus] = useState(0);
-  const [listPrice, setListPrice] = useState(0.00);
+  const [listPrice, setListPrice] = useState(0.0);
   const [transferring, setTransferring] = useState(false);
   const [transferButtonStatus, setTransferButtonStatus] = useState(0);
   const [transferAddress, setTransferAddress] = useState(null);
@@ -148,7 +142,9 @@ const NFTDetails = (props) => {
     } else {
       setBuyButtonStatus(4);
     }
-    setTimeout(() => { setBuyButtonStatus(0) }, 1500);
+    setTimeout(() => {
+      setBuyButtonStatus(0);
+    }, 1500);
   };
 
   const placeOffer = async () => {
@@ -157,7 +153,7 @@ const NFTDetails = (props) => {
   };
 
   const offer = async () => {
-    if(isNaN(parseFloat(offerPrice))) {
+    if (isNaN(parseFloat(offerPrice))) {
       setPriceIsInvalid(true);
       return;
     }
@@ -171,7 +167,9 @@ const NFTDetails = (props) => {
     } else {
       setOfferButtonStatus(4);
     }
-    setTimeout(() => { setOfferButtonStatus(0) }, 1500);
+    setTimeout(() => {
+      setOfferButtonStatus(0);
+    }, 1500);
   };
 
   const withdrawListing = async () => {
@@ -187,7 +185,9 @@ const NFTDetails = (props) => {
     } else {
       setWithdrawButtonStatus(4);
     }
-    setTimeout(() => { setWithdrawButtonStatus(0) }, 1500);
+    setTimeout(() => {
+      setWithdrawButtonStatus(0);
+    }, 1500);
   };
 
   const editListing = async (nft) => {
@@ -196,7 +196,7 @@ const NFTDetails = (props) => {
   };
 
   const editNFT = async () => {
-    if(isNaN(parseFloat(editPrice))) {
+    if (isNaN(parseFloat(editPrice))) {
       setPriceIsInvalid(true);
       return;
     }
@@ -210,7 +210,9 @@ const NFTDetails = (props) => {
     } else {
       setEditButtonStatus(4);
     }
-    setTimeout(() => { setEditButtonStatus(0) }, 1500);
+    setTimeout(() => {
+      setEditButtonStatus(0);
+    }, 1500);
   };
 
   const startSale = async () => {
@@ -219,7 +221,7 @@ const NFTDetails = (props) => {
   };
 
   const listNFT = async () => {
-    if(isNaN(parseFloat(listPrice))) {
+    if (isNaN(parseFloat(listPrice))) {
       setPriceIsInvalid(true);
       return;
     }
@@ -233,7 +235,9 @@ const NFTDetails = (props) => {
     } else {
       setListButtonStatus(4);
     }
-    setTimeout(() => { setListButtonStatus(0) }, 1500);
+    setTimeout(() => {
+      setListButtonStatus(0);
+    }, 1500);
   };
 
   const startTransfer = async (nft) => {
@@ -242,7 +246,7 @@ const NFTDetails = (props) => {
   };
 
   const transferNFT = async () => {
-    if(!/0x[a-zA-Z0-9]{40}/.test(transferAddress)) {
+    if (!/0x[a-zA-Z0-9]{40}/.test(transferAddress)) {
       setAddressIsInvalid(true);
       return;
     }
@@ -256,9 +260,11 @@ const NFTDetails = (props) => {
     } else {
       setTransferButtonStatus(4);
     }
-    setTimeout(() => { setTransferButtonStatus(0) }, 1500);
+    setTimeout(() => {
+      setTransferButtonStatus(0);
+    }, 1500);
   };
-  
+
   const withdrawOffer = async (i) => {
     setWithdrawOfferButtonStatus(1);
     var success = false;
@@ -270,7 +276,9 @@ const NFTDetails = (props) => {
     } else {
       setWithdrawOfferButtonStatus(4);
     }
-    setTimeout(() => { setWithdrawOfferButtonStatus(0) }, 1500);
+    setTimeout(() => {
+      setWithdrawOfferButtonStatus(0);
+    }, 1500);
   };
 
   const acceptOffer = async (i) => {
@@ -284,7 +292,9 @@ const NFTDetails = (props) => {
     } else {
       setAcceptOfferButtonStatus(4);
     }
-    setTimeout(() => { setAcceptOfferButtonStatus(0) }, 1500);
+    setTimeout(() => {
+      setAcceptOfferButtonStatus(0);
+    }, 1500);
   };
 
   const isImage = (fileType) => {
@@ -597,13 +607,12 @@ const NFTDetails = (props) => {
           priceInvalid={priceIsInvalid}
           offerPrice={offerPrice}
         ></TxModal>
-        ) : null
-      }
+      ) : null}
       {editingListing ? (
         <TxModal
           isEdit={true}
           cancelEdit={() => {
-            console.log("Here")
+            console.log("Here");
             setEditButtonStatus(0);
             setEditingListing(false);
           }}
@@ -615,8 +624,7 @@ const NFTDetails = (props) => {
           priceInvalid={priceIsInvalid}
           editPrice={editPrice}
         ></TxModal>
-      ) : null
-      }
+      ) : null}
       {listingNFT ? (
         <TxModal
           isList={true}
@@ -632,8 +640,7 @@ const NFTDetails = (props) => {
           priceInvalid={priceIsInvalid}
           listPrice={listPrice}
         ></TxModal>
-        ) : null
-      }
+      ) : null}
       {transferring ? (
         <TxModal
           isTransfer={true}
@@ -649,8 +656,7 @@ const NFTDetails = (props) => {
           addressInvalid={addressIsInvalid}
           transferAddress={transferAddress}
         ></TxModal>
-        ) : null
-      }
+      ) : null}
       {/* <TxModal
         isPurchaised={true}
         PurchaisedNftName="Amazing Plug #001"
@@ -689,7 +695,7 @@ const NFTDetails = (props) => {
                     >
                       <Spacer></Spacer>
                       <HStack textcolor={({ theme }) => theme.walletText}>
-                        Unlockable Content Here
+                        Unlockable Content
                       </HStack>
                     </VStack>
                   </LockedContent>
@@ -702,37 +708,45 @@ const NFTDetails = (props) => {
                   >
                     {isImage(nft?.fileType) ? (
                       <VStack>
-                        <Lock>
-                          <HStack
-                            background="white"
-                            border="6px"
-                            padding="3px 12px"
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{
-                              type: "spring",
-                              duration: 1.1,
-                              delay: 0.9,
-                            }}
-                            onClick={() => setIsFlip((isFlip) => !isFlip)}
-                            cursor="pointer"
+                        <AnimatePresence>
+                          <Lock
+                            key="unlock"
+                            animate={isFlip ? { y: 120 } : { y: 15 }}
+                            layout
+                            style={{ cursor: "pointer!" }}
                           >
-                            <VStack>
-                              <CaptionRegular
-                                align="flex-end"
-                                textcolor={appStyle.colors.darkgrey}
-                              >
-                                Unlockable <br></br>Content
-                              </CaptionRegular>
-                            </VStack>
-                            <IconImg
-                              url={lock}
-                              width="33px"
-                              height="33px"
-                            ></IconImg>
-                          </HStack>
-                        </Lock>
+                            <HStack
+                              background="white"
+                              border="6px"
+                              padding="3px 12px"
+                              initial={{ opacity: 0, scale: 0.9 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              exit={{ opacity: 0 }}
+                              transition={{
+                                type: "spring",
+                                duration: 1.1,
+                                delay: 0.9,
+                              }}
+                              onClick={() => setIsFlip((isFlip) => !isFlip)}
+                              cursor="pointer"
+                            >
+                              <VStack>
+                                <CaptionRegular
+                                  align="flex-end"
+                                  textcolor={appStyle.colors.darkgrey}
+                                >
+                                  Unlockable <br></br>Content
+                                </CaptionRegular>
+                              </VStack>
+                              <IconImg
+                                url={lock}
+                                width="33px"
+                                height="33px"
+                              ></IconImg>
+                            </HStack>
+                          </Lock>
+                        </AnimatePresence>
+
                         <IconImg
                           url={nft?.image}
                           width="100%"
@@ -809,13 +823,17 @@ const NFTDetails = (props) => {
                   border="9px"
                 >
                   <CaptionRegular>Owned by</CaptionRegular>
-                  <HStack spacing="6px" cursor="pointer" onClick={() => NavigateTo(`UserProfile/${nft?.owner}`)}>
+                  <HStack
+                    spacing="6px"
+                    cursor="pointer"
+                    onClick={() => NavigateTo(`UserProfile/${nft?.owner}`)}
+                  >
                     <IconImg
-                        url={banner1}
-                        width="18px"
-                        height="18px"
-                        backsize="cover"
-                        border="18px"
+                      url={banner1}
+                      width="18px"
+                      height="18px"
+                      backsize="cover"
+                      border="18px"
                     ></IconImg>
                     {nft?.owner ? (
                       <Tooltip title={nft?.owner ? nft.owner : "-"}>
@@ -845,13 +863,21 @@ const NFTDetails = (props) => {
                         background={({ theme }) => theme.walletButton}
                         textcolor={({ theme }) => theme.walletText}
                         cursor="pointer"
-                        onClick={() => NavigateTo(`collection/${nft?.collectionName}`)}
+                        onClick={() =>
+                          NavigateTo(`collection/${nft?.collectionName}`)
+                        }
                         btnStatus={0}
                       ></ButtonApp>
                     </VStack>
                     <HStack spacing="9px" justify="flex-start">
                       <CaptionRegular>Creator</CaptionRegular>
-                      <HStack spacing="6px" cursor={"pointer"} onClick={() => NavigateTo(`UserProfile/${nft?.creator}`)}>
+                      <HStack
+                        spacing="6px"
+                        cursor={"pointer"}
+                        onClick={() =>
+                          NavigateTo(`UserProfile/${nft?.creator}`)
+                        }
+                      >
                         <IconImg
                           url={nft?.collectionLogo}
                           width="18px"
@@ -1267,26 +1293,63 @@ const NFTDetails = (props) => {
                 width={size.width < 768 ? "690px" : "100%"}
                 spacing="0px"
                 background={({ theme }) => theme.backElement}
-                padding="9px"
                 border="9px"
               >
-                {offers?.map((item, i) => (
-                  <>
-                    <TableOffersNft
-                      imageBuyer={banner1}
-                      offerBy={item.from}
-                      wallet={wallet}
-                      owner={item.to}
-                      offerAmount={item.price}
-                      isWithdrawn={item.isWithdrawn}
-                      withdrawStatus={withdrawOfferButtonStatus}
-                      onClickWithdraw={() => withdrawOffer(i)}
-                      acceptStatus={acceptOfferButtonStatus}
-                      onClickAccept={() => acceptOffer(i)}
-                    ></TableOffersNft>
-                    {i !== offers.length - 1 ? <Divider></Divider> : null }
-                  </>
-                ))}
+                {/* Table Head*/}
+                <HStack width="100%" spacing="6px" height="51px">
+                  <HStack width="100%" justify="flex-start">
+                    <HStack padding="0 30px">
+                      <BodyBold>OFFER</BodyBold>
+                    </HStack>
+                  </HStack>
+                  <HStack width="100%">
+                    <BodyBold>AMOUNT </BodyBold>
+                  </HStack>
+                  <HStack width="100%" justify="flex-end">
+                    <HStack padding="0 30px">
+                      <BodyBold>STATUS</BodyBold>
+                    </HStack>
+                  </HStack>
+                </HStack>
+                {console.log(offers)}
+                {offers.length ? (
+                  offers?.map((item, i) => (
+                    <>
+                      <TableOffersNft
+                        imageBuyer={banner1}
+                        offerBy={item.from}
+                        wallet={wallet}
+                        owner={item.to}
+                        offerAmount={item.price}
+                        isWithdrawn={item.isWithdrawn}
+                        withdrawStatus={withdrawOfferButtonStatus}
+                        onClickWithdraw={() => withdrawOffer(i)}
+                        acceptStatus={acceptOfferButtonStatus}
+                        onClickAccept={() => acceptOffer(i)}
+                      ></TableOffersNft>
+                      {i !== offers.length - 1 ? <Divider></Divider> : null}
+                    </>
+                  ))
+                ) : (
+                  <VStack width="100%">
+                    <Divider></Divider>
+                    <HStack width="100%" spacing="6px" height="51px">
+                      <HStack width="100%" justify="flex-start">
+                        <HStack padding="0 30px">
+                          <BodyRegular>---</BodyRegular>
+                        </HStack>
+                      </HStack>
+                      <HStack width="100%">
+                        <BodyRegular>---</BodyRegular>
+                      </HStack>
+                      <HStack width="100%" justify="flex-end">
+                        <HStack padding="0 30px">
+                          <BodyRegular>---</BodyRegular>
+                        </HStack>
+                      </HStack>
+                    </HStack>
+                  </VStack>
+                )}
               </VStack>
             </HStack>
           </VStack>
@@ -1313,7 +1376,7 @@ export default NFTDetails;
 
 const Lock = styled(motion.div)`
   position: absolute;
-  bottom: 15px;
+  top: 0px;
   right: 15px;
   z-index: 10;
 `;

@@ -38,6 +38,7 @@ import { burnedNFTs, permaBlacklist } from "../../blacklist";
 import banner1 from "../../images/Banner1.jpg";
 import checkOk from "../../images/checkOkIcon.png";
 import copyIcon from "../../images/copyAddress.png";
+import verified from "../../images/verified.png";
 
 import styled from "styled-components";
 import {
@@ -501,18 +502,24 @@ const MyNFT = (props) => {
         <VStack padding="30px 30px 300px 30px" spacing="36px">
           <VStack>
             <VStack direction={size.width < 768 ? "row" : "column"}>
-              <IconImg
-                url={banner1}
-                width={size.width < 768 ? "60px" : "150px"}
-                height={size.width < 768 ? "60px" : "150px"}
-                border="90px"
-                backsize="cover"
-                bordercolor="white"
-                bordersize="6px"
-                style={{
-                  boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.3)",
-                }}
-              ></IconImg>
+              <VStack>
+                <VerifiedIcon>
+                  <IconImg url={verified} width="42px" height="42px"></IconImg>
+                </VerifiedIcon>
+                <IconImg
+                  url={banner1}
+                  width={size.width < 768 ? "60px" : "150px"}
+                  height={size.width < 768 ? "60px" : "150px"}
+                  border="90px"
+                  backsize="cover"
+                  bordercolor="white"
+                  bordersize="6px"
+                  style={{
+                    boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.3)",
+                  }}
+                ></IconImg>
+              </VStack>
+
               <VStack spacing="9px" direction="column">
                 <CaptionBold textcolor={({ theme }) => theme.text}>
                   CREATOR
@@ -1303,4 +1310,10 @@ const CreatorTag = styled(motion.div)`
   font-size: 10px;
   font-weight: bold;
   z-index: 1;
+`;
+
+const VerifiedIcon = styled(motion.div)`
+  position: absolute;
+  bottom: 0px;
+  right: 6px;
 `;

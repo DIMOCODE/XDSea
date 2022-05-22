@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import Xdc3 from "xdc3";
-import {
-  nftaddress,
-  nftmarketlayeraddress,
-} from "../../config";
+import { nftaddress, nftmarketlayeraddress } from "../../config";
 import { DEFAULT_PROVIDER } from "../../constant";
 import NFT from "../../abis/NFT.json";
 import axios from "axios";
@@ -33,8 +30,9 @@ import { LoopBars } from "../../styles/LoopBars";
 import { appStyle } from "../../styles/AppStyles";
 import { LoopLogo } from "../../styles/LoopLogo";
 import { burnedNFTs, burnedCollections } from "../../blacklist";
-import banner1 from "../../images/Banner1.jpg"
+import banner1 from "../../images/Banner1.jpg";
 import { Tooltip } from "@mui/material";
+import verified from "../../images/verified.png";
 
 const CollectionDetails = (props) => {
   const history = useHistory();
@@ -227,7 +225,9 @@ const CollectionDetails = (props) => {
         >
           <CreatorAbsolute>
             <HStack
-              onClick={() => NavigateTo(`UserProfile/${nfts[0]?.collectionCreator}`)}
+              onClick={() =>
+                NavigateTo(`UserProfile/${nfts[0]?.collectionCreator}`)
+              }
               background="white"
               border="30px"
               padding="6px 15px"
@@ -236,16 +236,17 @@ const CollectionDetails = (props) => {
               }}
               cursor={"pointer"}
             >
+              <IconImg url={verified} width="21px" height="21px"></IconImg>
               <VStack spacing="0px" alignment="flex-start" cursor={"pointer"}>
                 <CaptionBold textcolor={appStyle.colors.darkgrey30}>
                   CREATOR
                 </CaptionBold>
                 {nfts[0]?.collectionCreator ? (
-                    <Tooltip title={nfts[0]?.collectionCreator}>
-                        <CaptionBold textcolor={({ theme }) => theme.text}>
-                            {truncateAddress(nfts[0]?.collectionCreator)}
-                        </CaptionBold>
-                    </Tooltip>
+                  <Tooltip title={nfts[0]?.collectionCreator}>
+                    <CaptionBold textcolor={({ theme }) => theme.text}>
+                      {truncateAddress(nfts[0]?.collectionCreator)}
+                    </CaptionBold>
+                  </Tooltip>
                 ) : (
                   <LoopBars width="115px" heigth="90px"></LoopBars>
                 )}
@@ -301,13 +302,13 @@ const CollectionDetails = (props) => {
                     height="18px"
                   ></IconImg>
                   {floorPrice ===
-                    999999999999999999999999999999999999999999999 ? (
+                  999999999999999999999999999999999999999999999 ? (
                     <LoopBars width="54px"></LoopBars>
                   ) : (
                     <BodyBold textcolor={({ theme }) => theme.text}>
                       {floorPrice.toLocaleString(undefined, {
                         maximumFractionDigits: 2,
-                        }) || "0"}
+                      }) || "0"}
                     </BodyBold>
                   )}
                 </HStack>
@@ -378,7 +379,7 @@ const CollectionDetails = (props) => {
                     <BodyBold textcolor={({ theme }) => theme.text}>
                       {volume.toLocaleString(undefined, {
                         maximumFractionDigits: 2,
-                        }) || "0"}
+                      }) || "0"}
                     </BodyBold>
                   )}
                 </HStack>
@@ -475,7 +476,7 @@ const CollectionDetails = (props) => {
                     hasImage={true}
                     background={({ theme }) => theme.backElement}
                     style={{
-                        boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
+                      boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
                     }}
                     cursor={"pointer"}
                     btnStatus={0}
@@ -502,7 +503,7 @@ const CollectionDetails = (props) => {
                     hasImage={true}
                     background={({ theme }) => theme.backElement}
                     style={{
-                        boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
+                      boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
                     }}
                     cursor={"pointer"}
                     btnStatus={0}
