@@ -702,94 +702,108 @@ const MyNFT = (props) => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 15 }}
                 >
-                  {collectionGroup.map((item, i) => (
-                    <VStack width="100%" padding="30px" spacing="30px">
-                      <HStack width="100%">
-                        <IconImg
-                          url={item.logo}
-                          width="60px"
-                          height="60px"
-                          backsize="cover"
-                          border="36px"
-                        ></IconImg>
-                        <VStack spacing="6px" alignment="flex-start">
-                          <TitleBold18>{item.name}</TitleBold18>
-                          <BodyRegular>{item.items} Items</BodyRegular>
-                        </VStack>
-                      </HStack>
-                      <HStack justify="flex-start">
-                        {item.nfts.map((nft, j) => (
+                  {collectionGroup.length ? (
+                    collectionGroup.map((item, i) => (
+                      <VStack width="100%" padding="30px" spacing="30px">
+                        <HStack width="100%">
+                          <IconImg
+                            url={item.logo}
+                            width="60px"
+                            height="60px"
+                            backsize="cover"
+                            border="36px"
+                          ></IconImg>
+                          <VStack spacing="6px" alignment="flex-start">
+                            <TitleBold18>{item.name}</TitleBold18>
+                            <BodyRegular>{item.items} Items</BodyRegular>
+                          </VStack>
+                        </HStack>
+                        <HStack justify="flex-start">
+                          {item.nfts.map((nft, j) => (
+                            <VStack
+                              maxwidth="186px"
+                              height="186px"
+                              border="15px"
+                              whileHover={{ scale: 1.05 }}
+                              onClick={() => {
+                                NavigateTo(`nft/${nftaddress}/${nft.tokenId}`);
+                              }}
+                            >
+                              <ZStack cursor={"pointer"}>
+                                <CreatorTag>CREATOR</CreatorTag>
+                                <ZItem>
+                                  <IconImg
+                                    url={nft.image}
+                                    width="100%"
+                                    height="100%"
+                                    backsize="cover"
+                                    border="15px"
+                                  ></IconImg>
+                                </ZItem>
+                                <ZItem>
+                                  <VStack padding="15px">
+                                    <HStack>
+                                      <Spacer></Spacer>
+                                      <IconImg
+                                        url={banner1}
+                                        width="45px"
+                                        height="45px"
+                                        backsize="cover"
+                                        border="45px"
+                                        bordersize="3px"
+                                        bordercolor="white"
+                                      ></IconImg>
+                                    </HStack>
+                                    <Spacer></Spacer>
+                                    <TitleBold15
+                                      textcolor={appStyle.colors.white}
+                                    >
+                                      {nft.name}
+                                    </TitleBold15>
+                                  </VStack>
+                                </ZItem>
+                              </ZStack>
+                            </VStack>
+                          ))}
                           <VStack
                             maxwidth="186px"
                             height="186px"
                             border="15px"
                             whileHover={{ scale: 1.05 }}
+                            background={({ theme }) => theme.backElement}
+                            spacing="6px"
+                            cursor="pointer"
                             onClick={() => {
-                              NavigateTo(`nft/${nftaddress}/${nft.tokenId}`);
+                              NavigateTo(`collection/${item.name}`);
                             }}
                           >
-                            <ZStack cursor={"pointer"}>
-                              <CreatorTag>CREATOR</CreatorTag>
-                              <ZItem>
-                                <IconImg
-                                  url={nft.image}
-                                  width="100%"
-                                  height="100%"
-                                  backsize="cover"
-                                  border="15px"
-                                ></IconImg>
-                              </ZItem>
-                              <ZItem>
-                                <VStack padding="15px">
-                                  <HStack>
-                                    <Spacer></Spacer>
-                                    <IconImg
-                                      url={banner1}
-                                      width="45px"
-                                      height="45px"
-                                      backsize="cover"
-                                      border="45px"
-                                      bordersize="3px"
-                                      bordercolor="white"
-                                    ></IconImg>
-                                  </HStack>
-                                  <Spacer></Spacer>
-                                  <TitleBold15
-                                    textcolor={appStyle.colors.white}
-                                  >
-                                    {nft.name}
-                                  </TitleBold15>
-                                </VStack>
-                              </ZItem>
-                            </ZStack>
+                            <IconImg
+                              url={seeAll}
+                              width="45px"
+                              height="45px"
+                            ></IconImg>
+                            <BodyBold>See All</BodyBold>
                           </VStack>
-                        ))}
-                        <VStack
-                          maxwidth="186px"
-                          height="186px"
-                          border="15px"
-                          whileHover={{ scale: 1.05 }}
-                          background={({ theme }) => theme.backElement}
-                          spacing="6px"
-                          cursor="pointer"
-                          onClick={() => {
-                            NavigateTo(`collection/${item.name}`);
-                          }}
-                        >
-                          <IconImg
-                            url={seeAll}
-                            width="45px"
-                            height="45px"
-                          ></IconImg>
-                          <BodyBold>See All</BodyBold>
-                        </VStack>
-                      </HStack>
+                        </HStack>
+                      </VStack>
+                    ))
+                  ) : (
+                    <VStack padding="120px">
+                      <LoopLogo></LoopLogo>
                     </VStack>
-                  ))}
+                  )}
                 </VStack>
               )}
               {subMenu === 1 && (
-                <OwnedNfts collectionGroup={ownedCollections}></OwnedNfts>
+                <>
+                  {ownedCollections.length ? (
+                    <OwnedNfts collectionGroup={ownedCollections}></OwnedNfts>
+                  ) : (
+                    <VStack padding="120px">
+                      <LoopLogo></LoopLogo>
+                    </VStack>
+                  )}
+                </>
               )}
             </ZStack>
 

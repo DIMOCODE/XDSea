@@ -98,8 +98,8 @@ function TableOffersNft(props) {
               text="Offer Withdrawn"
               height="48px"
               width="180px"
-              textcolor={appStyle.colors.blue}
-              background={appStyle.colors.softBlue}
+              textcolor={({ theme }) => theme.text}
+              background={({ theme }) => theme.faded}
               btnStatus={-1}
             ></ButtonApp>
           ) : wallet?.address !== owner && wallet?.address === offerBy ? (
@@ -124,7 +124,16 @@ function TableOffersNft(props) {
               func="AcceptOffer"
               cursor="pointer"
             ></ButtonApp>
-          ) : null}
+          ) : (
+            <ButtonApp
+              text="Offer Placed"
+              height="48px"
+              width="180px"
+              textcolor={appStyle.colors.blue}
+              background={appStyle.colors.softBlue}
+              btnStatus={-1}
+            ></ButtonApp>
+          )}
         </HStack>
       </HStack>
     </>

@@ -58,11 +58,19 @@ function TxModal(props) {
     transferAddress,
     onChangeTransfer,
     cancelTransfer,
-    transferNFT
+    transferNFT,
   } = props;
 
   return (
-    <FadedBack>
+    <FadedBack
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{
+        duration: 0.21,
+        delay: 0.1,
+      }}
+    >
       <VStack>
         <Spacer></Spacer>
         <VStack
@@ -72,12 +80,12 @@ function TxModal(props) {
           spacing="12px"
           padding="36px 30px"
           flex="0"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0 }}
           transition={{
-            duration: 0.3,
-            delay: 0.6,
+            duration: 0.21,
+            delay: 0.3,
           }}
         >
           {isAction && (
@@ -163,8 +171,8 @@ function TxModal(props) {
                   border="6px"
                 >
                   <CaptionRegular textcolor={appStyle.colors.darkRed}>
-                    The input in the price field is not a number. Please 
-                    use numeric characters with a maximum of one decimal point only.
+                    The input in the price field is not a number. Please use
+                    numeric characters with a maximum of one decimal point only.
                   </CaptionRegular>
                 </HStack>
               ) : null}
@@ -192,7 +200,11 @@ function TxModal(props) {
           {isEdit && (
             <>
               <VStack flex="0" spacing="0px">
-                <IconImg url={editListingIcon} width="59px" height="59px"></IconImg>
+                <IconImg
+                  url={editListingIcon}
+                  width="59px"
+                  height="59px"
+                ></IconImg>
                 <TitleBold21 textcolor={({ theme }) => theme.text}>
                   Edit your Listing
                 </TitleBold21>
@@ -217,8 +229,8 @@ function TxModal(props) {
                   border="6px"
                 >
                   <CaptionRegular textcolor={appStyle.colors.darkRed}>
-                    The input in the price field is not a number. Please 
-                    use numeric characters with a maximum of one decimal point only.
+                    The input in the price field is not a number. Please use
+                    numeric characters with a maximum of one decimal point only.
                   </CaptionRegular>
                 </HStack>
               ) : null}
@@ -245,57 +257,57 @@ function TxModal(props) {
           )}
           {isList && (
             <>
-            <VStack flex="0" spacing="0px">
-              <IconImg url={list} width="59px" height="59px"></IconImg>
-              <TitleBold21 textcolor={({ theme }) => theme.text}>
-                List your NFT
-              </TitleBold21>
-            </VStack>
-            <InputStyled
-              type="number"
-              placeholder="0.00"
-              propertyKey={"nft-price"}
-              textalign="center"
-              padding="0"
-              fontsize="30px"
-              input={listPrice}
-              height="51px"
-              min={"0.0001"}
-              onChange={onChangeList}
-              background={appStyle.colors.darkgrey10}
-            ></InputStyled>
-            {priceInvalid ? (
-              <HStack
-                background={appStyle.colors.softRed}
-                padding="6px 15px"
-                border="6px"
-              >
-                <CaptionRegular textcolor={appStyle.colors.darkRed}>
-                  The input in the price field is not a number. Please 
-                  use numeric characters with a maximum of one decimal point only.
-                </CaptionRegular>
-              </HStack>
-            ) : null}
-            <HStack>
-              <ButtonApp
-                text="Cancel"
-                textcolor={({ theme }) => theme.text}
+              <VStack flex="0" spacing="0px">
+                <IconImg url={list} width="59px" height="59px"></IconImg>
+                <TitleBold21 textcolor={({ theme }) => theme.text}>
+                  List your NFT
+                </TitleBold21>
+              </VStack>
+              <InputStyled
+                type="number"
+                placeholder="0.00"
+                propertyKey={"nft-price"}
+                textalign="center"
+                padding="0"
+                fontsize="30px"
+                input={listPrice}
+                height="51px"
+                min={"0.0001"}
+                onChange={onChangeList}
                 background={appStyle.colors.darkgrey10}
-                width="100%"
-                onClick={cancelList}
-                cursor={"pointer"}
-                btnStatus={0}
-              ></ButtonApp>
-              <ButtonApp
-                text="Confirm"
-                width="100%"
-                textcolor={appStyle.colors.white}
-                onClick={listNFT}
-                cursor={"pointer"}
-                btnStatus={0}
-              ></ButtonApp>
-            </HStack>
-          </>
+              ></InputStyled>
+              {priceInvalid ? (
+                <HStack
+                  background={appStyle.colors.softRed}
+                  padding="6px 15px"
+                  border="6px"
+                >
+                  <CaptionRegular textcolor={appStyle.colors.darkRed}>
+                    The input in the price field is not a number. Please use
+                    numeric characters with a maximum of one decimal point only.
+                  </CaptionRegular>
+                </HStack>
+              ) : null}
+              <HStack>
+                <ButtonApp
+                  text="Cancel"
+                  textcolor={({ theme }) => theme.text}
+                  background={appStyle.colors.darkgrey10}
+                  width="100%"
+                  onClick={cancelList}
+                  cursor={"pointer"}
+                  btnStatus={0}
+                ></ButtonApp>
+                <ButtonApp
+                  text="Confirm"
+                  width="100%"
+                  textcolor={appStyle.colors.white}
+                  onClick={listNFT}
+                  cursor={"pointer"}
+                  btnStatus={0}
+                ></ButtonApp>
+              </HStack>
+            </>
           )}
           {/* {isList && (
             <>
@@ -341,53 +353,57 @@ function TxModal(props) {
           )} */}
           {isTransfer && (
             <>
-            <VStack flex="0" spacing="0px">
-              <IconImg url={transferIcon} width="59px" height="59px"></IconImg>
-              <TitleBold21 textcolor={({ theme }) => theme.text}>
-                Transfer your NFT
-              </TitleBold21>
-            </VStack>
-            <InputStyled
-              textalign="center"
-              padding="0"
-              fontsize="30px"
-              input={transferAddress}
-              height="51px"
-              onChange={onChangeTransfer}
-              background={appStyle.colors.darkgrey10}
-            ></InputStyled>
-            {priceInvalid ? (
-              <HStack
-                background={appStyle.colors.softRed}
-                padding="6px 15px"
-                border="6px"
-              >
-                <CaptionRegular textcolor={appStyle.colors.darkRed}>
-                  The address does not seem right. Please use the wallet address with
-                  a "0x..." prefix and not the "xdc..." prefix.
-                </CaptionRegular>
-              </HStack>
-            ) : null}
-            <HStack>
-              <ButtonApp
-                text="Cancel"
-                textcolor={({ theme }) => theme.text}
+              <VStack flex="0" spacing="0px">
+                <IconImg
+                  url={transferIcon}
+                  width="59px"
+                  height="59px"
+                ></IconImg>
+                <TitleBold21 textcolor={({ theme }) => theme.text}>
+                  Transfer your NFT
+                </TitleBold21>
+              </VStack>
+              <InputStyled
+                textalign="center"
+                padding="0"
+                fontsize="30px"
+                input={transferAddress}
+                height="51px"
+                onChange={onChangeTransfer}
                 background={appStyle.colors.darkgrey10}
-                width="100%"
-                onClick={cancelTransfer}
-                cursor={"pointer"}
-                btnStatus={0}
-              ></ButtonApp>
-              <ButtonApp
-                text="Confirm"
-                width="100%"
-                textcolor={appStyle.colors.white}
-                onClick={transferNFT}
-                cursor={"pointer"}
-                btnStatus={0}
-              ></ButtonApp>
-            </HStack>
-          </>
+              ></InputStyled>
+              {priceInvalid ? (
+                <HStack
+                  background={appStyle.colors.softRed}
+                  padding="6px 15px"
+                  border="6px"
+                >
+                  <CaptionRegular textcolor={appStyle.colors.darkRed}>
+                    The address does not seem right. Please use the wallet
+                    address with a "0x..." prefix and not the "xdc..." prefix.
+                  </CaptionRegular>
+                </HStack>
+              ) : null}
+              <HStack>
+                <ButtonApp
+                  text="Cancel"
+                  textcolor={({ theme }) => theme.text}
+                  background={appStyle.colors.darkgrey10}
+                  width="100%"
+                  onClick={cancelTransfer}
+                  cursor={"pointer"}
+                  btnStatus={0}
+                ></ButtonApp>
+                <ButtonApp
+                  text="Confirm"
+                  width="100%"
+                  textcolor={appStyle.colors.white}
+                  onClick={transferNFT}
+                  cursor={"pointer"}
+                  btnStatus={0}
+                ></ButtonApp>
+              </HStack>
+            </>
           )}
           {isPurchaised && (
             <>
@@ -442,7 +458,9 @@ export { TxModal };
 
 const FadedBack = styled(motion.div)`
   position: fixed;
+  top: 0;
   width: 100%;
   height: 100vh;
   z-index: 100;
+  background: ${appStyle.colors.darkgrey60};
 `;

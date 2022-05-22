@@ -100,7 +100,11 @@ function TableActivityNft(props) {
               <BodyRegular>{item.event}</BodyRegular>
             </HStack>
 
-            <HStack width={widthRow} background={debugColor}>
+            <HStack
+              width={widthRow}
+              background={debugColor}
+              justify="flex-start"
+            >
               {item.event.props.children[1].props.children === "Transfer" ||
               item.event.props.children[1].props.children === "Mint" ||
               item.event.props.children[1].props.children ===
@@ -109,9 +113,15 @@ function TableActivityNft(props) {
                 "Offer Withdrawn" ? (
                 <BodyBold></BodyBold>
               ) : (
-                <HStack spacing="6px">
-                  <IconImg url={xdclogo} width="18px" height="18px"></IconImg>
-                  <BodyRegular>{item.price}</BodyRegular>
+                <HStack padding="0 60px">
+                  <HStack spacing="6px">
+                    <IconImg url={xdclogo} width="18px" height="18px"></IconImg>
+                    <BodyRegular>
+                      {Number(item.price).toLocaleString(undefined, {
+                        maximumFractionDigits: 2,
+                      })}
+                    </BodyRegular>
+                  </HStack>
                 </HStack>
               )}
             </HStack>

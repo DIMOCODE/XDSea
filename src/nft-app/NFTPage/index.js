@@ -65,6 +65,7 @@ import { ImpulseSpinner } from "react-spinners-kit";
 import { TableOffersNft } from "../../styles/TableOffersNft";
 import { TxModal } from "../../styles/TxModal";
 import { ListItemButton } from "@mui/material";
+import { NftContainer } from "../../styles/NftContainer";
 
 const NFTDetails = (props) => {
   const history = useHistory();
@@ -657,6 +658,7 @@ const NFTDetails = (props) => {
           transferAddress={transferAddress}
         ></TxModal>
       ) : null}
+
       {/* <TxModal
         isPurchaised={true}
         PurchaisedNftName="Amazing Plug #001"
@@ -1125,7 +1127,11 @@ const NFTDetails = (props) => {
                         width="18px"
                         height="18px"
                       ></IconImg>
-                      <TitleBold18>{nft?.price}</TitleBold18>
+                      <TitleBold18>
+                        {Number(nft?.price).toLocaleString(undefined, {
+                          maximumFractionDigits: 2,
+                        })}
+                      </TitleBold18>
                       <CaptionBoldShort>XDC</CaptionBoldShort>
                     </HStack>
                   </HStack>
@@ -1320,7 +1326,9 @@ const NFTDetails = (props) => {
                         offerBy={item.from}
                         wallet={wallet}
                         owner={item.to}
-                        offerAmount={item.price}
+                        offerAmount={item.price.toLocaleString(undefined, {
+                          maximumFractionDigits: 2,
+                        })}
                         isWithdrawn={item.isWithdrawn}
                         withdrawStatus={withdrawOfferButtonStatus}
                         onClickWithdraw={() => withdrawOffer(i)}
@@ -1366,6 +1374,32 @@ const NFTDetails = (props) => {
               </HStack>
             </HStack>
           </VStack>
+          {/* <VStack background="red" width="100%">
+            <TitleBold27>More from this Collection</TitleBold27>
+            {moreFromCollection.map((item) => (
+              <VStack
+                minwidth={size.width < 768 ? "230px" : "280px"}
+                height="450px"
+              >
+                <NftContainer
+                  key={item.name}
+                  fileType={item.fileType}
+                  creatorImage={item.collectionLogo}
+                  itemImage={item.image}
+                  price={item.price}
+                  collectionName={item.collectionName}
+                  itemNumber={item.name}
+                  background={({ theme }) => theme.backElement}
+                  onClick={() =>
+                    NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
+                  }
+                  onClickCreator={() =>
+                    NavigateTo(`collection/${item.collectionName}`)
+                  }
+                ></NftContainer>
+              </VStack>
+            ))}
+          </VStack> */}
         </VStack>
       </ContentNftPage>
     </NFTPage>
@@ -1397,3 +1431,5 @@ const ContentNftPage = styled(motion.div)`
   max-width: 1200px;
   margin: 0 auto;
 `;
+
+const FadedModal = styled(motion.div)``;
