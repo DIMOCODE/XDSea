@@ -21,7 +21,7 @@ function TableOffersNft(props) {
     onClickAccept,
     onClickWithdraw,
     withdrawStatus,
-    acceptStatus
+    acceptStatus,
   } = props;
 
   const widthRow = "100%";
@@ -38,10 +38,10 @@ function TableOffersNft(props) {
   const convertPrice = (price) => {
     return price
       ? (price / 1000000000000000000).toLocaleString(undefined, {
-        maximumFractionDigits: 2
-      })
+          maximumFractionDigits: 2,
+        })
       : "-";
-  }
+  };
 
   function NavigateTo(route) {
     history.push(`/${route}`);
@@ -49,11 +49,16 @@ function TableOffersNft(props) {
 
   return (
     <>
+      <Divider></Divider>
       <HStack width="100%" height={heightRow} spacing="6px">
         <HStack background={debugColor} width={widthRow}>
           <VStack alignment="flex-start" padding="3px 30px" spacing="3px">
             <CaptionRegular>Offer By</CaptionRegular>
-            <HStack justify="flex-start" spacing="6px" onClick={() => NavigateTo(`UserProfile/${offerBy}`)}>
+            <HStack
+              justify="flex-start"
+              spacing="6px"
+              onClick={() => NavigateTo(`UserProfile/${offerBy}`)}
+            >
               <IconImg
                 url={imageBuyer}
                 width="18px"
@@ -62,7 +67,9 @@ function TableOffersNft(props) {
                 border="18px"
                 cursor="pointer"
               ></IconImg>
-              <CaptionBoldShort cursor="pointer">{truncateAddress(offerBy)}</CaptionBoldShort>
+              <CaptionBoldShort cursor="pointer">
+                {truncateAddress(offerBy)}
+              </CaptionBoldShort>
             </HStack>
           </VStack>
         </HStack>
@@ -86,8 +93,8 @@ function TableOffersNft(props) {
               text="Offer Withdrawn"
               height="48px"
               width="180px"
-              textcolor={appStyle.colors.blue}
-              background={appStyle.colors.softBlue}
+              textcolor={({ theme }) => theme.text}
+              background={({ theme }) => theme.faded}
               btnStatus={-1}
             ></ButtonApp>
           ) : wallet?.address !== owner && wallet?.address === offerBy ? (
@@ -112,8 +119,16 @@ function TableOffersNft(props) {
               func="AcceptOffer"
               cursor="pointer"
             ></ButtonApp>
-          ) : null
-          }
+          ) : (
+            <ButtonApp
+              text="Offer Placed"
+              height="48px"
+              width="180px"
+              textcolor={appStyle.colors.blue}
+              background={appStyle.colors.softBlue}
+              btnStatus={-1}
+            ></ButtonApp>
+          )}
         </HStack>
       </HStack>
     </>

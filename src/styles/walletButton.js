@@ -1,7 +1,9 @@
 import React, { useState } from "react";
+import { useEffect } from "react";
 import { HStack, IconImg, VStack, ZItem, ZStack } from "./Stacks";
 import XDClogo from "../images/miniXdcLogo.png";
 import copyIcon from "../images/copyIcon.png";
+import checkIcon from "../images/checkOkIcon.png";
 import disconnect from "../images/disconnect.png";
 import styled from "styled-components";
 import { BodyBold, BodyRegular, CaptionRegular } from "./TextStyles";
@@ -46,6 +48,15 @@ function WalletButton(props) {
       scale: 1,
     },
   };
+
+  const [showAlert, setShowAlert] = useState(false);
+  useEffect(() => {
+    let timeout;
+    if (showAlert) {
+      timeout = setTimeout(() => setShowAlert(false), 1000);
+    }
+    return () => clearTimeout(timeout);
+  }, [showAlert]);
 
   const truncateAddress = (address) => {
     return address.substring(0, 7) + "..." + address.substring(38);
@@ -114,18 +125,24 @@ function WalletButton(props) {
                               background={({ theme }) => theme.walletButton}
                               padding="9px 12px"
                               border="6px"
+                              onClick={() => setShowAlert(true)}
+                              width="432px"
                             >
                               <BodyRegular
                                 textcolor={({ theme }) => theme.walletText}
                               >
-                                {wallet?.address}
+                                {showAlert ? "Address Copied" : wallet?.address}
                               </BodyRegular>
                               <IconImg
-                                url={copyIcon}
+                                url={showAlert ? checkIcon : copyIcon}
                                 width="18px"
                                 height="18px"
                                 cursor={"pointer"}
-                                onClick={() => {navigator.clipboard.writeText(wallet?.address)}}
+                                onClick={() => {
+                                  navigator.clipboard.writeText(
+                                    wallet?.address
+                                  );
+                                }}
                               ></IconImg>
                             </HStack>
                             <ButtonApp
@@ -175,7 +192,12 @@ function WalletButton(props) {
                 </motion.div>
               )}
             </VStack>
-            <IconImg cursor={"pointer"} url={XDClogo} width="30px" height="30px"></IconImg>
+            <IconImg
+              cursor={"pointer"}
+              url={XDClogo}
+              width="30px"
+              height="30px"
+            ></IconImg>
           </HStack>
         </VStack>
       </AnimatePresence>
