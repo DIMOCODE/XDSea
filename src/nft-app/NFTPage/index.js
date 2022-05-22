@@ -339,6 +339,7 @@ const NFTDetails = (props) => {
         fileType: metadata?.data?.collection?.nft?.fileType,
         preview: metadata?.data?.collection?.nft?.preview,
         royalty: metadata?.data?.collection?.nft?.royalty,
+        unlockableContent: metadata?.data?.collection?.nft?.unlockableContent
       };
       const data = await marketContract.methods
         .getCollectionNFTs(metadata?.data?.collection?.name)
@@ -670,7 +671,7 @@ const NFTDetails = (props) => {
           <HStack height="100%" responsive={true} alignment="flex-start">
             <VStack width="100%" padding="30px 15px">
               <VStack width={size.width < 768 ? "100%" : "540px"}>
-                {nft?.owner ? (
+                {wallet?.address === nft?.owner ? (
                   <LockedContent>
                     <VStack
                       background={({ theme }) => theme.walletButton}
@@ -689,7 +690,7 @@ const NFTDetails = (props) => {
                     >
                       <Spacer></Spacer>
                       <HStack textcolor={({ theme }) => theme.walletText}>
-                        Unlockable Content Here
+                        {nft?.unlockableContent}
                       </HStack>
                     </VStack>
                   </LockedContent>
@@ -702,37 +703,40 @@ const NFTDetails = (props) => {
                   >
                     {isImage(nft?.fileType) ? (
                       <VStack>
-                        <Lock>
-                          <HStack
-                            background="white"
-                            border="6px"
-                            padding="3px 12px"
-                            initial={{ opacity: 0, scale: 0.9 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{
-                              type: "spring",
-                              duration: 1.1,
-                              delay: 0.9,
-                            }}
-                            onClick={() => setIsFlip((isFlip) => !isFlip)}
-                            cursor="pointer"
-                          >
-                            <VStack>
-                              <CaptionRegular
-                                align="flex-end"
-                                textcolor={appStyle.colors.darkgrey}
-                              >
-                                Unlockable <br></br>Content
-                              </CaptionRegular>
-                            </VStack>
-                            <IconImg
-                              url={lock}
-                              width="33px"
-                              height="33px"
-                            ></IconImg>
-                          </HStack>
-                        </Lock>
+                        {wallet?.address === nft?.owner && (nft?.unlockableContent !== undefined 
+                        || nft?.unlockableContent !== "") ? (
+                          <Lock>
+                            <HStack
+                              background="white"
+                              border="6px"
+                              padding="3px 12px"
+                              initial={{ opacity: 0, scale: 0.9 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              exit={{ opacity: 0 }}
+                              transition={{
+                                type: "spring",
+                                duration: 1.1,
+                                delay: 0.9,
+                              }}
+                              onClick={() => setIsFlip((isFlip) => !isFlip)}
+                              cursor="pointer"
+                            >
+                              <VStack>
+                                <CaptionRegular
+                                  align="flex-end"
+                                  textcolor={appStyle.colors.darkgrey}
+                                >
+                                  Unlockable <br></br>Content
+                                </CaptionRegular>
+                              </VStack>
+                              <IconImg
+                                url={lock}
+                                width="33px"
+                                height="33px"
+                              ></IconImg>
+                            </HStack>
+                          </Lock>
+                        ) : null}
                         <IconImg
                           url={nft?.image}
                           width="100%"
@@ -755,6 +759,39 @@ const NFTDetails = (props) => {
                         overflow="hidden"
                         cursor="pointer"
                       >
+                        {wallet?.address !== nft?.owner ? (
+                          <Lock>
+                            <HStack
+                              background="white"
+                              border="6px"
+                              padding="3px 12px"
+                              initial={{ opacity: 0, scale: 0.9 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              exit={{ opacity: 0 }}
+                              transition={{
+                                type: "spring",
+                                duration: 1.1,
+                                delay: 0.9,
+                              }}
+                              onClick={() => setIsFlip((isFlip) => !isFlip)}
+                              cursor="pointer"
+                            >
+                              <VStack>
+                                <CaptionRegular
+                                  align="flex-end"
+                                  textcolor={appStyle.colors.darkgrey}
+                                >
+                                  Unlockable <br></br>Content
+                                </CaptionRegular>
+                              </VStack>
+                              <IconImg
+                                url={lock}
+                                width="33px"
+                                height="33px"
+                              ></IconImg>
+                            </HStack>
+                          </Lock>
+                        ) : null}
                         <ReactPlayer
                           url={nft?.image}
                           playing={true}
@@ -770,12 +807,45 @@ const NFTDetails = (props) => {
                         width="100%"
                         height="540px"
                         border="15px"
-                        backgroundimage={audioCover}
+                        backgroundimage={nft?.preview}
                         // background={({ theme }) => theme.backElement}
                         overflow="hidden"
                         cursor="pointer"
                         padding="15px"
                       >
+                        {wallet?.address !== nft?.owner ? (
+                          <Lock>
+                            <HStack
+                              background="white"
+                              border="6px"
+                              padding="3px 12px"
+                              initial={{ opacity: 0, scale: 0.9 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              exit={{ opacity: 0 }}
+                              transition={{
+                                type: "spring",
+                                duration: 1.1,
+                                delay: 0.9,
+                              }}
+                              onClick={() => setIsFlip((isFlip) => !isFlip)}
+                              cursor="pointer"
+                            >
+                              <VStack>
+                                <CaptionRegular
+                                  align="flex-end"
+                                  textcolor={appStyle.colors.darkgrey}
+                                >
+                                  Unlockable <br></br>Content
+                                </CaptionRegular>
+                              </VStack>
+                              <IconImg
+                                url={lock}
+                                width="33px"
+                                height="33px"
+                              ></IconImg>
+                            </HStack>
+                          </Lock>
+                        ) : null}
                         <ReactPlayer
                           url={nft?.image}
                           playing={true}

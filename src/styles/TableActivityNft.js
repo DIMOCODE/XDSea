@@ -13,9 +13,7 @@ function TableActivityNft(props) {
 
   function determineAgoTime(date) {
     var seconds = Math.floor((new Date() - date) / 1000);
-
     var interval = seconds / 31536000;
-
     if (interval > 1) {
       return Math.floor(interval) + " years ago";
     }
@@ -51,7 +49,6 @@ function TableActivityNft(props) {
       border="9px"
       spacing="3px"
     >
-      {/* Table Head*/}
       <HStack width="100%" height={heightRow}>
         <Spacer></Spacer>
         <HStack background={debugColor} width={widthRow}>
@@ -149,8 +146,6 @@ function TableActivityNft(props) {
           <Spacer></Spacer>
         </HStack>
       ))}
-
-      {/* Table Content */}
     </VStack>
   );
 }

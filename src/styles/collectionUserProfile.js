@@ -56,7 +56,6 @@ function CollectionUserProfile(props) {
           height={sizetiles}
           border="15px"
         ></IconImg>
-
         <IconImg
           url={image3}
           width={sizetiles}
@@ -70,7 +69,6 @@ function CollectionUserProfile(props) {
           border="15px"
         ></IconImg>
       </HStack>
-
       <VStack maxwidth="300px" minwidth="310px">
         <TitleBold18 textcolor={textcolor}>
           {title || "Collection Name "}
@@ -78,7 +76,6 @@ function CollectionUserProfile(props) {
         <BodyRegular textcolor={textcolor}>
           {description || "Collection Description"}
         </BodyRegular>
-
         <HStack>
           <VStack
             spacing="9px"
@@ -93,7 +90,6 @@ function CollectionUserProfile(props) {
             </HStack>
             <CaptionBoldShort>Floor Price</CaptionBoldShort>
           </VStack>
-
           <VStack
             border="9px"
             padding="18px 0"
@@ -105,7 +101,6 @@ function CollectionUserProfile(props) {
             <CaptionBoldShort>Owners</CaptionBoldShort>
           </VStack>
         </HStack>
-
         <HStack>
           <VStack
             border="9px"

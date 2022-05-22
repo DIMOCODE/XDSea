@@ -7,11 +7,19 @@ import { appStyle } from "./AppStyles";
 import styled from "styled-components";
 import checkOk from "../images/checkOkIcon.png";
 import { motion } from "framer-motion/dist/framer-motion";
+import { Tooltip } from "@mui/material";
 
 function BubbleCopied(props) {
   const { onClick, logo, address, icon } = props;
 
   const [showAlertLink, setShowAlertLink] = useState(false);
+
+  const truncateAddress = (address) => {
+    return address
+      ? address.substring(0, 7) + "..." + address.substring(38)
+      : "undefined";
+  };
+
   useEffect(() => {
     let timeout;
     if (showAlertLink) {
@@ -19,6 +27,7 @@ function BubbleCopied(props) {
     }
     return () => clearTimeout(timeout);
   }, [showAlertLink]);
+
   return (
     <>
       <HStack
@@ -32,11 +41,22 @@ function BubbleCopied(props) {
       >
         <IconImg url={logo} width="21px" height="21px"></IconImg>
         <Spacer></Spacer>
-        <CaptionBoldShort textcolor={({ theme }) => theme.text}>
-          {address}
-        </CaptionBoldShort>
+        <Tooltip title={address}>
+          <CaptionBoldShort textcolor={({ theme }) => theme.text}>
+            {truncateAddress(address)}
+          </CaptionBoldShort>
+        </Tooltip>
         <Spacer></Spacer>
-        <IconImg url={icon} width="21px" height="21px"></IconImg>
+        <IconImg 
+          cursor="pointer" 
+          onClick={() => {
+            setShowAlertLink(true);
+            navigator.clipboard.writeText(address);
+          }} 
+          url={icon} 
+          width="21px" 
+          height="21px"
+        ></IconImg>
       </HStack>
       {showAlertLink && (
         <AbsoluteBubble initial={{ y: 0 }} animate={{ y: 5 }}>
@@ -44,7 +64,6 @@ function BubbleCopied(props) {
             <CaptionBoldShort textcolor={appStyle.colors.white}>
               Address Copied
             </CaptionBoldShort>
-
             <IconImg url={checkOk} width="18px" height="18px"></IconImg>
           </HStack>
         </AbsoluteBubble>

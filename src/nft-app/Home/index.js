@@ -85,63 +85,63 @@ const Home = () => {
           return featuredNFTData;
         })
       );
-      const spotlightCollections = await Promise.all(
-        spotlightCollectionList.map(async (name, i) => {
-          var collectionData = await marketContract.methods
-            .fetchCollection(name)
-            .call();
-          const collectionUri = await nftContract.methods
-            .tokenURI(collectionData.tokenId)
-            .call();
-          var collectionMetadata = await axios.get(collectionUri);
-          const collectionData2 = await marketContract.methods
-            .getCollectionNFTs(name)
-            .call();
-          var volumeTraded = 0;
-          const uniqueOwners = [];
-          var lowestPrice = 99999999999999999999999999999;
-          const allEvents = await Promise.all(
-            collectionData2.map(async (item) => {
-              var price = await xdc3.utils.fromWei(item.price, "ether");
-              if (!uniqueOwners.includes(item.owner)) {
-                uniqueOwners.push(item.owner);
-              }
-              if (parseInt(price) < lowestPrice) {
-                lowestPrice = parseInt(price);
-              }
-              var events = [];
-              var tokenEvents = await marketContract.methods
-                .getTokenEventHistory(item.tokenId)
-                .call();
-              for (var j = 0; j < tokenEvents.length; j++) {
-                if (
-                  tokenEvents[j].eventType === "3" ||
-                  tokenEvents[j].eventType === "8"
-                ) {
-                  volumeTraded += parseInt(
-                    await xdc3.utils.fromWei(tokenEvents[j].price, "ether")
-                  );
-                }
-              }
-              return events;
-            })
-          );
-          let collection = {
-            id: i,
-            name: collectionMetadata?.data?.collection?.name,
-            collectionLogo: collectionMetadata?.data?.collection?.logo,
-            floorPrice: lowestPrice,
-            volumeTraded: volumeTraded,
-            items: !burnedCollections.includes(
-              collectionMetadata?.data?.collection?.name
-            )
-              ? collectionData2.length
-              : collectionData2.length - 1,
-            owners: uniqueOwners.length,
-          };
-          return collection;
-        })
-      );
+      // const spotlightCollections = await Promise.all(
+      //   spotlightCollectionList.map(async (name, i) => {
+      //     var collectionData = await marketContract.methods
+      //       .fetchCollection(name)
+      //       .call();
+      //     const collectionUri = await nftContract.methods
+      //       .tokenURI(collectionData.tokenId)
+      //       .call();
+      //     var collectionMetadata = await axios.get(collectionUri);
+      //     const collectionData2 = await marketContract.methods
+      //       .getCollectionNFTs(name)
+      //       .call();
+      //     var volumeTraded = 0;
+      //     const uniqueOwners = [];
+      //     var lowestPrice = 99999999999999999999999999999;
+      //     const allEvents = await Promise.all(
+      //       collectionData2.map(async (item) => {
+      //         var price = await xdc3.utils.fromWei(item.price, "ether");
+      //         if (!uniqueOwners.includes(item.owner)) {
+      //           uniqueOwners.push(item.owner);
+      //         }
+      //         if (parseInt(price) < lowestPrice) {
+      //           lowestPrice = parseInt(price);
+      //         }
+      //         var events = [];
+      //         var tokenEvents = await marketContract.methods
+      //           .getTokenEventHistory(item.tokenId)
+      //           .call();
+      //         for (var j = 0; j < tokenEvents.length; j++) {
+      //           if (
+      //             tokenEvents[j].eventType === "3" ||
+      //             tokenEvents[j].eventType === "8"
+      //           ) {
+      //             volumeTraded += parseInt(
+      //               await xdc3.utils.fromWei(tokenEvents[j].price, "ether")
+      //             );
+      //           }
+      //         }
+      //         return events;
+      //       })
+      //     );
+      //     let collection = {
+      //       id: i,
+      //       name: collectionMetadata?.data?.collection?.name,
+      //       collectionLogo: collectionMetadata?.data?.collection?.logo,
+      //       floorPrice: lowestPrice,
+      //       volumeTraded: volumeTraded,
+      //       items: !burnedCollections.includes(
+      //         collectionMetadata?.data?.collection?.name
+      //       )
+      //         ? collectionData2.length
+      //         : collectionData2.length - 1,
+      //       owners: uniqueOwners.length,
+      //     };
+      //     return collection;
+      //   })
+      // );
       const trendingItems = await Promise.all(
         trendingItemList.map(async (i) => {
           var itemData = await marketContract.methods.idToMarketItem(i).call();
@@ -161,7 +161,7 @@ const Home = () => {
           return item;
         })
       );
-      setCollections(spotlightCollections);
+      // setCollections(spotlightCollections);
       setNFts(trendingItems);
       setFeaturedNFT(featuredNFTs);
       isSetLoading(false);
@@ -329,7 +329,7 @@ const Home = () => {
           </VStack>
         </HStack>
       </HStack>
-      <VStack
+      {/* <VStack
         height={size.width < 768 ? "auto" : "700px"}
         width="100%"
         spacing="9px"
@@ -375,7 +375,7 @@ const Home = () => {
                 ))}
           </VStack>
         </HStack>
-      </VStack>
+      </VStack> */}
       <VStack
         height={size.width < 768 ? "auto" : "1100px"}
         width="100%"

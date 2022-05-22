@@ -95,7 +95,6 @@ function TopBar(props) {
           onDisconnect={(wallet) => {
             setWallet(wallet);
             onWalletChange(wallet);
-            NavigateTo('');
           }}
         />
         <WalletButton

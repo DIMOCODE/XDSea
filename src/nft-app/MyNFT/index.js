@@ -489,12 +489,6 @@ const MyNFT = (props) => {
 
   const size = useWindowSize();
 
-  const truncateAddress = (address) => {
-    return address
-      ? address.substring(0, 7) + "..." + address.substring(38)
-      : "undefined";
-  };
-
   return (
     <UserSection>
       <Content id="scrollableDiv">
@@ -524,7 +518,7 @@ const MyNFT = (props) => {
                 </TitleBold21> */}{" "}
                 <BubbleCopied
                   logo={xdcLogo}
-                  address={truncateAddress(urlAddress)}
+                  address={urlAddress}
                   icon={copyIcon}
                 ></BubbleCopied>
                 {/* <CaptionBoldShort textcolor={({ theme }) => theme.text}>

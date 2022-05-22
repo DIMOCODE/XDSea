@@ -1,16 +1,11 @@
 import React from "react";
-import { useState } from "react";
-import { HStack, IconImg, VStack, Spacer, Divider } from "./Stacks";
+import { HStack, IconImg, VStack, Spacer } from "./Stacks";
 import {
   BodyBold,
-  BodyRegular,
   CaptionBoldShort,
   CaptionRegular,
 } from "./TextStyles";
-import transferIcon from "../images/transferIcon.png";
-import star from "../images/starColor.png";
 import xdclogo from "../images/miniXdcLogo.png";
-import Tooltip from "@mui/material/Tooltip";
 import ButtonApp from "./Buttons";
 import { appStyle } from "./AppStyles";
 import { useHistory } from "react-router-dom";
