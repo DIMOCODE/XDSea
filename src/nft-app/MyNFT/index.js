@@ -13,6 +13,11 @@ import { GetWallet } from "xdc-connect";
 import { AnimatePresence } from "framer-motion/dist/framer-motion";
 import { LoopLogo } from "../../styles/LoopLogo";
 import { verifiedProfiles } from "../../blacklist";
+import { Collection } from "../../styles/Collection";
+import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
+import { LayoutGroup } from "framer-motion/dist/framer-motion";
+import emptyCollection from "../../images/emptyCollection.png";
+import emptyNFT from "../../images/emptyNFT.png";
 
 import axios from "axios";
 import {
@@ -66,6 +71,8 @@ const MyNFT = (props) => {
   const [isFetching, setIsFetching] = useState(false);
 
   const [sellPrice, setSellPrice] = useState("");
+  const [isOwned, setIsOwned] = useState(false);
+  const [isCreatedCollection, setIsCreatedCollection] = useState(false);
   const [approved, setApproved] = useState(false);
   const cancelButtonRef = useRef(null);
   const [sellData, setSellData] = useState(null);
@@ -459,17 +466,33 @@ const MyNFT = (props) => {
           </VStack>
           <AnimatePresence>
             <ZStack>
-              {subMenu === 0 && (
-                <>
-                    {!setLoading ? (
-                        <VStack
-                            width="100%"
-                            key={"Created"}
-                            initial={{ opacity: 0, y: 15 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: 15 }}
-                            id={"scrollableDiv"}
-                        >
+              {subMenu === 0 && 
+                <VStack
+                    width="100%"
+                    key={"Created"}
+                    initial={{ opacity: 0, y: 15 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 15 }}
+                    id={"scrollableDiv"}
+                >
+                  {!isOwned ? (
+                    <VStack
+                      border="15px"
+                      background="white"
+                      width="100%"
+                      minheight="300px"
+                      // background={({ theme }) => theme.backElement}
+                    >
+                      <IconImg
+                        url={emptyNFT}
+                        width="60px"
+                        height="60px"
+                      ></IconImg>
+                      <BodyRegular>
+                        This creator does not have any NFT yet
+                      </BodyRegular>
+                    </VStack>
+                  ) : ownedCollections.length ? (
                             <InfiniteScroll
                                 dataLength={initialGroup.length}
                                 next={fetchMoreNFTs}
@@ -556,14 +579,14 @@ const MyNFT = (props) => {
                             ))}
                             </InfiniteScroll>
                             
-                            </VStack>
+                            
                     ) : (
                         <VStack padding="120px">
                             <LoopLogo></LoopLogo>
                         </VStack>
                     )}
-                    </>
-                )}
+                </VStack>
+                }
               {subMenu === 1 && (
                 <VStack
                     width="100%"
@@ -572,7 +595,24 @@ const MyNFT = (props) => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 15 }}
                 >
-                    {!setLoadingCollection ? (
+                    {!isCreatedCollection ? (
+                        <VStack
+                          border="15px"
+                          background="white"
+                          width="100%"
+                          minheight="300px"
+                          // background={({ theme }) => theme.backElement}
+                        >
+                          <IconImg
+                            url={emptyCollection}
+                            width="60px"
+                            height="60px"
+                          ></IconImg>
+                          <BodyRegular>
+                            This creator has not yet created any collection
+                          </BodyRegular>
+                        </VStack>
+                      ) : collectionGroup.length ? (
                         collectionGroup.map((item, i) => (
                             <VStack width="100%" padding="30px" spacing="30px">
                             <HStack width="100%">

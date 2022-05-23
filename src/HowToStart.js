@@ -13,9 +13,14 @@ import Step2 from "./images/Step2v2.png";
 import Step3 from "./images/Step3v2.png";
 import Step4 from "./images/Step4v2.png";
 import useWindowSize from "./styles/useWindowSize";
+import { useEffect } from "react";
 
 function HowToStart() {
   const size = useWindowSize();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
   
   return (
     <HowToSection>

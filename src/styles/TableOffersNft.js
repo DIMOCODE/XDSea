@@ -1,15 +1,10 @@
 import React from "react";
-import { HStack, IconImg, VStack, Spacer } from "./Stacks";
-import {
-  BodyBold,
-  CaptionBoldShort,
-  CaptionRegular,
-} from "./TextStyles";
+import { HStack, IconImg, VStack, Spacer, Divider } from "./Stacks";
+import { BodyBold, CaptionBoldShort, CaptionRegular } from "./TextStyles";
 import xdclogo from "../images/miniXdcLogo.png";
 import ButtonApp from "./Buttons";
 import { appStyle } from "./AppStyles";
 import { useHistory } from "react-router-dom";
-import { Divider } from "./Stacks";
 
 function TableOffersNft(props) {
   const {

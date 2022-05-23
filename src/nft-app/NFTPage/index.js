@@ -29,6 +29,7 @@ import mint from "../../images/mintIcon.png";
 import list from "../../images/listIcon.png";
 import withdrawList from "../../images/withdrawList.png";
 import sale from "../../images/partyIcon.png";
+import banner2 from "../../images/Banner2.jpg";
 import transferIcon from "../../images/transferIconGray.png";
 import editListingIcon from "../../images/editListing.png";
 import offerPlacedIcon from "../../images/xdcOffer.png";
@@ -350,7 +351,7 @@ const NFTDetails = (props) => {
         fileType: metadata?.data?.collection?.nft?.fileType,
         preview: metadata?.data?.collection?.nft?.preview,
         royalty: metadata?.data?.collection?.nft?.royalty,
-        unlockableContent: metadata?.data?.collection?.nft?.unlockableContent
+        unlockableContent: metadata?.data?.collection?.nft?.unlockableContent,
       };
       const data = await marketContract.methods
         .getCollectionNFTs(metadata?.data?.collection?.name)
@@ -445,7 +446,8 @@ const NFTDetails = (props) => {
       setNFT(currentItem);
       setPropertyProportions(properties);
       setApproved(getVal);
-      setMoreFromCollectionNfts(moreFromCollectionItems);
+      setMoreFromCollectionNfts(moreFromCollectionItems.slice(0, 4));
+      console.log(moreFromCollectionItems);
     } catch (error) {
       console.log(error);
     }
@@ -1453,32 +1455,35 @@ const NFTDetails = (props) => {
               </HStack>
             </HStack>
           </VStack>
-          {/* <VStack background="red" width="100%">
+          <VStack width="100%" alignment="flex">
             <TitleBold27>More from this Collection</TitleBold27>
-            {moreFromCollection.map((item) => (
-              <VStack
-                minwidth={size.width < 768 ? "230px" : "280px"}
-                height="450px"
-              >
-                <NftContainer
-                  key={item.name}
-                  fileType={item.fileType}
-                  creatorImage={item.collectionLogo}
-                  itemImage={item.image}
-                  price={item.price}
-                  collectionName={item.collectionName}
-                  itemNumber={item.name}
-                  background={({ theme }) => theme.backElement}
-                  onClick={() =>
-                    NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
-                  }
-                  onClickCreator={() =>
-                    NavigateTo(`collection/${item.collectionName}`)
-                  }
-                ></NftContainer>
-              </VStack>
-            ))}
-          </VStack> */}
+
+            <HStack>
+              {moreFromCollectionNfts.map((item) => (
+                <VStack
+                  minwidth={size.width < 768 ? "230px" : "280px"}
+                  height="450px"
+                >
+                  <NftContainer
+                    key={item.name}
+                    fileType={item.fileType}
+                    creatorImage={banner2}
+                    itemImage={item.image}
+                    price={item.price}
+                    collectionName={item.collectionName}
+                    itemNumber={item.name}
+                    background={({ theme }) => theme.backElement}
+                    onClick={() =>
+                      NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
+                    }
+                    onClickCreator={() =>
+                      NavigateTo(`collection/${item.collectionName}`)
+                    }
+                  ></NftContainer>
+                </VStack>
+              ))}
+            </HStack>
+          </VStack>
         </VStack>
       </ContentNftPage>
     </NFTPage>

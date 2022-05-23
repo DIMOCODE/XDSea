@@ -304,7 +304,7 @@ const Discover = () => {
               </HStack> */}
             <HStack>
               <HStack
-                spacing="30px"
+                spacing="21px"
                 flexwrap="wrap"
                 padding="15px 30px"
                 justify="flex-start"
@@ -314,8 +314,8 @@ const Discover = () => {
                   ? loadingCollection.map((item) => (
                       <VStack
                         key={item.name}
-                        minwidth={size.width < 768 ? "100%" : "500px"}
-                        maxwidth="500px"
+                        minwidth={size.width < 768 ? "100%" : "326px"}
+                        maxwidth="326px"
                         height={size.width < 768 ? "440px" : "420px"}
                       >
                         <LoadingNftContainer></LoadingNftContainer>
@@ -324,8 +324,8 @@ const Discover = () => {
                   : collections.map((item) => (
                       <LayoutGroup id="collection">
                         <VStack
-                          minwidth={size.width < 768 ? "100%" : "500px"}
-                          maxwidth="500px"
+                          minwidth={size.width < 768 ? "100%" : "326px"}
+                          maxwidth="326px"
                           height={size.width < 768 ? "440px" : "420px"}
                         >
                           <Collection

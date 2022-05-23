@@ -92,7 +92,7 @@ function Collection(props) {
           <ZItem>
             <IconImg
               url={collectionImage}
-              width="500px"
+              width="326px"
               height="100%"
               border="15px"
               backsize="cover"
