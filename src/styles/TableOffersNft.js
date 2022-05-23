@@ -9,6 +9,7 @@ import xdclogo from "../images/miniXdcLogo.png";
 import ButtonApp from "./Buttons";
 import { appStyle } from "./AppStyles";
 import { useHistory } from "react-router-dom";
+import { Divider } from "./Stacks";
 
 function TableOffersNft(props) {
   const {

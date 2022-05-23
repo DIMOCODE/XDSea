@@ -47,6 +47,7 @@ import linkIcon from "../../images/link.png";
 import loading from "../../images/loadingDots.gif";
 import empty from "../../images/empty.png";
 import { TxModal } from "../../styles/TxModal";
+import { useHistory } from "react-router-dom";
 
 const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
 
@@ -102,6 +103,9 @@ function CreateNft(props) {
   const [collectionLogoURL, setCollectionLogoURL] = useState("");
   const [previewURL, setPreviewURL] = useState("");
   const [wallet, setWallet] = useState(null);
+  const [minted, setMinted] = useState(false);
+  const [tokenId, setTokenId] = useState(0);
+  const history = useHistory();
   const size = useWindowSize();
 
   const addToIPFS = async () => {
@@ -444,6 +448,7 @@ function CreateNft(props) {
         setMintButtonStatus(2);
         var txReceipt = await xdc3.eth.getTransactionReceipt(transaction.transactionHash)
         var tokenId = await txReceipt.logs[0].topics[3]
+        setTokenId(tokenId);
         const weiprice = await xdc3.utils.toWei(price, "ether");
         const contract2 = new xdc3.eth.Contract(NFTMarketLayer1.abi, nftmarketlayeraddress, isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address);
         data = contract2.methods.createMarketItem(
@@ -468,6 +473,7 @@ function CreateNft(props) {
         tx2["gas"] = gasLimit;
         transaction = await SendTransaction(tx2);
         setMintButtonStatus(3);
+        setMinted(true);
     } catch (error) {
         console.log(error)
         setMintButtonStatus(4);
@@ -483,6 +489,10 @@ function CreateNft(props) {
       setRoyaltyAlert(false);
       mintNFT();
     }
+  }
+
+  function NavigateTo(route) {
+    history.push(`/${route}`);
   }
 
   useEffect(() => {
@@ -561,6 +571,29 @@ function CreateNft(props) {
               cancelActionModal={() => setRoyaltyAlert(false)}
               confirmActionModal={() => {
                 mintNFT();
+              }}
+            ></TxModal>
+          </VStack>
+        </FadedBack>
+      )}
+      {minted && (
+        <FadedBack>
+          <VStack
+            background={appStyle.colors.darkgrey60}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{
+              duration: 0.3,
+              delay: 0.3,
+            }}
+          >
+            <TxModal
+              isMint="true"
+              mintName={name}
+              mintedNFT={assetURL}
+              confirmActionModal={() => {
+                NavigateTo(`nft/${nftaddress}/${tokenId}`)
               }}
             ></TxModal>
           </VStack>

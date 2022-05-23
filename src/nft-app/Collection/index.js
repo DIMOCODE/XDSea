@@ -29,7 +29,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { LoopBars } from "../../styles/LoopBars";
 import { appStyle } from "../../styles/AppStyles";
 import { LoopLogo } from "../../styles/LoopLogo";
-import { burnedNFTs, burnedCollections } from "../../blacklist";
+import { burnedNFTs, burnedCollections, verifiedProfiles } from "../../blacklist";
 import banner1 from "../../images/Banner1.jpg";
 import { Tooltip } from "@mui/material";
 import verified from "../../images/verified.png";
@@ -236,7 +236,9 @@ const CollectionDetails = (props) => {
               }}
               cursor={"pointer"}
             >
-              <IconImg url={verified} width="21px" height="21px"></IconImg>
+              {verifiedProfiles.includes(nfts[0]?.collectionCreator) 
+                ? <IconImg url={verified} width="21px" height="21px"></IconImg>
+                : null}
               <VStack spacing="0px" alignment="flex-start" cursor={"pointer"}>
                 <CaptionBold textcolor={appStyle.colors.darkgrey30}>
                   CREATOR
@@ -395,7 +397,9 @@ const CollectionDetails = (props) => {
           <VStack width={size.width < 768 ? "100%" : "60%"} padding="15px">
             {nfts[0]?.collectionDescription !== "null" ? (
               <BodyRegular textcolor={({ theme }) => theme.text} align="center">
-                {nfts[0]?.collectionDescription}
+                {collectionName === "DØP3 Punks " 
+                    ? `A multichain NFT project minting collections on every major blockchain!\n\nWhere DØP3 Art Meets Web3` 
+                    : nfts[0]?.collectionDescription}
               </BodyRegular>
             ) : (
               <VStack>

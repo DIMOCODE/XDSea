@@ -74,8 +74,6 @@ const NFTDetails = (props) => {
   const [collections, setCollections] = useState([]);
   const [offers, setOffers] = useState([]);
   const [approved, setApproved] = useState(false);
-  const [offerTokenId, setOfferTokenId] = useState(0);
-  const [offerId, setOfferId] = useState(0);
   const [eventHistory, setEventHistory] = useState([]);
   const [propertyProportions, setPropertyProportions] = useState([]);
   const [moreFromCollectionNfts, setMoreFromCollectionNfts] = useState([]);
@@ -83,6 +81,7 @@ const NFTDetails = (props) => {
   const [contractFixes, setContractFixes] = useState([]);
   const [isFlip, setIsFlip] = useState(false);
   const [buyButtonStatus, setBuyButtonStatus] = useState(0);
+  const [purchased, setPurchased] = useState(false);
   const [placingOffer, setPlacingOffer] = useState(false);
   const [offerButtonStatus, setOfferButtonStatus] = useState(0);
   const [offerPrice, setOfferPrice] = useState(0.0);
@@ -140,6 +139,7 @@ const NFTDetails = (props) => {
     }
     if (success) {
       setBuyButtonStatus(3);
+      setPurchased(true);
     } else {
       setBuyButtonStatus(4);
     }
@@ -659,21 +659,15 @@ const NFTDetails = (props) => {
           transferAddress={transferAddress}
         ></TxModal>
       ) : null}
-
-      {/* <TxModal
-        isPurchaised={true}
-        PurchaisedNftName="Amazing Plug #001"
-        ListedImage={imageTest}
-        cancelBtnPurchaise=""
-        confirmBtnPurchaise=""
-      ></TxModal> */}
-      {/* <TxModal
-        isList={true}
-        ListedNftName="Amazing Woman #001"
-        ListedImage={imageTest}
-        cancelBtnList=""
-        confirmBtnList=""
-            ></TxModal> */}
+      {purchased ? (
+        <TxModal
+          isPurchaised={true}
+          PurchaisedNftName={nft?.name}
+          ListedImage={nft?.image}
+          confirmBtnPurchaise={() => NavigateTo(`UserProfile/${wallet?.address}`)}
+        ></TxModal>
+      ) : null
+      }
       <ContentNftPage>
         <VStack height="auto" padding="90px 0 0 0 ">
           <HStack height="100%" responsive={true} alignment="flex-start">
@@ -711,48 +705,47 @@ const NFTDetails = (props) => {
                   >
                     {isImage(nft?.fileType) ? (
                       <VStack>
-                        {/* {wallet?.address === nft?.owner && (nft?.unlockableContent !== undefined 
-                        || nft?.unlockableContent !== "") ? (
-                          <Lock> */}
-                        <AnimatePresence>
-                          <Lock
-                            key="unlock"
-                            animate={isFlip ? { y: 120 } : { y: 15 }}
-                            layout
-                            style={{ cursor: "pointer!" }}
-                          >
-                            <HStack
-                              background="white"
-                              border="6px"
-                              padding="3px 12px"
-                              initial={{ opacity: 0, scale: 0.9 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              exit={{ opacity: 0 }}
-                              transition={{
-                                type: "spring",
-                                duration: 1.1,
-                                delay: 0.9,
-                              }}
-                              onClick={() => setIsFlip((isFlip) => !isFlip)}
-                              cursor="pointer"
+                        {wallet?.address === nft?.owner && (nft?.unlockableContent !== undefined 
+                          || nft?.unlockableContent !== "") ? (
+                          <AnimatePresence>
+                            <Lock
+                              key="unlock"
+                              animate={isFlip ? { y: 120 } : { y: 15 }}
+                              layout
+                              style={{ cursor: "pointer!" }}
                             >
-                              <VStack>
-                                <CaptionRegular
-                                  align="flex-end"
-                                  textcolor={appStyle.colors.darkgrey}
-                                >
-                                  Unlockable <br></br>Content
-                                </CaptionRegular>
-                              </VStack>
-                              <IconImg
-                                url={lock}
-                                width="33px"
-                                height="33px"
-                              ></IconImg>
-                            </HStack>
-                          </Lock>
-                        {/* ) : null} */}
-                        </AnimatePresence>
+                              <HStack
+                                background="white"
+                                border="6px"
+                                padding="3px 12px"
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{
+                                  type: "spring",
+                                  duration: 1.1,
+                                  delay: 0.9,
+                                }}
+                                onClick={() => setIsFlip((isFlip) => !isFlip)}
+                                cursor="pointer"
+                              >
+                                <VStack>
+                                  <CaptionRegular
+                                    align="flex-end"
+                                    textcolor={appStyle.colors.darkgrey}
+                                  >
+                                    Unlockable <br></br>Content
+                                  </CaptionRegular>
+                                </VStack>
+                                <IconImg
+                                  url={lock}
+                                  width="33px"
+                                  height="33px"
+                                ></IconImg>
+                              </HStack>
+                            </Lock>
+                          </AnimatePresence>
+                        ) : null}
 
                         <IconImg
                           url={nft?.image}
@@ -776,38 +769,46 @@ const NFTDetails = (props) => {
                         overflow="hidden"
                         cursor="pointer"
                       >
-                        {wallet?.address !== nft?.owner ? (
-                          <Lock>
-                            <HStack
-                              background="white"
-                              border="6px"
-                              padding="3px 12px"
-                              initial={{ opacity: 0, scale: 0.9 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              exit={{ opacity: 0 }}
-                              transition={{
-                                type: "spring",
-                                duration: 1.1,
-                                delay: 0.9,
-                              }}
-                              onClick={() => setIsFlip((isFlip) => !isFlip)}
-                              cursor="pointer"
+                        {wallet?.address === nft?.owner && (nft?.unlockableContent !== undefined 
+                          || nft?.unlockableContent !== "") ? (
+                          <AnimatePresence>
+                            <Lock
+                              key="unlock"
+                              animate={isFlip ? { y: 120 } : { y: 15 }}
+                              layout
+                              style={{ cursor: "pointer!" }}
                             >
-                              <VStack>
-                                <CaptionRegular
-                                  align="flex-end"
-                                  textcolor={appStyle.colors.darkgrey}
-                                >
-                                  Unlockable <br></br>Content
-                                </CaptionRegular>
-                              </VStack>
-                              <IconImg
-                                url={lock}
-                                width="33px"
-                                height="33px"
-                              ></IconImg>
-                            </HStack>
-                          </Lock>
+                              <HStack
+                                background="white"
+                                border="6px"
+                                padding="3px 12px"
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{
+                                  type: "spring",
+                                  duration: 1.1,
+                                  delay: 0.9,
+                                }}
+                                onClick={() => setIsFlip((isFlip) => !isFlip)}
+                                cursor="pointer"
+                              >
+                                <VStack>
+                                  <CaptionRegular
+                                    align="flex-end"
+                                    textcolor={appStyle.colors.darkgrey}
+                                  >
+                                    Unlockable <br></br>Content
+                                  </CaptionRegular>
+                                </VStack>
+                                <IconImg
+                                  url={lock}
+                                  width="33px"
+                                  height="33px"
+                                ></IconImg>
+                              </HStack>
+                            </Lock>
+                          </AnimatePresence>
                         ) : null}
                         <ReactPlayer
                           url={nft?.image}
@@ -830,38 +831,46 @@ const NFTDetails = (props) => {
                         cursor="pointer"
                         padding="15px"
                       >
-                        {wallet?.address !== nft?.owner ? (
-                          <Lock>
-                            <HStack
-                              background="white"
-                              border="6px"
-                              padding="3px 12px"
-                              initial={{ opacity: 0, scale: 0.9 }}
-                              animate={{ opacity: 1, scale: 1 }}
-                              exit={{ opacity: 0 }}
-                              transition={{
-                                type: "spring",
-                                duration: 1.1,
-                                delay: 0.9,
-                              }}
-                              onClick={() => setIsFlip((isFlip) => !isFlip)}
-                              cursor="pointer"
+                        {wallet?.address === nft?.owner && (nft?.unlockableContent !== undefined 
+                          || nft?.unlockableContent !== "") ? (
+                          <AnimatePresence>
+                            <Lock
+                              key="unlock"
+                              animate={isFlip ? { y: 120 } : { y: 15 }}
+                              layout
+                              style={{ cursor: "pointer!" }}
                             >
-                              <VStack>
-                                <CaptionRegular
-                                  align="flex-end"
-                                  textcolor={appStyle.colors.darkgrey}
-                                >
-                                  Unlockable <br></br>Content
-                                </CaptionRegular>
-                              </VStack>
-                              <IconImg
-                                url={lock}
-                                width="33px"
-                                height="33px"
-                              ></IconImg>
-                            </HStack>
-                          </Lock>
+                              <HStack
+                                background="white"
+                                border="6px"
+                                padding="3px 12px"
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{
+                                  type: "spring",
+                                  duration: 1.1,
+                                  delay: 0.9,
+                                }}
+                                onClick={() => setIsFlip((isFlip) => !isFlip)}
+                                cursor="pointer"
+                              >
+                                <VStack>
+                                  <CaptionRegular
+                                    align="flex-end"
+                                    textcolor={appStyle.colors.darkgrey}
+                                  >
+                                    Unlockable <br></br>Content
+                                  </CaptionRegular>
+                                </VStack>
+                                <IconImg
+                                  url={lock}
+                                  width="33px"
+                                  height="33px"
+                                ></IconImg>
+                              </HStack>
+                            </Lock>
+                          </AnimatePresence>
                         ) : null}
                         <ReactPlayer
                           url={nft?.image}
@@ -1388,7 +1397,6 @@ const NFTDetails = (props) => {
                     </HStack>
                   </HStack>
                 </HStack>
-                {console.log(offers)}
                 {offers.length ? (
                   offers?.map((item, i) => (
                     <>

@@ -149,6 +149,7 @@ export const ZStack = styled(motion.div).attrs((props) => ({
 export const ZItem = styled(motion.div).attrs((props) => ({
   zindex: props.zindex || "0",
   cursor: props.cursor || "default",
+  backgroundimage: props.backgroundimage || "rgba(255, 255, 255, 0)",
   // heigth: props.height || "auto",
   // width: props.width || "auto",
 }))`
@@ -157,6 +158,7 @@ export const ZItem = styled(motion.div).attrs((props) => ({
   height: 100%;
   z-index: ${(props) => props.zindex};
   cursor: ${(props) => props.cursor};
+  background-image: url(${(props) => props.backgroundimage});
 `;
 
 // Divider

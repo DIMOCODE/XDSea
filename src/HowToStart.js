@@ -147,7 +147,7 @@ function HowToStart() {
                       3
                     </BodyRegular>
                   </VStack>
-                  <TitleBold18>Add your NFT’s</TitleBold18>
+                  <TitleBold18>Add your NFTs</TitleBold18>
                   <TitleBold18 textcolor={({ theme }) => theme.blue}>
                     Time to show off
                   </TitleBold18>

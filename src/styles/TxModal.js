@@ -59,6 +59,8 @@ function TxModal(props) {
     onChangeTransfer,
     cancelTransfer,
     transferNFT,
+    mintName,
+    mintedNFT,
   } = props;
 
   return (
@@ -418,7 +420,7 @@ function TxModal(props) {
                   textcolor={({ theme }) => theme.text}
                   align="center"
                 >
-                  You purchaised <b>{PurchaisedNftName}</b>
+                  You purchased <b>{PurchaisedNftName}</b>
                 </BodyRegular>
               </HStack>
               <IconImg
@@ -430,18 +432,44 @@ function TxModal(props) {
               ></IconImg>
               <HStack>
                 <ButtonApp
-                  text="Cancel"
-                  textcolor={({ theme }) => theme.text}
-                  background={appStyle.colors.darkgrey10}
-                  width="100%"
-                  onClick={cancelBtnPurchaise}
-                  btnStatus={0}
-                ></ButtonApp>
-                <ButtonApp
-                  text="View my NFT"
+                  text="View your NFTs"
                   width="100%"
                   textcolor={appStyle.colors.white}
                   onClick={confirmBtnPurchaise}
+                  btnStatus={0}
+                ></ButtonApp>
+              </HStack>
+            </>
+          )}
+          {isMint && (
+            <>
+              <VStack flex="0" spacing="0px">
+                <IconImg url={partyIcon} width="54px" height="54px"></IconImg>
+                <TitleBold21 textcolor={({ theme }) => theme.text}>
+                  Congrats
+                </TitleBold21>
+              </VStack>
+              <HStack padding="0 30px">
+                <BodyRegular
+                  textcolor={({ theme }) => theme.text}
+                  align="center"
+                >
+                  You successfully minted <b>{mintName}</b>
+                </BodyRegular>
+              </HStack>
+              <IconImg
+                url={mintedNFT}
+                backsize="cover"
+                border="9px"
+                width="100%"
+                height="260px"
+              ></IconImg>
+              <HStack>
+                <ButtonApp
+                  text="View your NFT"
+                  width="100%"
+                  textcolor={appStyle.colors.white}
+                  onClick={confirmActionModal}
                   btnStatus={0}
                 ></ButtonApp>
               </HStack>

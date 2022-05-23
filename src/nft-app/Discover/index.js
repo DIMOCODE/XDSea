@@ -22,7 +22,7 @@ import useWindowSize from "../../styles/useWindowSize";
 import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LoopLogo } from "../../styles/LoopLogo";
-import { deletedCollections, burnedCollections } from "../../blacklist";
+import { deletedCollections, burnedCollections, spotlightCollectionList } from "../../blacklist";
 
 const Discover = () => {
   const history = useHistory();
@@ -30,6 +30,7 @@ const Discover = () => {
   const [collectionPage, setCollectionPage] = useState([]);
   const [pageCount, setPageCount] = useState(1);
   const [setLoading, isSetLoading] = useState(false);
+  const [lastIndex, setLastIndex] = useState(0);
   const [loadingCollection] = useState([
     { id: 1, name: "Collection 1" },
     { id: 2, name: "Collection 2" },
@@ -117,12 +118,12 @@ const Discover = () => {
       // return events
       // }))
 
-      const collectionData = await marketContract.methods
-        .fetchCollections()
-        .call();
-      const collections = await Promise.all(
-        collectionData.slice(0, 12).map(async (i) => {
-          const uri = await nftContract.methods.tokenURI(i.tokenId).call();
+      const collectionData = await marketContract.methods.fetchCollections().call();
+
+      const spotlightCollections = await Promise.all(
+        spotlightCollectionList.map(async (i) => {
+          var collectionData = await marketContract.methods.fetchCollection(i).call();
+          const uri = await nftContract.methods.tokenURI(collectionData.tokenId).call();
           var metadata = await axios.get(uri);
           // const collectionData2 = await marketContract.methods
           //   .getCollectionNFTs(metadata?.data?.collection?.name)
@@ -174,10 +175,8 @@ const Discover = () => {
           return collection;
         })
       );
-      var filteredCollections = collections.filter((element) => {
-        return !deletedCollections.includes(element?.name);
-      });
-      setCollections(filteredCollections);
+
+      setCollections(spotlightCollections);
       setCollectionPage(collectionData);
       isSetLoading(false);
     } catch (error) {
@@ -186,74 +185,75 @@ const Discover = () => {
   };
 
   const fetchMoreCollections = async () => {
-    setPageCount(pageCount + 1);
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
     const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
-    const marketContract = new xdc3.eth.Contract(
-      NFTMarketLayer1.abi,
-      nftmarketlayeraddress,
-      xdc3
-    );
+    var nextPage = [];
     const collections = await Promise.all(
       collectionPage
-        .slice(pageCount * 12, 12 * (pageCount + 1))
-        .map(async (i) => {
-          const uri = await nftContract.methods.tokenURI(i.tokenId).call();
-          var metadata = await axios.get(uri);
-          const collectionData2 = await marketContract.methods
-            .getCollectionNFTs(metadata?.data?.collection?.name)
-            .call();
-          var volumeTraded = 0;
-          const uniqueOwners = [];
-          var lowestPrice = 99999999999999999999999999999;
-          const allEvents = await Promise.all(
-            collectionData2.map(async (item) => {
-              var price = await xdc3.utils.fromWei(item.price, "ether");
-              if (!uniqueOwners.includes(item.owner)) {
-                uniqueOwners.push(item.owner);
-              }
-              if (parseInt(price) < lowestPrice) {
-                lowestPrice = parseInt(price);
-              }
-              var events = [];
-              var tokenEvents = await marketContract.methods
-                .getTokenEventHistory(item.tokenId)
-                .call();
-              for (var j = 0; j < tokenEvents.length; j++) {
-                if (
-                  tokenEvents[j].eventType === "3" ||
-                  tokenEvents[j].eventType === "8"
-                ) {
-                  volumeTraded += parseInt(
-                    await xdc3.utils.fromWei(tokenEvents[j].price, "ether")
-                  );
-                }
-              }
-              return events;
-            })
-          );
-          let collection = {
-            name: metadata?.data?.collection?.name,
-            description: metadata?.data?.collection?.description,
-            creator: metadata?.data?.collection?.creator,
-            banner: metadata?.data?.collection?.banner,
-            logo: metadata?.data?.collection?.logo,
-            fileType: metadata?.data?.collection?.nft?.fileType,
-            preview: metadata?.data?.collection?.nft?.preview,
-            floorPrice: lowestPrice,
-            volumeTraded: volumeTraded,
-            items: !burnedCollections.includes(metadata?.data?.collection?.name)
-              ? collectionData2.length
-              : collectionData2.length - 1,
-            owners: uniqueOwners.length,
-          };
-          return collection;
+        .slice(lastIndex, lastIndex + 24)
+        .map(async (i, index) => {
+          if(!spotlightCollectionList.includes(i.collectionName) && !deletedCollections.includes(i.collectionName)) {
+            const uri = await nftContract.methods.tokenURI(i.tokenId).call();
+            var metadata = await axios.get(uri);
+            // const collectionData2 = await marketContract.methods
+            //   .getCollectionNFTs(metadata?.data?.collection?.name)
+            //   .call();
+            // var volumeTraded = 0;
+            // const uniqueOwners = [];
+            // var lowestPrice = 99999999999999999999999999999;
+            // const allEvents = await Promise.all(
+            //   collectionData2.map(async (item) => {
+            //     var price = await xdc3.utils.fromWei(item.price, "ether");
+            //     if (!uniqueOwners.includes(item.owner)) {
+            //       uniqueOwners.push(item.owner);
+            //     }
+            //     if (parseInt(price) < lowestPrice) {
+            //       lowestPrice = parseInt(price);
+            //     }
+            //     var events = [];
+            //     var tokenEvents = await marketContract.methods
+            //       .getTokenEventHistory(item.tokenId)
+            //       .call();
+            //     for (var j = 0; j < tokenEvents.length; j++) {
+            //       if (
+            //         tokenEvents[j].eventType === "3" ||
+            //         tokenEvents[j].eventType === "8"
+            //       ) {
+            //         volumeTraded += parseInt(
+            //           await xdc3.utils.fromWei(tokenEvents[j].price, "ether")
+            //         );
+            //       }
+            //     }
+            //     return events;
+            //   })
+            // );
+            let collection = {
+              id: index,
+              name: metadata?.data?.collection?.name,
+              description: metadata?.data?.collection?.description,
+              creator: metadata?.data?.collection?.creator,
+              banner: metadata?.data?.collection?.banner,
+              logo: metadata?.data?.collection?.logo,
+              fileType: metadata?.data?.collection?.nft?.fileType,
+              preview: metadata?.data?.collection?.nft?.preview,
+              // floorPrice: lowestPrice,
+              // volumeTraded: volumeTraded,
+              // items: !burnedCollections.includes(metadata?.data?.collection?.name)
+              //   ? collectionData2.length
+              //   : collectionData2.length - 1,
+              // owners: uniqueOwners.length,
+            };
+            nextPage.push(collection);
+          }
         })
     );
-    var filteredCollections = collections.filter((element) => {
-      return !deletedCollections.includes(element?.name);
-    });
-    setCollections((prevState) => [...prevState, ...filteredCollections]);
+    nextPage = nextPage.sort((collection1, collection2) => {
+      if(collection1.id < collection2.id)
+        return -1
+      else return 1
+    }).slice(0, 12);
+    setLastIndex(lastIndex + nextPage[11].id + 1);
+    setCollections((prevState) => [...prevState, ...nextPage]);
   };
 
   function NavigateTo(route) {
@@ -335,7 +335,9 @@ const Discover = () => {
                             collectionImage={item.banner}
                             creatorLogo={item.logo}
                             collectionName={item.name}
-                            collectionDescription={item.description}
+                            collectionDescription={item.name === "DØP3 Punks " 
+                              ? `A multichain NFT project minting collections on every major blockchain!\n\nWhere DØP3 Art Meets Web3` 
+                              : item.description}
                             creatorName={item.creator}
                             onClickCollection={() =>
                               NavigateTo(`collection/${item.name}`)
