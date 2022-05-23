@@ -172,6 +172,7 @@ const Discover = () => {
             //   : collectionData2.length - 1,
             // owners: uniqueOwners.length,
           };
+          console.log(metadata?.data?.collection?.creator);
           return collection;
         })
       );

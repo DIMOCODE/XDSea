@@ -173,9 +173,13 @@ const MyNFT = (props) => {
     );
     const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
     const data = await marketContract.methods.fetchMyNFTs(urlAddress).call();
-
+    const reversedData = [...data].sort((nft1, nft2) => {
+        if(parseInt(nft1.tokenId) > parseInt(nft2.tokenId))
+          return -1
+        else return 1
+      });
     
-    const nfts = await Promise.all(data.slice(0, 20).map(async i => {
+    const nfts = await Promise.all(reversedData.slice(0, 20).map(async i => {
         var uri = await nftContract.methods.tokenURI(i.tokenId).call();
         var metadata = await axios.get(uri);
         let nft = {
@@ -294,6 +298,12 @@ const MyNFT = (props) => {
   useEffect(() => {
     getOwnedNFTs();
   }, []);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    setSubMenu(0);
+    getOwnedNFTs();
+  }, [urlAddress]);
 
   React.useEffect(() => {
     window.scrollTo(0, 0);
@@ -508,7 +518,7 @@ const MyNFT = (props) => {
                         cursor="pointer"
                         whileHover={{ scale: 1.05 }}
                         onClick={() => {
-                        NavigateTo(`nft/${nftaddress}/${item}`);
+                        NavigateTo(`nft/${nftaddress}/${item.tokenId}`);
                         }}
                     >
                         <ZStack cursor={"pointer"}>

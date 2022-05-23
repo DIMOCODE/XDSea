@@ -74,8 +74,13 @@ const CollectionDetails = (props) => {
       const collectionData = await marketContract.methods
         .getCollectionNFTs(collectionName)
         .call();
+        const reversedCollections = [...collectionData].sort((nft1, nft2) => {
+            if(parseInt(nft1.tokenId) > parseInt(nft2.tokenId))
+              return -1
+            else return 1
+          });
       const collectionItems = await Promise.all(
-        collectionData.slice(0, 12).map(async (i) => {
+        reversedCollections.slice(0, 12).map(async (i) => {
           const uri = await nftContract.methods.tokenURI(i.tokenId).call();
           var metadata = await axios.get(uri);
           var price = await xdc3.utils.fromWei(i.price, "ether");
@@ -136,7 +141,7 @@ const CollectionDetails = (props) => {
       setVolume(volumeTraded);
       setLoadingState("loaded");
       setNFts(filteredCollectionItems);
-      setPage(collectionData);
+      setPage(reversedCollections);
       setCollectionOwners(uniqueOwners);
     } catch (error) {
       console.log(error);

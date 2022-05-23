@@ -447,7 +447,6 @@ const NFTDetails = (props) => {
       setPropertyProportions(properties);
       setApproved(getVal);
       setMoreFromCollectionNfts(moreFromCollectionItems.slice(0, 4));
-      console.log(moreFromCollectionItems);
     } catch (error) {
       console.log(error);
     }
@@ -585,6 +584,14 @@ const NFTDetails = (props) => {
     getOffers();
     getEvents();
   }, []);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    setWallet(props?.wallet);
+    getData();
+    getOffers();
+    getEvents();
+  }, [id]);
 
   useEffect(() => {
     setWallet(props?.wallet);
