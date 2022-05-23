@@ -21,14 +21,28 @@ import { TopCollectionItem } from "../../styles/TopCollectionItem";
 import { NftContainer } from "../../styles/NftContainer";
 import { appStyle } from "../../styles/AppStyles";
 import ButtonApp from "../../styles/Buttons";
-import { HStack, IconImg, Spacer, VStack } from "../../styles/Stacks";
-import { BodyRegular, TitleBold27, TitleBold33 } from "../../styles/TextStyles";
+import {
+  HStack,
+  IconImg,
+  Spacer,
+  VStack,
+  ZItem,
+  ZStack,
+} from "../../styles/Stacks";
+import {
+  BodyRegular,
+  TitleBold21,
+  TitleBold27,
+  TitleBold33,
+} from "../../styles/TextStyles";
 import { LayoutGroup, motion } from "framer-motion/dist/framer-motion";
 import { Featured } from "../../styles/Featured";
 import useWindowSize from "../../styles/useWindowSize";
 import { LoadingSpot } from "../../styles/LoadingSpot";
 import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
 import { LogoHover } from "../../styles/LogoHover";
+import bannerXDC from "../../images/bannerXdc.png";
+import bannerXDC2 from "../../images/bannerXDC2.png";
 
 const Home = () => {
   const history = useHistory();
@@ -246,7 +260,7 @@ const Home = () => {
             Be a part of the world's first NFT Marketplace on the XDC
             blockchain.
           </BodyRegular>
-          <HStack spacing="10px">
+          {/* <HStack spacing="10px">
             <a href="#spotlightCollections" style={linkStyle}>
               <ButtonApp
                 btnStatus={0}
@@ -270,7 +284,7 @@ const Home = () => {
               ></ButtonApp>
             </a>
             <Spacer></Spacer>
-          </HStack>
+          </HStack> */}
           <Spacer></Spacer>
         </VStack>
         <HStack
@@ -376,6 +390,47 @@ const Home = () => {
           </VStack>
         </HStack>
       </VStack> */}
+
+      <VStack width="100%" padding="60px 0">
+        <VStack
+          width="100%"
+          minheight="300px"
+          border="15px"
+          overflow="hidden"
+          cursor="pointer"
+        >
+          <ZStack>
+            <ZItem>
+              <IconImg
+                url={bannerXDC}
+                width="100%"
+                height="300px"
+                border="15px"
+                backsize="contain"
+              ></IconImg>
+            </ZItem>
+            <ZItem>
+              <VStack
+                width="100%"
+                whileHover={{ scale: 1.05 }}
+                onClick={() => NavigateTo("HowToStart")}
+              >
+                <TitleBold27 textcolor={appStyle.colors.white}>
+                  Want to Get Started?
+                </TitleBold27>
+                <ButtonApp
+                  text="Here is How"
+                  textcolor={appStyle.colors.black}
+                  background={appStyle.colors.white}
+                  width="180px"
+                  style={{ cursor: "pointer" }}
+                ></ButtonApp>
+              </VStack>
+            </ZItem>
+          </ZStack>
+        </VStack>
+      </VStack>
+
       <VStack
         height={size.width < 768 ? "auto" : "1100px"}
         width="100%"
@@ -440,5 +495,6 @@ const Content = styled(motion.div)`
   max-width: 1200px;
   margin: 0 auto;
   box-sizing: border-box;
+
   background: ${({ theme }) => theme.background};
 `;
