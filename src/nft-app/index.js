@@ -29,7 +29,7 @@ const NFTApp = () => {
   const [theme, setTheme] = useState("light");
   const [isModalAds, setIsModalAds] = useState(false);
   const [randomNumber, setRandomNumber] = useState(0);
-  const [isDevMode] = useState(true);
+  const [isDevMode] = useState(false);
 
   const themeToggler = () => {
     theme === "light" ? setTheme("dark") : setTheme("light");

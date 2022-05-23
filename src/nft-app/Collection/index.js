@@ -31,6 +31,7 @@ import { appStyle } from "../../styles/AppStyles";
 import { LoopLogo } from "../../styles/LoopLogo";
 import { burnedNFTs, burnedCollections, verifiedProfiles } from "../../blacklist";
 import banner1 from "../../images/Banner1.jpg";
+import banner2 from "../../images/Banner2.jpg";
 import { Tooltip } from "@mui/material";
 import verified from "../../images/verified.png";
 
@@ -197,9 +198,8 @@ const CollectionDetails = (props) => {
   return (
     <CollectionSection>
       <BannerAbsolute>
-        {nfts[0]?.collectionBanner ? (
-          <IconImg
-            url={nfts[0]?.collectionBanner}
+        <IconImg
+            url={nfts[0]?.collectionBanner ? nfts[0].collectionBanner : banner2}
             width="100%"
             height="355px"
             backsize="cover"
@@ -208,17 +208,6 @@ const CollectionDetails = (props) => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           ></IconImg>
-        ) : (
-          <VStack
-            width="100%"
-            height="355px"
-            key="loaderBanner"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ type: "spring", duration: 0.3 }}
-          ></VStack>
-        )}
       </BannerAbsolute>
       <HStack>
         <VStack
@@ -233,19 +222,19 @@ const CollectionDetails = (props) => {
               onClick={() =>
                 NavigateTo(`UserProfile/${nfts[0]?.collectionCreator}`)
               }
-              background="white"
               border="30px"
               padding="6px 15px"
               style={{
                 boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
               }}
               cursor={"pointer"}
+              background={({ theme }) => theme.backElement}
             >
               {verifiedProfiles.includes(nfts[0]?.collectionCreator) 
                 ? <IconImg url={verified} width="21px" height="21px"></IconImg>
                 : null}
               <VStack spacing="0px" alignment="flex-start" cursor={"pointer"}>
-                <CaptionBold textcolor={appStyle.colors.darkgrey30}>
+                <CaptionBold textcolor={({ theme }) => theme.text}>
                   CREATOR
                 </CaptionBold>
                 {nfts[0]?.collectionCreator ? (
@@ -265,7 +254,7 @@ const CollectionDetails = (props) => {
             height={size.width < 768 ? "90px" : "290px"}
           >
             <IconImg
-              url={nfts[0]?.collectionLogo}
+              url={nfts[0]?.collectionLogo ? nfts[0].collectionLogo : banner2}
               width="150px"
               height="150px"
               border="150px"
@@ -564,7 +553,7 @@ const CollectionDetails = (props) => {
                       >
                         <NftContainer
                           key={i}
-                          creatorImage={banner1}
+                          creatorImage={nfts[0]?.collectionLogo ? banner1 : banner2}
                           itemImage={item.image}
                           price={item.price}
                           collectionName={collectionName}

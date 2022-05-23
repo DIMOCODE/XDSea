@@ -106,6 +106,7 @@ function CreateNft(props) {
   const [minted, setMinted] = useState(false);
   const [tokenId, setTokenId] = useState(0);
   const history = useHistory();
+  const [collectionValid, setCollectionValid] = useState(false);
   const size = useWindowSize();
 
   const addToIPFS = async () => {
@@ -252,7 +253,19 @@ function CreateNft(props) {
       nftmarketlayeraddress,
       xdc3
     );
-    try {
+
+    const tokenCount = await marketContract.methods.tokenCount().call();
+    setNewCollection(true);
+    setCollection(`Untitled Collection ${tokenCount}`);
+    setCollectionExists(false);
+    setCollectionEmpty(true)
+    document
+      .getElementsByClassName("collection-url")[0]
+      .setAttribute(
+        "placeholder",
+        `Untitled Collection ${tokenCount}`.replace(/\s+/g, "%20")
+      );
+    try{
       const data = await marketContract.methods
         .fetchItemsCreated(
           isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address
@@ -267,30 +280,50 @@ function CreateNft(props) {
       );
       setCollections(uniqueCollections);
     } catch (e) {
+
     }
   };
 
   const checkCollectionExists = async () => {
     setLoadingIcon(loading);
     const collectionName =
-      document.getElementsByClassName("collection-name")[0].value;
+      document.getElementsByClassName("collection-name")[0].value.replace(/\s+$/, '');
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
     const marketContract = new xdc3.eth.Contract(
       NFTMarketLayer1.abi,
       nftmarketlayeraddress,
       xdc3
     );
+    const data = await marketContract.methods
+        .fetchItemsCreated(
+          isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address
+        )
+        .call();
+    var uniqueCollections = [];
+    const creations = await Promise.all(
+      data.map(async (i) => {
+        if (!uniqueCollections.includes(i.collectionName))
+          uniqueCollections.push(i.collectionName);
+      })
+    );
+    setCollections(uniqueCollections);
     const collectionData = await marketContract.methods
       .fetchCollections()
       .call();
-    var uniqueCollections = [];
-    const collections = await Promise.all(
+    var uniqueCollections2 = [];
+    const collectionNFTs = await Promise.all(
       collectionData.map(async (i) => {
-        uniqueCollections.push(i.collectionName);
+        uniqueCollections2.push(i.collectionName);
       })
     );
-    if (uniqueCollections.includes(collectionName)) {
-      setCollectionExists(true);
+    if (uniqueCollections2.includes(collectionName)) {
+      if(uniqueCollections.includes(collectionName)) {
+        setCollectionExists(false);
+        setCollectionValid(true);
+      }
+      else{
+        setCollectionExists(true);
+      }
       setLoadingIcon(empty)
       return true;
     }
@@ -319,11 +352,11 @@ function CreateNft(props) {
           document.getElementsByClassName("nft-description")[0].scrollIntoView();
         }
         else {
-          if(document.getElementsByClassName("nft-collection")[0].value === "") {
-            setIsCollectionNotSelected(true);
-            document.getElementById("nft-unlockable").scrollIntoView();
-          }
-          else {
+          // if(document.getElementsByClassName("nft-collection")[0].value === "") {
+          //   setIsCollectionNotSelected(true);
+          //   document.getElementById("nft-unlockable").scrollIntoView();
+          // }
+          // else {
             setMintButtonStatus(1);
             const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
             const marketContract = new xdc3.eth.Contract(
@@ -425,7 +458,7 @@ function CreateNft(props) {
               setIsWalletDisconnected(true);
               setMintButtonStatus(4);
             }
-          }
+          // }
         }
       }
     }
@@ -501,6 +534,7 @@ function CreateNft(props) {
 
   useEffect(() => {
     setWallet(props?.wallet);
+    fetchCollection();
   }, [props?.wallet])
 
   return (
@@ -927,9 +961,9 @@ function CreateNft(props) {
               Collection
             </TitleBold15>
             <BodyRegular textcolor={({ theme }) => theme.text}>
-              If your NFT belongs to any collection, please choose one
+              If your NFT belongs to any collection, please use the name in the collection name field.
             </BodyRegular>
-            <SelectStyled
+            {/* <SelectStyled
               selectClass={"nft-collection"}
               value={collection}
               collections={collections}
@@ -958,7 +992,7 @@ function CreateNft(props) {
                 }
                 setIsCollectionNotSelected(false);
               }}
-            ></SelectStyled>
+            ></SelectStyled> */}
             {isCollectionNotSelected ? (
                 <HStack
                   background={appStyle.colors.softRed}
@@ -971,7 +1005,7 @@ function CreateNft(props) {
                 </HStack>
               ) : null}
           </VStack>
-          {isNewCollection ? (
+          {/* {isNewCollection ? ( */}
             <>
               <HStack responsive={true} spacing="0px" alignment="flex-start">
                 <VStack width="100%" padding="30px" spacing="150px">
@@ -1126,22 +1160,47 @@ function CreateNft(props) {
                       placeholder="Name your Collection"
                       onChange={(event) => {
                         setCollection(event.target.value);
+                        setCollectionExists(false);
+                        setCollectionValid(false);
+                        setCollectionEmpty(false);
                         document
                           .getElementsByClassName("collection-url")[0]
                           .setAttribute(
                             "placeholder",
-                            event.target.value.replace(/\s+/g, "%20")
+                            event.target.value.replace(/\s+/g, "%20").replace(/%20$/, '')
                           );
                       }}
-                      onBlur={() => checkCollectionExists()}
+                      onBlur={async () => {
+                        if(collection === "") {
+                          const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
+                          const marketContract = new xdc3.eth.Contract(
+                            NFTMarketLayer1.abi,
+                            nftmarketlayeraddress,
+                            xdc3
+                          );
+                          const tokenCount = await marketContract.methods.tokenCount().call();
+                          setCollection(`Untitled Collection ${tokenCount}`);
+                          setCollectionExists(false);
+                          setCollectionEmpty(true)
+                          document
+                            .getElementsByClassName("collection-url")[0]
+                            .setAttribute(
+                              "placeholder",
+                              `Untitled Collection ${tokenCount}`.replace(/\s+/g, "%20")
+                            );
+                        }
+                        else{
+                          checkCollectionExists();
+                        }
+                      }}
                     ></InputStyled>
                     {collectionExists ? (
                       <HStack
-                        background={appStyle.colors.yellow}
+                        background={appStyle.colors.softRed}
                         padding="6px 15px"
                         border="6px"
                       >
-                        <CaptionRegular textcolor={appStyle.colors.darkYellow}>
+                        <CaptionRegular textcolor={appStyle.colors.darkRed}>
                           Collection name already taken. Please choose a
                           different name.
                         </CaptionRegular>
@@ -1155,6 +1214,17 @@ function CreateNft(props) {
                       >
                         <CaptionRegular textcolor={appStyle.colors.darkYellow}>
                           Collection name is empty. Collection will be assigned an Untitled Collection name.
+                        </CaptionRegular>
+                      </HStack>
+                    ) : null}
+                    {collectionValid ? (
+                      <HStack
+                        background={appStyle.colors.green}
+                        padding="6px 15px"
+                        border="6px"
+                      >
+                        <CaptionRegular textcolor={appStyle.colors.darkGreen}>
+                          This collection belongs to you. You can add NFTs to this collection. You can skip to the minting step.
                         </CaptionRegular>
                       </HStack>
                     ) : null}
@@ -1179,7 +1249,7 @@ function CreateNft(props) {
                 </VStack>
               </HStack>
             </>
-          ) : null}
+          {/* ) : null} */}
           <Divider></Divider>
           <HStack padding="0 39px" spacing="69px" responsive={true}>
             <HStack width="100%">

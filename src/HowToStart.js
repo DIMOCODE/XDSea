@@ -67,7 +67,7 @@ function HowToStart() {
                 </VStack>
                 <VStack alignment="flex-start" width="100%">
                   <BodyRegular>• Setup the wallet of your choice</BodyRegular>
-                  <BodyRegular>• Click on Connect</BodyRegular>
+                  <BodyRegular>• Click on Connect by clicking the <br></br>wallet icon in the top right corner</BodyRegular>
                   <BodyRegular>
                     • You're now connected to the <br></br>XDSea NFT Marketplace
                   </BodyRegular>
@@ -104,22 +104,19 @@ function HowToStart() {
                       2
                     </BodyRegular>
                   </VStack>
-                  <TitleBold18>Create your Collection</TitleBold18>
+                  <TitleBold18>Create an NFT</TitleBold18>
                   <TitleBold18 textcolor={({ theme }) => theme.blue}>
                     Let’s get creative
                   </TitleBold18>
                 </VStack>
                 <VStack alignment="flex-start" width="100%" maxheight="120px">
                   <BodyRegular>
-                    • Click on create and select Collection
+                    • Click on Create an NFT
                   </BodyRegular>
                   <BodyRegular>
-                    • Add a collection name and description
+                    • Set up your collection by adding <br></br>the name, description, a collection <br></br>banner, and a logo
                   </BodyRegular>
-                  <BodyRegular>• Upload a Banner Image</BodyRegular>
-                  <BodyRegular>
-                    • Set your custom secondary market fees
-                  </BodyRegular>
+                  <BodyRegular>• Don't forget to add your <br></br>social links!</BodyRegular>
                 </VStack>
               </VStack>
             </VStack>
@@ -158,15 +155,12 @@ function HowToStart() {
                   </TitleBold18>
                 </VStack>
                 <VStack alignment="flex-start" width="100%" maxheight="160px">
-                  <BodyRegular>• Click on create and select NFT</BodyRegular>
+                  <BodyRegular>• Upload your digital asset</BodyRegular>
                   <BodyRegular>
-                    • Add your amazing artwork with description and title
+                    • Add titles and descriptions
                   </BodyRegular>
                   <BodyRegular>
-                    • Create the properties that makes it rare
-                  </BodyRegular>
-                  <BodyRegular>
-                    • Pick your collection name and upload your NFT artwork
+                    • Customize your NFTs with properties, <br></br>set your custom secondary market <br></br>fees, and add unlockable content
                   </BodyRegular>
                   <Spacer></Spacer>
                 </VStack>
@@ -198,13 +192,14 @@ function HowToStart() {
                       4
                     </BodyRegular>
                   </VStack>
-                  <TitleBold18>List them to Sale</TitleBold18>
+                  <TitleBold18>List them for Sale</TitleBold18>
                   <TitleBold18 textcolor={({ theme }) => theme.blue}>
                     Let’s make some money and change the world
                   </TitleBold18>
                 </VStack>
                 <VStack alignment="flex-start" width="100%">
-                  <BodyRegular>• Set your custom price and mint it</BodyRegular>
+                  <BodyRegular>• Set your custom price</BodyRegular>
+                  <BodyRegular>• Click on mint your NFT</BodyRegular>
                   <BodyRegular>• Wait for the magic to happen</BodyRegular>
                   <Spacer></Spacer>
                 </VStack>

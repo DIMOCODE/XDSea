@@ -548,7 +548,7 @@ const MyNFT = (props) => {
                             overflow="hidden"
                             whileHover={{ scale: 1.05 }}
                             onClick={() => {
-                              NavigateTo(`nft/${nftaddress}/${item}`);
+                              NavigateTo(`nft/${nftaddress}/${item.tokenId}`);
                             }}
                           >
                             <ZStack cursor={"pointer"}>
@@ -631,10 +631,9 @@ const MyNFT = (props) => {
                   ) : (
                     <VStack
                       border="15px"
-                      background="white"
                       width="100%"
                       minheight="300px"
-                      // background={({ theme }) => theme.backElement}
+                      background={({ theme }) => theme.backElement}
                     >
                       <IconImg
                         url={emptyNFT}
@@ -780,10 +779,9 @@ const MyNFT = (props) => {
                   ) : (
                     <VStack
                       border="15px"
-                      background="white"
                       width="100%"
                       minheight="300px"
-                      // background={({ theme }) => theme.backElement}
+                      background={({ theme }) => theme.backElement}
                     >
                       <IconImg
                         url={emptyCollection}

@@ -715,7 +715,7 @@ const NFTDetails = (props) => {
                     {isImage(nft?.fileType) ? (
                       <VStack>
                         {wallet?.address === nft?.owner && (nft?.unlockableContent !== undefined 
-                          || nft?.unlockableContent !== "") ? (
+                          && nft?.unlockableContent !== "") ? (
                           <AnimatePresence>
                             <Lock
                               key="unlock"
@@ -779,7 +779,7 @@ const NFTDetails = (props) => {
                         cursor="pointer"
                       >
                         {wallet?.address === nft?.owner && (nft?.unlockableContent !== undefined 
-                          || nft?.unlockableContent !== "") ? (
+                          && nft?.unlockableContent !== "") ? (
                           <AnimatePresence>
                             <Lock
                               key="unlock"
@@ -841,7 +841,7 @@ const NFTDetails = (props) => {
                         padding="15px"
                       >
                         {wallet?.address === nft?.owner && (nft?.unlockableContent !== undefined 
-                          || nft?.unlockableContent !== "") ? (
+                          && nft?.unlockableContent !== "") ? (
                           <AnimatePresence>
                             <Lock
                               key="unlock"
@@ -981,7 +981,7 @@ const NFTDetails = (props) => {
                         </Tooltip>
                       </HStack>
                       <CaptionRegular>
-                        {nft?.royalty.replace(/^0+/, "")}% Royalty
+                        {nft?.royalty ? nft?.royalty.replace(/^0+/, "") : "0"}% Royalty
                       </CaptionRegular>
                     </HStack>
                   </VStack>
