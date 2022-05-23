@@ -71,8 +71,8 @@ const MyNFT = (props) => {
   const [isFetching, setIsFetching] = useState(false);
 
   const [sellPrice, setSellPrice] = useState("");
-  const [isOwned, setIsOwned] = useState(false);
-  const [isCreatedCollection, setIsCreatedCollection] = useState(false);
+  const [isOwned, setIsOwned] = useState(true);
+  const [isCreatedCollection, setIsCreatedCollection] = useState(true);
   const [approved, setApproved] = useState(false);
   const cancelButtonRef = useRef(null);
   const [sellData, setSellData] = useState(null);
@@ -492,7 +492,7 @@ const MyNFT = (props) => {
                         This creator does not have any NFT yet
                       </BodyRegular>
                     </VStack>
-                  ) : ownedCollections.length ? (
+                  ) : initialGroup.length ? (
                             <InfiniteScroll
                                 dataLength={initialGroup.length}
                                 next={fetchMoreNFTs}
