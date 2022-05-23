@@ -267,7 +267,6 @@ function CreateNft(props) {
       );
       setCollections(uniqueCollections);
     } catch (e) {
-      console.log(e.message);
     }
   };
 
