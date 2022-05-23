@@ -71,8 +71,8 @@ const MyNFT = (props) => {
   const [isFetching, setIsFetching] = useState(false);
 
   const [sellPrice, setSellPrice] = useState("");
-  const [isOwned, setIsOwned] = useState(true);
-  const [isCreatedCollection, setIsCreatedCollection] = useState(true);
+  const [isOwned, setIsOwned] = useState(false);
+  const [isCreatedCollection, setIsCreatedCollection] = useState(false);
   const [approved, setApproved] = useState(false);
   const cancelButtonRef = useRef(null);
   const [sellData, setSellData] = useState(null);
@@ -174,6 +174,7 @@ const MyNFT = (props) => {
     const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
     const data = await marketContract.methods.fetchMyNFTs(urlAddress).call();
 
+    
     const nfts = await Promise.all(data.slice(0, 20).map(async i => {
         var uri = await nftContract.methods.tokenURI(i.tokenId).call();
         var metadata = await axios.get(uri);
@@ -475,115 +476,113 @@ const MyNFT = (props) => {
                     exit={{ opacity: 0, y: 15 }}
                     id={"scrollableDiv"}
                 >
-                  {!isOwned ? (
-                    <VStack
-                      border="15px"
-                      background="white"
-                      width="100%"
-                      minheight="300px"
-                      // background={({ theme }) => theme.backElement}
-                    >
-                      <IconImg
-                        url={emptyNFT}
-                        width="60px"
-                        height="60px"
-                      ></IconImg>
-                      <BodyRegular>
-                        This creator does not have any NFT yet
-                      </BodyRegular>
+                  {setLoading ? (
+                    <VStack padding="120px">
+                        <LoopLogo></LoopLogo>
                     </VStack>
-                  ) : initialGroup.length ? (
-                            <InfiniteScroll
-                                dataLength={initialGroup.length}
-                                next={fetchMoreNFTs}
-                                hasMore={
-                                    initialGroup.length < page.length
-                                }
-                                loader={
-                                    <HStack
-                                        initial={{ opacity: 0 }}
-                                        animate={{ opacity: 1 }}
-                                        height="190px"
-                                    >
-                                        <LoopLogo></LoopLogo>
-                                    </HStack>
-                                }
-                                scrollableTarget="#scrollableDiv"
-                                style={{ overflow: "hidden" }}
+                  ) : initialGroup.length !== 0 ? (
+                    <InfiniteScroll
+                        dataLength={initialGroup.length}
+                        next={fetchMoreNFTs}
+                        hasMore={
+                            initialGroup.length < page.length
+                        }
+                        loader={
+                            <HStack
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                height="190px"
                             >
-                                {initialGroup.map((item, i) => (
-                            <VStack
-                                maxwidth="186px"
-                                minwidth="186px"
-                                height="186px"
+                                <LoopLogo></LoopLogo>
+                            </HStack>
+                        }
+                        scrollableTarget="#scrollableDiv"
+                        style={{ overflow: "hidden" }}
+                    >
+                        {initialGroup.map((item, i) => (
+                    <VStack
+                        maxwidth="186px"
+                        minwidth="186px"
+                        height="186px"
+                        border="15px"
+                        cursor="pointer"
+                        whileHover={{ scale: 1.05 }}
+                        onClick={() => {
+                        NavigateTo(`nft/${nftaddress}/${item}`);
+                        }}
+                    >
+                        <ZStack cursor={"pointer"}>
+                        <CreatorTag>OWNER</CreatorTag>
+                        <ZItem backgroundimage={isAudio(item.fileType) ? item.preview : null}>
+                            {isImage(item.fileType) ? (
+                            <IconImg
+                                url={item.image}
+                                width="100%"
+                                height="100%"
+                                backsize="cover"
                                 border="15px"
-                                cursor="pointer"
-                                whileHover={{ scale: 1.05 }}
-                                onClick={() => {
-                                NavigateTo(`nft/${nftaddress}/${item}`);
-                                }}
-                            >
-                                <ZStack cursor={"pointer"}>
-                                <CreatorTag>OWNER</CreatorTag>
-                                <ZItem backgroundimage={isAudio(item.fileType) ? item.preview : null}>
-                                    {isImage(item.fileType) ? (
-                                    <IconImg
-                                        url={item.image}
-                                        width="100%"
-                                        height="100%"
-                                        backsize="cover"
-                                        border="15px"
-                                    ></IconImg>
-                                    ) : isVideo(item.fileType) ? (
-                                    <ReactPlayer
-                                        url={item.image}
-                                        playing={true}
-                                        muted={true}
-                                        loop={false}
-                                        width="100%"
-                                        height="100%"
-                                    />
-                                    ) : isAudio(item.fileType) ? (
-                                    <ReactPlayer
-                                        url={item?.image}
-                                        playing={false}
-                                        muted={true}
-                                        loop={false}
-                                        width="100%"
-                                        height="100%"
-                                    />
-                                    ) : null}
-                                </ZItem>
-                                <ZItem>
-                                    <VStack padding="15px">
-                                    <HStack>
-                                        <Spacer></Spacer>
-                                        <IconImg
-                                        url={banner1}
-                                        width="45px"
-                                        height="45px"
-                                        backsize="cover"
-                                        border="45px"
-                                        bordersize="3px"
-                                        bordercolor="white"
-                                        ></IconImg>
-                                    </HStack>
-                                    <Spacer></Spacer>
-                                    <TitleBold15 textcolor={appStyle.colors.white}>
-                                        {item.name}
-                                    </TitleBold15>
-                                    </VStack>
-                                </ZItem>
-                                </ZStack>
+                            ></IconImg>
+                            ) : isVideo(item.fileType) ? (
+                            <ReactPlayer
+                                url={item.image}
+                                playing={true}
+                                muted={true}
+                                loop={false}
+                                width="100%"
+                                height="100%"
+                            />
+                            ) : isAudio(item.fileType) ? (
+                            <ReactPlayer
+                                url={item?.image}
+                                playing={false}
+                                muted={true}
+                                loop={false}
+                                width="100%"
+                                height="100%"
+                            />
+                            ) : null}
+                        </ZItem>
+                        <ZItem>
+                            <VStack padding="15px">
+                            <HStack>
+                                <Spacer></Spacer>
+                                <IconImg
+                                url={banner1}
+                                width="45px"
+                                height="45px"
+                                backsize="cover"
+                                border="45px"
+                                bordersize="3px"
+                                bordercolor="white"
+                                ></IconImg>
+                            </HStack>
+                            <Spacer></Spacer>
+                            <TitleBold15 textcolor={appStyle.colors.white}>
+                                {item.name}
+                            </TitleBold15>
                             </VStack>
-                            ))}
-                            </InfiniteScroll>
-                            
-                            
+                        </ZItem>
+                        </ZStack>
+                    </VStack>
+                    ))}
+                    </InfiniteScroll>     
                     ) : (
-                        <VStack padding="120px">
-                            <LoopLogo></LoopLogo>
-                        </VStack>
+                        <VStack
+                            border="15px"
+                            background="white"
+                            width="100%"
+                            minheight="300px"
+                            // background={({ theme }) => theme.backElement}
+                        >
+                            <IconImg
+                            url={emptyNFT}
+                            width="60px"
+                            height="60px"
+                            ></IconImg>
+                            <BodyRegular>
+                            This creator does not have any NFT yet
+                            </BodyRegular>
+                      </VStack>
                     )}
                 </VStack>
                 }
@@ -595,24 +594,12 @@ const MyNFT = (props) => {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 15 }}
                 >
-                    {!isCreatedCollection ? (
-                        <VStack
-                          border="15px"
-                          background="white"
-                          width="100%"
-                          minheight="300px"
-                          // background={({ theme }) => theme.backElement}
-                        >
-                          <IconImg
-                            url={emptyCollection}
-                            width="60px"
-                            height="60px"
-                          ></IconImg>
-                          <BodyRegular>
-                            This creator has not yet created any collection
-                          </BodyRegular>
+                    {setLoadingCollection ? (
+                        <VStack padding="120px">
+                            <LoopLogo></LoopLogo>
                         </VStack>
-                      ) : collectionGroup.length ? (
+                    )
+                      : collectionGroup.length ? (
                         collectionGroup.map((item, i) => (
                             <VStack width="100%" padding="30px" spacing="30px">
                             <HStack width="100%">
@@ -711,8 +698,21 @@ const MyNFT = (props) => {
                             </VStack>
                         ))
                     ) : (
-                        <VStack padding="120px">
-                            <LoopLogo></LoopLogo>
+                        <VStack
+                            border="15px"
+                            background="white"
+                            width="100%"
+                            minheight="300px"
+                            // background={({ theme }) => theme.backElement}
+                        >
+                            <IconImg
+                            url={emptyCollection}
+                            width="60px"
+                            height="60px"
+                            ></IconImg>
+                            <BodyRegular>
+                            This creator has not yet created any collection
+                            </BodyRegular>
                         </VStack>
                     )}
                 </VStack>
