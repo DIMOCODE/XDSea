@@ -520,6 +520,7 @@ const MyNFT = (props) => {
                             height="186px"
                             border="15px"
                             cursor="pointer"
+                            overflow="hidden"
                             whileHover={{ scale: 1.05 }}
                             onClick={() => {
                               NavigateTo(`nft/${nftaddress}/${item}`);
@@ -560,7 +561,7 @@ const MyNFT = (props) => {
                                   <VStack
                                     width="186px"
                                     height="186px"
-                                    border="9px"
+                                    border="15px"
                                     overflow="hidden"
                                   >
                                     <ReactPlayer
@@ -568,8 +569,9 @@ const MyNFT = (props) => {
                                       playing={false}
                                       muted={true}
                                       loop={false}
-                                      width="100%"
-                                      height="100%"
+                                      width="50%"
+                                      height="50%"
+                                      style={{ borderRadius: 15 }}
                                     />
                                   </VStack>
                                 ) : null}
@@ -656,6 +658,7 @@ const MyNFT = (props) => {
                               height="186px"
                               border="15px"
                               whileHover={{ scale: 1.05 }}
+                              overflow="hidden"
                               onClick={() => {
                                 NavigateTo(`nft/${nftaddress}/${nft.tokenId}`);
                               }}
