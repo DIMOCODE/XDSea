@@ -9,7 +9,7 @@ function Link(props) {
     hover: { opacity: 1, x: 6 },
     initial: { opacity: 0.6, x: 0 },
   };
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible] = useState(false);
   const history = useHistory();
 
   function NavigateTo(route) {
@@ -30,6 +30,7 @@ function Link(props) {
       textcolor={appStyle.colors.white}
       whileHover={{ scale: 1.2 }}
       onClick={() => {NavigateTo(text)}}
+      cursor="pointer"
     >
       {text}
     </BodyRegular>

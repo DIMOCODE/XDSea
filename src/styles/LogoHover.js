@@ -5,8 +5,6 @@ import XDSealogo from "./../images/LogoXDSEA.png";
 import curvedText from "./../images/curvedBold.png";
 import {
   motion,
-  AnimatePresence,
-  LayoutGroup,
 } from "framer-motion/dist/framer-motion";
 import styled from "styled-components";
 

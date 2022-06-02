@@ -1,7 +1,5 @@
 import React from "react";
-import { HStack, IconImg, VStack, Spacer, ZStack, ZItem } from "./Stacks";
-import loaderLogo from "../images/logoLoading.png";
-import curvedText from "../images/curvedText.png";
+import { HStack, VStack, Spacer, ZStack, ZItem } from "./Stacks";
 import styled from "styled-components";
 import {
   motion,

@@ -9,7 +9,6 @@ import { appStyle } from "./AppStyles";
 import {
   motion,
   AnimatePresence,
-  LayoutGroup,
 } from "framer-motion/dist/framer-motion";
 import { LoadingFeatured } from "./LoadingFeatured";
 
@@ -20,7 +19,6 @@ function Featured(props) {
     itemNumber,
     creatorImage,
     itemImage,
-    width,
     height,
     onClickCreator,
     fileType,

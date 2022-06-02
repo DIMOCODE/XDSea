@@ -1,7 +1,6 @@
 import React from "react";
-import { HStack, IconImg, VStack, Spacer, ZStack, ZItem } from "./Stacks";
+import { HStack } from "./Stacks";
 import loaderLogo from "../images/logoLoading.png";
-import curvedText from "../images/curvedText.png";
 import styled from "styled-components";
 import {
   motion,
@@ -10,7 +9,7 @@ import {
 } from "framer-motion/dist/framer-motion";
 
 function LoopBars(props) {
-  const { width, height } = props;
+  const { width } = props;
   return (
     <LayoutGroup id="loopBars">
       <AnimatePresence>

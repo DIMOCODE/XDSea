@@ -4,7 +4,6 @@ export const appStyle = {
     white90: "rgba(255, 255, 255, 0.9)",
     white60: "rgba(255, 255, 255, 0.3)",
     white30: "rgba(255, 255, 255, 0.1)",
-    yellow: "#FFE500",
     blue: "#044FC5",
     green: "#2ACA45",
     softGreen: "#7EEA90",

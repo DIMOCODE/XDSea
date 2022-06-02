@@ -6,18 +6,12 @@ import { nftaddress, nftmarketlayeraddress } from "../../config";
 import NFT from "../../abis/NFT.json";
 import NFTMarketLayer1 from "../../abis/NFTMarketLayer1.json";
 import axios from "axios";
-import { GetWallet } from "xdc-connect";
-import { fromXdc, isXdc } from "../../common/common";
 import {
   featuredNFTList,
-  spotlightCollectionList,
   trendingItemList,
-  burnedCollections,
 } from "../../blacklist";
 import styled from "styled-components";
-import rocketCollection from "../../images/rocketCollection.png";
 import iconTrending from "../../images/trendingNFT.png";
-import { TopCollectionItem } from "../../styles/TopCollectionItem";
 import { NftContainer } from "../../styles/NftContainer";
 import { appStyle } from "../../styles/AppStyles";
 import ButtonApp from "../../styles/Buttons";
@@ -31,37 +25,33 @@ import {
 } from "../../styles/Stacks";
 import {
   BodyRegular,
-  TitleBold21,
   TitleBold27,
   TitleBold33,
 } from "../../styles/TextStyles";
 import { LayoutGroup, motion } from "framer-motion/dist/framer-motion";
 import { Featured } from "../../styles/Featured";
 import useWindowSize from "../../styles/useWindowSize";
-import { LoadingSpot } from "../../styles/LoadingSpot";
 import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
 import { LogoHover } from "../../styles/LogoHover";
 import bannerXDC from "../../images/bannerXdc.png";
-import bannerXDC2 from "../../images/bannerXDC2.png";
 
 const Home = () => {
   const history = useHistory();
   const [nfts, setNFts] = useState([]);
   const [featuredNFT, setFeaturedNFT] = useState([]);
-  const [collections, setCollections] = useState([]);
   const [setLoading, isSetLoading] = useState(false);
-  const [arrayCollection] = useState([
-    { id: 1, name: "Collection 1" },
-    { id: 2, name: "Collection 2" },
-    { id: 3, name: "Collection 3" },
-    { id: 4, name: "Collection 4" },
-    { id: 5, name: "Collection 5" },
-    { id: 6, name: "Collection 6" },
-    { id: 7, name: "Collection 7" },
-    { id: 8, name: "Collection 8" },
-    { id: 9, name: "Collection 9" },
-    { id: 10, name: "Collection 10" },
-  ]);
+  // const [arrayCollection] = useState([
+  //   { id: 1, name: "Collection 1" },
+  //   { id: 2, name: "Collection 2" },
+  //   { id: 3, name: "Collection 3" },
+  //   { id: 4, name: "Collection 4" },
+  //   { id: 5, name: "Collection 5" },
+  //   { id: 6, name: "Collection 6" },
+  //   { id: 7, name: "Collection 7" },
+  //   { id: 8, name: "Collection 8" },
+  //   { id: 9, name: "Collection 9" },
+  //   { id: 10, name: "Collection 10" },
+  // ]);
   const [loadingNFT] = useState([
     { id: 1, name: "NFT 1" },
     { id: 2, name: "NFT 2" },
@@ -223,15 +213,6 @@ const Home = () => {
     window.scrollTo(0, 0);
   }, []);
 
-  const linkStyle = {
-    textDecoration: "none",
-    color: "transparent",
-
-    ":hover": {
-      textDecoration: "none",
-      backgroundColor: "red",
-    },
-  };
   return (
     <Content>
       <HStack
@@ -423,7 +404,7 @@ const Home = () => {
                   textcolor={appStyle.colors.black}
                   background={appStyle.colors.white}
                   width="180px"
-                  style={{ cursor: "pointer" }}
+                  cursor="pointer"
                 ></ButtonApp>
               </VStack>
             </ZItem>

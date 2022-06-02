@@ -1,35 +1,21 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import Xdc3 from "xdc3";
 import {
   nftaddress,
-  nftmarketaddress,
   nftmarketlayeraddress,
 } from "../../config";
 import { DEFAULT_PROVIDER } from "../../constant";
 import NFT from "../../abis/NFT.json";
-import NFTMarket from "../../abis/NFTMarket.json";
-import { GetWallet } from "xdc-connect";
 import { AnimatePresence } from "framer-motion/dist/framer-motion";
 import { LoopLogo } from "../../styles/LoopLogo";
-import { burnedCollections, deletedCollections, verifiedProfiles } from "../../blacklist";
-import { Collection } from "../../styles/Collection";
-import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
-import { LayoutGroup } from "framer-motion/dist/framer-motion";
+import { deletedCollections, verifiedProfiles } from "../../blacklist";
 import emptyCollection from "../../images/emptyCollection.png";
 import emptyNFT from "../../images/emptyNFT.png";
 
 import axios from "axios";
-import {
-  LegacyBuyNFT,
-  BuyNFT,
-  SellNFT,
-  LegacyWithdrawListing,
-  WithdrawListing,
-} from "../../common";
-import { fromXdc, toXdc, isXdc } from "../../common/common";
 import NFTMarketLayer1 from "../../abis/NFTMarketLayer1.json";
-import { burnedNFTs, permaBlacklist } from "../../blacklist";
+import { burnedNFTs } from "../../blacklist";
 import banner1 from "../../images/Banner1.jpg";
 import copyIcon from "../../images/copyAddress.png";
 import verified from "../../images/verified.png";
@@ -45,7 +31,6 @@ import {
 } from "../../styles/Stacks";
 import { motion } from "framer-motion/dist/framer-motion";
 import {
-  BodyBold,
   BodyRegular,
   CaptionBold,
   TitleBold15,
@@ -55,8 +40,6 @@ import xdcLogo from "../../images/miniXdcLogo.png";
 import useWindowSize from "../../styles/useWindowSize";
 import ButtonApp from "../../styles/Buttons";
 import { appStyle } from "../../styles/AppStyles";
-import seeAll from "../../images/seeAll.png";
-import { OwnedNfts } from "../../styles/OwnedNfts";
 import { BubbleCopied } from "../../styles/BubbleCopied";
 import ReactPlayer from "react-player";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -64,39 +47,10 @@ import InfiniteScroll from "react-infinite-scroll-component";
 const MyNFT = (props) => {
   const { urlAddress } = useParams();
   const history = useHistory();
-  const [nfts, setNFts] = useState([]);
-  const [loadingState, setLoadingState] = useState("not-loaded");
-  const [wallet, setWallet] = useState(null);
   const [pageCount, setPageCount] = useState(1);
-  const [isFetching, setIsFetching] = useState(false);
-
-  const [sellPrice, setSellPrice] = useState("");
-  const [isOwned, setIsOwned] = useState(false);
-  const [isCreatedCollection, setIsCreatedCollection] = useState(false);
-  const [approved, setApproved] = useState(false);
-  const cancelButtonRef = useRef(null);
-  const [sellData, setSellData] = useState(null);
-  const [listSuccess, setListSuccess] = useState(false);
-  const [listFailure, setListFailure] = useState(false);
-  const [listedNFT, setListedNFT] = useState(null);
-  const [listing, setListing] = useState(false);
-  const [buySuccess, setBuySuccess] = useState(false);
-  const [buyFailure, setBuyFailure] = useState(false);
-  const [boughtNFT, setBoughtNFT] = useState(null);
-  const [buying, setBuying] = useState(false);
-  const [withdrawSuccess, setWithdrawSuccess] = useState(false);
-  const [withdrawFailure, setWithdrawFailure] = useState(false);
-  const [withdrawnNFT, setWithdrawnNFT] = useState(null);
-  const [withdrawing, setWithdrawing] = useState(false);
-  const [settingPrice, setSettingPrice] = useState(false);
-  const [blacklist, setBlacklist] = useState([]);
   const [collectionGroup, setCollectionGroup] = useState([]);
-  const [ownedGroup, setOwnedGroup] = useState({});
-  const [ownedCollections, setOwnedCollections] = useState([]);
-  const [showAllCollection, setShowAllCollection] = useState({});
   const [initialGroup, setInitialGroup] = useState([]);
   const [page, setPage] = useState([]);
-
   const [setLoading, isSetLoading] = useState(false);
   const [setLoadingCollection, isSetLoadingCollection] = useState(false);
 
@@ -114,7 +68,7 @@ const MyNFT = (props) => {
       .call();
 
     var uniqueCollections = [];
-    const createdCollections = await Promise.all(
+    await Promise.all(
       data.map(async (i) => {
         if (!uniqueCollections.includes(i.collectionName)) {
           uniqueCollections.push(i.collectionName);
@@ -134,7 +88,7 @@ const MyNFT = (props) => {
         .call();
 
       var collectionNFTsList = [];
-      const collectionNFTsData = await Promise.all(
+      await Promise.all(
         collectionNFTs.slice(0, 5).map(async (j) => {
           const uri = await nftContract.methods.tokenURI(j.tokenId).call();
           var metadata = await axios.get(uri);
@@ -292,9 +246,11 @@ const MyNFT = (props) => {
         return nft;
       })
     );
+    console.log(nfts);
     var filteredNFTs = nfts.filter((element) => {
         return !burnedNFTs.includes(element.tokenId);
     });
+    
     setInitialGroup((prevState) => [...prevState, ...filteredNFTs]);
     setPageCount(pageCount + 1);
   };
@@ -314,6 +270,7 @@ const MyNFT = (props) => {
   const [subMenu, setSubMenu] = useState(0);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     getOwnedNFTs();
   }, []);
 
@@ -322,10 +279,6 @@ const MyNFT = (props) => {
     setSubMenu(0);
     getOwnedNFTs();
   }, [urlAddress]);
-
-  React.useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
 
   function NavigateTo(route) {
     history.push(`/${route}`);
@@ -917,18 +870,6 @@ const Content = styled(motion.div)`
   padding: 0px 0;
   max-width: 1200px;
   margin: 0 auto;
-`;
-
-const OwnerTag = styled(motion.div)`
-  position: absolute;
-  top: 50px;
-  right: 12px;
-  background: white;
-  padding: 3px 6px;
-  border-radius: 6px;
-  font-size: 10px;
-  font-weight: bold;
-  z-index: 1;
 `;
 
 const CreatorTag = styled(motion.div)`

@@ -33,7 +33,6 @@ import { TextAreaStyled } from "../../styles/TextAreaStyled";
 import ButtonApp from "../../styles/Buttons";
 import { PropertyValue } from "../../styles/PropertyValue";
 import percent from "../../images/percent.png";
-import { SelectStyled } from "../../styles/SelectStyled";
 import lock from "../../images/lock.png";
 import { UploadMultimedia } from "../../styles/UploadMultimedia";
 import xinfinLogo from "../../images/xinfinLogo.png";
@@ -61,8 +60,6 @@ function CreateNft(props) {
   const [price, setPrice] = useState(0);
   const [royalty, setRoyalty] = useState(0);
   const [collection, setCollection] = useState("");
-  const [collections, setCollections] = useState([]);
-  const [isNewCollection, setNewCollection] = useState(false);
   const [collectionBanner, setCollectionBanner] = useState({
     preview: "",
     raw: "",
@@ -233,7 +230,6 @@ function CreateNft(props) {
     setIsUnlockableContent(false);
     setUnlockableContent("");
     setCollection("");
-    setNewCollection(false);
     setCollectionBanner({ preview: "", raw: "", fileType: "" });
     setCollectionLogo({ preview: "", raw: "", fileType: "" });
     setCollectionDescription("");
@@ -255,7 +251,6 @@ function CreateNft(props) {
     );
 
     const tokenCount = await marketContract.methods.tokenCount().call();
-    setNewCollection(true);
     setCollection(`Untitled Collection ${tokenCount}`);
     setCollectionExists(false);
     setCollectionEmpty(true)
@@ -272,13 +267,12 @@ function CreateNft(props) {
         )
         .call();
       var uniqueCollections = [];
-      const creations = await Promise.all(
+      await Promise.all(
         data.map(async (i) => {
           if (!uniqueCollections.includes(i.collectionName))
             uniqueCollections.push(i.collectionName);
         })
       );
-      setCollections(uniqueCollections);
     } catch (e) {
 
     }
@@ -300,18 +294,17 @@ function CreateNft(props) {
         )
         .call();
     var uniqueCollections = [];
-    const creations = await Promise.all(
+    await Promise.all(
       data.map(async (i) => {
         if (!uniqueCollections.includes(i.collectionName))
           uniqueCollections.push(i.collectionName);
       })
     );
-    setCollections(uniqueCollections);
     const collectionData = await marketContract.methods
       .fetchCollections()
       .call();
     var uniqueCollections2 = [];
-    const collectionNFTs = await Promise.all(
+    await Promise.all(
       collectionData.map(async (i) => {
         uniqueCollections2.push(i.collectionName);
       })

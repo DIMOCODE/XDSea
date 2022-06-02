@@ -1,13 +1,5 @@
 import React from "react";
-import { HStack, IconImg, VStack, Spacer, ZStack, ZItem } from "./Stacks";
-import loaderLogo from "../images/logoLoading.png";
-import curvedText from "../images/curvedText.png";
-import styled from "styled-components";
-import {
-  motion,
-  AnimatePresence,
-  LayoutGroup,
-} from "framer-motion/dist/framer-motion";
+import { VStack } from "./Stacks";
 import { LoopLogo } from "./LoopLogo";
 
 function LoadingNftContainer() {

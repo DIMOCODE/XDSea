@@ -5,7 +5,6 @@ import miniXdcLogo from "../images/miniXdcLogo.png";
 import { BodyBold, BodyRegular, TitleBold18 } from "./TextStyles";
 import ReactPlayer from "react-player";
 import { appStyle } from "./AppStyles";
-import ButtonApp from "./Buttons";
 import styled from "styled-components";
 import { motion } from "framer-motion/dist/framer-motion";
 
@@ -16,7 +15,6 @@ function NftContainer(props) {
     itemNumber,
     creatorImage,
     itemImage,
-    background,
     onClick,
     onClickCreator,
     fileType,

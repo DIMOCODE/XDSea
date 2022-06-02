@@ -1,14 +1,10 @@
 import Xdc3 from "xdc3";
 import { nftaddress, nftmarketaddress, nftmarketlayeraddress } from "./config";
 import { DEFAULT_PROVIDER } from "./constant";
-// import NFTMarket from './artifacts/contracts/NFTMarket.sol/NFTMarket.json'
-// import NFT from './artifacts/contracts/NFT.sol/NFT.json'
 import NFT from "./abis/NFT.json";
 import NFTMarket from "./abis/NFTMarket.json";
 import NFTMarketLayer1 from "./abis/NFTMarketLayer1.json";
 import { GetWallet, SendTransaction } from "xdc-connect";
-import axios from "axios";
-import { BigNumber } from "ethers";
 import { fromXdc, isXdc } from "./common/common";
 
 export const BuyNFT = async (nft) => {
@@ -52,7 +48,7 @@ export const BuyNFT = async (nft) => {
 
     tx["gas"] = gasLimit;
 
-    var transaction = await SendTransaction(tx);
+    await SendTransaction(tx);
 
     return true;
   } catch (error) {
@@ -73,10 +69,11 @@ const countDecimals = (value) => {
   for (var i = 0; i < zeroes - decimal; i++) {
     suffix += "0";
   }
-  if (decimal != 0)
-    var amount =
+  var amount = 0
+  if (decimal !== 0)
+    amount =
       value.toString().split(".")[0] + value.toString().split(".")[1] + suffix;
-  else var amount = value.toString().split(".")[0] + suffix;
+  else amount = value.toString().split(".")[0] + suffix;
   return amount;
 };
 
@@ -121,7 +118,7 @@ export const LegacyBuyNFT = async (nft) => {
 
     tx["gas"] = gasLimit;
 
-    var transaction = await SendTransaction(tx);
+    await SendTransaction(tx);
 
     return true;
   } catch (error) {
@@ -135,24 +132,6 @@ export const SellNFT = async (approved, sellData, sellPrice) => {
   try {
     const wallet = await GetWallet();
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
-
-    // const getSoldNFT = async () => {
-    //     const marketContract = new xdc3.eth.Contract(NFTMarket.abi, nftmarketaddress, xdc3)
-    //     const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress)
-
-    //     const nft = await marketContract.methods.fetchMarketItems().call()
-    //     const items = await Promise.all(nft.map(async i => {
-
-    //         const uri = await nftContract.methods.tokenURI(i.tokenId).call()
-    //         console.log()
-
-    //         var metadata = await axios.get(uri)
-    //         var price = await xdc3.utils.fromWei(i.price, "ether")
-    //         // const blob = await fetch(metadata?.data?.collection?.nft?.image)
-    //         //     .then(r => r.blob())
-    //         console.log(i.tokenId, metadata.data)
-    //     }))
-    // }
 
     if (approved === false) {
       // console.log("Approving")
@@ -174,7 +153,7 @@ export const SellNFT = async (approved, sellData, sellPrice) => {
 
       tx1["gas"] = gasLimit;
 
-      var trans = await SendTransaction(tx1);
+      await SendTransaction(tx1);
       // console.log(trans)
     }
 
@@ -198,8 +177,6 @@ export const SellNFT = async (approved, sellData, sellPrice) => {
       .listItem(nftaddress, sellData.tokenId, price)
       .encodeABI();
 
-    const nft = await contract2.methods.idToMarketItem(sellData.tokenId).call();
-
     // console.log(nft)
 
     const tx2 = {
@@ -210,13 +187,13 @@ export const SellNFT = async (approved, sellData, sellPrice) => {
 
     // console.log(tx2)
 
-    var gasLimit = await xdc3.eth.estimateGas(tx2);
+    var gasLimit2 = await xdc3.eth.estimateGas(tx2);
 
-    tx2["gas"] = gasLimit;
+    tx2["gas"] = gasLimit2;
 
     // console.log(tx2)
 
-    let transaction = await SendTransaction(tx2);
+    await SendTransaction(tx2);
 
     return true;
     // console.log(transaction)
@@ -252,7 +229,7 @@ export const WithdrawListing = async (approved, nft) => {
 
       tx1["gas"] = gasLimit;
 
-      var trans = await SendTransaction(tx1);
+      await SendTransaction(tx1);
       // console.log(trans)
     }
 
@@ -278,13 +255,13 @@ export const WithdrawListing = async (approved, nft) => {
       data,
     };
 
-    var gasLimit = await xdc3.eth.estimateGas(tx2);
+    var gasLimit2 = await xdc3.eth.estimateGas(tx2);
 
-    tx2["gas"] = gasLimit;
+    tx2["gas"] = gasLimit2;
 
     // console.log(tx2)
 
-    let transaction = await SendTransaction(tx2);
+    await SendTransaction(tx2);
 
     return true;
     // console.log(transaction)
@@ -320,7 +297,7 @@ export const LegacyWithdrawListing = async (approved, nft) => {
 
       tx1["gas"] = gasLimit;
 
-      var trans = await SendTransaction(tx1);
+      await SendTransaction(tx1);
       // console.log(trans)
     }
 
@@ -346,13 +323,13 @@ export const LegacyWithdrawListing = async (approved, nft) => {
       data,
     };
 
-    var gasLimit = await xdc3.eth.estimateGas(tx2);
+    var gasLimit2 = await xdc3.eth.estimateGas(tx2);
 
-    tx2["gas"] = gasLimit;
+    tx2["gas"] = gasLimit2;
 
     // console.log(tx2)
 
-    let transaction = await SendTransaction(tx2);
+    await SendTransaction(tx2);
 
     return true;
     // console.log(transaction)
@@ -388,7 +365,7 @@ export const TransferNFT = async (approved, transferNFT, transferAddress) => {
 
       tx1["gas"] = gasLimit;
 
-      var trans = await SendTransaction(tx1);
+      await SendTransaction(tx1);
       // console.log(trans)
     }
 
@@ -418,13 +395,13 @@ export const TransferNFT = async (approved, transferNFT, transferAddress) => {
       data,
     };
 
-    var gasLimit = await xdc3.eth.estimateGas(tx2);
+    var gasLimit2 = await xdc3.eth.estimateGas(tx2);
 
-    tx2["gas"] = gasLimit;
+    tx2["gas"] = gasLimit2;
 
     // console.log(tx2)
 
-    let transaction = await SendTransaction(tx2);
+    await SendTransaction(tx2);
 
     return true;
     // console.log(transaction)
@@ -460,7 +437,7 @@ export const Offer = async (approved, offerNFT, offerPrice) => {
 
       tx1["gas"] = gasLimit;
 
-      var trans = await SendTransaction(tx1);
+      await SendTransaction(tx1);
       // console.log(trans)
     }
 
@@ -497,13 +474,13 @@ export const Offer = async (approved, offerNFT, offerPrice) => {
       data,
     };
 
-    var gasLimit = await xdc3.eth.estimateGas(tx2);
+    var gasLimit2 = await xdc3.eth.estimateGas(tx2);
 
-    tx2["gas"] = gasLimit;
+    tx2["gas"] = gasLimit2;
 
     // console.log(tx2)
 
-    let transaction = await SendTransaction(tx2);
+    await SendTransaction(tx2);
 
     return true;
     // console.log(transaction)
@@ -539,7 +516,7 @@ export const WithdrawOffer = async (approved, tokenId, offerId) => {
 
       tx1["gas"] = gasLimit;
 
-      var trans = await SendTransaction(tx1);
+      await SendTransaction(tx1);
       // console.log(trans)
     }
 
@@ -561,11 +538,11 @@ export const WithdrawOffer = async (approved, tokenId, offerId) => {
       data,
     };
 
-    var gasLimit = await xdc3.eth.estimateGas(tx2);
+    var gasLimit2 = await xdc3.eth.estimateGas(tx2);
 
-    tx2["gas"] = gasLimit;
+    tx2["gas"] = gasLimit2;
 
-    let transaction = await SendTransaction(tx2);
+    await SendTransaction(tx2);
 
     return true;
   } catch (error) {
@@ -600,7 +577,7 @@ export const AcceptOffer = async (approved, tokenId, offerId) => {
 
       tx1["gas"] = gasLimit;
 
-      var trans = await SendTransaction(tx1);
+      await SendTransaction(tx1);
       // console.log(trans)
     }
 
@@ -623,11 +600,11 @@ export const AcceptOffer = async (approved, tokenId, offerId) => {
       data,
     };
 
-    var gasLimit = await xdc3.eth.estimateGas(tx2);
+    var gasLimit2 = await xdc3.eth.estimateGas(tx2);
 
-    tx2["gas"] = gasLimit;
+    tx2["gas"] = gasLimit2;
 
-    let transaction = await SendTransaction(tx2);
+    await SendTransaction(tx2);
 
     return true;
   } catch (error) {
@@ -662,7 +639,7 @@ export const EditNFT = async (approved, sellData, sellPrice) => {
 
       tx1["gas"] = gasLimit;
 
-      var trans = await SendTransaction(tx1);
+      await SendTransaction(tx1);
       // console.log(trans)
     }
 
@@ -692,13 +669,13 @@ export const EditNFT = async (approved, sellData, sellPrice) => {
       data,
     };
 
-    var gasLimit = await xdc3.eth.estimateGas(tx2);
+    var gasLimit2 = await xdc3.eth.estimateGas(tx2);
 
-    tx2["gas"] = gasLimit;
+    tx2["gas"] = gasLimit2;
 
     // console.log(tx2)
 
-    let transaction = await SendTransaction(tx2);
+    await SendTransaction(tx2);
 
     return true;
     // console.log(transaction)

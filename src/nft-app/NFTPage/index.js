@@ -1,10 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import Xdc3 from "xdc3";
 import { DEFAULT_PROVIDER } from "../../constant";
-// import NFTMarket from '../../artifacts/contracts/NFTMarket.sol/NFTMarket.json'
 import { nftmarketlayeraddress } from "../../config";
-// import NFT from "../../artifacts/contracts/NFT.sol/NFT.json"
 import NFT from "../../abis/NFT.json";
 import axios from "axios";
 import { Divider } from "../../styles/Stacks";
@@ -29,7 +27,6 @@ import mint from "../../images/mintIcon.png";
 import list from "../../images/listIcon.png";
 import withdrawList from "../../images/withdrawList.png";
 import sale from "../../images/partyIcon.png";
-import banner2 from "../../images/Banner2.jpg";
 import transferIcon from "../../images/transferIconGray.png";
 import editListingIcon from "../../images/editListing.png";
 import offerPlacedIcon from "../../images/xdcOffer.png";
@@ -38,7 +35,6 @@ import offerAcceptedIcon from "../../images/offerAccepted.png";
 import tokenIcon from "../../images/tokenID.png";
 import blockchainIcon from "../../images/blockchainIcon.png";
 import banner1 from "../../images/Banner1.jpg";
-import audioCover from "../../images/audioCover0.png";
 import { HStack, IconImg, VStack, Spacer, ZStack } from "../../styles/Stacks";
 import xdclogo from "../../images/miniXdcLogo.png";
 import { AnimatePresence, motion } from "framer-motion/dist/framer-motion";
@@ -65,7 +61,6 @@ import ReactPlayer from "react-player";
 import { ImpulseSpinner } from "react-spinners-kit";
 import { TableOffersNft } from "../../styles/TableOffersNft";
 import { TxModal } from "../../styles/TxModal";
-import { ListItemButton } from "@mui/material";
 import { NftContainer } from "../../styles/NftContainer";
 
 const NFTDetails = (props) => {
@@ -345,7 +340,6 @@ const NFTDetails = (props) => {
         name: metadata?.data?.collection?.nft?.name,
         description: metadata?.data?.collection?.nft?.description,
         nftContract: item.nftContract,
-        itemId: item.itemId,
         isListed: item.isListed,
         properties: metadata?.data?.collection?.nft?.properties,
         fileType: metadata?.data?.collection?.nft?.fileType,
@@ -409,7 +403,7 @@ const NFTDetails = (props) => {
           var currentItemMetadata = await axios.get(currentItemURI);
           if (
             i.tokenId !== id &&
-            metadata?.data?.collection?.name ==
+            metadata?.data?.collection?.name ===
               currentItemMetadata?.data?.collection?.name
           ) {
             var props = await Promise.all(
@@ -432,9 +426,9 @@ const NFTDetails = (props) => {
         for (var j = 0; j < filteredCollectionProperties.length; j++) {
           for (var k = 0; k < filteredCollectionProperties[j].length; k++) {
             if (
-              filteredCollectionProperties[j][k].property ==
+              filteredCollectionProperties[j][k].property ===
                 properties[i].property &&
-              filteredCollectionProperties[j][k].value == properties[i].value
+              filteredCollectionProperties[j][k].value === properties[i].value
             ) {
               propCount += 1;
             }
@@ -467,7 +461,7 @@ const NFTDetails = (props) => {
     );
     var offers = await marketContract.methods.getTokenOfferList(id).call();
     var highestOfferPrice = 0;
-    const getHighest = await Promise.all(
+    await Promise.all(
       offers.map(async (i) => {
         if (i.price >= highestOfferPrice) highestOfferPrice = i.price;
       })
@@ -579,6 +573,7 @@ const NFTDetails = (props) => {
   }
 
   useEffect(() => {
+    window.scrollTo(0, 0);
     setWallet(props?.wallet);
     getData();
     getOffers();
@@ -598,7 +593,7 @@ const NFTDetails = (props) => {
   }, [props?.wallet]);
 
   React.useEffect(() => {
-    window.scrollTo(0, 0);
+    
   }, []);
 
   return (
@@ -976,12 +971,13 @@ const NFTDetails = (props) => {
                           border="30px"
                           cursor={"pointer"}
                         ></IconImg>
+                        {console.log(nft)}
                         <Tooltip title={nft?.creator ? nft.creator : "-"}>
                           <BodyBold>{truncateAddress(nft?.creator)}</BodyBold>
                         </Tooltip>
                       </HStack>
                       <CaptionRegular>
-                        {nft?.royalty ? nft?.royalty.replace(/^0+/, "") : "0"}% Royalty
+                        {nft?.royalty ? parseInt(nft?.royalty) : "0"}% Royalty
                       </CaptionRegular>
                     </HStack>
                   </VStack>
@@ -1474,7 +1470,7 @@ const NFTDetails = (props) => {
                   <NftContainer
                     key={item.name}
                     fileType={item.fileType}
-                    creatorImage={banner2}
+                    creatorImage={""}
                     itemImage={item.image}
                     price={item.price}
                     collectionName={item.collectionName}
@@ -1522,5 +1518,3 @@ const ContentNftPage = styled(motion.div)`
   max-width: 1200px;
   margin: 0 auto;
 `;
-
-const FadedModal = styled(motion.div)``;

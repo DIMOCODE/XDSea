@@ -27,12 +27,11 @@ import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
 import { NftContainer } from "../../styles/NftContainer";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LoopBars } from "../../styles/LoopBars";
-import { appStyle } from "../../styles/AppStyles";
 import { LoopLogo } from "../../styles/LoopLogo";
 import { burnedNFTs, burnedCollections, verifiedProfiles } from "../../blacklist";
-import banner1 from "../../images/Banner1.jpg";
-import banner2 from "../../images/Banner2.jpg";
+import { untitledCollections } from "../../blacklist";
 import { Tooltip } from "@mui/material";
+import banner1 from "../../images/Banner1.jpg";
 import verified from "../../images/verified.png";
 
 const CollectionDetails = (props) => {
@@ -46,7 +45,7 @@ const CollectionDetails = (props) => {
     useState(999999999999999999999999999999999999999999999);
   const [volume, setVolume] = useState(-1);
   const size = useWindowSize();
-  const [loadingNFT, setIsLoadingNFT] = useState([
+  const [loadingNFT] = useState([
     { id: 1, name: "NFT 1" },
     { id: 2, name: "NFT 2" },
     { id: 3, name: "NFT 3" },
@@ -90,7 +89,7 @@ const CollectionDetails = (props) => {
             tokenId: i.tokenId,
             owner: i.owner,
             collectionName: metadata?.data?.collection?.name,
-            collectionBanner: metadata?.data?.collection?.banner,
+            collectionBanner: untitledCollections.includes(collectionName) ? banner1 : metadata?.data?.collection?.banner ? metadata.data.collection.banner : banner1,
             collectionCreator: metadata?.data?.collection?.creator,
             collectionDescription: metadata?.data?.collection?.description,
             collectionDiscord: metadata?.data?.collection?.discordUrl,
@@ -112,7 +111,7 @@ const CollectionDetails = (props) => {
       var volumeTraded = 0;
       const uniqueOwners = [];
       var lowestPrice = 99999999999999999999999999999;
-      const allEvents = await Promise.all(
+      await Promise.all(
         collectionData.map(async (item) => {
           var price = await xdc3.utils.fromWei(item.price, "ether");
           if (!uniqueOwners.includes(item.owner)) {
@@ -189,7 +188,7 @@ const CollectionDetails = (props) => {
 
   useEffect(() => {
     getData();
-  }, []);
+  });
 
   React.useEffect(() => {
     window.scrollTo(0, 0);
@@ -199,7 +198,7 @@ const CollectionDetails = (props) => {
     <CollectionSection>
       <BannerAbsolute>
         <IconImg
-            url={nfts[0]?.collectionBanner ? nfts[0].collectionBanner : banner2}
+            url={nfts[0]?.collectionBanner}
             width="100%"
             height="355px"
             backsize="cover"
@@ -216,6 +215,7 @@ const CollectionDetails = (props) => {
           }
           spacing="15px"
           maxwidth="1200px"
+          cursor={"pointer"}
         >
           <CreatorAbsolute>
             <HStack
@@ -231,7 +231,7 @@ const CollectionDetails = (props) => {
               background={({ theme }) => theme.backElement}
             >
               {verifiedProfiles.includes(nfts[0]?.collectionCreator) 
-                ? <IconImg url={verified} width="21px" height="21px"></IconImg>
+                ? <IconImg cursor={"pointer"} url={verified} width="21px" height="21px"></IconImg>
                 : null}
               <VStack spacing="0px" alignment="flex-start" cursor={"pointer"}>
                 <CaptionBold textcolor={({ theme }) => theme.text}>
@@ -254,7 +254,7 @@ const CollectionDetails = (props) => {
             height={size.width < 768 ? "90px" : "290px"}
           >
             <IconImg
-              url={nfts[0]?.collectionLogo ? nfts[0].collectionLogo : banner2}
+              url={nfts[0]?.collectionLogo}
               width="150px"
               height="150px"
               border="150px"
@@ -550,10 +550,11 @@ const CollectionDetails = (props) => {
                         minwidth={size.width < 768 ? "330px" : "290px"}
                         maxwidth={size.width < 768 ? "330px" : "290px"}
                         height="450px"
+                        key={i}
                       >
                         <NftContainer
                           key={i}
-                          creatorImage={nfts[0]?.collectionLogo ? banner1 : banner2}
+                          creatorImage={banner1}
                           itemImage={item.image}
                           price={item.price}
                           collectionName={collectionName}
@@ -570,10 +571,11 @@ const CollectionDetails = (props) => {
                         ></NftContainer>
                       </VStack>
                     ))
-                  : loadingNFT.map(() => (
+                  : loadingNFT.map((item) => (
                       <VStack
                         minwidth={size.width < 768 ? "230px" : "280px"}
                         height="450px"
+                        key={item.id}
                       >
                         <LoadingNftContainer></LoadingNftContainer>
                       </VStack>

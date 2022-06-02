@@ -10,7 +10,7 @@ import { motion } from "framer-motion/dist/framer-motion";
 import { Tooltip } from "@mui/material";
 
 function BubbleCopied(props) {
-  const { onClick, logo, address, icon } = props;
+  const { logo, address, icon } = props;
 
   const [showAlertLink, setShowAlertLink] = useState(false);
 

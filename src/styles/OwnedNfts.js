@@ -1,21 +1,19 @@
 import React from "react";
 import { useState } from "react";
 import { VStack, HStack, IconImg, ZItem, ZStack, Spacer } from "./Stacks";
-import { TitleBold18, BodyRegular, TitleBold15 } from "./TextStyles";
+import { TitleBold15 } from "./TextStyles";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 import { appStyle } from "./AppStyles";
 import { motion } from "framer-motion/dist/framer-motion";
 import { nftaddress } from "../config";
-import ButtonApp from "./Buttons";
 import banner1 from "../images/Banner1.jpg";
 import ReactPlayer from "react-player";
 
 function OwnedNfts(props) {
-  const { collectionGroup, onClick } = props;
+  const { collectionGroup } = props;
 
   const history = useHistory();
-  const [expand, setIsExpand] = useState(false);
 
   const isImage = (fileType) => {
     return !!fileType?.match("image.*");

@@ -1,24 +1,22 @@
 import React from "react";
 import { useState } from "react";
-import { IconImg, VStack, HStack, Spacer, ZStack, ZItem } from "./Stacks";
+import { IconImg, VStack, Spacer, ZStack, ZItem } from "./Stacks";
 import { appStyle } from "./AppStyles";
-import miniXdcLogo from "../images/miniXdcLogo.png";
 import {
-  BodyBold,
   BodyRegular,
   CaptionBold,
   CaptionBoldShort,
   TitleBold21,
 } from "./TextStyles";
-import ButtonApp from "./Buttons";
 import { motion, AnimatePresence } from "framer-motion/dist/framer-motion";
+import { fromXdc, isXdc } from "../common/common";
 
 function Collection(props) {
   const {
-    floorprice,
-    owners,
-    nfts,
-    volumetraded,
+    // floorprice,
+    // owners,
+    // nfts,
+    // volumetraded,
     collectionImage,
     creatorLogo,
     collectionName,
@@ -108,8 +106,10 @@ function Collection(props) {
               padding="21px"
               // animate={isVisible ? "hover" : "initial"}
               variants={background}
+              cursor={"pointer"}
             >
               <VStack
+                cursor={"pointer"}
                 key={keyID}
                 initial={{
                   y: 150,
@@ -128,7 +128,7 @@ function Collection(props) {
                 width="100%"
               >
                 <Spacer></Spacer>
-                <motion.div layout="position">
+                <motion.div layout="position" cursor={"pointer"}>
                   <VStack spacing="6px" cursor={"pointer"}>
                     <IconImg
                       url={creatorLogo}
@@ -139,18 +139,22 @@ function Collection(props) {
                       bordersize="3px"
                       backsize="cover"
                       onClick={onClickCreator}
+                      cursor={"pointer"}
                     ></IconImg>
                     <CaptionBold textcolor={appStyle.colors.white}>
                       CREATOR
                     </CaptionBold>
-                    <CaptionBoldShort textcolor={appStyle.colors.white}>
-                      {truncateAddress(creatorName)}
+                    <CaptionBoldShort cursor={"pointer"} textcolor={appStyle.colors.white}>
+                      {truncateAddress(isXdc(creatorName)
+                        ? fromXdc(creatorName)
+                        : creatorName)}
                     </CaptionBoldShort>
                     <TitleBold21
-                      display={"-webkit-box"}
                       overflow={"hidden"}
-                      clamp={"1"}
-                      orient={"vertical"}
+                      whiteSpace={"nowrap"}
+                      width={"250px"}
+                      textOverflow={"ellipsis"}
+                      textAlign={"center"}
                     >
                       {collectionName || "Collection Name"}
                     </TitleBold21>
@@ -179,12 +183,13 @@ function Collection(props) {
                     >
                       <VStack width="100%">
                         <BodyRegular
-                          display={"-webkit-box"}
                           overflow={"hidden"}
-                          clamp={"1"}
-                          orient={"vertical"}
+                          whiteSpace={"nowrap"}
+                          width={"250px"}
+                          textOverflow={"ellipsis"}
                           align="center"
                           textcolor={appStyle.colors.white}
+                          cursor={"pointer"}
                         >
                           {collectionDescription || null}
                         </BodyRegular>

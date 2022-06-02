@@ -189,6 +189,7 @@ export const IconImg = styled(motion.div).attrs((props) => ({
   border-radius: ${(props) => props.border};
   min-height: ${(props) => props.height};
   min-width: ${(props) => props.width};
+  max-width: ${(props) => props.width};
   border-style: solid;
   border-color: ${(props) => props.bordercolor};
   border-width: ${(props) => props.bordersize};

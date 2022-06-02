@@ -3,12 +3,10 @@ import { useHistory } from "react-router-dom";
 import Xdc3 from "xdc3";
 import {
   nftaddress,
-  nftmarketaddress,
   nftmarketlayeraddress,
 } from "../../config";
 import { DEFAULT_PROVIDER } from "../../constant";
 import NFT from "../../abis/NFT.json";
-import NFTMarket from "../../abis/NFTMarket.json";
 import NFTMarketLayer1 from "../../abis/NFTMarketLayer1.json";
 import axios from "axios";
 import styled from "styled-components";
@@ -22,13 +20,12 @@ import useWindowSize from "../../styles/useWindowSize";
 import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LoopLogo } from "../../styles/LoopLogo";
-import { deletedCollections, burnedCollections, spotlightCollectionList } from "../../blacklist";
+import { deletedCollections, spotlightCollectionList, untitledCollections } from "../../blacklist";
 
 const Discover = () => {
   const history = useHistory();
   const [collections, setCollections] = useState([]);
   const [collectionPage, setCollectionPage] = useState([]);
-  const [pageCount, setPageCount] = useState(1);
   const [setLoading, isSetLoading] = useState(false);
   const [lastIndex, setLastIndex] = useState(0);
   const [loadingCollection] = useState([
@@ -118,6 +115,28 @@ const Discover = () => {
       // return events
       // }))
 
+      // for(var i = 2000; i < 3200; i++) {
+        // const nftData = await marketContract.methods.idToMarketItem(i).call();
+        // const offers = await marketContract.methods.getTokenOfferList(i).call();
+        // if(offers.length !== 0)
+        //   console.log(i, offers);
+      //   var events = await marketContract.methods.getTokenEventHistory(i).call();
+      //   for(var j = 1; j <= events.count ; i++)
+      //     if(events[j].eventType === "8")
+      //       console.log(i, events[j])
+      // }
+      // const data56 = await marketContract.methods.fetchMarketItems().call()
+      // console.log(data56.length)
+      // // const offers = await Promise.all(data56.slice(0,1000).map(async i => {
+      // //     var offerList = await marketContract.methods.getTokenOfferList(i.tokenId).call()
+      // //     for(var j = 0; j < offerList.length; j++){
+      // //         if(offerList[j].from == "0x1ddd41ef7c11a4042467e44047295b7c6e361085") {
+      // //             console.log(i.tokenId, offerList[j])
+      // //         }
+      // //     }
+      // // }))
+      // console.log("Finished")
+
       const collectionData = await marketContract.methods.fetchCollections().call();
 
       const spotlightCollections = await Promise.all(
@@ -185,10 +204,11 @@ const Discover = () => {
   };
 
   const fetchMoreCollections = async () => {
+    await new Promise(r => setTimeout(r, 3000));
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
     const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
     var nextPage = [];
-    const collections = await Promise.all(
+    await Promise.all(
       collectionPage
         .slice(lastIndex, lastIndex + 24)
         .map(async (i, index) => {
@@ -232,7 +252,8 @@ const Discover = () => {
               name: metadata?.data?.collection?.name,
               description: metadata?.data?.collection?.description,
               creator: metadata?.data?.collection?.creator,
-              banner: metadata?.data?.collection?.banner,
+              banner: untitledCollections.includes(i.collectionName) 
+                ? chooseBanner() : metadata?.data?.collection?.banner ? metadata?.data?.collection?.banner : chooseBanner(),
               logo: metadata?.data?.collection?.logo,
               fileType: metadata?.data?.collection?.nft?.fileType,
               preview: metadata?.data?.collection?.nft?.preview,
@@ -252,9 +273,13 @@ const Discover = () => {
         return -1
       else return 1
     }).slice(0, 12);
-    setLastIndex(lastIndex + nextPage[11].id + 1);
+    setLastIndex(lastIndex + nextPage[nextPage.length - 1].id + 1);
     setCollections((prevState) => [...prevState, ...nextPage]);
   };
+
+  function chooseBanner() {
+    return `./Banner${Math.ceil(Math.random() * 28)}.jpg`;
+  }
 
   function NavigateTo(route) {
     history.push(`/${route}`);
@@ -282,7 +307,8 @@ const Discover = () => {
         <InfiniteScroll
           dataLength={collections.length}
           next={fetchMoreCollections}
-          hasMore={collections.length < collectionPage.length - 1}
+          hasMore={collections.length < collectionPage.length - 2}
+          scrollThreshold={0.8}
           loader={
             <HStack
               initial={{ opacity: 0 }}
@@ -322,7 +348,7 @@ const Discover = () => {
                       </VStack>
                     ))
                   : collections.map((item) => (
-                      <LayoutGroup id="collection">
+                      <LayoutGroup id="collection" key={item.name}>
                         <VStack
                           minwidth={size.width < 768 ? "100%" : "326px"}
                           maxwidth="326px"
@@ -333,7 +359,7 @@ const Discover = () => {
                             keyContent={item.name}
                             keyID={item.creator}
                             collectionImage={item.banner}
-                            creatorLogo={item.logo}
+                            creatorLogo={untitledCollections.includes(item.name) ? item.banner : item.logo}
                             collectionName={item.name}
                             collectionDescription={item.name === "DØP3 Punks " 
                               ? `A multichain NFT project minting collections on every major blockchain!\n\nWhere DØP3 Art Meets Web3` 

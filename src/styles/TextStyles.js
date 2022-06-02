@@ -69,10 +69,6 @@ export const TitleBold27 = styled(motion.h2).attrs((props) => ({
 
 export const TitleBold21 = styled(motion.h2).attrs((props) => ({
   textcolor: props.textcolor || appStyle.colors.white,
-  display: props.display,
-  clamp: props.clamp,
-  orient: props.orient,
-  overflow: props.overflow,
 }))`
   font-style: normal;
   font-weight: bold;
@@ -82,6 +78,10 @@ export const TitleBold21 = styled(motion.h2).attrs((props) => ({
   -webkit-line-clamp: ${(props) => props.clamp};
   -webkit-box-orient: ${(props) => props.orient};
   overflow: ${(props) => props.overflow};
+  white-space: ${(props) => props.whiteSpace};
+  width: ${(props) => props.width};
+  text-overflow: ${(props) => props.textOverflow};
+  text-align: ${(props) => props.textAlign};
 `;
 
 export const TitleBold18 = styled(motion.h3).attrs((props) => ({
@@ -159,6 +159,7 @@ export const BodyRegular = styled(motion.p).attrs((props) => ({
   clamp: props.clamp,
   orient: props.orient,
   overflow: props.overflow,
+  cursor: props.cursor || "default",
 }))`
   text-align: ${(props) => props.align};
   font-style: normal;
@@ -174,6 +175,10 @@ export const BodyRegular = styled(motion.p).attrs((props) => ({
   -webkit-line-clamp: ${(props) => props.clamp};
   -webkit-box-orient: ${(props) => props.orient};
   overflow: ${(props) => props.overflow};
+  cursor: ${(props) => props.cursor};
+  white-space: ${(props) => props.whiteSpace};
+  width: ${(props) => props.width};
+  text-overflow: ${(props) => props.textOverflow};
 `;
 
 export const CaptionBold = styled(motion.p).attrs((props) => ({

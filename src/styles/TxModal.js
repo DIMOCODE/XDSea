@@ -5,16 +5,16 @@ import editListingIcon from "../../src/images/editListing.png";
 import list from "../../src/images/listIcon.png";
 import partyIcon from "../../src/images/partyIcon.png";
 import transferIcon from "../../src/images/transferIconGray.png";
-import errorIcon from "../../src/images/cancelIcon.png";
-import mintIcon from "../../src/images/mintIcon.png";
-import listIcon from "../../src/images/listIcon.png";
+// import errorIcon from "../../src/images/cancelIcon.png";
+// import mintIcon from "../../src/images/mintIcon.png";
+// import listIcon from "../../src/images/listIcon.png";
 import warning from "../../src/images/alert.png";
 import styled from "styled-components";
 import { motion } from "framer-motion/dist/framer-motion";
 import { appStyle } from "./AppStyles";
 import { BodyRegular, TitleBold21, CaptionRegular } from "./TextStyles";
 import ButtonApp from "./Buttons";
-import { PongSpinner } from "react-spinners-kit";
+// import { PongSpinner } from "react-spinners-kit";
 import { InputStyled } from "./InputStyled";
 
 function TxModal(props) {
@@ -24,22 +24,16 @@ function TxModal(props) {
     placeOffer,
     offerPrice,
     onChangeOffer,
-    isFail,
-    cancelFail,
-    isProcessing,
+    // isProcessing,
     isMint,
     isPurchaised,
     isNotice,
     noticeActionModal,
     noticeMessage,
     PurchaisedNftName,
-    cancelBtnPurchaise,
     confirmBtnPurchaise,
     isList,
     ListedImage,
-    ListedNftName,
-    cancelBtnList,
-    confirmBtnList,
     isAction,
     actionMessage,
     cancelActionModal,

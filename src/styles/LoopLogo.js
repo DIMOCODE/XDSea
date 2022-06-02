@@ -1,5 +1,5 @@
 import React from "react";
-import { HStack, IconImg, VStack, Spacer, ZStack, ZItem } from "./Stacks";
+import { IconImg, VStack } from "./Stacks";
 import loaderLogo from "../images/logoLoading.png";
 import curvedText from "../images/curvedText.png";
 import loadingCurved from "../images/loadingCurved.png";

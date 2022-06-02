@@ -1,5 +1,5 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Route, Switch, useLocation, useHistory } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Route, Switch, useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { motion } from "framer-motion/dist/framer-motion";
 import { ThemeProvider } from "styled-components";
@@ -41,7 +41,7 @@ const NFTApp = () => {
 
   useEffect(() => {
     setRandomNumber(Math.floor(Math.random() * 2));
-  });
+  }, []);
 
   return (
     <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
