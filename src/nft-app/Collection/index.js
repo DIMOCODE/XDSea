@@ -28,7 +28,11 @@ import { NftContainer } from "../../styles/NftContainer";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LoopBars } from "../../styles/LoopBars";
 import { LoopLogo } from "../../styles/LoopLogo";
-import { burnedNFTs, burnedCollections, verifiedProfiles } from "../../blacklist";
+import {
+  burnedNFTs,
+  burnedCollections,
+  verifiedProfiles,
+} from "../../blacklist";
 import { untitledCollections } from "../../blacklist";
 import { Tooltip } from "@mui/material";
 import banner1 from "../../images/Banner1.jpg";
@@ -74,11 +78,10 @@ const CollectionDetails = (props) => {
       const collectionData = await marketContract.methods
         .getCollectionNFTs(collectionName)
         .call();
-        const reversedCollections = [...collectionData].sort((nft1, nft2) => {
-            if(parseInt(nft1.tokenId) > parseInt(nft2.tokenId))
-              return -1
-            else return 1
-          });
+      const reversedCollections = [...collectionData].sort((nft1, nft2) => {
+        if (parseInt(nft1.tokenId) > parseInt(nft2.tokenId)) return -1;
+        else return 1;
+      });
       const collectionItems = await Promise.all(
         reversedCollections.slice(0, 12).map(async (i) => {
           const uri = await nftContract.methods.tokenURI(i.tokenId).call();
@@ -89,7 +92,11 @@ const CollectionDetails = (props) => {
             tokenId: i.tokenId,
             owner: i.owner,
             collectionName: metadata?.data?.collection?.name,
-            collectionBanner: untitledCollections.includes(collectionName) ? banner1 : metadata?.data?.collection?.banner ? metadata.data.collection.banner : banner1,
+            collectionBanner: untitledCollections.includes(collectionName)
+              ? banner1
+              : metadata?.data?.collection?.banner
+              ? metadata.data.collection.banner
+              : banner1,
             collectionCreator: metadata?.data?.collection?.creator,
             collectionDescription: metadata?.data?.collection?.description,
             collectionDiscord: metadata?.data?.collection?.discordUrl,
@@ -198,15 +205,15 @@ const CollectionDetails = (props) => {
     <CollectionSection>
       <BannerAbsolute>
         <IconImg
-            url={nfts[0]?.collectionBanner}
-            width="100%"
-            height="355px"
-            backsize="cover"
-            key="imageBanner"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          ></IconImg>
+          url={nfts[0]?.collectionBanner}
+          width="100%"
+          height="355px"
+          backsize="cover"
+          key="imageBanner"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        ></IconImg>
       </BannerAbsolute>
       <HStack>
         <VStack
@@ -230,9 +237,14 @@ const CollectionDetails = (props) => {
               cursor={"pointer"}
               background={({ theme }) => theme.backElement}
             >
-              {verifiedProfiles.includes(nfts[0]?.collectionCreator) 
-                ? <IconImg cursor={"pointer"} url={verified} width="21px" height="21px"></IconImg>
-                : null}
+              {verifiedProfiles.includes(nfts[0]?.collectionCreator) ? (
+                <IconImg
+                  cursor={"pointer"}
+                  url={verified}
+                  width="21px"
+                  height="21px"
+                ></IconImg>
+              ) : null}
               <VStack spacing="0px" alignment="flex-start" cursor={"pointer"}>
                 <CaptionBold textcolor={({ theme }) => theme.text}>
                   CREATOR
@@ -391,9 +403,9 @@ const CollectionDetails = (props) => {
           <VStack width={size.width < 768 ? "100%" : "60%"} padding="15px">
             {nfts[0]?.collectionDescription !== "null" ? (
               <BodyRegular textcolor={({ theme }) => theme.text} align="center">
-                {collectionName === "DØP3 Punks " 
-                    ? `A multichain NFT project minting collections on every major blockchain!\n\nWhere DØP3 Art Meets Web3` 
-                    : nfts[0]?.collectionDescription}
+                {collectionName === "DØP3 Punks "
+                  ? `A multichain NFT project minting collections on every major blockchain!\n\nWhere DØP3 Art Meets Web3`
+                  : nfts[0]?.collectionDescription}
               </BodyRegular>
             ) : (
               <VStack>
@@ -554,6 +566,9 @@ const CollectionDetails = (props) => {
                       >
                         <NftContainer
                           key={i}
+                          iconStatus={"notforsale"}
+                          // iconStatus are : notforsale, relist, sale, sold, empty returns null
+                          hasOffers={true}
                           creatorImage={banner1}
                           itemImage={item.image}
                           price={item.price}

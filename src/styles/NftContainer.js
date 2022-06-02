@@ -2,7 +2,17 @@ import React from "react";
 import { useState } from "react";
 import { HStack, IconImg, VStack, Spacer, ZStack, ZItem } from "./Stacks";
 import miniXdcLogo from "../images/miniXdcLogo.png";
-import { BodyBold, BodyRegular, TitleBold18 } from "./TextStyles";
+import notforsale from "../images/notforsale.png";
+import sale from "../images/sale.png";
+import relist from "../images/relist.png";
+import sold from "../images/sold.png";
+import {
+  CaptionBoldShort,
+  BodyBold,
+  BodyRegular,
+  TitleBold18,
+  CaptionBold,
+} from "./TextStyles";
 import ReactPlayer from "react-player";
 import { appStyle } from "./AppStyles";
 import styled from "styled-components";
@@ -19,6 +29,8 @@ function NftContainer(props) {
     onClickCreator,
     fileType,
     owner,
+    iconStatus,
+    hasOffers,
   } = props;
 
   const scaleImage = {
@@ -27,6 +39,15 @@ function NftContainer(props) {
     },
     hover: {
       scale: 1.05,
+    },
+  };
+
+  const fadeText = {
+    initial: {
+      opacity: 0.3,
+    },
+    hover: {
+      opacity: 1,
     },
   };
   const moveContainer = {
@@ -39,6 +60,7 @@ function NftContainer(props) {
   };
   const [isVisible, setIsVisible] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [nftStatus, setNftStatus] = useState(iconStatus);
 
   return (
     <VStack
@@ -49,7 +71,7 @@ function NftContainer(props) {
       spacing="0"
       width="100%"
       height="450px"
-      bordersize="1px"
+      bordersize="0px"
       bordercolor={appStyle.colors.darkgrey10}
       onHoverStart={() => {
         setIsVisible((isVisible) => !isVisible);
@@ -93,18 +115,14 @@ function NftContainer(props) {
         </ZItem>
         <ZItem>
           <VStack
-            spacing="9px"
+            spacing="0
+            "
             background="linear-gradient(180.3deg, rgba(0, 0, 0, 0) 64.14%, rgba(0, 0, 0, 0.3) 78.31%, #000000 96.66%)"
             cursor={"pointer"}
             onClick={onClick}
+            height="100%"
           >
             <HStack padding="15px">
-              {owner ? (
-                <OwnerTag>OWNER</OwnerTag>
-              ) : (
-                <CreatorTag>CREATOR</CreatorTag>
-              )}
-              <Spacer></Spacer>
               <IconImg
                 url={creatorImage}
                 width="48px"
@@ -116,24 +134,85 @@ function NftContainer(props) {
                 backsize="cover"
                 cursor={"pointer"}
               ></IconImg>
+              <Spacer></Spacer>
+              {owner ? (
+                <OwnerTag>OWNER</OwnerTag>
+              ) : (
+                <CreatorTag>CREATOR</CreatorTag>
+              )}
+
+              {(() => {
+                switch (nftStatus) {
+                  case "notforsale":
+                    return (
+                      <IconImg
+                        url={notforsale}
+                        width="48px"
+                        height="48px"
+                        border="120px"
+                        backsize="cover"
+                        cursor={"pointer"}
+                      ></IconImg>
+                    );
+                  case "relist":
+                    return (
+                      <IconImg
+                        url={relist}
+                        width="48px"
+                        height="48px"
+                        border="120px"
+                        backsize="cover"
+                        cursor={"pointer"}
+                      ></IconImg>
+                    );
+                  case "sale":
+                    return (
+                      <IconImg
+                        url={sale}
+                        width="48px"
+                        height="48px"
+                        border="120px"
+                        backsize="cover"
+                        cursor={"pointer"}
+                      ></IconImg>
+                    );
+                  case "sold":
+                    return (
+                      <IconImg
+                        url={sold}
+                        width="48px"
+                        height="48px"
+                        border="120px"
+                        backsize="cover"
+                        cursor={"pointer"}
+                      ></IconImg>
+                    );
+                  default:
+                    return null;
+                }
+              })()}
             </HStack>
-            <Spacer></Spacer>
+
             <VStack
-              // background={background}
               width="100%"
               alignment="flex-start"
-              padding="21px 21px 30px 21px"
               spacing="0px"
-              maxheight="155px"
               animate={isVisible ? "hover" : "initial"}
-              variants={moveContainer}
               initial={false}
+              height="auto"
+              padding="0 21px 21px 21px "
+              cursor={"pointer"}
             >
-              <BodyBold textcolor={appStyle.colors.white}>
+              <Spacer></Spacer>
+              <CaptionBoldShort
+                variants={fadeText}
+                animate={isVisible ? "hover" : "initial"}
+                textcolor={appStyle.colors.white}
+              >
                 {collectionName}
-              </BodyBold>
-              <HStack padding="9px 0" height="30px">
-                <BodyRegular
+              </CaptionBoldShort>
+              <HStack padding="6px 0" height="auto" justify="flex-start">
+                <TitleBold18
                   display={"-webkit-box"}
                   overflow={"hidden"}
                   clamp={"1"}
@@ -141,31 +220,32 @@ function NftContainer(props) {
                   textcolor={appStyle.colors.white}
                 >
                   {itemNumber}
-                </BodyRegular>
-                <Spacer></Spacer>
-                <HStack spacing="3px" alignment="center">
-                  <IconImg
-                    url={miniXdcLogo}
-                    width="18px"
-                    height="18px"
-                  ></IconImg>
-                  <TitleBold18 textcolor={appStyle.colors.white}>
-                    {Number(price).toLocaleString(undefined, {
-                      maximumFractionDigits: 2,
-                    }) || "0"}
-                  </TitleBold18>
-                </HStack>
+                </TitleBold18>
               </HStack>
-              <Spacer></Spacer>
-              {/* <ButtonApp
-                height="39px"
-                text="Buy Now"
-                textcolor={appStyle.colors.white}
-                width="100%"
-                onClick={onClick}
-                cursor="pointer"
-                btnStatus={0}
-              ></ButtonApp> */}
+              <HStack spacing="3px" alignment="center">
+                <IconImg url={miniXdcLogo} width="18px" height="18px"></IconImg>
+                <TitleBold18
+                  variants={fadeText}
+                  animate={isVisible ? "hover" : "initial"}
+                  textcolor={appStyle.colors.white}
+                >
+                  {Number(price).toLocaleString(undefined, {
+                    maximumFractionDigits: 2,
+                  }) || "0"}
+                </TitleBold18>
+                <Spacer></Spacer>
+                {hasOffers && (
+                  <HStack
+                    background="linear-gradient(180deg, #FF5A5A 0%, rgba(255, 90, 90, 0.88) 100%)"
+                    border="30px"
+                    padding="3px 6px"
+                  >
+                    <CaptionBoldShort textcolor="white">
+                      NEW OFFERS
+                    </CaptionBoldShort>
+                  </HStack>
+                )}
+              </HStack>
             </VStack>
           </VStack>
         </ZItem>
@@ -179,7 +259,7 @@ export { NftContainer };
 const OwnerTag = styled(motion.div)`
   position: absolute;
   top: 50px;
-  right: 13px;
+  left: 13px;
   background: white;
   padding: 3px 6px;
   border-radius: 6px;
@@ -191,7 +271,7 @@ const OwnerTag = styled(motion.div)`
 const CreatorTag = styled(motion.div)`
   position: absolute;
   top: 50px;
-  right: 8px;
+  left: 8px;
   background: white;
   padding: 3px 6px;
   border-radius: 6px;
