@@ -6,10 +6,7 @@ import { nftaddress, nftmarketlayeraddress } from "../../config";
 import NFT from "../../abis/NFT.json";
 import NFTMarketLayer1 from "../../abis/NFTMarketLayer1.json";
 import axios from "axios";
-import {
-  featuredNFTList,
-  trendingItemList,
-} from "../../blacklist";
+import { featuredNFTList, trendingItemList } from "../../blacklist";
 import styled from "styled-components";
 import iconTrending from "../../images/trendingNFT.png";
 import { NftContainer } from "../../styles/NftContainer";
@@ -23,11 +20,7 @@ import {
   ZItem,
   ZStack,
 } from "../../styles/Stacks";
-import {
-  BodyRegular,
-  TitleBold27,
-  TitleBold33,
-} from "../../styles/TextStyles";
+import { BodyRegular, TitleBold27, TitleBold33 } from "../../styles/TextStyles";
 import { LayoutGroup, motion } from "framer-motion/dist/framer-motion";
 import { Featured } from "../../styles/Featured";
 import useWindowSize from "../../styles/useWindowSize";
@@ -437,6 +430,9 @@ const Home = () => {
                   height="450px"
                 >
                   <NftContainer
+                    iconStatus={"notforsale"}
+                    // iconStatus are : notforsale, relist, sale, sold, empty returns null
+                    hasOffers={true}
                     key={item.name}
                     fileType={item.fileType}
                     creatorImage={item.collectionLogo}

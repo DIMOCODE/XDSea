@@ -664,10 +664,11 @@ const NFTDetails = (props) => {
           isPurchaised={true}
           PurchaisedNftName={nft?.name}
           ListedImage={nft?.image}
-          confirmBtnPurchaise={() => NavigateTo(`UserProfile/${wallet?.address}`)}
+          confirmBtnPurchaise={() =>
+            NavigateTo(`UserProfile/${wallet?.address}`)
+          }
         ></TxModal>
-      ) : null
-      }
+      ) : null}
       <ContentNftPage>
         <VStack height="auto" padding="90px 0 0 0 ">
           <HStack height="100%" responsive={true} alignment="flex-start">
@@ -705,8 +706,9 @@ const NFTDetails = (props) => {
                   >
                     {isImage(nft?.fileType) ? (
                       <VStack>
-                        {wallet?.address === nft?.owner && (nft?.unlockableContent !== undefined 
-                          && nft?.unlockableContent !== "") ? (
+                        {wallet?.address === nft?.owner &&
+                        nft?.unlockableContent !== undefined &&
+                        nft?.unlockableContent !== "" ? (
                           <AnimatePresence>
                             <Lock
                               key="unlock"
@@ -769,8 +771,9 @@ const NFTDetails = (props) => {
                         overflow="hidden"
                         cursor="pointer"
                       >
-                        {wallet?.address === nft?.owner && (nft?.unlockableContent !== undefined 
-                          && nft?.unlockableContent !== "") ? (
+                        {wallet?.address === nft?.owner &&
+                        nft?.unlockableContent !== undefined &&
+                        nft?.unlockableContent !== "" ? (
                           <AnimatePresence>
                             <Lock
                               key="unlock"
@@ -831,8 +834,9 @@ const NFTDetails = (props) => {
                         cursor="pointer"
                         padding="15px"
                       >
-                        {wallet?.address === nft?.owner && (nft?.unlockableContent !== undefined 
-                          && nft?.unlockableContent !== "") ? (
+                        {wallet?.address === nft?.owner &&
+                        nft?.unlockableContent !== undefined &&
+                        nft?.unlockableContent !== "" ? (
                           <AnimatePresence>
                             <Lock
                               key="unlock"
@@ -1464,6 +1468,9 @@ const NFTDetails = (props) => {
                   height="450px"
                 >
                   <NftContainer
+                    iconStatus={"notforsale"}
+                    // iconStatus are : notforsale, relist, sale, sold, empty returns null
+                    hasOffers={true}
                     key={item.name}
                     fileType={item.fileType}
                     creatorImage={""}
