@@ -188,7 +188,7 @@ const CollectionDetails = (props) => {
 
   useEffect(() => {
     getData();
-  });
+  }, []);
 
   React.useEffect(() => {
     window.scrollTo(0, 0);

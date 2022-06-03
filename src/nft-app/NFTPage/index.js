@@ -592,10 +592,6 @@ const NFTDetails = (props) => {
     setWallet(props?.wallet);
   }, [props?.wallet]);
 
-  React.useEffect(() => {
-    
-  }, []);
-
   return (
     <NFTPage>
       {placingOffer ? (
