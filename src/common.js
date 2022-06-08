@@ -131,6 +131,7 @@ export const LegacyBuyNFT = async (nft) => {
 export const SellNFT = async (approved, sellData, sellPrice) => {
   try {
     const wallet = await GetWallet();
+    // console.log(wallet, approved, sellData, sellPrice);
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
 
     if (approved === false) {
@@ -164,6 +165,8 @@ export const SellNFT = async (approved, sellData, sellPrice) => {
       ? fromXdc(wallet.wallet.address)
       : wallet.wallet.address;
 
+    console.log(price, formattedWallet, nftaddress);
+
     // const contract2 = new xdc3.eth.Contract(NFTMarket.abi, nftmarketaddress, formattedWallet)
     const contract2 = new xdc3.eth.Contract(
       NFTMarketLayer1.abi,
@@ -179,19 +182,21 @@ export const SellNFT = async (approved, sellData, sellPrice) => {
 
     // console.log(nft)
 
+    console.log(data);
+
     const tx2 = {
       from: formattedWallet,
       to: nftmarketlayeraddress,
       data,
     };
 
-    // console.log(tx2)
+    console.log(tx2)
 
     var gasLimit2 = await xdc3.eth.estimateGas(tx2);
 
     tx2["gas"] = gasLimit2;
 
-    // console.log(tx2)
+    console.log(tx2)
 
     await SendTransaction(tx2);
 
@@ -345,6 +350,8 @@ export const TransferNFT = async (approved, transferNFT, transferAddress) => {
     const wallet = await GetWallet();
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
 
+    console.log(wallet, approved, transferNFT, transferAddress);
+
     if (approved === false) {
       // console.log("Approving")
       const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
@@ -387,6 +394,8 @@ export const TransferNFT = async (approved, transferNFT, transferAddress) => {
       .transferNFT(nftaddress, transferNFT.tokenId, transferAddress)
       .encodeABI();
 
+    console.log(data);
+
     const tx2 = {
       from: isXdc(wallet.wallet.address)
         ? fromXdc(wallet.wallet.address)
@@ -395,11 +404,13 @@ export const TransferNFT = async (approved, transferNFT, transferAddress) => {
       data,
     };
 
+    console.log(tx2)
+
     var gasLimit2 = await xdc3.eth.estimateGas(tx2);
 
     tx2["gas"] = gasLimit2;
 
-    // console.log(tx2)
+    console.log(tx2)
 
     await SendTransaction(tx2);
 
@@ -589,7 +600,7 @@ export const AcceptOffer = async (approved, tokenId, offerId) => {
         : wallet.wallet.address
     );
 
-    let data = contract2.methods.acceptOffer(tokenId, offerId).encodeABI();
+    let data = contract2.methods.acceptOffer(tokenId, offerId, nftaddress).encodeABI();
     // console.log(tokenId, offerId)
 
     const tx2 = {

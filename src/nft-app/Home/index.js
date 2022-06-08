@@ -154,6 +154,8 @@ const Home = () => {
             name: trendingItemMetadata?.data?.collection?.nft?.name,
             fileType: trendingItemMetadata?.data?.collection?.nft?.fileType,
             preview: trendingItemMetadata?.data?.collection?.nft?.preview,
+            isListed: itemData.isListed,
+            offerCount: itemData.offerCount,
           };
           return item;
         })
@@ -416,24 +418,25 @@ const Home = () => {
         </HStack>
         <HStack flexwrap="wrap" padding="0 30px">
           {setLoading
-            ? loadingNFT.map(() => (
+            ? loadingNFT.map((item) => (
                 <VStack
                   minwidth={size.width < 768 ? "230px" : "280px"}
                   height="450px"
+                  key={item.id}
                 >
                   <LoadingNftContainer></LoadingNftContainer>
                 </VStack>
               ))
-            : nfts.map((item) => (
+            : nfts.map((item, i) => (
                 <VStack
                   minwidth={size.width < 768 ? "230px" : "280px"}
                   height="450px"
+                  key={i}
                 >
                   <NftContainer
-                    iconStatus={"notforsale"}
+                    iconStatus={item.isListed ? "sale" : "notforsale"}
                     // iconStatus are : notforsale, relist, sale, sold, empty returns null
-                    hasOffers={true}
-                    key={item.name}
+                    hasOffers={item.offerCount > 0 ? true : false}
                     fileType={item.fileType}
                     creatorImage={item.collectionLogo}
                     itemImage={item.image}

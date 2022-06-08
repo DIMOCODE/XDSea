@@ -14,7 +14,7 @@ import { motion } from "framer-motion/dist/framer-motion";
 import { appStyle } from "./AppStyles";
 import { BodyRegular, TitleBold21, CaptionRegular } from "./TextStyles";
 import ButtonApp from "./Buttons";
-// import { PongSpinner } from "react-spinners-kit";
+import { PongSpinner } from "react-spinners-kit";
 import { InputStyled } from "./InputStyled";
 
 function TxModal(props) {
@@ -24,7 +24,8 @@ function TxModal(props) {
     placeOffer,
     offerPrice,
     onChangeOffer,
-    // isProcessing,
+    isProcessing,
+    processingMessage,
     isMint,
     isPurchaised,
     isNotice,
@@ -466,6 +467,19 @@ function TxModal(props) {
                   onClick={confirmActionModal}
                   btnStatus={0}
                 ></ButtonApp>
+              </HStack>
+            </>
+          )}
+          {isProcessing && (
+            <>
+              <PongSpinner width="59px" height="59px"></PongSpinner>
+              <HStack padding="0 30px">
+                <BodyRegular
+                  textcolor={({ theme }) => theme.text}
+                  align="center"
+                >
+                  {processingMessage}
+                </BodyRegular>
               </HStack>
             </>
           )}
