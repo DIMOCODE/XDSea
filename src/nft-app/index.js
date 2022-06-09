@@ -91,7 +91,7 @@ const NFTApp = () => {
                 size.width > 768
                   ? "computer"
                   : size.width > 425
-                  ? "phone"
+                  ? "tablet"
                   : "phone"
               }
               onWalletChange={handleWallet}
