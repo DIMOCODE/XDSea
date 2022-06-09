@@ -95,9 +95,7 @@ const NFTDetails = (props) => {
   const [isActive, setIsActive] = useState(2);
   const [highestOffer, setHighestOffer] = useState(0);
   const [addressIsInvalid, setAddressIsInvalid] = useState(false);
-  const [withdrawOfferButtonStatus, setWithdrawOfferButtonStatus] = useState(
-    []
-  );
+  const [withdrawOfferButtonStatus, setWithdrawOfferButtonStatus] = useState([]);
   const [acceptOfferButtonStatus, setAcceptOfferButtonStatus] = useState([]);
   const [processingOffer, setIsProcessingOffer] = useState(false);
   const [processingBuying, setIsProcessingBuying] = useState(false);
@@ -105,8 +103,7 @@ const NFTDetails = (props) => {
   const [processingEditing, setIsProcessingEditing] = useState(false);
   const [processingListing, setIsProcessingListing] = useState(false);
   const [processingTransferring, setIsProcessingTransferring] = useState(false);
-  const [processingWithdrawingOffer, setIsProcessingWithdrawingOffer] =
-    useState(false);
+  const [processingWithdrawingOffer, setIsProcessingWithdrawingOffer] = useState(false);
   const [processingAccepting, setIsProcessingAccepting] = useState(false);
   const [actions, setActions] = useState(0);
   const size = useWindowSize();
@@ -1627,7 +1624,7 @@ const NFTDetails = (props) => {
             <TitleBold27 align="center">More from this Collection</TitleBold27>
 
             <HStack responsive={true} padding="0 15px">
-              {moreFromCollectionNfts.map((item) => (
+              {moreFromCollectionNfts.map((item, i) => (
                 <VStack
                   width="100%"
                   // minwidth={size.width < 768 ? "230px" : "280px"}

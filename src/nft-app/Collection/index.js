@@ -178,6 +178,8 @@ const CollectionDetails = (props) => {
         let nft = {
           price: price,
           tokenId: i.tokenId,
+          isListed: i.isListed,
+          offerCount: i.offerCount,
           owner: i.owner,
           collectionName: metadata?.data?.collection?.name,
           image: metadata?.data?.collection?.nft?.image,

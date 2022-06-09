@@ -33,7 +33,6 @@ function TopBar(props) {
   const [deviceSize, setDeviceSize] = useState("");
   const [showMenu, setShowMenu] = useContext(menuContext);
   const menucolor = ({ theme }) => theme.menu;
-  console.log(menucolor);
 
   useEffect(() => {
     setDeviceSize(device);
@@ -218,7 +217,7 @@ function TopBar(props) {
                         </BodyBold>
                         {!devMode ? (
                           <BodyBold textcolor={({ theme }) => theme.blue}>
-                            βeta v1.6.0
+                            βeta v1.6.1
                           </BodyBold>
                         ) : (
                           <HStack
@@ -308,7 +307,7 @@ function TopBar(props) {
                         </BodyBold>
                         {!devMode ? (
                           <BodyBold textcolor={({ theme }) => theme.blue}>
-                            βeta v1.6.0
+                            βeta v1.6.1
                           </BodyBold>
                         ) : (
                           <HStack

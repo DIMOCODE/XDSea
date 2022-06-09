@@ -98,8 +98,6 @@ const NFTApp = () => {
               devMode={isDevMode}
               themeToggler={themeToggler}
             ></TopBar>
-            {console.log(size.width)}
-
             <ScrollView>
               <Switch>
                 <Route exact path="/" component={Home}></Route>
