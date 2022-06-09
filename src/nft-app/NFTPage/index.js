@@ -676,6 +676,75 @@ const NFTDetails = (props) => {
           <HStack height="100%" responsive={true} alignment="flex-start">
             <VStack width="100%" padding="30px 15px">
               <VStack width={size.width < 768 ? "100%" : "540px"}>
+                {nft?.name ? (
+                  <VStack width="100%">
+                    <VStack alignment="flex-start" width="100%" spacing="6px">
+                      <TitleBold27>{nft?.name}</TitleBold27>
+                      <ButtonApp
+                        height="30px"
+                        text={nft?.collectionName}
+                        background={({ theme }) => theme.walletButton}
+                        textcolor={({ theme }) => theme.walletText}
+                        cursor="pointer"
+                        onClick={() =>
+                          NavigateTo(`collection/${nft?.collectionName}`)
+                        }
+                        btnStatus={0}
+                      ></ButtonApp>
+                    </VStack>
+                  </VStack>
+                ) : (
+                  <VStack alignment="flex-start" width="100%" spacing="9px">
+                    <HStack
+                      background="rgba(153, 162, 175, 0.21)"
+                      key="Title"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{
+                        repeat: Infinity,
+                        repeatType: "reverse",
+                        duration: 0.6,
+                        delay: 0,
+                      }}
+                      border="9px"
+                      width="300px"
+                      height="39px"
+                    ></HStack>
+                    <HStack
+                      background="rgba(153, 162, 175, 0.21)"
+                      key="Collection"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{
+                        repeat: Infinity,
+                        repeatType: "reverse",
+                        duration: 0.6,
+                        delay: 0,
+                      }}
+                      border="9px"
+                      width="260px"
+                      height="30px"
+                    ></HStack>
+                    <HStack
+                      background="rgba(153, 162, 175, 0.21)"
+                      key="Creator"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{
+                        repeat: Infinity,
+                        repeatType: "reverse",
+                        duration: 0.6,
+                        delay: 0,
+                      }}
+                      border="9px"
+                      width="360px"
+                      height="26px"
+                    ></HStack>
+                  </VStack>
+                )}
                 {wallet?.address === nft?.owner ? (
                   <LockedContent>
                     <VStack
@@ -939,102 +1008,10 @@ const NFTDetails = (props) => {
                 </HStack>
               </VStack>
             </VStack>
-            <VStack width="100%" padding="30px 15px">
-              <VStack width={size.width < 768 ? "100%" : "502px"}>
-                {nft?.name ? (
-                  <VStack width="100%">
-                    <VStack alignment="flex-start" width="100%" spacing="6px">
-                      <TitleBold27>{nft?.name}</TitleBold27>
-                      <ButtonApp
-                        height="30px"
-                        text={nft?.collectionName}
-                        background={({ theme }) => theme.walletButton}
-                        textcolor={({ theme }) => theme.walletText}
-                        cursor="pointer"
-                        onClick={() =>
-                          NavigateTo(`collection/${nft?.collectionName}`)
-                        }
-                        btnStatus={0}
-                      ></ButtonApp>
-                    </VStack>
-                    <HStack spacing="9px" justify="flex-start">
-                      <CaptionRegular>Creator</CaptionRegular>
-                      <HStack
-                        spacing="6px"
-                        cursor={"pointer"}
-                        onClick={() =>
-                          NavigateTo(`UserProfile/${nft?.creator}`)
-                        }
-                      >
-                        <IconImg
-                          url={nft?.collectionLogo}
-                          width="18px"
-                          height="18px"
-                          border="30px"
-                          cursor={"pointer"}
-                        ></IconImg>
-                        {console.log(nft)}
-                        <Tooltip title={nft?.creator ? nft.creator : "-"}>
-                          <BodyBold>{truncateAddress(nft?.creator)}</BodyBold>
-                        </Tooltip>
-                      </HStack>
-                      <CaptionRegular>
-                        {nft?.royalty ? parseInt(nft?.royalty) : "0"}% Royalty
-                      </CaptionRegular>
-                    </HStack>
-                  </VStack>
-                ) : (
-                  <VStack alignment="flex-start" width="100%" spacing="9px">
-                    <HStack
-                      background="rgba(153, 162, 175, 0.21)"
-                      key="Title"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{
-                        repeat: Infinity,
-                        repeatType: "reverse",
-                        duration: 0.6,
-                        delay: 0,
-                      }}
-                      border="9px"
-                      width="300px"
-                      height="39px"
-                    ></HStack>
-                    <HStack
-                      background="rgba(153, 162, 175, 0.21)"
-                      key="Collection"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{
-                        repeat: Infinity,
-                        repeatType: "reverse",
-                        duration: 0.6,
-                        delay: 0,
-                      }}
-                      border="9px"
-                      width="260px"
-                      height="30px"
-                    ></HStack>
-                    <HStack
-                      background="rgba(153, 162, 175, 0.21)"
-                      key="Creator"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{
-                        repeat: Infinity,
-                        repeatType: "reverse",
-                        duration: 0.6,
-                        delay: 0,
-                      }}
-                      border="9px"
-                      width="360px"
-                      height="26px"
-                    ></HStack>
-                  </VStack>
-                )}
+
+            {/* NFT Description */}
+            <VStack width="100%" padding="21px 21px">
+              <VStack width={size.width < 768 ? "100%" : "100%"}>
                 <VStack
                   height={size.width < 768 ? "450px" : "auto"}
                   width="100%"
@@ -1043,31 +1020,31 @@ const NFTDetails = (props) => {
                 >
                   <HStack height="60px" justify="flex-start">
                     {propertyProportions[0]?.property === "" ? null : (
-                      <BodyBold
-                        animate={isActive === 1 ? "selected" : "normal"}
+                      <TitleBold18
+                        animate={isActive === 0 ? "selected" : "normal"}
                         variants={variants}
-                        onClick={() => setIsActive(1)}
+                        onClick={() => setIsActive(0)}
                         cursor="pointer"
                       >
-                        Properties
-                      </BodyBold>
+                        Description
+                      </TitleBold18>
                     )}
-                    <BodyBold
-                      animate={isActive === 0 ? "selected" : "normal"}
+                    <TitleBold18
+                      animate={isActive === 1 ? "selected" : "normal"}
                       variants={variants}
-                      onClick={() => setIsActive(0)}
+                      onClick={() => setIsActive(1)}
                       cursor="pointer"
                     >
-                      Description
-                    </BodyBold>
-                    <BodyBold
+                      Properties
+                    </TitleBold18>
+                    <TitleBold18
                       animate={isActive === 2 ? "selected" : "normal"}
                       variants={variants}
                       onClick={() => setIsActive(2)}
                       cursor="pointer"
                     >
                       Token Details
-                    </BodyBold>
+                    </TitleBold18>
                   </HStack>
                   <AnimatePresence>
                     <ZStack>
@@ -1135,17 +1112,13 @@ const NFTDetails = (props) => {
                           flexwrap="wrap"
                           spacing="6px"
                           width="100%"
+                          background={({ theme }) => theme.backElement}
+                          border="9px"
                           justify="flex-start"
-                          padding={size.width < 768 ? "0 0 12px 15px" : "5px"}
+                          padding={"12px"}
                           height={"100%"}
                         >
-                          <VStack
-                            background={({ theme }) => theme.backElement}
-                            width="100%"
-                            height="auto"
-                            border="9px"
-                            padding="6px 15px"
-                          >
+                          <VStack width="100%" height="auto">
                             <HStack width="100%" height="36px">
                               <IconImg
                                 url={mint}
@@ -1197,6 +1170,40 @@ const NFTDetails = (props) => {
                     </ZStack>
                   </AnimatePresence>
                 </VStack>
+                <HStack
+                  spacing="9px"
+                  justify="flex-start"
+                  border="9px"
+                  padding="12px"
+                  background={({ theme }) => theme.backElement}
+                >
+                  <VStack spacing="6px" alignment="flex-start">
+                    <CaptionBoldShort>CREATOR</CaptionBoldShort>
+                    <HStack
+                      spacing="6px"
+                      cursor={"pointer"}
+                      width="auto"
+                      onClick={() => NavigateTo(`UserProfile/${nft?.creator}`)}
+                    >
+                      <IconImg
+                        url={nft?.collectionLogo}
+                        width="18px"
+                        height="18px"
+                        border="30px"
+                        cursor={"pointer"}
+                      ></IconImg>
+                      {console.log(nft)}
+                      <Tooltip title={nft?.creator ? nft.creator : "-"}>
+                        <BodyBold>{truncateAddress(nft?.creator)}</BodyBold>
+                      </Tooltip>
+                    </HStack>
+                  </VStack>
+                  <Spacer></Spacer>
+                  <CaptionRegular>
+                    {nft?.royalty ? parseInt(nft?.royalty) : "0"}% Royalty
+                  </CaptionRegular>
+                </HStack>
+
                 <VStack
                   background={({ theme }) => theme.backElement}
                   width="100%"
@@ -1461,12 +1468,13 @@ const NFTDetails = (props) => {
             </HStack>
           </VStack>
           <VStack width="100%" alignment="flex">
-            <TitleBold27>More from this Collection</TitleBold27>
+            <TitleBold27 align="center">More from this Collection</TitleBold27>
 
-            <HStack>
+            <HStack responsive={true} padding="0 15px">
               {moreFromCollectionNfts.map((item) => (
                 <VStack
-                  minwidth={size.width < 768 ? "230px" : "280px"}
+                  width="100%"
+                  // minwidth={size.width < 768 ? "230px" : "280px"}
                   height="450px"
                 >
                   <NftContainer

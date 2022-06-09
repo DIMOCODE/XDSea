@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import Xdc3 from "xdc3";
 import { DEFAULT_PROVIDER } from "../../constant";
@@ -12,6 +12,7 @@ import iconTrending from "../../images/trendingNFT.png";
 import { NftContainer } from "../../styles/NftContainer";
 import { appStyle } from "../../styles/AppStyles";
 import ButtonApp from "../../styles/Buttons";
+import Carousel from "react-elastic-carousel";
 import {
   HStack,
   IconImg,
@@ -20,19 +21,36 @@ import {
   ZItem,
   ZStack,
 } from "../../styles/Stacks";
-import { BodyRegular, TitleBold27, TitleBold33 } from "../../styles/TextStyles";
-import { LayoutGroup, motion } from "framer-motion/dist/framer-motion";
+import {
+  BodyRegular,
+  TitleBold18,
+  TitleBold27,
+  TitleBold33,
+} from "../../styles/TextStyles";
+import {
+  LayoutGroup,
+  motion,
+  AnimatePresence,
+} from "framer-motion/dist/framer-motion";
 import { Featured } from "../../styles/Featured";
 import useWindowSize from "../../styles/useWindowSize";
 import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
 import { LogoHover } from "../../styles/LogoHover";
+import logoXDSEA from "../../images/LogoXDSEA.png";
 import bannerXDC from "../../images/bannerXdc.png";
+import menuContext from "../../context/menuContext";
+import { Icon } from "@mui/material";
+import logoMarketplace from "../../images/logoMarketplace.png";
+import { NewFeatured } from "../../styles/NewFeatured";
+import { borderColor } from "@mui/system";
+import "./customstyles.css";
 
 const Home = () => {
   const history = useHistory();
   const [nfts, setNFts] = useState([]);
   const [featuredNFT, setFeaturedNFT] = useState([]);
   const [setLoading, isSetLoading] = useState(false);
+  const [, setShowMenu] = useContext(menuContext);
   // const [arrayCollection] = useState([
   //   { id: 1, name: "Collection 1" },
   //   { id: 2, name: "Collection 2" },
@@ -54,6 +72,8 @@ const Home = () => {
     { id: 6, name: "NFT 6" },
   ]);
   const size = useWindowSize();
+  const [scrollTop, setScrollTop] = useState();
+  const [scrolling, setScrolling] = useState();
 
   const getData = async () => {
     try {
@@ -194,6 +214,7 @@ const Home = () => {
   };
 
   function NavigateTo(route) {
+    setShowMenu(false);
     history.push(`/${route}`);
   }
 
@@ -206,9 +227,301 @@ const Home = () => {
     window.scrollTo(0, 0);
   }, []);
 
+  useEffect(() => {
+    const onScroll = (e) => {
+      setScrollTop(e.target.documentElement.scrollTop);
+      setScrolling(e.target.documentElement.scrollTop > scrollTop);
+      setShowMenu(false);
+    };
+    window.addEventListener("scroll", onScroll);
+
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [scrollTop]);
+
+  useEffect(() => {
+    console.log(scrolling);
+  }, [scrolling]);
+
   return (
     <Content>
-      <HStack
+      <HStack width="100%" height="auto" flexwrap="wrap" spacing="9px">
+        {/* Main Logo Square */}
+        <VStack
+          background={({ theme }) => theme.faded}
+          minwidth={
+            size.width > 768 ? "30%" : size.width > 425 ? "39%" : "100%"
+          }
+          border="9px"
+          height={size.width > 425 ? "390px" : "260px"}
+        >
+          <IconImg
+            url={logoXDSEA}
+            width={size.width > 425 ? "150px" : "90px"}
+            height={size.width > 425 ? "150px" : "90px"}
+          ></IconImg>
+          <HStack padding="0 21px">
+            <TitleBold27 align="center">
+              Exploring, Collecting <br></br> and Selling
+            </TitleBold27>
+          </HStack>
+
+          <HStack>
+            <Spacer></Spacer>
+            <HStack
+              background={({ theme }) => theme.blue}
+              border="9px"
+              padding="12px 30px"
+            >
+              <TitleBold18 textcolor={appStyle.colors.white}>
+                Exclusive NFTs
+              </TitleBold18>
+            </HStack>
+            <Spacer></Spacer>
+          </HStack>
+        </VStack>
+
+        {size.width > 425 ? (
+          <>
+            {/* First NFT Featured */}
+            <VStack
+              // background="pink"
+              minwidth={
+                size.width > 768 ? "30%" : size.width > 425 ? "39%" : "100%"
+              }
+              height="390px"
+            >
+              <LayoutGroup id="number1">
+                <NewFeatured
+                  creatorImage={featuredNFT[0]?.collectionLogo}
+                  itemImage={featuredNFT[0]?.image}
+                  collectionName={featuredNFT[0]?.collectionName}
+                  creatorName={truncateAddress(featuredNFT[0]?.creator)}
+                  itemNumber={featuredNFT[0]?.name}
+                  fileType={featuredNFT[0]?.fileType}
+                  onClickCreator={() =>
+                    NavigateTo(`collection/${featuredNFT[0]?.collectionName}`)
+                  }
+                  onClick={() =>
+                    NavigateTo(`nft/${nftaddress}/${featuredNFT[0]?.tokenId}`)
+                  }
+                ></NewFeatured>
+              </LayoutGroup>
+            </VStack>
+            {/* Second NFT Featured */}
+            <VStack
+              // background="pink"
+              minwidth={
+                size.width > 768 ? "30%" : size.width > 425 ? "39%" : "100%"
+              }
+              height="390px"
+            >
+              <LayoutGroup id="number2">
+                <NewFeatured
+                  creatorImage={featuredNFT[1]?.collectionLogo}
+                  itemImage={featuredNFT[1]?.image}
+                  collectionName={featuredNFT[1]?.collectionName}
+                  creatorName={truncateAddress(featuredNFT[1]?.creator)}
+                  itemNumber={featuredNFT[1]?.name}
+                  fileType={featuredNFT[1]?.fileType}
+                  onClickCreator={() =>
+                    NavigateTo(`collection/${featuredNFT[1]?.collectionName}`)
+                  }
+                  onClick={() =>
+                    NavigateTo(`nft/${nftaddress}/${featuredNFT[1]?.tokenId}`)
+                  }
+                ></NewFeatured>
+              </LayoutGroup>
+            </VStack>
+            {/* Third NFT Featured */}
+            <VStack
+              // background="pink"
+              minwidth={
+                size.width > 768 ? "30%" : size.width > 425 ? "39%" : "100%"
+              }
+              height="390px"
+            >
+              <LayoutGroup id="number3">
+                <NewFeatured
+                  creatorImage={featuredNFT[2]?.collectionLogo}
+                  itemImage={featuredNFT[2]?.image}
+                  collectionName={featuredNFT[2]?.collectionName}
+                  creatorName={truncateAddress(featuredNFT[2]?.creator)}
+                  itemNumber={featuredNFT[2]?.name}
+                  fileType={featuredNFT[2]?.fileType}
+                  onClickCreator={() =>
+                    NavigateTo(`collection/${featuredNFT[2]?.collectionName}`)
+                  }
+                  onClick={() =>
+                    NavigateTo(`nft/${nftaddress}/${featuredNFT[2]?.tokenId}`)
+                  }
+                ></NewFeatured>
+              </LayoutGroup>
+            </VStack>
+            {/* Four NFT Featured */}
+            <VStack
+              // background="pink"
+              minwidth={
+                size.width > 768 ? "30%" : size.width > 425 ? "39%" : "100%"
+              }
+              height="390px"
+            >
+              <LayoutGroup id="number4">
+                <NewFeatured
+                  creatorImage={featuredNFT[3]?.collectionLogo}
+                  itemImage={featuredNFT[3]?.image}
+                  collectionName={featuredNFT[3]?.collectionName}
+                  creatorName={truncateAddress(featuredNFT[3]?.creator)}
+                  itemNumber={featuredNFT[3]?.name}
+                  fileType={featuredNFT[3]?.fileType}
+                  onClickCreator={() =>
+                    NavigateTo(`collection/${featuredNFT[3]?.collectionName}`)
+                  }
+                  onClick={() =>
+                    NavigateTo(`nft/${nftaddress}/${featuredNFT[3]?.tokenId}`)
+                  }
+                ></NewFeatured>
+              </LayoutGroup>
+            </VStack>
+          </>
+        ) : (
+          // Doc from Carousel https://sag1v.github.io/react-elastic-carousel/
+
+          <VStack className="bigblue">
+            <Carousel
+              itemsToShow={1}
+              // enableAutoPlay={true}
+              // autoPlaySpeed={3000}
+              showArrows={false}
+              pagination={true}
+              enableTilt={true}
+            >
+              {/* First NFT Featured */}
+              <VStack
+                // background="pink"
+                minwidth={
+                  size.width > 768 ? "30%" : size.width > 425 ? "39%" : "100%"
+                }
+                height="390px"
+              >
+                <LayoutGroup id="number1">
+                  <NewFeatured
+                    creatorImage={featuredNFT[0]?.collectionLogo}
+                    itemImage={featuredNFT[0]?.image}
+                    collectionName={featuredNFT[0]?.collectionName}
+                    creatorName={truncateAddress(featuredNFT[0]?.creator)}
+                    itemNumber={featuredNFT[0]?.name}
+                    fileType={featuredNFT[0]?.fileType}
+                    onClickCreator={() =>
+                      NavigateTo(`collection/${featuredNFT[0]?.collectionName}`)
+                    }
+                    onClick={() =>
+                      NavigateTo(`nft/${nftaddress}/${featuredNFT[0]?.tokenId}`)
+                    }
+                  ></NewFeatured>
+                </LayoutGroup>
+              </VStack>
+              {/* Second NFT Featured */}
+              <VStack
+                // background="pink"
+                minwidth={
+                  size.width > 768 ? "30%" : size.width > 425 ? "39%" : "100%"
+                }
+                height="390px"
+              >
+                <LayoutGroup id="number2">
+                  <NewFeatured
+                    creatorImage={featuredNFT[1]?.collectionLogo}
+                    itemImage={featuredNFT[1]?.image}
+                    collectionName={featuredNFT[1]?.collectionName}
+                    creatorName={truncateAddress(featuredNFT[1]?.creator)}
+                    itemNumber={featuredNFT[1]?.name}
+                    fileType={featuredNFT[1]?.fileType}
+                    onClickCreator={() =>
+                      NavigateTo(`collection/${featuredNFT[1]?.collectionName}`)
+                    }
+                    onClick={() =>
+                      NavigateTo(`nft/${nftaddress}/${featuredNFT[1]?.tokenId}`)
+                    }
+                  ></NewFeatured>
+                </LayoutGroup>
+              </VStack>
+
+              {/* Third NFT Featured */}
+              <VStack
+                // background="pink"
+                minwidth={
+                  size.width > 768 ? "30%" : size.width > 425 ? "39%" : "100%"
+                }
+                height="390px"
+              >
+                <LayoutGroup id="number3">
+                  <NewFeatured
+                    creatorImage={featuredNFT[2]?.collectionLogo}
+                    itemImage={featuredNFT[2]?.image}
+                    collectionName={featuredNFT[2]?.collectionName}
+                    creatorName={truncateAddress(featuredNFT[2]?.creator)}
+                    itemNumber={featuredNFT[2]?.name}
+                    fileType={featuredNFT[2]?.fileType}
+                    onClickCreator={() =>
+                      NavigateTo(`collection/${featuredNFT[2]?.collectionName}`)
+                    }
+                    onClick={() =>
+                      NavigateTo(`nft/${nftaddress}/${featuredNFT[2]?.tokenId}`)
+                    }
+                  ></NewFeatured>
+                </LayoutGroup>
+              </VStack>
+
+              {/* Four NFT Featured */}
+              <VStack
+                // background="pink"
+                minwidth={
+                  size.width > 768 ? "30%" : size.width > 425 ? "39%" : "100%"
+                }
+                height="390px"
+              >
+                <LayoutGroup id="number4">
+                  <NewFeatured
+                    creatorImage={featuredNFT[3]?.collectionLogo}
+                    itemImage={featuredNFT[3]?.image}
+                    collectionName={featuredNFT[3]?.collectionName}
+                    creatorName={truncateAddress(featuredNFT[3]?.creator)}
+                    itemNumber={featuredNFT[3]?.name}
+                    fileType={featuredNFT[3]?.fileType}
+                    onClickCreator={() =>
+                      NavigateTo(`collection/${featuredNFT[3]?.collectionName}`)
+                    }
+                    onClick={() =>
+                      NavigateTo(`nft/${nftaddress}/${featuredNFT[3]?.tokenId}`)
+                    }
+                  ></NewFeatured>
+                </LayoutGroup>
+              </VStack>
+            </Carousel>
+          </VStack>
+        )}
+
+        {/* subtitleHere */}
+        <VStack
+          background={appStyle.colors.darkgrey10}
+          minwidth={
+            size.width > 768 ? "30%" : size.width > 425 ? "40%" : "100%"
+          }
+          height={size.width > 425 ? "390px" : "210px"}
+          border="9px"
+        >
+          <VStack padding="0 21px" spacing="3px">
+            <TitleBold27 align="center">
+              has now <br></br> become
+            </TitleBold27>
+            <TitleBold27 align="center" textcolor={({ theme }) => theme.blue}>
+              simpler & <br></br>faster.
+            </TitleBold27>
+          </VStack>
+        </VStack>
+      </HStack>
+
+      {/* <HStack
         width="100%"
         height={size.width < 768 ? "auto" : "580px"}
         alignment="flex-start"
@@ -234,31 +547,7 @@ const Home = () => {
             Be a part of the world's first NFT Marketplace on the XDC
             blockchain.
           </BodyRegular>
-          {/* <HStack spacing="10px">
-            <a href="#spotlightCollections" style={linkStyle}>
-              <ButtonApp
-                btnStatus={0}
-                height="52px"
-                width="160px"
-                textcolor={appStyle.colors.white}
-                background={({ theme }) => theme.blue}
-                text="Spotlight Collections"
-                cursor={"pointer"}
-              ></ButtonApp>
-            </a>
-            <a href="#trendingNFTs" style={linkStyle}>
-              <ButtonApp
-                height="52px"
-                width="160px"
-                textcolor={appStyle.colors.white}
-                background={({ theme }) => theme.blue}
-                text="Trending NFTs"
-                btnStatus={0}
-                cursor={"pointer"}
-              ></ButtonApp>
-            </a>
-            <Spacer></Spacer>
-          </HStack> */}
+         
           <Spacer></Spacer>
         </VStack>
         <HStack
@@ -316,7 +605,7 @@ const Home = () => {
             </LayoutGroup>
           </VStack>
         </HStack>
-      </HStack>
+      </HStack> */}
       {/* <VStack
         height={size.width < 768 ? "auto" : "700px"}
         width="100%"
@@ -368,8 +657,8 @@ const Home = () => {
       <VStack width="100%" padding="60px 0">
         <VStack
           width="100%"
-          minheight="300px"
-          border="15px"
+          height={size.width < 768 ? "200px" : "300px"}
+          border={size.width < 768 ? "0px" : "15px"}
           overflow="hidden"
           cursor="pointer"
         >
@@ -379,8 +668,8 @@ const Home = () => {
                 url={bannerXDC}
                 width="100%"
                 height="300px"
-                border="15px"
-                backsize="contain"
+                border={size.width < 768 ? "0px" : "15px"}
+                backsize="cover"
               ></IconImg>
             </ZItem>
             <ZItem>
@@ -406,7 +695,8 @@ const Home = () => {
       </VStack>
 
       <VStack
-        height={size.width < 768 ? "auto" : "1100px"}
+        height="auto"
+        // height={size.width < 768 ? "auto" : "auto"}
         width="100%"
         id="trendingNFTs"
       >
@@ -426,7 +716,7 @@ const Home = () => {
               ))
             : nfts.map((item) => (
                 <VStack
-                  minwidth={size.width < 768 ? "230px" : "280px"}
+                  minwidth={size.width < 768 ? "300px" : "280px"}
                   height="450px"
                 >
                   <NftContainer
@@ -453,7 +743,7 @@ const Home = () => {
         </HStack>
         <ButtonApp
           height="39px"
-          width="360px"
+          width="300px"
           text="Discover More"
           textcolor={appStyle.colors.white}
           onClick={() => NavigateTo(`discover`)}

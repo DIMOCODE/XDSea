@@ -14,6 +14,7 @@ export const lightTheme = {
   walletText: "#FFF",
   faded: "rgba(0, 0, 0, 0.06)",
   backgroundModal: "rgba(214, 214, 219, 0.84)",
+  menu: "#5C6976",
 };
 
 export const darkTheme = {
@@ -29,4 +30,5 @@ export const darkTheme = {
   hover: "#292D41",
   faded: "rgba(0, 0, 0, 0.06)",
   backgroundModal: "rgba(18, 18, 18, 1)",
+  menu: "white",
 };

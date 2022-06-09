@@ -3,11 +3,7 @@ import XDSeaWhite from "../../images/logoXDSEAWhite.png";
 import twitter from "../../images/twitterLogoWhite.png";
 import instagram from "../../images/InstagramLogoWhite.png";
 import mail from "../../images/mailWhite.png";
-import {
-  BodyRegular,
-  TitleBold21,
-  TitleBold27,
-} from "../../styles/TextStyles";
+import { BodyRegular, TitleBold21, TitleBold27 } from "../../styles/TextStyles";
 import { appStyle } from "../../styles/AppStyles";
 import { LayoutGroup, motion } from "framer-motion/dist/framer-motion";
 import { Link } from "../../styles/Link";
@@ -33,7 +29,11 @@ function Footer(props) {
               alignment="flex-start"
               padding={size.width < 768 ? "0 60px" : "0 30px"}
             >
-              <VStack alignment="flex-start" spacing="6px" onClick={() => NavigateTo('')}>
+              <VStack
+                alignment="flex-start"
+                spacing="6px"
+                onClick={() => NavigateTo("")}
+              >
                 <IconImg
                   url={XDSeaWhite}
                   width={size.width < 768 ? "60px" : "90px"}
@@ -107,10 +107,10 @@ function Footer(props) {
             </HStack>
             <VStack
               background={appStyle.colors.darkgrey10}
-              padding="6px 9px"
+              padding="6px 6px"
               border="6px"
             >
-              <BodyRegular textcolor="white">
+              <BodyRegular textcolor="white" align="center">
                 Copyright © 2022 XDSea All Rights Reserved
               </BodyRegular>
             </VStack>

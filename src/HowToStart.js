@@ -1,11 +1,7 @@
 import { VStack, HStack, Spacer, IconImg } from "./styles/Stacks";
 import styled from "styled-components";
 import { motion } from "framer-motion/dist/framer-motion";
-import {
-  BodyRegular,
-  TitleBold18,
-  TitleBold27,
-} from "./styles/TextStyles";
+import { BodyRegular, TitleBold18, TitleBold27 } from "./styles/TextStyles";
 import backBar from "./images/DiscoverBar.png";
 import { appStyle } from "./styles/AppStyles";
 import Step1 from "./images/Step1v2.png";
@@ -21,7 +17,7 @@ function HowToStart() {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
-  
+
   return (
     <HowToSection>
       <HStack backgroundimage={backBar}>
@@ -40,7 +36,7 @@ function HowToStart() {
         <VStack padding="30px 30px">
           <HStack
             spacing="0px"
-            height={size.width < 768 ? "auto" : "390px"}
+            height={size.width < 768 ? "auto" : "auto"}
             background={({ theme }) => theme.backElement}
             responsive={true}
             border="15px"
@@ -67,7 +63,10 @@ function HowToStart() {
                 </VStack>
                 <VStack alignment="flex-start" width="100%">
                   <BodyRegular>• Setup the wallet of your choice</BodyRegular>
-                  <BodyRegular>• Click on Connect by clicking the <br></br>wallet icon in the top right corner</BodyRegular>
+                  <BodyRegular>
+                    • Click on Connect by clicking the <br></br>wallet icon in
+                    the top right corner
+                  </BodyRegular>
                   <BodyRegular>
                     • You're now connected to the <br></br>XDSea NFT Marketplace
                   </BodyRegular>
@@ -79,18 +78,21 @@ function HowToStart() {
               <IconImg url={Step1} width="390px" height="390px"></IconImg>
             </VStack>
           </HStack>
+
+          {/* Step2 */}
           <HStack
             spacing="0px"
-            height={size.width < 768 ? "auto" : "390px"}
+            height={size.width < 768 ? "auto" : "auto"}
             background={({ theme }) => theme.backElement}
             responsive={true}
             border="15px"
+            padding="21px 0"
           >
             <VStack width="100%">
               <VStack
                 width="60%"
-                height={size.width < 768 ? "390px" : "auto"}
-                spacing="30px"
+                height={size.width < 768 ? "390" : "auto"}
+                spacing="21px"
               >
                 <VStack alignment="flex-start" width="100%" maxheight="120px">
                   <VStack
@@ -104,32 +106,40 @@ function HowToStart() {
                       2
                     </BodyRegular>
                   </VStack>
+
                   <TitleBold18>Create an NFT</TitleBold18>
                   <TitleBold18 textcolor={({ theme }) => theme.blue}>
                     Let’s get creative
                   </TitleBold18>
                 </VStack>
-                <VStack alignment="flex-start" width="100%" maxheight="120px">
+
+                <VStack alignment="flex-start" width="100%">
+                  <BodyRegular>• Click on Create an NFT</BodyRegular>
                   <BodyRegular>
-                    • Click on Create an NFT
+                    • Set up your collection by adding <br></br>the name,
+                    description, a collection <br></br>banner, and a logo
                   </BodyRegular>
                   <BodyRegular>
-                    • Set up your collection by adding <br></br>the name, description, a collection <br></br>banner, and a logo
+                    • Don't forget to add your <br></br>social links!
                   </BodyRegular>
-                  <BodyRegular>• Don't forget to add your <br></br>social links!</BodyRegular>
                 </VStack>
               </VStack>
             </VStack>
+
             <VStack width="100%">
               <IconImg url={Step2} width="390px" height="390px"></IconImg>
             </VStack>
           </HStack>
+
+          {/* Step3 */}
+
           <HStack
             spacing="0px"
-            height={size.width < 768 ? "auto" : "390px"}
+            height={size.width < 768 ? "auto" : "auto"}
             background={({ theme }) => theme.backElement}
             responsive={true}
             border="15px"
+            padding="21px 0"
           >
             <VStack width="100%">
               <VStack
@@ -154,13 +164,13 @@ function HowToStart() {
                     Time to show off
                   </TitleBold18>
                 </VStack>
-                <VStack alignment="flex-start" width="100%" maxheight="160px">
+                <VStack alignment="flex-start" width="100%" maxheight="190px">
                   <BodyRegular>• Upload your digital asset</BodyRegular>
+                  <BodyRegular>• Add titles and descriptions</BodyRegular>
                   <BodyRegular>
-                    • Add titles and descriptions
-                  </BodyRegular>
-                  <BodyRegular>
-                    • Customize your NFTs with properties, <br></br>set your custom secondary market <br></br>fees, and add unlockable content
+                    • Customize your NFTs with properties, <br></br>set your
+                    custom secondary market <br></br>fees, and add unlockable
+                    content
                   </BodyRegular>
                   <Spacer></Spacer>
                 </VStack>
@@ -172,7 +182,7 @@ function HowToStart() {
           </HStack>
           <HStack
             spacing="0px"
-            height={size.width < 768 ? "auto" : "390px"}
+            height={size.width < 768 ? "auto" : "auto"}
             background={({ theme }) => theme.backElement}
             responsive={true}
             border="15px"

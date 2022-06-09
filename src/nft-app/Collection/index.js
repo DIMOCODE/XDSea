@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import Xdc3 from "xdc3";
 import { nftaddress, nftmarketlayeraddress } from "../../config";
@@ -37,6 +37,7 @@ import { untitledCollections } from "../../blacklist";
 import { Tooltip } from "@mui/material";
 import banner1 from "../../images/Banner1.jpg";
 import verified from "../../images/verified.png";
+import menuContext from "../../context/menuContext";
 
 const CollectionDetails = (props) => {
   const history = useHistory();
@@ -65,6 +66,7 @@ const CollectionDetails = (props) => {
   ]);
 
   const { collectionName } = useParams();
+  const [, setShowMenu] = useContext(menuContext);
 
   const getData = async () => {
     try {
@@ -190,6 +192,7 @@ const CollectionDetails = (props) => {
   };
 
   function NavigateTo(route) {
+    setShowMenu(false);
     history.push(`/${route}`);
   }
 
@@ -287,117 +290,125 @@ const CollectionDetails = (props) => {
                   boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
                 }}
               >
-                <TitleBold21 textcolor={({ theme }) => theme.walletText}>
+                <TitleBold21
+                  align="center"
+                  textcolor={({ theme }) => theme.walletText}
+                >
                   {collectionName}
                 </TitleBold21>
               </HStack>
               <Spacer></Spacer>
             </HStack>
-            <HStack height="90px" spacing="12px">
-              <VStack
-                spacing="9px"
-                border="9px"
-                padding="18px 0"
-                background={({ theme }) => theme.backElement}
-                style={{
-                  boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
-                }}
-              >
-                <HStack spacing="6px">
-                  <IconImg
-                    url={miniXdcLogo}
-                    width="18px"
-                    height="18px"
-                  ></IconImg>
-                  {floorPrice ===
-                  999999999999999999999999999999999999999999999 ? (
-                    <LoopBars width="54px"></LoopBars>
-                  ) : (
-                    <BodyBold textcolor={({ theme }) => theme.text}>
-                      {floorPrice.toLocaleString(undefined, {
-                        maximumFractionDigits: 2,
-                      }) || "0"}
-                    </BodyBold>
-                  )}
-                </HStack>
-                <CaptionBoldShort textcolor={({ theme }) => theme.text}>
-                  Floor Price
-                </CaptionBoldShort>
-              </VStack>
-              <VStack
-                border="9px"
-                padding="18px 0"
-                spacing="9px"
-                background={({ theme }) => theme.backElement}
-                style={{
-                  boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
-                }}
-              >
-                {collectionOwners.length === 0 ? (
-                  <LoopBars width="54px"></LoopBars>
-                ) : (
-                  <BodyBold textcolor={({ theme }) => theme.text}>
-                    {collectionOwners.length}
-                  </BodyBold>
-                )}
-                <CaptionBoldShort textcolor={({ theme }) => theme.text}>
-                  Owners
-                </CaptionBoldShort>
-              </VStack>
-              <VStack
-                border="9px"
-                padding="18px 0"
-                background={({ theme }) => theme.backElement}
-                spacing="9px"
-                style={{
-                  boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
-                }}
-              >
-                {collectionOwners.length === 0 ? (
-                  <LoopBars width="54px"></LoopBars>
-                ) : (
-                  <BodyBold textcolor={({ theme }) => theme.text}>
-                    {burnedCollections.includes(collectionName)
-                      ? page.length - 1
-                      : page.length}
-                  </BodyBold>
-                )}
-                <CaptionBoldShort textcolor={({ theme }) => theme.text}>
-                  NFT's
-                </CaptionBoldShort>
-              </VStack>
-              <VStack
-                border="9px"
-                padding="18px 0"
-                background={({ theme }) => theme.backElement}
-                spacing="9px"
-                style={{
-                  boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
-                }}
-              >
-                <HStack spacing="6px">
-                  <IconImg
-                    url={miniXdcLogo}
-                    width="18px"
-                    height="18px"
-                  ></IconImg>
-                  {volume === -1 ? (
-                    <LoopBars width="54px"></LoopBars>
-                  ) : (
-                    <BodyBold textcolor={({ theme }) => theme.text}>
-                      {volume.toLocaleString(undefined, {
-                        maximumFractionDigits: 2,
-                      }) || "0"}
-                    </BodyBold>
-                  )}
-                </HStack>
-                <CaptionBoldShort
-                  align="center"
-                  textcolor={({ theme }) => theme.text}
+            <HStack height={"auto"} spacing="12px" responsive={true}>
+              <HStack width="100%">
+                <VStack
+                  spacing="9px"
+                  border="9px"
+                  padding="18px 0"
+                  background={({ theme }) => theme.backElement}
+                  style={{
+                    boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
+                  }}
                 >
-                  Volume Traded
-                </CaptionBoldShort>
-              </VStack>
+                  <HStack spacing="6px">
+                    <IconImg
+                      url={miniXdcLogo}
+                      width="18px"
+                      height="18px"
+                    ></IconImg>
+                    {floorPrice ===
+                    999999999999999999999999999999999999999999999 ? (
+                      <LoopBars width="54px"></LoopBars>
+                    ) : (
+                      <BodyBold textcolor={({ theme }) => theme.text}>
+                        {floorPrice.toLocaleString(undefined, {
+                          maximumFractionDigits: 2,
+                        }) || "0"}
+                      </BodyBold>
+                    )}
+                  </HStack>
+                  <CaptionBoldShort textcolor={({ theme }) => theme.text}>
+                    Floor Price
+                  </CaptionBoldShort>
+                </VStack>
+                <VStack
+                  border="9px"
+                  padding="18px 0"
+                  spacing="9px"
+                  background={({ theme }) => theme.backElement}
+                  style={{
+                    boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
+                  }}
+                >
+                  {collectionOwners.length === 0 ? (
+                    <LoopBars width="54px"></LoopBars>
+                  ) : (
+                    <BodyBold textcolor={({ theme }) => theme.text}>
+                      {collectionOwners.length}
+                    </BodyBold>
+                  )}
+                  <CaptionBoldShort textcolor={({ theme }) => theme.text}>
+                    Owners
+                  </CaptionBoldShort>
+                </VStack>
+              </HStack>
+
+              <HStack width="100%">
+                <VStack
+                  border="9px"
+                  padding="18px 0"
+                  background={({ theme }) => theme.backElement}
+                  spacing="9px"
+                  style={{
+                    boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
+                  }}
+                >
+                  {collectionOwners.length === 0 ? (
+                    <LoopBars width="54px"></LoopBars>
+                  ) : (
+                    <BodyBold textcolor={({ theme }) => theme.text}>
+                      {burnedCollections.includes(collectionName)
+                        ? page.length - 1
+                        : page.length}
+                    </BodyBold>
+                  )}
+                  <CaptionBoldShort textcolor={({ theme }) => theme.text}>
+                    NFT's
+                  </CaptionBoldShort>
+                </VStack>
+                <VStack
+                  border="9px"
+                  padding="18px 0"
+                  background={({ theme }) => theme.backElement}
+                  spacing="9px"
+                  style={{
+                    boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
+                  }}
+                >
+                  <HStack spacing="6px">
+                    <IconImg
+                      url={miniXdcLogo}
+                      width="18px"
+                      height="18px"
+                    ></IconImg>
+                    {volume === -1 ? (
+                      <LoopBars width="54px"></LoopBars>
+                    ) : (
+                      <BodyBold textcolor={({ theme }) => theme.text}>
+                        {volume.toLocaleString(undefined, {
+                          maximumFractionDigits: 2,
+                        }) || "0"}
+                      </BodyBold>
+                    )}
+                  </HStack>
+                  <CaptionBoldShort
+                    align="center"
+                    textcolor={({ theme }) => theme.text}
+                  >
+                    Volume Traded
+                  </CaptionBoldShort>
+                </VStack>
+              </HStack>
             </HStack>
           </VStack>
           <VStack width={size.width < 768 ? "100%" : "60%"} padding="15px">

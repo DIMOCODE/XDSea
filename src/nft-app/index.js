@@ -21,15 +21,19 @@ import alertWhite from "../images/alertWhite.png";
 import { nftaddress } from "../config";
 import { HStack, IconImg } from "../styles/Stacks";
 import { CaptionRegular } from "../styles/TextStyles";
+import useWindowSize from "../styles/useWindowSize";
+import { sizeWidth } from "@mui/system";
+import MenuContext from "../context/menuContext";
 
 const NFTApp = () => {
-  
   const history = useHistory();
   const [wallet, setWallet] = useState({});
   const [theme, setTheme] = useState("light");
   const [isModalAds, setIsModalAds] = useState(false);
   const [randomNumber, setRandomNumber] = useState(0);
   const [isDevMode] = useState(false);
+  const size = useWindowSize();
+  const [showMenu, setShowMenu] = useState(false);
 
   const themeToggler = () => {
     theme === "light" ? setTheme("dark") : setTheme("light");
@@ -44,73 +48,91 @@ const NFTApp = () => {
   }, []);
 
   return (
-    <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
-      <>
-        <GlobalStyles />
-        <HomeStack>
-          {isModalAds ? (
-            <ModalAds
-              imageAd={randomNumber === 0 ? starwarsYoda : starwarsVader}
-              onClickCancel={() => setIsModalAds(!isModalAds)}
-              onClick={() => {
-                randomNumber === 0
-                  ? history.push(`/nft/${nftaddress}/1793`)
-                  : history.push(`/nft/${nftaddress}/1792`);
-              }}
-            ></ModalAds>
-          ) : null}
-          {isDevMode ? (
-            <DevMode>
-              <HStack padding="15px 21px" spacing="9px">
-                <IconImg url={alertWhite} width="21px" height="21px"></IconImg>
-                <CaptionRegular textcolor="white">
-                  <b>
-                    This Developer Page is for feature testing purposes. All
-                    transactions
-                  </b>
-                  &nbsp; made on the developer page
-                  <b> are executed on the main network, please be careful.</b>
-                </CaptionRegular>
-              </HStack>
-            </DevMode>
-          ) : null}
-          <TopBar
-            onWalletChange={handleWallet}
-            devMode={isDevMode}
-            themeToggler={themeToggler}
-          ></TopBar>
-          <ScrollView>
-            <Switch>
-              <Route exact path="/" component={Home}></Route>
-              <Route exact path="/discover" component={Discover}></Route>
-              <Route
-                exact
-                path="/UserProfile/:urlAddress"
-                component={MyNFT}
-              ></Route>
-              <Route
-                exact
-                path="/CreateNFT"
-                render={() => <CreateNft wallet={wallet} />}
-              ></Route>
-              <Route
-                exact
-                path="/collection/:collectionName"
-                component={Collection}
-              ></Route>
-              <Route
-                exact
-                path="/nft/:nftaddress/:id"
-                render={() => <NFTPage wallet={wallet} />}
-              ></Route>
-              <Route exact path="/HowToStart" component={HowToStart}></Route>
-              <Route path="**" component={Home}></Route>
-            </Switch>
-            <Footer></Footer>
-          </ScrollView>
-        </HomeStack>
-      </>
-    </ThemeProvider>
+    <MenuContext.Provider value={[showMenu, setShowMenu]}>
+      <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
+        <>
+          <GlobalStyles />
+          <HomeStack>
+            {isModalAds ? (
+              <ModalAds
+                imageAd={randomNumber === 0 ? starwarsYoda : starwarsVader}
+                onClickCancel={() => setIsModalAds(!isModalAds)}
+                onClick={() => {
+                  randomNumber === 0
+                    ? history.push(`/nft/${nftaddress}/1793`)
+                    : history.push(`/nft/${nftaddress}/1792`);
+                }}
+              ></ModalAds>
+            ) : null}
+            {isDevMode ? (
+              <DevMode>
+                <HStack padding="15px 21px" spacing="9px">
+                  <IconImg
+                    url={alertWhite}
+                    width="21px"
+                    height="21px"
+                  ></IconImg>
+                  <CaptionRegular textcolor="white">
+                    <b>
+                      This Developer Page is for feature testing purposes. All
+                      transactions
+                    </b>
+                    &nbsp; made on the developer page
+                    <b> are executed on the main network, please be careful.</b>
+                  </CaptionRegular>
+                </HStack>
+              </DevMode>
+            ) : null}
+            {/* {size.width <  ? } */}
+            <TopBar
+              // isMobile={size.width < 768 ? true : false}
+              // device={size.width > 768 ? "tablet" : "phone"}
+              device={
+                size.width > 768
+                  ? "computer"
+                  : size.width > 425
+                  ? "phone"
+                  : "phone"
+              }
+              onWalletChange={handleWallet}
+              devMode={isDevMode}
+              themeToggler={themeToggler}
+            ></TopBar>
+            {console.log(size.width)}
+
+            <ScrollView>
+              <Switch>
+                <Route exact path="/" component={Home}></Route>
+                <Route exact path="/discover" component={Discover}></Route>
+                <Route
+                  exact
+                  path="/UserProfile/:urlAddress"
+                  component={MyNFT}
+                ></Route>
+                <Route
+                  exact
+                  path="/CreateNFT"
+                  render={() => <CreateNft wallet={wallet} />}
+                ></Route>
+                <Route
+                  exact
+                  path="/collection/:collectionName"
+                  component={Collection}
+                ></Route>
+                <Route
+                  exact
+                  path="/nft/:nftaddress/:id"
+                  render={() => <NFTPage wallet={wallet} />}
+                ></Route>
+                <Route exact path="/HowToStart" component={HowToStart}></Route>
+                <Route path="**" component={Home}></Route>
+              </Switch>
+              <Footer></Footer>
+            </ScrollView>
+          </HomeStack>
+        </>
+      </ThemeProvider>
+    </MenuContext.Provider>
   );
 };
 

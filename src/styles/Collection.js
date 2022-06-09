@@ -90,7 +90,7 @@ function Collection(props) {
           <ZItem>
             <IconImg
               url={collectionImage}
-              width="326px"
+              width="310px"
               height="100%"
               border="15px"
               backsize="cover"
@@ -144,10 +144,13 @@ function Collection(props) {
                     <CaptionBold textcolor={appStyle.colors.white}>
                       CREATOR
                     </CaptionBold>
-                    <CaptionBoldShort cursor={"pointer"} textcolor={appStyle.colors.white}>
-                      {truncateAddress(isXdc(creatorName)
-                        ? fromXdc(creatorName)
-                        : creatorName)}
+                    <CaptionBoldShort
+                      cursor={"pointer"}
+                      textcolor={appStyle.colors.white}
+                    >
+                      {truncateAddress(
+                        isXdc(creatorName) ? fromXdc(creatorName) : creatorName
+                      )}
                     </CaptionBoldShort>
                     <TitleBold21
                       overflow={"hidden"}

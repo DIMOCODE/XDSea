@@ -1,10 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import Xdc3 from "xdc3";
-import {
-  nftaddress,
-  nftmarketlayeraddress,
-} from "../../config";
+import { nftaddress, nftmarketlayeraddress } from "../../config";
 import { DEFAULT_PROVIDER } from "../../constant";
 import NFT from "../../abis/NFT.json";
 import { AnimatePresence } from "framer-motion/dist/framer-motion";
@@ -43,6 +40,7 @@ import { appStyle } from "../../styles/AppStyles";
 import { BubbleCopied } from "../../styles/BubbleCopied";
 import ReactPlayer from "react-player";
 import InfiniteScroll from "react-infinite-scroll-component";
+import menuContext from "../../context/menuContext";
 
 const MyNFT = (props) => {
   const { urlAddress } = useParams();
@@ -77,7 +75,7 @@ const MyNFT = (props) => {
     );
 
     var filteredCollections = uniqueCollections.filter((element) => {
-        return !deletedCollections.includes(element);
+      return !deletedCollections.includes(element);
     });
 
     const collectionGroups = [];
@@ -108,9 +106,9 @@ const MyNFT = (props) => {
         nfts: collectionNFTsList,
         logo: collectionNFTsList[0].logo,
         items:
-            filteredCollections[i] === "The Lucid Women" ||
-            filteredCollections[i] === "NFTHC" ||
-            filteredCollections[i] === "DØP3 Punks "
+          filteredCollections[i] === "The Lucid Women" ||
+          filteredCollections[i] === "NFTHC" ||
+          filteredCollections[i] === "DØP3 Punks "
             ? collectionNFTs.length - 1
             : collectionNFTs.length,
       };
@@ -132,12 +130,12 @@ const MyNFT = (props) => {
     const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
     const data = await marketContract.methods.fetchMyNFTs(urlAddress).call();
     const reversedData = [...data].sort((nft1, nft2) => {
-        if(parseInt(nft1.tokenId) > parseInt(nft2.tokenId))
-          return -1
-        else return 1
-      });
-    
-    const nfts = await Promise.all(reversedData.slice(0, 20).map(async i => {
+      if (parseInt(nft1.tokenId) > parseInt(nft2.tokenId)) return -1;
+      else return 1;
+    });
+
+    const nfts = await Promise.all(
+      reversedData.slice(0, 20).map(async (i) => {
         var uri = await nftContract.methods.tokenURI(i.tokenId).call();
         var metadata = await axios.get(uri);
         let nft = {
@@ -153,11 +151,11 @@ const MyNFT = (props) => {
     );
 
     var filteredNFTs = nfts.filter((element) => {
-        return !burnedNFTs.includes(element.tokenId);
+      return !burnedNFTs.includes(element.tokenId);
     });
 
     var filteredPage = reversedData.filter((element) => {
-        return !burnedNFTs.includes(element.tokenId);
+      return !burnedNFTs.includes(element.tokenId);
     });
 
     setInitialGroup(filteredNFTs);
@@ -248,9 +246,9 @@ const MyNFT = (props) => {
     );
     console.log(nfts);
     var filteredNFTs = nfts.filter((element) => {
-        return !burnedNFTs.includes(element.tokenId);
+      return !burnedNFTs.includes(element.tokenId);
     });
-    
+
     setInitialGroup((prevState) => [...prevState, ...filteredNFTs]);
     setPageCount(pageCount + 1);
   };
@@ -290,10 +288,29 @@ const MyNFT = (props) => {
     return str?.length > n ? str.substr(0, n - 1) + "..." : str;
   };
 
+  const [showMenu, setShowMenu] = useContext(menuContext);
+  const [scrollTop, setScrollTop] = useState();
+  const [scrolling, setScrolling] = useState();
+
+  useEffect(() => {
+    const onScroll = (e) => {
+      setScrollTop(e.target.documentElement.scrollTop);
+      setScrolling(e.target.documentElement.scrollTop > scrollTop);
+      setShowMenu(false);
+    };
+    window.addEventListener("scroll", onScroll);
+
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [scrollTop]);
+
+  useEffect(() => {
+    console.log(scrolling);
+  }, [scrolling]);
+
   return (
     <UserSection>
       <Content id="scrollableDiv">
-        <VStack padding="30px 30px 300px 30px" spacing="36px">
+        <VStack spacing="36px" width="100%">
           <VStack>
             <VStack direction={size.width < 768 ? "row" : "column"}>
               <VStack>
@@ -301,15 +318,15 @@ const MyNFT = (props) => {
                   <VerifiedIcon>
                     <IconImg
                       url={verified}
-                      width="42px"
-                      height="42px"
+                      width="39px"
+                      height="39px"
                     ></IconImg>
                   </VerifiedIcon>
                 ) : null}
                 <IconImg
                   url={banner1}
-                  width={size.width < 768 ? "60px" : "150px"}
-                  height={size.width < 768 ? "60px" : "150px"}
+                  width={size.width < 768 ? "120px" : "150px"}
+                  height={size.width < 768 ? "120px" : "150px"}
                   border="90px"
                   backsize="cover"
                   bordercolor="white"
@@ -378,6 +395,7 @@ const MyNFT = (props) => {
                 <Spacer></Spacer>
             </HStack> */}
           </VStack>
+
           <VStack
             maxwidth={size.width < 768 ? "100%" : "70%"}
             minwidth={size.width < 768 ? "100%" : "70%"}
@@ -453,6 +471,7 @@ const MyNFT = (props) => {
                 </HStack> */}
             </HStack>
           </VStack>
+
           <AnimatePresence>
             <ZStack>
               {subMenu === 0 && (

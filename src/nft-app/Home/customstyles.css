@@ -1,0 +1,19 @@
+.rec.rec-pagination {
+  padding: 3px;
+}
+
+.rec.rec-dot {
+  padding: 6px;
+
+  background: rgba(0, 0, 0, 0.21);
+  box-shadow: 0 0 1px 3px rgba(255, 255, 255, 0.162);
+}
+
+.rec.rec-dot_active {
+  color: DodgerBlue;
+  padding: 6px;
+  font-family: Arial;
+  text-align: center;
+  background: #044fc5;
+  box-shadow: 0 0 1px 3px rgb(255, 255, 255);
+}

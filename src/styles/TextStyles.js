@@ -58,6 +58,7 @@ export const TitleRegular33 = styled(motion.h1).attrs((props) => ({
 
 export const TitleBold27 = styled(motion.h2).attrs((props) => ({
   textcolor: props.textcolor || props.theme.text,
+  align: props.align || "left",
 }))`
   font-style: normal;
   font-weight: bold;
@@ -65,10 +66,12 @@ export const TitleBold27 = styled(motion.h2).attrs((props) => ({
   letter-spacing: -0.03em;
   line-height: 33px;
   color: ${(props) => props.textcolor};
+  text-align: ${(props) => props.align};
 `;
 
 export const TitleBold21 = styled(motion.h2).attrs((props) => ({
   textcolor: props.textcolor || appStyle.colors.white,
+  align: props.align || "left",
 }))`
   font-style: normal;
   font-weight: bold;
@@ -81,7 +84,7 @@ export const TitleBold21 = styled(motion.h2).attrs((props) => ({
   white-space: ${(props) => props.whiteSpace};
   width: ${(props) => props.width};
   text-overflow: ${(props) => props.textOverflow};
-  text-align: ${(props) => props.textAlign};
+  text-align: ${(props) => props.align};
 `;
 
 export const TitleBold18 = styled(motion.h3).attrs((props) => ({
@@ -136,7 +139,7 @@ export const BodyBold = styled(motion.p).attrs((props) => ({
   textcolor: props.textcolor || props.theme.text,
   align: props.align || "Left",
   marginBottom: props.marginBottom || "0px",
-  cursor: props.cursor || "default"
+  cursor: props.cursor || "default",
 }))`
   font-style: normal;
   font-weight: bold;

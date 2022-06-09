@@ -20,12 +20,24 @@ function Property(props) {
       spacing="6px"
     >
       <RarityIcon>
-        <IconImg url={Rarity <= 5.00 ? gold : Rarity <= 10.00 ? silver : Rarity <= 25.00 ? copper : null} width="18px" height="18px"></IconImg>
+        <IconImg
+          url={
+            Rarity <= 5.0
+              ? gold
+              : Rarity <= 10.0
+              ? silver
+              : Rarity <= 25.0
+              ? copper
+              : null
+          }
+          width="18px"
+          height="18px"
+        ></IconImg>
       </RarityIcon>
-      <CaptionBoldShort textcolor={({ theme }) => theme.blue}>
+      <CaptionBoldShort align="center" textcolor={({ theme }) => theme.blue}>
         {Title || "Title"}
       </CaptionBoldShort>
-      <BodyBold>{Property || "Property"}</BodyBold>
+      <BodyBold align="center">{Property || "Property"}</BodyBold>
       <CaptionRegular>{Rarity || "Rarity"}% have this trait.</CaptionRegular>
     </VStack>
   );
