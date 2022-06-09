@@ -5,6 +5,7 @@ import xdclogo from "../images/miniXdcLogo.png";
 import ButtonApp from "./Buttons";
 import { appStyle } from "./AppStyles";
 import { useHistory } from "react-router-dom";
+import { isXdc, fromXdc } from "../common/common";
 
 function TableOffersNft(props) {
   const {
@@ -93,7 +94,7 @@ function TableOffersNft(props) {
               background={({ theme }) => theme.faded}
               btnStatus={-1}
             ></ButtonApp>
-          ) : wallet?.address !== owner && wallet?.address === offerBy ? (
+          ) : (isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address) !== owner && (isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address) === offerBy ? (
             <ButtonApp
               text="Withdraw Offer"
               height="48px"
@@ -104,7 +105,7 @@ function TableOffersNft(props) {
               func="WithdrawOffer"
               cursor="pointer"
             ></ButtonApp>
-          ) : wallet?.address === owner ? (
+          ) : (isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address) === owner ? (
             <ButtonApp
               text="Accept Offer"
               height="48px"

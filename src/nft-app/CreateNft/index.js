@@ -229,7 +229,20 @@ function CreateNft(props) {
     setRoyalty(0);
     setIsUnlockableContent(false);
     setUnlockableContent("");
-    setCollection("");
+    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
+    const marketContract = new xdc3.eth.Contract(
+      NFTMarketLayer1.abi,
+      nftmarketlayeraddress,
+      xdc3
+    );
+    const tokenCount = await marketContract.methods.tokenCount().call();
+    setCollection(`Untitled Collection ${tokenCount}`);
+    document
+      .getElementsByClassName("collection-url")[0]
+      .setAttribute(
+        "placeholder",
+        `Untitled Collection ${tokenCount}`.replace(/\s+/g, "%20")
+      );
     setCollectionBanner({ preview: "", raw: "", fileType: "" });
     setCollectionLogo({ preview: "", raw: "", fileType: "" });
     setCollectionDescription("");

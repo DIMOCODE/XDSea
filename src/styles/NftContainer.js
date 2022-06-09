@@ -8,10 +8,7 @@ import relist from "../images/relist.png";
 import sold from "../images/sold.png";
 import {
   CaptionBoldShort,
-  BodyBold,
-  BodyRegular,
   TitleBold18,
-  CaptionBold,
 } from "./TextStyles";
 import ReactPlayer from "react-player";
 import { appStyle } from "./AppStyles";
@@ -50,17 +47,17 @@ function NftContainer(props) {
       opacity: 1,
     },
   };
-  const moveContainer = {
-    initial: {
-      y: 69,
-    },
-    hover: {
-      y: 69,
-    },
-  };
+  // const moveContainer = {
+  //   initial: {
+  //     y: 69,
+  //   },
+  //   hover: {
+  //     y: 69,
+  //   },
+  // };
   const [isVisible, setIsVisible] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [nftStatus, setNftStatus] = useState(iconStatus);
+  const [nftStatus] = useState(iconStatus);
 
   return (
     <VStack
@@ -122,7 +119,7 @@ function NftContainer(props) {
             onClick={onClick}
             height="100%"
           >
-            <HStack padding="15px">
+            <HStack padding="15px" cursor={"pointer"}>
               <IconImg
                 url={creatorImage}
                 width="48px"
@@ -208,10 +205,11 @@ function NftContainer(props) {
                 variants={fadeText}
                 animate={isVisible ? "hover" : "initial"}
                 textcolor={appStyle.colors.white}
+                cursor={"pointer"}
               >
                 {collectionName}
               </CaptionBoldShort>
-              <HStack padding="6px 0" height="auto" justify="flex-start">
+              <HStack padding="6px 0" height="auto" justify="flex-start" cursor={"pointer"}>
                 <TitleBold18
                   display={"-webkit-box"}
                   overflow={"hidden"}
@@ -222,11 +220,11 @@ function NftContainer(props) {
                   {itemNumber}
                 </TitleBold18>
               </HStack>
-              <HStack spacing="3px" alignment="center">
+              <HStack spacing="3px" alignment="center" cursor={"pointer"}>
                 <IconImg url={miniXdcLogo} width="18px" height="18px"></IconImg>
                 <TitleBold18
-                  variants={fadeText}
-                  animate={isVisible ? "hover" : "initial"}
+                  // variants={fadeText}
+                  // animate={isVisible ? "hover" : "initial"}
                   textcolor={appStyle.colors.white}
                 >
                   {Number(price).toLocaleString(undefined, {
@@ -241,7 +239,7 @@ function NftContainer(props) {
                     padding="3px 6px"
                   >
                     <CaptionBoldShort textcolor="white">
-                      NEW OFFERS
+                      HAS OFFERS
                     </CaptionBoldShort>
                   </HStack>
                 )}

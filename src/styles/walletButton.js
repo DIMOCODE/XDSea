@@ -11,6 +11,7 @@ import { motion } from "framer-motion/dist/framer-motion";
 import { AnimatePresence } from "framer-motion/dist/framer-motion";
 import ButtonApp from "./Buttons";
 import { LayoutGroup } from "framer-motion/dist/framer-motion";
+import { fromXdc, isXdc } from "../common/common";
 
 function WalletButton(props) {
   const { status, wallet, logout } = props;
@@ -131,7 +132,7 @@ function WalletButton(props) {
                               <BodyRegular
                                 textcolor={({ theme }) => theme.walletText}
                               >
-                                {showAlert ? "Address Copied" : wallet?.address}
+                                {showAlert ? "Address Copied" : (isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address)}
                               </BodyRegular>
                               <IconImg
                                 url={showAlert ? checkIcon : copyIcon}
@@ -140,7 +141,7 @@ function WalletButton(props) {
                                 cursor={"pointer"}
                                 onClick={() => {
                                   navigator.clipboard.writeText(
-                                    wallet?.address
+                                    isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address
                                   );
                                 }}
                               ></IconImg>
@@ -170,7 +171,7 @@ function WalletButton(props) {
                       cursor={"pointer"}
                     >
                       <BodyRegular textcolor={({ theme }) => theme.walletText}>
-                        {truncateAddress(wallet?.address)}
+                        {truncateAddress(isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address)}
                       </BodyRegular>
                     </ZItem>
                   </ZStack>

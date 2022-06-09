@@ -93,6 +93,8 @@ const CollectionDetails = (props) => {
             price: price,
             tokenId: i.tokenId,
             owner: i.owner,
+            isListed: i.isListed,
+            offerCount: i.offerCount,
             collectionName: metadata?.data?.collection?.name,
             collectionBanner: untitledCollections.includes(collectionName)
               ? banner1
@@ -164,6 +166,7 @@ const CollectionDetails = (props) => {
   };
 
   const fetchMoreNFTs = async () => {
+    await new Promise(r => setTimeout(r, 3000));
     setPageCount(pageCount + 1);
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
     const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
@@ -196,9 +199,17 @@ const CollectionDetails = (props) => {
     history.push(`/${route}`);
   }
 
+  function validateAddress(address) {
+    var url = address;
+    if(url.indexOf("http://") === 0 || url.indexOf("https://") === 0) {
+      return url;
+    }
+    else return "https://" + address;;
+  }
+
   useEffect(() => {
     getData();
-  });
+  }, []);
 
   React.useEffect(() => {
     window.scrollTo(0, 0);
@@ -509,7 +520,7 @@ const CollectionDetails = (props) => {
               {nfts[0]?.collectionWebsite !== undefined &&
               nfts[0]?.collectionWebsite !== "" ? (
                 <a
-                  href={nfts[0].collectionWebsite}
+                  href={validateAddress(nfts[0].collectionWebsite)}
                   style={{
                     boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
                     borderRadius: 9,
@@ -577,9 +588,9 @@ const CollectionDetails = (props) => {
                       >
                         <NftContainer
                           key={i}
-                          iconStatus={"notforsale"}
+                          iconStatus={item.isListed ? "sale" : "notforsale"}
                           // iconStatus are : notforsale, relist, sale, sold, empty returns null
-                          hasOffers={true}
+                          hasOffers={item.offerCount > 0 ? true : false}
                           creatorImage={banner1}
                           itemImage={item.image}
                           price={item.price}

@@ -7,6 +7,7 @@ import {
   LayoutGroup,
   motion,
 } from "framer-motion/dist/framer-motion";
+import { isXdc, fromXdc } from "../../common/common";
 
 function UserMenuButton(props) {
   const { 
@@ -41,7 +42,7 @@ function UserMenuButton(props) {
           bordercolor="#99A2AF"
           bordersize="3px"
           whileTap={{ scale: 0.9 }}
-          onClick={() => NavigateTo(`UserProfile/${wallet?.address}`)}
+          onClick={() => NavigateTo(`UserProfile/${isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address}`)}
           cursor={"pointer"}
           // onClick={() => setShowMenu((showMenu) => !showMenu)}
 
