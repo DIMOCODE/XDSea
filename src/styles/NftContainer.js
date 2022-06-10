@@ -3,13 +3,13 @@ import { useState } from "react";
 import { HStack, IconImg, VStack, Spacer, ZStack, ZItem } from "./Stacks";
 import miniXdcLogo from "../images/miniXdcLogo.png";
 import notforsale from "../images/notforsale.png";
+import verifiedShape from "../images/verifiedShape.png";
+import verifiedBlue from "../images/verifiedBlue.png";
+import verifiedMask from "../images/verifiedMask.png";
 import sale from "../images/sale.png";
 import relist from "../images/relist.png";
 import sold from "../images/sold.png";
-import {
-  CaptionBoldShort,
-  TitleBold18,
-} from "./TextStyles";
+import { CaptionBoldShort, TitleBold18 } from "./TextStyles";
 import ReactPlayer from "react-player";
 import { appStyle } from "./AppStyles";
 import styled from "styled-components";
@@ -28,6 +28,7 @@ function NftContainer(props) {
     owner,
     iconStatus,
     hasOffers,
+    isVerified,
   } = props;
 
   const scaleImage = {
@@ -120,22 +121,68 @@ function NftContainer(props) {
             height="100%"
           >
             <HStack padding="15px" cursor={"pointer"}>
-              <IconImg
-                url={creatorImage}
-                width="48px"
-                height="48px"
-                border="120px"
-                bordersize="3px"
-                bordercolor="white"
-                whileTap={onClickCreator}
-                backsize="cover"
-                cursor={"pointer"}
-              ></IconImg>
-              <Spacer></Spacer>
-              {owner ? (
-                <OwnerTag>OWNER</OwnerTag>
+              {isVerified ? (
+                <>
+                  <ZStack>
+                    <ZItem>
+                      <Mask img={verifiedMask}>
+                        <IconImg
+                          url={creatorImage}
+                          width="48px"
+                          height="48px"
+                          border="120px"
+                          backsize="cover"
+                        ></IconImg>
+                      </Mask>
+                    </ZItem>
+
+                    <ZItem>
+                      <AbsoluteVerified>
+                        <IconImg
+                          url={verifiedBlue}
+                          width="21px"
+                          height="21px"
+                          border="120px"
+                        ></IconImg>
+                      </AbsoluteVerified>
+
+                      <IconImg
+                        url={verifiedShape}
+                        width="48px"
+                        height="48px"
+                        border="120px"
+                        whileTap={onClickCreator}
+                        backsize="cover"
+                        cursor={"pointer"}
+                        style={{
+                          boxShadow: "0px 4px 2px rgba(0, 0, 0, 0.15)",
+                        }}
+                      ></IconImg>
+                    </ZItem>
+                  </ZStack>
+
+                  <Spacer></Spacer>
+                </>
               ) : (
-                <CreatorTag>CREATOR</CreatorTag>
+                <>
+                  <IconImg
+                    url={creatorImage}
+                    width="48px"
+                    height="48px"
+                    border="120px"
+                    bordersize="3px"
+                    bordercolor="white"
+                    whileTap={onClickCreator}
+                    backsize="cover"
+                    cursor={"pointer"}
+                  ></IconImg>
+                  <Spacer></Spacer>
+                  {owner ? (
+                    <OwnerTag>OWNER</OwnerTag>
+                  ) : (
+                    <CreatorTag>CREATOR</CreatorTag>
+                  )}
+                </>
               )}
 
               {(() => {
@@ -209,7 +256,12 @@ function NftContainer(props) {
               >
                 {collectionName}
               </CaptionBoldShort>
-              <HStack padding="6px 0" height="auto" justify="flex-start" cursor={"pointer"}>
+              <HStack
+                padding="6px 0"
+                height="auto"
+                justify="flex-start"
+                cursor={"pointer"}
+              >
                 <TitleBold18
                   display={"-webkit-box"}
                   overflow={"hidden"}
@@ -276,4 +328,22 @@ const CreatorTag = styled(motion.div)`
   font-size: 10px;
   font-weight: bold;
   z-index: 1;
+`;
+
+const AbsoluteVerified = styled(motion.div)`
+  position: absolute;
+  bottom: -3px;
+  left: 30px;
+`;
+
+const Mask = styled(motion.div)`
+  -webkit-mask-image: url(${(props) => props.img});
+  mask-image: url(${(props) => props.img});
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+
+  mask-position: 0% 0%;
+  mask-size: 48px;
+  height: 48px;
+  width: 48px;
 `;

@@ -1,7 +1,10 @@
 import React from "react";
 import { useState } from "react";
-import { IconImg, VStack, Spacer, ZStack, ZItem } from "./Stacks";
+import { IconImg, VStack, Spacer, ZStack, ZItem, HStack } from "./Stacks";
 import { appStyle } from "./AppStyles";
+import verifiedMask from "../images/verifiedMask.png";
+import verifiedShape from "../images/verifiedShape.png";
+import verifiedBlue from "../images/verifiedBlue.png";
 import {
   BodyRegular,
   CaptionBold,
@@ -10,6 +13,7 @@ import {
 } from "./TextStyles";
 import { motion, AnimatePresence } from "framer-motion/dist/framer-motion";
 import { fromXdc, isXdc } from "../common/common";
+import styled from "styled-components";
 
 function Collection(props) {
   const {
@@ -26,6 +30,7 @@ function Collection(props) {
     creatorName,
     keyContent,
     keyID,
+    isVerified,
   } = props;
 
   const scaleImage = {
@@ -130,17 +135,64 @@ function Collection(props) {
                 <Spacer></Spacer>
                 <motion.div layout="position" cursor={"pointer"}>
                   <VStack spacing="6px" cursor={"pointer"}>
-                    <IconImg
-                      url={creatorLogo}
-                      width="60px"
-                      height="60px"
-                      border="60px"
-                      bordercolor="white"
-                      bordersize="3px"
-                      backsize="cover"
-                      onClick={onClickCreator}
-                      cursor={"pointer"}
-                    ></IconImg>
+                    {isVerified ? (
+                      <>
+                        <ZStack height="60px">
+                          <ZItem>
+                            <HStack>
+                              <Mask img={verifiedMask}>
+                                <IconImg
+                                  url={creatorLogo}
+                                  width="60px"
+                                  height="60px"
+                                  border="120px"
+                                  backsize="cover"
+                                ></IconImg>
+                              </Mask>
+                            </HStack>
+                          </ZItem>
+
+                          <ZItem>
+                            <HStack>
+                              <AbsoluteVerified>
+                                <IconImg
+                                  url={verifiedBlue}
+                                  width="21px"
+                                  height="21px"
+                                  border="120px"
+                                ></IconImg>
+                              </AbsoluteVerified>
+
+                              <IconImg
+                                url={verifiedShape}
+                                width="60px"
+                                height="60px"
+                                border="120px"
+                                whileTap={onClickCreator}
+                                backsize="cover"
+                                cursor={"pointer"}
+                                style={{
+                                  boxShadow: "0px 4px 2px rgba(0, 0, 0, 0.15)",
+                                }}
+                              ></IconImg>
+                            </HStack>
+                          </ZItem>
+                        </ZStack>
+                      </>
+                    ) : (
+                      <IconImg
+                        url={creatorLogo}
+                        width="60px"
+                        height="60px"
+                        border="60px"
+                        bordercolor="white"
+                        bordersize="3px"
+                        backsize="cover"
+                        onClick={onClickCreator}
+                        cursor={"pointer"}
+                      ></IconImg>
+                    )}
+
                     <CaptionBold textcolor={appStyle.colors.white}>
                       CREATOR
                     </CaptionBold>
@@ -157,7 +209,7 @@ function Collection(props) {
                       whiteSpace={"nowrap"}
                       width={"250px"}
                       textOverflow={"ellipsis"}
-                      textAlign={"center"}
+                      align={"center"}
                     >
                       {collectionName || "Collection Name"}
                     </TitleBold21>
@@ -290,3 +342,21 @@ function Collection(props) {
 }
 
 export { Collection };
+
+const AbsoluteVerified = styled(motion.div)`
+  position: absolute;
+  bottom: 0px;
+  left: 136px;
+`;
+
+const Mask = styled(motion.div)`
+  -webkit-mask-image: url(${(props) => props.img});
+  mask-image: url(${(props) => props.img});
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+
+  mask-position: 0% 0%;
+  mask-size: 60px;
+  height: 60px;
+  width: 60px;
+`;

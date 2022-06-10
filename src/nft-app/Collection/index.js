@@ -166,7 +166,7 @@ const CollectionDetails = (props) => {
   };
 
   const fetchMoreNFTs = async () => {
-    await new Promise(r => setTimeout(r, 3000));
+    await new Promise((r) => setTimeout(r, 3000));
     setPageCount(pageCount + 1);
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
     const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
@@ -203,10 +203,9 @@ const CollectionDetails = (props) => {
 
   function validateAddress(address) {
     var url = address;
-    if(url.indexOf("http://") === 0 || url.indexOf("https://") === 0) {
+    if (url.indexOf("http://") === 0 || url.indexOf("https://") === 0) {
       return url;
-    }
-    else return "https://" + address;;
+    } else return "https://" + address;
   }
 
   useEffect(() => {
@@ -590,6 +589,7 @@ const CollectionDetails = (props) => {
                       >
                         <NftContainer
                           key={i}
+                          isVerified={true}
                           iconStatus={item.isListed ? "sale" : "notforsale"}
                           // iconStatus are : notforsale, relist, sale, sold, empty returns null
                           hasOffers={item.offerCount > 0 ? true : false}
