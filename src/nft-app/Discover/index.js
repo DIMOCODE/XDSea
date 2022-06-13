@@ -1,9 +1,10 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import Xdc3 from "xdc3";
-import { nftaddress, nftmarketlayeraddress } from "../../config";
+import { nftaddress, nftmarketlayeraddress, nftmarketaddress } from "../../config";
 import { DEFAULT_PROVIDER } from "../../constant";
 import NFT from "../../abis/NFT.json";
+import NFTMarket from "../../abis/NFTMarket.json";
 import NFTMarketLayer1 from "../../abis/NFTMarketLayer1.json";
 import axios from "axios";
 import styled from "styled-components";
@@ -17,6 +18,7 @@ import useWindowSize from "../../styles/useWindowSize";
 import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LoopLogo } from "../../styles/LoopLogo";
+import { GetWallet, SendTransaction } from "xdc-connect";
 import {
   deletedCollections,
   spotlightCollectionList,
@@ -63,60 +65,57 @@ const Discover = () => {
       //   nftmarketaddress,
       //   xdc3
       // );
-      // const data2 = await oldMarketContract.methods.fetchMarketItems().call()
-      // console.log(data2.length);
-      // const allEvents = await Promise.all(data2.map(async item => {
-      //     // console.log(item.tokenId)
-      //     var eventCount = item.eventCount
-      //     var events = []
-      //     for(var i = 1; i <= eventCount; i++) {
-      //         var event = await oldMarketContract.methods.getEventHistory(item.itemId, i).call()
-      //         if(event.timestamp >= 1650376040) {
-      //             const uri = await nftContract.methods.tokenURI(item.tokenId).call()
-      //             var metadata = await axios.get(uri)
-      //             console.log(item, event, metadata?.data?.collection?.nft?.name, metadata?.data?.collection?.name)
-      // let data = marketContract.methods.editMarketItem(
-      //     item.tokenId,
-      //     item.itemId,
-      //     item.owner,
-      //     item.creator,
-      //     item.price,
-      //     item.isListed,
-      //     item.royalty,
-      //     item.eventCount,
-      //     0,
-      //     metadata?.data?.collection?.nft?.name,
-      //     metadata?.data?.collection?.name,
-      // ).encodeABI()
-      // const tx = {
-      //     from: wallet.wallet.address,
-      //     to: nftmarketlayeraddress,
-      //     data
+      // const data2 = await oldMarketContract.methods.idToMarketItem(1074).call()
+      // // console.log(data2)
+      // var eventCount = data2.eventCount
+      // var events = []
+      // for(var i = 1; i <= eventCount; i++) {
+      //   var event = await oldMarketContract.methods.getEventHistory(data2.itemId, i).call()
+      //   if(event.timestamp >= 1648900000) {
+      //       const uri = await nftContract.methods.tokenURI(data2.tokenId).call()
+      //       var metadata = await axios.get(uri)
+      //       console.log(data2, event, metadata?.data?.collection?.nft?.name, metadata?.data?.collection?.name)
+            // let data = marketContract.methods.addEventsToItem(
+            //     data2.tokenId,
+            //     i,
+            //     event.eventType,
+            //     event.from,
+            //     event.to,
+            //     event.price,
+            //     event.timestamp
+            // ).encodeABI()
+            // const wallet = await GetWallet();
+            // const tx = {
+            //     from: wallet.wallet.address,
+            //     to: nftmarketlayeraddress,
+            //     data
+            // }
+            // var gasLimit = await xdc3.eth.estimateGas(tx)
+            // tx["gas"] = gasLimit
+            // let transaction = SendTransaction(tx)
+            // let data = marketContract.methods.editMarketItem(
+            //     data2.tokenId,
+            //     data2.itemId,
+            //     data2.owner,
+            //     data2.creator,
+            //     data2.price,
+            //     data2.isListed,
+            //     data2.royalty,
+            //     data2.eventCount,
+            //     0,
+            //     metadata?.data?.collection?.nft?.name,
+            //     metadata?.data?.collection?.name,
+            // ).encodeABI()
+            // const tx = {
+            //     from: wallet.wallet.address,
+            //     to: nftmarketlayeraddress,
+            //     data
+            // }
+            // var gasLimit = await xdc3.eth.estimateGas(tx)
+            // tx["gas"] = gasLimit
+            // let transaction = await SendTransaction(tx);
+      //   }
       // }
-      // var gasLimit = await xdc3.eth.estimateGas(tx)
-      // tx["gas"] = gasLimit
-      // let transaction = await SendTransaction(tx);
-      // let data = marketContract.methods.addEventsToItem(
-      //     item.tokenId,
-      //     i,
-      //     event.eventType,
-      //     event.from,
-      //     event.to,
-      //     event.price,
-      //     event.timestamp
-      // ).encodeABI()
-      //     const tx = {
-      //         from: wallet.wallet.address,
-      //         to: nftmarketlayeraddress,
-      //         data
-      //     }
-      //     var gasLimit = await xdc3.eth.estimateGas(tx)
-      //     tx["gas"] = gasLimit
-      //     let transaction = SendTransaction(tx)
-      //     }
-      // }
-      // return events
-      // }))
 
       // for(var i = 2000; i < 3200; i++) {
       // const nftData = await marketContract.methods.idToMarketItem(i).call();
@@ -323,7 +322,7 @@ const Discover = () => {
   }, [scrollTop]);
 
   useEffect(() => {
-    console.log(scrolling);
+    // console.log(scrolling);
   }, [scrolling]);
 
   return (

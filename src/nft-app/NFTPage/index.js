@@ -249,7 +249,7 @@ const NFTDetails = (props) => {
     setListingNFT(false);
     var success = false;
     if (!blacklist.includes(nft.tokenId)) {
-      console.log(approved);
+      // console.log(approved);
       success = await SellNFT(approved, nft, listPrice);
     }
     if (success) {
@@ -271,11 +271,6 @@ const NFTDetails = (props) => {
 
   const transferNFT = async () => {
     setIsProcessingTransferring(true);
-    if (!/0x[a-zA-Z0-9]{40}/.test(transferAddress)) {
-      setIsProcessingTransferring(false);
-      setAddressIsInvalid(true);
-      return;
-    }
     setTransferring(false);
     var success = false;
     if (!blacklist.includes(nft.tokenId)) {
@@ -401,6 +396,7 @@ const NFTDetails = (props) => {
         royalty: metadata?.data?.collection?.nft?.royalty,
         unlockableContent: metadata?.data?.collection?.nft?.unlockableContent,
       };
+      console.log(item, currentItem)
       const data = await marketContract.methods
         .getCollectionNFTs(metadata?.data?.collection?.name)
         .call();
@@ -629,10 +625,10 @@ const NFTDetails = (props) => {
   const getApproval = async () => {
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
     const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
-    if (wallet?.address !== "" && wallet?.address !== undefined)
+    if (props?.wallet?.address !== "" && props?.wallet?.address !== undefined)
       var getVal = await nftContract.methods
         .isApprovedForAll(
-          isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address,
+          isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address,
           nftmarketlayeraddress
         )
         .call();
@@ -1334,7 +1330,7 @@ const NFTDetails = (props) => {
                         border="30px"
                         cursor={"pointer"}
                       ></IconImg>
-                      {console.log(nft)}
+                      {/* {console.log(nft)} */}
                       <Tooltip title={nft?.creator ? nft.creator : "-"}>
                         <BodyBold>{truncateAddress(nft?.creator)}</BodyBold>
                       </Tooltip>

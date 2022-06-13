@@ -444,7 +444,7 @@ function CreateNft(props) {
                       },
                     },
                   });
-                  console.log(uploadData);
+                  // console.log(uploadData);
                   const added = await client.add(uploadData);
                   const url = `https://ipfs.infura.io/ipfs/${added.path}`;
                   updateMarketplace(url);
@@ -484,7 +484,7 @@ function CreateNft(props) {
                     },
                   },
                 });
-                console.log(uploadData);
+                // console.log(uploadData);
                 const added = await client.add(uploadData);
                 const url = `https://ipfs.infura.io/ipfs/${added.path}`;
                 updateMarketplace(url);
@@ -610,7 +610,7 @@ function CreateNft(props) {
   }, [scrollTop]);
 
   useEffect(() => {
-    console.log(scrolling);
+    // console.log(scrolling);
   }, [scrolling]);
 
   return (

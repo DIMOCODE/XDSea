@@ -241,7 +241,7 @@ const Home = () => {
   }, [scrollTop]);
 
   useEffect(() => {
-    console.log(scrolling);
+    // console.log(scrolling);
   }, [scrolling]);
 
   return (

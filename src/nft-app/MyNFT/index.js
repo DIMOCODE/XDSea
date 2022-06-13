@@ -244,7 +244,7 @@ const MyNFT = (props) => {
         return nft;
       })
     );
-    console.log(nfts);
+    // console.log(nfts);
     var filteredNFTs = nfts.filter((element) => {
       return !burnedNFTs.includes(element.tokenId);
     });
@@ -304,7 +304,7 @@ const MyNFT = (props) => {
   }, [scrollTop]);
 
   useEffect(() => {
-    console.log(scrolling);
+    // console.log(scrolling);
   }, [scrolling]);
 
   return (
