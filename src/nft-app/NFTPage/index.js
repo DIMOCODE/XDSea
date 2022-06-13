@@ -95,7 +95,9 @@ const NFTDetails = (props) => {
   const [isActive, setIsActive] = useState(2);
   const [highestOffer, setHighestOffer] = useState(0);
   const [addressIsInvalid, setAddressIsInvalid] = useState(false);
-  const [withdrawOfferButtonStatus, setWithdrawOfferButtonStatus] = useState([]);
+  const [withdrawOfferButtonStatus, setWithdrawOfferButtonStatus] = useState(
+    []
+  );
   const [acceptOfferButtonStatus, setAcceptOfferButtonStatus] = useState([]);
   const [processingOffer, setIsProcessingOffer] = useState(false);
   const [processingBuying, setIsProcessingBuying] = useState(false);
@@ -103,7 +105,8 @@ const NFTDetails = (props) => {
   const [processingEditing, setIsProcessingEditing] = useState(false);
   const [processingListing, setIsProcessingListing] = useState(false);
   const [processingTransferring, setIsProcessingTransferring] = useState(false);
-  const [processingWithdrawingOffer, setIsProcessingWithdrawingOffer] = useState(false);
+  const [processingWithdrawingOffer, setIsProcessingWithdrawingOffer] =
+    useState(false);
   const [processingAccepting, setIsProcessingAccepting] = useState(false);
   const [actions, setActions] = useState(0);
   const size = useWindowSize();
@@ -396,7 +399,7 @@ const NFTDetails = (props) => {
         royalty: metadata?.data?.collection?.nft?.royalty,
         unlockableContent: metadata?.data?.collection?.nft?.unlockableContent,
       };
-      console.log(item, currentItem)
+      console.log(item, currentItem);
       const data = await marketContract.methods
         .getCollectionNFTs(metadata?.data?.collection?.name)
         .call();
@@ -628,7 +631,9 @@ const NFTDetails = (props) => {
     if (props?.wallet?.address !== "" && props?.wallet?.address !== undefined)
       var getVal = await nftContract.methods
         .isApprovedForAll(
-          isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address,
+          isXdc(props?.wallet?.address)
+            ? fromXdc(props?.wallet?.address)
+            : props?.wallet?.address,
           nftmarketlayeraddress
         )
         .call();
@@ -1668,8 +1673,9 @@ const Lock = styled(motion.div)`
 
 const LockedContent = styled(motion.div)`
   position: absolute;
+  top: 86px;
   width: 100%;
-  height: 100%;
+  height: 80%;
 `;
 
 const NFTPage = styled(motion.div)`
