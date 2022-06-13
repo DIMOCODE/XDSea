@@ -724,6 +724,7 @@ const Home = () => {
                   key={i}
                 >
                   <NftContainer
+                    isVerified={true}
                     iconStatus={item.isListed ? "sale" : "notforsale"}
                     // iconStatus are : notforsale, relist, sale, sold, empty returns null
                     hasOffers={item.offerCount > 0 ? true : false}

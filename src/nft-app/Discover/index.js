@@ -394,6 +394,7 @@ const Discover = () => {
                         >
                           <Collection
                             key={item.name}
+                            isVerified={true}
                             keyContent={item.name}
                             keyID={item.creator}
                             collectionImage={item.banner}

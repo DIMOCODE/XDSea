@@ -100,16 +100,14 @@ function NewFeatured(props) {
                 background={appStyle.colors.darkgrey10}
                 height={height}
               >
-                <AbsolutePlayer>
-                  <ReactPlayer
-                    url={itemImage}
-                    playing={isPlaying}
-                    muted={true}
-                    loop={true}
-                    width="100%"
-                    height="100%"
-                  />
-                </AbsolutePlayer>
+                <ReactPlayer
+                  url={itemImage}
+                  playing={isPlaying}
+                  muted={true}
+                  loop={true}
+                  width="180%"
+                  height="100%"
+                />
               </VStack>
             )}
           </ZItem>
