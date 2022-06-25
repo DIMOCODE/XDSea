@@ -30,6 +30,7 @@
     "react-player": "^2.10.0",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^4.0.3",
+    "react-share": "^4.4.0",
     "react-spinners-kit": "^1.9.1",
     "react-touch-carousel": "^0.10.2",
     "styled-components": "^5.3.5",

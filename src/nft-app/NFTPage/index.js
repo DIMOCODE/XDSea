@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useHistory } from "react-router-dom";
+
+import { useParams, useHistory, useLocation } from "react-router-dom";
 import Xdc3 from "xdc3";
 import { DEFAULT_PROVIDER } from "../../constant";
 import { nftmarketlayeraddress } from "../../config";
@@ -38,6 +39,15 @@ import banner1 from "../../images/Banner1.jpg";
 import { HStack, IconImg, VStack, Spacer, ZStack } from "../../styles/Stacks";
 import xdclogo from "../../images/miniXdcLogo.png";
 import { AnimatePresence, motion } from "framer-motion/dist/framer-motion";
+import gradientlocked from "../../images/gradientlocked.jpg";
+
+import linkSocial from "../../images/linkSocial.png";
+import whatsSocial from "../../images/whatsSocial.png";
+import telegramSocial from "../../images/telegramSocial.png";
+import twitterSocial from "../../images/twitterSocial.png";
+import facebookSocial from "../../images/facebookSocial.png";
+import copiedLink from "../../images/oklink.png";
+
 import {
   BodyBold,
   BodyRegular,
@@ -45,6 +55,7 @@ import {
   CaptionRegular,
   TitleBold18,
   TitleBold27,
+  CaptionBold,
 } from "../../styles/TextStyles";
 import ButtonApp from "../../styles/Buttons";
 import { Property } from "../../styles/Property";
@@ -62,8 +73,16 @@ import { ImpulseSpinner } from "react-spinners-kit";
 import { TableOffersNft } from "../../styles/TableOffersNft";
 import { TxModal } from "../../styles/TxModal";
 import { NftContainer } from "../../styles/NftContainer";
+import {
+  FacebookShareButton,
+  TwitterShareButton,
+  TelegramShareButton,
+  WhatsappShareButton,
+  InstapaperShareButton,
+} from "react-share";
 
 const NFTDetails = (props) => {
+  const webLocation = useLocation();
   const history = useHistory();
   const [wallet, setWallet] = useState(null);
   const [nft, setNFT] = useState(null);
@@ -673,6 +692,17 @@ const NFTDetails = (props) => {
     getEvents();
   }, [actions]);
 
+  console.log(webLocation.pathname);
+
+  const webLink = "https://www.xdsea.com" + webLocation.pathname;
+
+  const [copied, setCopied] = useState(false);
+
+  const copy = async () => {
+    await navigator.clipboard.writeText(webLink);
+    setCopied(true);
+  };
+
   return (
     <NFTPage>
       {processingOffer ? (
@@ -883,22 +913,26 @@ const NFTDetails = (props) => {
                 {wallet?.address === nft?.owner ? (
                   <LockedContent>
                     <VStack
-                      background={({ theme }) => theme.walletButton}
+                      background={({ theme }) => theme.fadedlocked}
                       width="100%"
-                      height="89%"
+                      height="50%"
                       border="15px"
-                      padding="30px 30px 60px 30px"
+                      alignment="flex-start"
+                      padding="30px 15px 30px 15px"
                       initial={{ opacity: 0, scale: 1 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0 }}
                       transition={{
                         type: "spring",
                         duration: 1.1,
-                        delay: 2.1,
+                        delay: 5,
                       }}
                     >
                       <Spacer></Spacer>
-                      <HStack textcolor={({ theme }) => theme.walletText}>
+                      <CaptionBold animate={{ opacity: 0.3 }} textcolor="white">
+                        LOCKED CONTENT
+                      </CaptionBold>
+                      <HStack textcolor="white">
                         {nft?.unlockableContent}
                       </HStack>
                     </VStack>
@@ -1347,6 +1381,92 @@ const NFTDetails = (props) => {
                   </CaptionRegular>
                 </HStack>
 
+                <HStack
+                  spacing="9px"
+                  justify="flex-start"
+                  border="9px"
+                  padding="12px"
+                  spacing="15px"
+                  background={({ theme }) => theme.backElement}
+                >
+                  <CaptionBoldShort>SHARE</CaptionBoldShort>
+                  <Spacer></Spacer>
+                  <FacebookShareButton
+                    url={"https://www.xdsea.com" + webLocation.pathname}
+                    quote={"Look at this NFT"}
+                    hashtag={["#XDSeaMarketplace"]}
+                    description={"XDSea NFT Marketplace"}
+                    className="Demo__some-network__share-button"
+                  >
+                    <a>
+                      <IconImg
+                        url={facebookSocial}
+                        width="30px"
+                        height="30px"
+                      ></IconImg>
+                    </a>
+                    {/* <FacebookIcon size={32} round /> Facebookでshare */}
+                  </FacebookShareButton>
+                  <TwitterShareButton
+                    title={"Look a this NFT"}
+                    url={"https://www.xdsea.com" + webLocation.pathname}
+                    hashtags={["XDSea", "BuildItOnXDC"]}
+                  >
+                    <a>
+                      <IconImg
+                        url={twitterSocial}
+                        width="30px"
+                        height="30px"
+                      ></IconImg>
+                    </a>
+                  </TwitterShareButton>
+                  <TelegramShareButton
+                    title={"Check this NFT"}
+                    url={"https://www.xdsea.com" + webLocation.pathname}
+                  >
+                    <a>
+                      <IconImg
+                        url={telegramSocial}
+                        width="30px"
+                        height="30px"
+                      ></IconImg>
+                    </a>
+                  </TelegramShareButton>
+                  <WhatsappShareButton
+                    title={"Check this NFT"}
+                    url={"https://www.xdsea.com" + webLocation.pathname}
+                  >
+                    <a>
+                      <IconImg
+                        url={whatsSocial}
+                        width="30px"
+                        height="30px"
+                      ></IconImg>
+                    </a>
+                  </WhatsappShareButton>
+
+                  {copied ? (
+                    <HStack
+                      background={({ theme }) => theme.faded}
+                      padding="3px 9px"
+                      border="6px"
+                    >
+                      <CaptionBoldShort>COPIED</CaptionBoldShort>
+                    </HStack>
+                  ) : (
+                    <a>
+                      <IconImg
+                        onClick={copy}
+                        url={linkSocial}
+                        width="30px"
+                        height="30px"
+                      ></IconImg>
+                    </a>
+                  )}
+
+                  <Spacer></Spacer>
+                </HStack>
+
                 <VStack
                   background={({ theme }) => theme.backElement}
                   width="100%"
@@ -1673,7 +1793,7 @@ const Lock = styled(motion.div)`
 
 const LockedContent = styled(motion.div)`
   position: absolute;
-  top: 86px;
+  top: 349px;
   width: 100%;
   height: 80%;
 `;

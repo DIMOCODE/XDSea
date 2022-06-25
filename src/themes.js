@@ -15,6 +15,7 @@ export const lightTheme = {
   faded: "rgba(0, 0, 0, 0.06)",
   backgroundModal: "rgba(214, 214, 219, 0.84)",
   menu: "#5C6976",
+  fadedlocked: "rgba(30, 32, 42, 1)",
 };
 
 export const darkTheme = {
@@ -31,4 +32,5 @@ export const darkTheme = {
   faded: "rgba(0, 0, 0, 0.06)",
   backgroundModal: "rgba(18, 18, 18, 1)",
   menu: "white",
+  fadedlocked: "rgba(41, 45, 65, 1)",
 };
