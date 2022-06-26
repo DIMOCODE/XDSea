@@ -131,7 +131,7 @@ export const LegacyBuyNFT = async (nft) => {
 export const SellNFT = async (approved, sellData, sellPrice) => {
   try {
     const wallet = await GetWallet();
-    console.log(wallet, approved, sellData, sellPrice);
+    // console.log(wallet, approved, sellData, sellPrice);
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
 
     if (approved === false) {

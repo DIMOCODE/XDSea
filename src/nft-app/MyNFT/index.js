@@ -93,7 +93,19 @@ const MyNFT = (props) => {
           let nft = {
             tokenId: j.tokenId,
             image: metadata?.data?.collection?.nft?.image,
-            name: j.name,
+            name: j.tokenId === "3567"
+              ? "TAURULIOMPS 1/12"
+              : j.tokenId === "3580"
+                ? "GEMINLIOMP 2/12"
+                : j.tokenId === "3584"
+                  ? "LIBRIOMP 2/12"
+                  : j.tokenId === "3650"
+                    ? "PISCELIOMPS 8/12"
+                    : j.tokenId === "3679"
+                      ? "LEOIOMP 10/12"
+                      : j.tokenId === "3695"
+                        ? "SAGITTARIOMPS 11/12"
+                        : j.name,
             logo: metadata?.data?.collection?.logo,
             preview: metadata?.data?.collection?.nft?.preview,
             fileType: metadata?.data?.collection?.nft?.fileType,
@@ -110,7 +122,9 @@ const MyNFT = (props) => {
           filteredCollections[i] === "NFTHC" ||
           filteredCollections[i] === "DØP3 Punks "
             ? collectionNFTs.length - 1
-            : collectionNFTs.length,
+            : filteredCollections[i] === "XDSEA MONKEYS ORIGINAL ART"
+              ? collectionNFTs.length - 7
+              : collectionNFTs.length,
       };
       collectionGroups.push(group);
     }
@@ -142,7 +156,19 @@ const MyNFT = (props) => {
           tokenId: i.tokenId,
           image: metadata?.data?.collection?.nft?.image,
           preview: metadata?.data?.collection?.nft?.preview,
-          name: metadata?.data?.collection?.nft?.name,
+          name: i.tokenId === "3567"
+            ? "TAURULIOMPS 1/12"
+            : i.tokenId === "3580"
+              ? "GEMINLIOMP 2/12"
+              : i.tokenId === "3584"
+                ? "LIBRIOMP 2/12"
+                : i.tokenId === "3650"
+                  ? "PISCELIOMPS 8/12"
+                  : i.tokenId === "3679"
+                    ? "LEOIOMP 10/12"
+                    : i.tokenId === "3695"
+                      ? "SAGITTARIOMPS 11/12"
+                      : metadata?.data?.collection?.nft?.name,
           logo: metadata?.data?.collection?.logo,
           fileType: metadata?.data?.collection?.nft?.fileType,
         };
@@ -220,6 +246,7 @@ const MyNFT = (props) => {
   };
 
   const fetchMoreNFTs = async () => {
+    await new Promise((r) => setTimeout(r, 3000));
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
     const marketContract = new xdc3.eth.Contract(
       NFTMarketLayer1.abi,
@@ -237,7 +264,19 @@ const MyNFT = (props) => {
           tokenId: i.tokenId,
           image: metadata?.data?.collection?.nft?.image,
           preview: metadata?.data?.collection?.nft?.preview,
-          name: metadata?.data?.collection?.nft?.name,
+          name: i.tokenId === "3567"
+            ? "TAURULIOMPS 1/12"
+            : i.tokenId === "3580"
+              ? "GEMINLIOMP 2/12"
+              : i.tokenId === "3584"
+                ? "LIBRIOMP 2/12"
+                : i.tokenId === "3650"
+                  ? "PISCELIOMPS 8/12"
+                  : i.tokenId === "3679"
+                    ? "LEOIOMP 10/12"
+                    : i.tokenId === "3695"
+                      ? "SAGITTARIOMPS 11/12"
+                      : metadata?.data?.collection?.nft?.name,
           logo: metadata?.data?.collection?.logo,
           fileType: metadata?.data?.collection?.nft?.fileType,
         };
@@ -492,6 +531,7 @@ const MyNFT = (props) => {
                       dataLength={initialGroup.length}
                       next={fetchMoreNFTs}
                       hasMore={initialGroup.length < page.length}
+                      scrollThreshold={0.6}
                       loader={
                         <HStack
                           initial={{ opacity: 0 }}

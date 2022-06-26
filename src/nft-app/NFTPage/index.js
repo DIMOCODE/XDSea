@@ -62,6 +62,11 @@ import { ImpulseSpinner } from "react-spinners-kit";
 import { TableOffersNft } from "../../styles/TableOffersNft";
 import { TxModal } from "../../styles/TxModal";
 import { NftContainer } from "../../styles/NftContainer";
+import { CID } from "multiformats/cid";
+import { base58btc } from "multiformats/bases/base58";
+import { sha256 } from "multiformats/hashes/sha2";
+import { createHash } from "crypto";
+import { base58_to_binary } from 'base58-js';
 
 const NFTDetails = (props) => {
   const history = useHistory();
@@ -386,7 +391,19 @@ const NFTDetails = (props) => {
         collectionName: metadata?.data?.collection?.name,
         collectionLogo: metadata?.data?.collection?.logo,
         image: metadata?.data?.collection?.nft?.image,
-        name: metadata?.data?.collection?.nft?.name,
+        name: item.tokenId === "3567"
+          ? "TAURULIOMPS 1/12"
+          : item.tokenId === "3580"
+            ? "GEMINLIOMP 2/12"
+            : item.tokenId === "3584"
+              ? "LIBRIOMP 2/12"
+              : item.tokenId === "3650"
+                ? "PISCELIOMPS 8/12"
+                : item.tokenId === "3679"
+                  ? "LEOIOMP 10/12"
+                  : item.tokenId === "3695"
+                    ? "SAGITTARIOMPS 11/12"
+                    : metadata?.data?.collection?.nft?.name,
         description: metadata?.data?.collection?.nft?.description,
         nftContract: item.nftContract,
         isListed: item.isListed,
@@ -396,7 +413,12 @@ const NFTDetails = (props) => {
         royalty: metadata?.data?.collection?.nft?.royalty,
         unlockableContent: metadata?.data?.collection?.nft?.unlockableContent,
       };
-      console.log(item, currentItem)
+      
+      // const hash = await sha256.digest(base58_to_binary(`QmbHQEf8GFBpQdVcLT281XaicJPkPMzBJodYq3xzaVYHjJ`))
+      // const hash2 = createHash('sha256').update(base58_to_binary(`QmbHQEf8GFBpQdVcLT281XaicJPkPMzBJodYq3xzaVYHjJ`)).digest('hex')
+      // const cid = new CID(`QmbHQEf8GFBpQdVcLT281XaicJPkPMzBJodYq3xzaVYHjJ`.trim()).toJSON()
+      // console.log(cid)
+      // console.log(hash, hash2, `${cid.toV1().toString()}.ipfs.infura-ipfs.io`)
       const data = await marketContract.methods
         .getCollectionNFTs(metadata?.data?.collection?.name)
         .call();
@@ -416,7 +438,19 @@ const NFTDetails = (props) => {
             owner: i.owner,
             collectionName: metadata?.data?.collection?.name,
             image: metadata?.data?.collection?.nft?.image,
-            name: metadata?.data?.collection?.nft?.name,
+            name: i.tokenId === "3567"
+              ? "TAURULIOMPS 1/12"
+              : i.tokenId === "3580"
+                ? "GEMINLIOMP 2/12"
+                : i.tokenId === "3584"
+                  ? "LIBRIOMP 2/12"
+                  : i.tokenId === "3650"
+                    ? "PISCELIOMPS 8/12"
+                    : i.tokenId === "3679"
+                      ? "LEOIOMP 10/12"
+                      : i.tokenId === "3695"
+                        ? "SAGITTARIOMPS 11/12"
+                        : metadata?.data?.collection?.nft?.name,
             description: metadata?.data?.collection?.nft?.description,
             nftContract: i.nftContract,
             properties: metadata?.data?.collection?.nft?.properties,

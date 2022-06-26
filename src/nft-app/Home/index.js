@@ -93,7 +93,19 @@ const Home = () => {
             collectionName: featuredNFTMetadata?.data?.collection?.name,
             collectionLogo: featuredNFTMetadata?.data?.collection?.logo,
             image: featuredNFTMetadata?.data?.collection?.nft?.image,
-            name: featuredNFTMetadata?.data?.collection?.nft?.name,
+            name: i === "3567"
+            ? "TAURULIOMPS 1/12"
+            : i === "3580"
+              ? "GEMINLIOMP 2/12"
+              : i === "3584"
+                ? "LIBRIOMP 2/12"
+                : i === "3650"
+                  ? "PISCELIOMPS 8/12"
+                  : i === "3679"
+                    ? "LEOIOMP 10/12"
+                    : i === "3695"
+                      ? "SAGITTARIOMPS 11/12"
+                      : featuredNFTMetadata?.data?.collection?.nft?.name,
             fileType: featuredNFTMetadata?.data?.collection?.nft?.fileType,
             preview: featuredNFTMetadata?.data?.collection?.nft?.preview,
             creator: featuredNFTMetadata?.data?.collection?.creator,
@@ -171,7 +183,19 @@ const Home = () => {
             collectionName: trendingItemMetadata?.data?.collection?.name,
             tokenId: itemData.tokenId,
             image: trendingItemMetadata?.data?.collection?.nft?.image,
-            name: trendingItemMetadata?.data?.collection?.nft?.name,
+            name: itemData.tokenId === "3567"
+              ? "TAURULIOMPS 1/12"
+              : itemData.tokenId === "3580"
+                ? "GEMINLIOMP 2/12"
+                : itemData.tokenId === "3584"
+                  ? "LIBRIOMP 2/12"
+                  : itemData.tokenId === "3650"
+                    ? "PISCELIOMPS 8/12"
+                    : itemData.tokenId === "3679"
+                      ? "LEOIOMP 10/12"
+                      : itemData.tokenId === "3695"
+                        ? "SAGITTARIOMPS 11/12"
+                        : trendingItemMetadata?.data?.collection?.nft?.name,
             fileType: trendingItemMetadata?.data?.collection?.nft?.fileType,
             preview: trendingItemMetadata?.data?.collection?.nft?.preview,
             isListed: itemData.isListed,

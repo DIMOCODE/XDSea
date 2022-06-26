@@ -80,6 +80,15 @@ const CollectionDetails = (props) => {
       const collectionData = await marketContract.methods
         .getCollectionNFTs(collectionName)
         .call();
+      // const meta = {}
+      // const collectionMetadata = await Promise.all(
+      //   collectionData.slice(380, 460).map(async (i) => {
+      //     const uri = await nftContract.methods.tokenURI(i.tokenId).call();
+      //     const metadata = await axios.get(uri);
+      //     meta[i.tokenId] = metadata?.data;
+      //   })
+      // )
+      // console.log(JSON.stringify(meta))
       const reversedCollections = [...collectionData].sort((nft1, nft2) => {
         if (parseInt(nft1.tokenId) > parseInt(nft2.tokenId)) return -1;
         else return 1;
@@ -109,7 +118,19 @@ const CollectionDetails = (props) => {
             collectionTwitter: metadata?.data?.collection?.twitterUrl,
             collectionWebsite: metadata?.data?.collection?.websiteUrl,
             image: metadata?.data?.collection?.nft?.image,
-            name: metadata?.data?.collection?.nft?.name,
+            name: i.tokenId === "3567"
+              ? "TAURULIOMPS 1/12"
+              : i.tokenId === "3580"
+                ? "GEMINLIOMP 2/12"
+                : i.tokenId === "3584"
+                  ? "LIBRIOMP 2/12"
+                  : i.tokenId === "3650"
+                    ? "PISCELIOMPS 8/12"
+                    : i.tokenId === "3679"
+                      ? "LEOIOMP 10/12"
+                      : i.tokenId === "3695"
+                        ? "SAGITTARIOMPS 11/12"
+                        : metadata?.data?.collection?.nft?.name,
             fileType: metadata?.data?.collection?.nft?.fileType,
             preview: metadata?.data?.collection?.nft?.preview,
           };
@@ -183,7 +204,19 @@ const CollectionDetails = (props) => {
           owner: i.owner,
           collectionName: metadata?.data?.collection?.name,
           image: metadata?.data?.collection?.nft?.image,
-          name: metadata?.data?.collection?.nft?.name,
+          name: i.tokenId === "3567"
+            ? "TAURULIOMPS 1/12"
+            : i.tokenId === "3580"
+              ? "GEMINLIOMP 2/12"
+              : i.tokenId === "3584"
+                ? "LIBRIOMP 2/12"
+                : i.tokenId === "3650"
+                  ? "PISCELIOMPS 8/12"
+                  : i.tokenId === "3679"
+                    ? "LEOIOMP 10/12"
+                    : i.tokenId === "3695"
+                      ? "SAGITTARIOMPS 11/12"
+                      : metadata?.data?.collection?.nft?.name,
           fileType: metadata?.data?.collection?.nft?.fileType,
           preview: metadata?.data?.collection?.nft?.preview,
         };
@@ -381,7 +414,9 @@ const CollectionDetails = (props) => {
                     <BodyBold textcolor={({ theme }) => theme.text}>
                       {burnedCollections.includes(collectionName)
                         ? page.length - 1
-                        : page.length}
+                        : collectionName === "XDSEA MONKEYS ORIGINAL ART"
+                          ? page.length - 7
+                          : page.length}
                     </BodyBold>
                   )}
                   <CaptionBoldShort textcolor={({ theme }) => theme.text}>

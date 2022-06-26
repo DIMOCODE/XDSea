@@ -65,8 +65,8 @@ const Discover = () => {
       //   nftmarketaddress,
       //   xdc3
       // );
-      // const data2 = await oldMarketContract.methods.idToMarketItem(1074).call()
-      // // console.log(data2)
+      // const data2 = await oldMarketContract.methods.idToMarketItem(754).call()
+      // console.log(data2)
       // var eventCount = data2.eventCount
       // var events = []
       // for(var i = 1; i <= eventCount; i++) {
@@ -93,27 +93,27 @@ const Discover = () => {
             // var gasLimit = await xdc3.eth.estimateGas(tx)
             // tx["gas"] = gasLimit
             // let transaction = SendTransaction(tx)
-            // let data = marketContract.methods.editMarketItem(
-            //     data2.tokenId,
-            //     data2.itemId,
-            //     data2.owner,
-            //     data2.creator,
-            //     data2.price,
-            //     data2.isListed,
-            //     data2.royalty,
-            //     data2.eventCount,
-            //     0,
-            //     metadata?.data?.collection?.nft?.name,
-            //     metadata?.data?.collection?.name,
-            // ).encodeABI()
-            // const tx = {
-            //     from: wallet.wallet.address,
-            //     to: nftmarketlayeraddress,
-            //     data
-            // }
-            // var gasLimit = await xdc3.eth.estimateGas(tx)
-            // tx["gas"] = gasLimit
-            // let transaction = await SendTransaction(tx);
+      //       let data = marketContract.methods.editMarketItem(
+      //           data2.tokenId,
+      //           data2.itemId,
+      //           data2.owner,
+      //           data2.creator,
+      //           data2.price,
+      //           data2.isListed,
+      //           data2.royalty,
+      //           data2.eventCount,
+      //           0,
+      //           metadata?.data?.collection?.nft?.name,
+      //           metadata?.data?.collection?.name,
+      //       ).encodeABI()
+      //       const tx = {
+      //           from: wallet.wallet.address,
+      //           to: nftmarketlayeraddress,
+      //           data
+      //       }
+      //       var gasLimit = await xdc3.eth.estimateGas(tx)
+      //       tx["gas"] = gasLimit
+      //       let transaction = await SendTransaction(tx);
       //   }
       // }
 
