@@ -41,6 +41,7 @@ import { BubbleCopied } from "../../styles/BubbleCopied";
 import ReactPlayer from "react-player";
 import InfiniteScroll from "react-infinite-scroll-component";
 import menuContext from "../../context/menuContext";
+import CID from "cids";
 
 const MyNFT = (props) => {
   const { urlAddress } = useParams();
@@ -92,7 +93,9 @@ const MyNFT = (props) => {
           var metadata = await axios.get(uri);
           let nft = {
             tokenId: j.tokenId,
-            image: metadata?.data?.collection?.nft?.image,
+            image: metadata?.data?.collection?.nft?.image.split('/')[2] === "ipfs.infura.io" 
+              ? `https://${new CID(metadata?.data?.collection?.nft?.image.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+              : metadata?.data?.collection?.nft?.image,
             name: j.tokenId === "3567"
               ? "TAURULIOMPS 1/12"
               : j.tokenId === "3580"
@@ -106,8 +109,12 @@ const MyNFT = (props) => {
                       : j.tokenId === "3695"
                         ? "SAGITTARIOMPS 11/12"
                         : j.name,
-            logo: metadata?.data?.collection?.logo,
-            preview: metadata?.data?.collection?.nft?.preview,
+            logo: metadata?.data?.collection?.logo.split('/')[2] === "ipfs.infura.io" 
+              ? `https://${new CID(metadata?.data?.collection?.logo.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+              : metadata?.data?.collection?.logo,
+            preview: metadata?.data?.collection?.nft?.preview.split('/')[2] === "ipfs.infura.io" 
+              ? `https://${new CID(metadata?.data?.collection?.nft?.preview.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+              : metadata?.data?.collection?.nft?.preview,
             fileType: metadata?.data?.collection?.nft?.fileType,
           };
           collectionNFTsList.push(nft);
@@ -154,8 +161,12 @@ const MyNFT = (props) => {
         var metadata = await axios.get(uri);
         let nft = {
           tokenId: i.tokenId,
-          image: metadata?.data?.collection?.nft?.image,
-          preview: metadata?.data?.collection?.nft?.preview,
+          image: metadata?.data?.collection?.nft?.image.split('/')[2] === "ipfs.infura.io" 
+            ? `https://${new CID(metadata?.data?.collection?.nft?.image.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+            : metadata?.data?.collection?.nft?.image,
+          preview: metadata?.data?.collection?.nft?.preview.split('/')[2] === "ipfs.infura.io" 
+            ? `https://${new CID(metadata?.data?.collection?.nft?.preview.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+            : metadata?.data?.collection?.nft?.preview,
           name: i.tokenId === "3567"
             ? "TAURULIOMPS 1/12"
             : i.tokenId === "3580"
@@ -169,7 +180,9 @@ const MyNFT = (props) => {
                     : i.tokenId === "3695"
                       ? "SAGITTARIOMPS 11/12"
                       : metadata?.data?.collection?.nft?.name,
-          logo: metadata?.data?.collection?.logo,
+          logo: metadata?.data?.collection?.logo.split('/')[2] === "ipfs.infura.io" 
+            ? `https://${new CID(metadata?.data?.collection?.logo.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+            : metadata?.data?.collection?.logo,
           fileType: metadata?.data?.collection?.nft?.fileType,
         };
         return nft;
@@ -262,8 +275,12 @@ const MyNFT = (props) => {
         var metadata = await axios.get(uri);
         let nft = {
           tokenId: i.tokenId,
-          image: metadata?.data?.collection?.nft?.image,
-          preview: metadata?.data?.collection?.nft?.preview,
+          image: metadata?.data?.collection?.nft?.image.split('/')[2] === "ipfs.infura.io" 
+            ? `https://${new CID(metadata?.data?.collection?.nft?.image.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+            : metadata?.data?.collection?.nft?.image,
+          preview: metadata?.data?.collection?.nft?.preview.split('/')[2] === "ipfs.infura.io" 
+            ? `https://${new CID(metadata?.data?.collection?.nft?.preview.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+            : metadata?.data?.collection?.nft?.preview,
           name: i.tokenId === "3567"
             ? "TAURULIOMPS 1/12"
             : i.tokenId === "3580"
@@ -277,7 +294,9 @@ const MyNFT = (props) => {
                     : i.tokenId === "3695"
                       ? "SAGITTARIOMPS 11/12"
                       : metadata?.data?.collection?.nft?.name,
-          logo: metadata?.data?.collection?.logo,
+          logo: metadata?.data?.collection?.logo.split('/')[2] === "ipfs.infura.io" 
+            ? `https://${new CID(metadata?.data?.collection?.logo.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+            : metadata?.data?.collection?.logo,
           fileType: metadata?.data?.collection?.nft?.fileType,
         };
         return nft;

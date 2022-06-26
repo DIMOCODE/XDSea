@@ -25,6 +25,7 @@ import {
   untitledCollections,
 } from "../../blacklist";
 import menuContext from "../../context/menuContext";
+import CID from "cids";
 
 const Discover = () => {
   const history = useHistory();
@@ -188,10 +189,16 @@ const Discover = () => {
             name: metadata?.data?.collection?.name,
             description: metadata?.data?.collection?.description,
             creator: metadata?.data?.collection?.creator,
-            banner: metadata?.data?.collection?.banner,
-            logo: metadata?.data?.collection?.logo,
+            banner: metadata?.data?.collection?.banner.split('/')[2] === "ipfs.infura.io" 
+              ? `https://${new CID(metadata?.data?.collection?.banner.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+              : metadata?.data?.collection?.banner,
+            logo: metadata?.data?.collection?.logo.split('/')[2] === "ipfs.infura.io" 
+              ? `https://${new CID(metadata?.data?.collection?.logo.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+              : metadata?.data?.collection?.logo,
             fileType: metadata?.data?.collection?.nft?.fileType,
-            preview: metadata?.data?.collection?.nft?.preview,
+            preview: metadata?.data?.collection?.nft?.preview.split('/')[2] === "ipfs.infura.io" 
+              ? `https://${new CID(metadata?.data?.collection?.nft?.preview.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+              : metadata?.data?.collection?.nft?.preview,
             // floorPrice: lowestPrice,
             // volumeTraded: volumeTraded,
             // items: !burnedCollections.includes(metadata?.data?.collection?.name)
@@ -264,11 +271,17 @@ const Discover = () => {
             banner: untitledCollections.includes(i.collectionName)
               ? chooseBanner()
               : metadata?.data?.collection?.banner
-              ? metadata?.data?.collection?.banner
-              : chooseBanner(),
-            logo: metadata?.data?.collection?.logo,
+                ? metadata?.data?.collection?.banner.split('/')[2] === "ipfs.infura.io" 
+                  ? `https://${new CID(metadata?.data?.collection?.banner.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+                  : metadata?.data?.collection?.bannner
+                : chooseBanner(),
+            logo: metadata?.data?.collection?.logo.split('/')[2] === "ipfs.infura.io" 
+              ? `https://${new CID(metadata?.data?.collection?.logo.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+              : metadata?.data?.collection?.logo,
             fileType: metadata?.data?.collection?.nft?.fileType,
-            preview: metadata?.data?.collection?.nft?.preview,
+            preview: metadata?.data?.collection?.nft?.preview.split('/')[2] === "ipfs.infura.io" 
+              ? `https://${new CID(metadata?.data?.collection?.nft?.preview.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+              : metadata?.data?.collection?.nft?.preview,
             // floorPrice: lowestPrice,
             // volumeTraded: volumeTraded,
             // items: !burnedCollections.includes(metadata?.data?.collection?.name)

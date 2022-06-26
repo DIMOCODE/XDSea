@@ -44,6 +44,7 @@ import telegramSocial from "../../images/telegramSocial.png";
 import twitterSocial from "../../images/twitterSocial.png";
 import facebookSocial from "../../images/facebookSocial.png";
 import copiedLink from "../../images/oklink.png";
+import CID from "cids";
 
 import {
   FacebookShareButton,
@@ -122,16 +123,22 @@ const CollectionDetails = (props) => {
             collectionBanner: untitledCollections.includes(collectionName)
               ? banner1
               : metadata?.data?.collection?.banner
-              ? metadata.data.collection.banner
-              : banner1,
+                ? metadata?.data?.collection?.banner.split('/')[2] === "ipfs.infura.io" 
+                  ? `https://${new CID(metadata?.data?.collection?.banner.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+                  : metadata?.data?.collection?.banner
+                : banner1,
             collectionCreator: metadata?.data?.collection?.creator,
             collectionDescription: metadata?.data?.collection?.description,
             collectionDiscord: metadata?.data?.collection?.discordUrl,
             collectionInstagram: metadata?.data?.collection?.instagramUrl,
-            collectionLogo: metadata?.data?.collection?.logo,
+            collectionLogo: metadata?.data?.collection?.logo.split('/')[2] === "ipfs.infura.io" 
+              ? `https://${new CID(metadata?.data?.collection?.logo.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+              : metadata?.data?.collection?.logo,
             collectionTwitter: metadata?.data?.collection?.twitterUrl,
             collectionWebsite: metadata?.data?.collection?.websiteUrl,
-            image: metadata?.data?.collection?.nft?.image,
+            image: metadata?.data?.collection?.nft?.image.split('/')[2] === "ipfs.infura.io" 
+              ? `https://${new CID(metadata?.data?.collection?.nft?.image.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+              : metadata?.data?.collection?.nft?.image,
             name: i.tokenId === "3567"
               ? "TAURULIOMPS 1/12"
               : i.tokenId === "3580"
@@ -146,7 +153,9 @@ const CollectionDetails = (props) => {
                         ? "SAGITTARIOMPS 11/12"
                         : metadata?.data?.collection?.nft?.name,
             fileType: metadata?.data?.collection?.nft?.fileType,
-            preview: metadata?.data?.collection?.nft?.preview,
+            preview: metadata?.data?.collection?.nft?.preview.split('/')[2] === "ipfs.infura.io" 
+              ? `https://${new CID(metadata?.data?.collection?.nft?.preview.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+              : metadata?.data?.collection?.nft?.preview,
           };
           return item;
         })
@@ -217,7 +226,9 @@ const CollectionDetails = (props) => {
           offerCount: i.offerCount,
           owner: i.owner,
           collectionName: metadata?.data?.collection?.name,
-          image: metadata?.data?.collection?.nft?.image,
+          image: metadata?.data?.collection?.nft?.image.split('/')[2] === "ipfs.infura.io" 
+            ? `https://${new CID(metadata?.data?.collection?.nft?.image.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+            : metadata?.data?.collection?.nft?.image,
           name: i.tokenId === "3567"
             ? "TAURULIOMPS 1/12"
             : i.tokenId === "3580"
@@ -232,7 +243,9 @@ const CollectionDetails = (props) => {
                       ? "SAGITTARIOMPS 11/12"
                       : metadata?.data?.collection?.nft?.name,
           fileType: metadata?.data?.collection?.nft?.fileType,
-          preview: metadata?.data?.collection?.nft?.preview,
+          preview: metadata?.data?.collection?.nft?.preview.split('/')[2] === "ipfs.infura.io" 
+            ? `https://${new CID(metadata?.data?.collection?.nft?.preview.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+            : metadata?.data?.collection?.nft?.preview,
         };
         return nft;
       })

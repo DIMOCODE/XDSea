@@ -44,6 +44,7 @@ import logoMarketplace from "../../images/logoMarketplace.png";
 import { NewFeatured } from "../../styles/NewFeatured";
 import { borderColor } from "@mui/system";
 import "./customstyles.css";
+import CID from "cids";
 
 const Home = () => {
   const history = useHistory();
@@ -91,8 +92,12 @@ const Home = () => {
           var featuredNFTMetadata = await axios.get(featuredNFTUri);
           let featuredNFTData = {
             collectionName: featuredNFTMetadata?.data?.collection?.name,
-            collectionLogo: featuredNFTMetadata?.data?.collection?.logo,
-            image: featuredNFTMetadata?.data?.collection?.nft?.image,
+            collectionLogo: featuredNFTMetadata?.data?.collection?.logo.split('/')[2] === "ipfs.infura.io" 
+              ? `https://${new CID(featuredNFTMetadata?.data?.collection?.logo.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+              : featuredNFTMetadata?.data?.collection?.logo,
+            image: featuredNFTMetadata?.data?.collection?.nft?.image.split('/')[2] === "ipfs.infura.io" 
+              ? `https://${new CID(featuredNFTMetadata?.data?.collection?.nft?.image.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+              : featuredNFTMetadata?.data?.collection?.nft?.image,
             name: i === "3567"
             ? "TAURULIOMPS 1/12"
             : i === "3580"
@@ -107,7 +112,9 @@ const Home = () => {
                       ? "SAGITTARIOMPS 11/12"
                       : featuredNFTMetadata?.data?.collection?.nft?.name,
             fileType: featuredNFTMetadata?.data?.collection?.nft?.fileType,
-            preview: featuredNFTMetadata?.data?.collection?.nft?.preview,
+            preview: featuredNFTMetadata?.data?.collection?.nft?.preview.split('/')[2] === "ipfs.infura.io" 
+              ? `https://${new CID(featuredNFTMetadata?.data?.collection?.nft?.preview.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+              : featuredNFTMetadata?.data?.collection?.nft?.preview,
             creator: featuredNFTMetadata?.data?.collection?.creator,
             tokenId: i,
           };
@@ -179,10 +186,14 @@ const Home = () => {
           var price = await xdc3.utils.fromWei(itemData.price, "ether");
           let item = {
             price: price,
-            collectionLogo: trendingItemMetadata?.data?.collection?.logo,
+            collectionLogo: trendingItemMetadata?.data?.collection?.logo.split('/')[2] === "ipfs.infura.io" 
+              ? `https://${new CID(trendingItemMetadata?.data?.collection?.logo.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+              : trendingItemMetadata?.data?.collection?.logo,
             collectionName: trendingItemMetadata?.data?.collection?.name,
             tokenId: itemData.tokenId,
-            image: trendingItemMetadata?.data?.collection?.nft?.image,
+            image: trendingItemMetadata?.data?.collection?.nft?.image.split('/')[2] === "ipfs.infura.io" 
+              ? `https://${new CID(trendingItemMetadata?.data?.collection?.nft?.image.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+              : trendingItemMetadata?.data?.collection?.nft?.image,
             name: itemData.tokenId === "3567"
               ? "TAURULIOMPS 1/12"
               : itemData.tokenId === "3580"
@@ -197,7 +208,9 @@ const Home = () => {
                         ? "SAGITTARIOMPS 11/12"
                         : trendingItemMetadata?.data?.collection?.nft?.name,
             fileType: trendingItemMetadata?.data?.collection?.nft?.fileType,
-            preview: trendingItemMetadata?.data?.collection?.nft?.preview,
+            preview: trendingItemMetadata?.data?.collection?.nft?.preview.split('/')[2] === "ipfs.infura.io" 
+              ? `https://${new CID(trendingItemMetadata?.data?.collection?.nft?.preview.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+              : trendingItemMetadata?.data?.collection?.nft?.preview,
             isListed: itemData.isListed,
             offerCount: itemData.offerCount,
             creator: itemData.creator

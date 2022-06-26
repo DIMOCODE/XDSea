@@ -73,11 +73,7 @@ import { ImpulseSpinner } from "react-spinners-kit";
 import { TableOffersNft } from "../../styles/TableOffersNft";
 import { TxModal } from "../../styles/TxModal";
 import { NftContainer } from "../../styles/NftContainer";
-import { CID } from "multiformats/cid";
-import { base58btc } from "multiformats/bases/base58";
-import { sha256 } from "multiformats/hashes/sha2";
-import { createHash } from "crypto";
-import { base58_to_binary } from 'base58-js';
+import CID from "cids";
 import {
   FacebookShareButton,
   TwitterShareButton,
@@ -411,8 +407,12 @@ const NFTDetails = (props) => {
         creator: item.creator,
         owner: item.owner,
         collectionName: metadata?.data?.collection?.name,
-        collectionLogo: metadata?.data?.collection?.logo,
-        image: metadata?.data?.collection?.nft?.image,
+        collectionLogo: metadata?.data?.collection?.logo.split('/')[2] === "ipfs.infura.io" 
+          ? `https://${new CID(metadata?.data?.collection?.logo.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+          : metadata?.data?.collection?.logo,
+        image: metadata?.data?.collection?.nft?.image.split('/')[2] === "ipfs.infura.io" 
+          ? `https://${new CID(metadata?.data?.collection?.nft?.image.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+          : metadata?.data?.collection?.nft?.image,
         name: item.tokenId === "3567"
           ? "TAURULIOMPS 1/12"
           : item.tokenId === "3580"
@@ -431,16 +431,12 @@ const NFTDetails = (props) => {
         isListed: item.isListed,
         properties: metadata?.data?.collection?.nft?.properties,
         fileType: metadata?.data?.collection?.nft?.fileType,
-        preview: metadata?.data?.collection?.nft?.preview,
+        preview: metadata?.data?.collection?.nft?.preview.split('/')[2] === "ipfs.infura.io" 
+          ? `https://${new CID(metadata?.data?.collection?.nft?.preview.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+          : metadata?.data?.collection?.nft?.preview,
         royalty: metadata?.data?.collection?.nft?.royalty,
         unlockableContent: metadata?.data?.collection?.nft?.unlockableContent,
       };
-      
-      // const hash = await sha256.digest(base58_to_binary(`QmbHQEf8GFBpQdVcLT281XaicJPkPMzBJodYq3xzaVYHjJ`))
-      // const hash2 = createHash('sha256').update(base58_to_binary(`QmbHQEf8GFBpQdVcLT281XaicJPkPMzBJodYq3xzaVYHjJ`)).digest('hex')
-      // const cid = new CID(`QmbHQEf8GFBpQdVcLT281XaicJPkPMzBJodYq3xzaVYHjJ`.trim()).toJSON()
-      // console.log(cid)
-      // console.log(hash, hash2, `${cid.toV1().toString()}.ipfs.infura-ipfs.io`)
       const data = await marketContract.methods
         .getCollectionNFTs(metadata?.data?.collection?.name)
         .call();
@@ -460,8 +456,12 @@ const NFTDetails = (props) => {
             owner: i.owner,
             creator: i.creator,
             collectionName: metadata?.data?.collection?.name,
-            collectionLogo: metadata?.data?.collection?.logo,
-            image: metadata?.data?.collection?.nft?.image,
+            collectionLogo: metadata?.data?.collection?.logo.split('/')[2] === "ipfs.infura.io" 
+              ? `https://${new CID(metadata?.data?.collection?.logo.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+              : metadata?.data?.collection?.logo,
+            image: metadata?.data?.collection?.nft?.image.split('/')[2] === "ipfs.infura.io" 
+              ? `https://${new CID(metadata?.data?.collection?.nft?.image.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+              : metadata?.data?.collection?.nft?.image,
             name: i.tokenId === "3567"
               ? "TAURULIOMPS 1/12"
               : i.tokenId === "3580"
@@ -479,7 +479,9 @@ const NFTDetails = (props) => {
             nftContract: i.nftContract,
             properties: metadata?.data?.collection?.nft?.properties,
             fileType: metadata?.data?.collection?.nft?.fileType,
-            preview: metadata?.data?.collection?.nft?.preview,
+            preview: metadata?.data?.collection?.nft?.preview.split('/')[2] === "ipfs.infura.io" 
+              ? `https://${new CID(metadata?.data?.collection?.nft?.preview.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+              : metadata?.data?.collection?.nft?.preview,
           };
           if (
             i.tokenId !== currentItem.tokenId &&
