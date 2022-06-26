@@ -80,16 +80,42 @@ iframe {
 }
 
 .walletConnect {
-  width: 160px;
-  height: 49px;
+  width: 26px;
+  height: 26px;
   background-color: transparent !important;
   border: none !important;
-  border-radius: 9px;
+  border-radius: 12px;
   color: transparent !important;
-  margin-top: -24px;
-  margin-left: 15px;
+  z-index: 1;
+  margin-top: -13px;
+  margin-left: 87px;
   position: absolute;
-  z-index: 10;
+}
+
+.walletConnectTablet {
+  width: 26px;
+  height: 26px;
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 12px;
+  color: transparent !important;
+  margin-top: 32px;
+  margin-left: 72px;
+  position: absolute;
+  z-index: 1;
+}
+
+.walletConnectPhone {
+  width: 26px;
+  height: 26px;
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 12px;
+  color: transparent !important;
+  margin-top: 27px;
+  margin-left: -2px;
+  position: absolute;
+  z-index: 1;
 }
 
 .hide {

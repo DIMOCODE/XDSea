@@ -94,7 +94,7 @@ function TableOffersNft(props) {
               background={({ theme }) => theme.faded}
               btnStatus={-1}
             ></ButtonApp>
-          ) : (isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address) !== owner && (isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address) === offerBy ? (
+          ) : (isXdc(wallet?.address) ? fromXdc(wallet?.address?.toLowerCase()) : wallet?.address?.toLowerCase()) !== owner?.toLowerCase() && (isXdc(wallet?.address) ? fromXdc(wallet?.address?.toLowerCase()) : wallet?.address?.toLowerCase()) === offerBy?.toLowerCase() ? (
             <ButtonApp
               text="Withdraw Offer"
               height="48px"
@@ -105,7 +105,7 @@ function TableOffersNft(props) {
               func="WithdrawOffer"
               cursor="pointer"
             ></ButtonApp>
-          ) : (isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address) === owner ? (
+          ) : (isXdc(wallet?.address) ? fromXdc(wallet?.address?.toLowerCase()) : wallet?.address?.toLowerCase()) === owner?.toLowerCase() ? (
             <ButtonApp
               text="Accept Offer"
               height="48px"

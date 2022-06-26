@@ -33,6 +33,7 @@ import menuContext from "../../context/menuContext";
 import gif from "../../images/gifConnect.gif";
 import XDClogo from "../../images/xdcpayLogo.png";
 import Metamask from "../../images/metamaskIcon.png";
+import { findAllByDisplayValue } from "@testing-library/react";
 
 function TopBar(props) {
   const { device, themeToggler, devMode, onWalletChange } = props;
@@ -40,13 +41,14 @@ function TopBar(props) {
   const [wallet, setWallet] = useState({});
   const [deviceSize, setDeviceSize] = useState("");
   const [showMenu, setShowMenu] = useContext(menuContext);
-  const [showMetamask, setShowMetamask] = useState(true);
+  const [showMetamask, setShowMetamask] = useState(false);
+  const [isMetamask, setIsMetamask] = useState(false);
   const menucolor = ({ theme }) => theme.menu;
 
   useEffect(() => {
     setDeviceSize(device);
     return () => {
-      setShowMenu({});
+      setShowMenu(false);
     };
   }, [device]);
 
@@ -64,6 +66,33 @@ function TopBar(props) {
     open: { rotate: 0, y: 0 },
     closed: { rotate: -45, y: -6 },
   };
+
+  const connectMetamask = async () => {
+    const res = await window.ethereum.request({ method: "eth_requestAccounts" });
+    setWallet({
+        connected: true,
+        address: res[0]
+    });
+    onWalletChange({
+      connected: true,
+      address: res[0]
+    });
+    setIsMetamask(true);
+    setShowMetamask(false);
+  }
+
+  const disconnectMetamask = async () => {
+    const res = await window.ethereum.request({ method: "eth_requestAccounts" });
+    setWallet({
+        connected: false,
+        address: res[0]
+    });
+    onWalletChange({
+      connected: false,
+      address: res[0]
+    });
+    setIsMetamask(false);
+  }
 
   return (
     <ContentBar>
@@ -132,7 +161,8 @@ function TopBar(props) {
                         <VStack>
                           <Connect>
                             <XdcConnect
-                              btnClass={`walletConnect ${
+                              btnName={" "}
+                              btnClass={`walletConnectPhone ${
                                 wallet?.connected ? "hide" : ""
                               }`}
                               onConnect={(wallet) => {
@@ -149,11 +179,11 @@ function TopBar(props) {
                               }}
                             />
                           </Connect>
-
                           <WalletButton
                             logout={Disconnect}
                             status={wallet?.connected}
                             wallet={wallet}
+                            onClickMetamask={() => setShowMetamask(true)}
                           ></WalletButton>
                         </VStack>
 
@@ -167,8 +197,8 @@ function TopBar(props) {
                                 NavigateTo(
                                   `UserProfile/${
                                     isXdc(wallet?.address)
-                                      ? fromXdc(wallet?.address)
-                                      : wallet?.address
+                                      ? fromXdc(wallet?.address?.toLowerCase())
+                                      : wallet?.address.toLowerCase()
                                   }`
                                 )
                               }
@@ -403,7 +433,7 @@ function TopBar(props) {
                         </BodyBold>
                         {!devMode ? (
                           <BodyBold textcolor={({ theme }) => theme.blue}>
-                            βeta v1.6.0
+                            βeta v1.6.1
                           </BodyBold>
                         ) : (
                           <HStack
@@ -426,8 +456,8 @@ function TopBar(props) {
                         <ZItem>
                           <Connect>
                             <XdcConnect
-                              style={{ backgroundColor: "lightblue" }}
-                              btnClass={`walletConnect ${
+                              btnName={" "}
+                              btnClass={`walletConnectTablet ${
                                 wallet?.connected ? "hide" : ""
                               }`}
                               onConnect={(wallet) => {
@@ -444,12 +474,12 @@ function TopBar(props) {
                               }}
                             />
                           </Connect>
-                        </ZItem>
-                        <ZItem>
                           <WalletButton
-                            logout={Disconnect}
+                            logout={isMetamask ? disconnectMetamask : Disconnect}
                             status={wallet?.connected}
                             wallet={wallet}
+                            onClickMetamask={() => setShowMetamask(true)}
+                            isMetamask={isMetamask}
                           ></WalletButton>
                         </ZItem>
                       </ZStack>
@@ -462,8 +492,8 @@ function TopBar(props) {
                           NavigateTo(
                             `UserProfile/${
                               isXdc(wallet?.address)
-                                ? fromXdc(wallet?.address)
-                                : wallet?.address
+                                ? fromXdc(wallet?.address?.toLowerCase())
+                                : wallet?.address?.toLowerCase()
                             }`
                           )
                         }
@@ -592,6 +622,7 @@ function TopBar(props) {
                     ></ButtonApp>
                     <Spacer></Spacer>
                     <XdcConnect
+                      btnName=" "
                       btnClass={`walletConnect ${
                         wallet?.connected ? "hide" : ""
                       }`}
@@ -623,8 +654,8 @@ function TopBar(props) {
                           NavigateTo(
                             `UserProfile/${
                               isXdc(wallet?.address)
-                                ? fromXdc(wallet?.address)
-                                : wallet?.address
+                                ? fromXdc(wallet?.address?.toLowerCase())
+                                : wallet?.address.toLowerCase()
                             }`
                           )
                         }
@@ -692,8 +723,9 @@ function TopBar(props) {
                   minheight="39px"
                   border="9px"
                   cursor="pointer"
+                  onClick={connectMetamask}
                 >
-                  <BodyBold textcolor="black">Connect Metamask</BodyBold>
+                  <BodyBold cursor="pointer" textcolor="black">Connect Metamask</BodyBold>
                 </HStack>
 
                 <BodyRegular
@@ -738,8 +770,8 @@ const SlideMenuTablet = styled(motion.div)`
 `;
 
 const Connect = styled(motion.div)`
-  position: absolute;
-  left: -16px;
+  position: relative;
+  // left: -16px;
 `;
 
 const MetamaskSteps = styled(motion.div)`

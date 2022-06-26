@@ -42,7 +42,7 @@ function UserMenuButton(props) {
           bordercolor="#99A2AF"
           bordersize="3px"
           whileTap={{ scale: 0.9 }}
-          onClick={() => NavigateTo(`UserProfile/${isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address}`)}
+          onClick={() => NavigateTo(`UserProfile/${isXdc(wallet?.address) ? fromXdc(wallet?.addres?.toLowerCase()) : wallet?.address?.toLowerCase()}`)}
           cursor={"pointer"}
           // onClick={() => setShowMenu((showMenu) => !showMenu)}
 

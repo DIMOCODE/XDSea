@@ -21,7 +21,7 @@ import {
 } from "../../common";
 import { fromXdc, isXdc } from "../../common/common";
 import NFTMarketLayer1 from "../../abis/NFTMarketLayer1.json";
-import { permaBlacklist, contractFix, burnedNFTs } from "../../blacklist";
+import { permaBlacklist, contractFix, burnedNFTs, verifiedProfiles } from "../../blacklist";
 import Tooltip from "@mui/material/Tooltip";
 import lock from "../../images/unlockable2.gif";
 import mint from "../../images/mintIcon.png";
@@ -458,7 +458,9 @@ const NFTDetails = (props) => {
             itemId: i.itemId,
             seller: i.seller,
             owner: i.owner,
+            creator: i.creator,
             collectionName: metadata?.data?.collection?.name,
+            collectionLogo: metadata?.data?.collection?.logo,
             image: metadata?.data?.collection?.nft?.image,
             name: i.tokenId === "3567"
               ? "TAURULIOMPS 1/12"
@@ -726,7 +728,7 @@ const NFTDetails = (props) => {
     getEvents();
   }, [actions]);
 
-  console.log(webLocation.pathname);
+  // console.log(webLocation.pathname);
 
   const webLink = "https://www.xdsea.com" + webLocation.pathname;
 
@@ -735,6 +737,9 @@ const NFTDetails = (props) => {
   const copy = async () => {
     await navigator.clipboard.writeText(webLink);
     setCopied(true);
+    setTimeout(() => {
+      setCopied(false);
+    }, 1500);
   };
 
   return (
@@ -944,7 +949,7 @@ const NFTDetails = (props) => {
                     ></HStack>
                   </VStack>
                 )}
-                {wallet?.address === nft?.owner ? (
+                {wallet?.address?.toLowerCase() === nft?.owner?.toLowerCase() ? (
                   <LockedContent>
                     <VStack
                       background={({ theme }) => theme.fadedlocked}
@@ -981,8 +986,8 @@ const NFTDetails = (props) => {
                     {isImage(nft?.fileType) ? (
                       <VStack>
                         {(isXdc(wallet?.address)
-                          ? fromXdc(wallet?.address)
-                          : wallet?.address) === nft?.owner &&
+                          ? fromXdc(wallet?.address?.toLowerCase())
+                          : wallet?.address?.toLowerCase()) === nft?.owner?.toLowerCase() &&
                         nft?.unlockableContent !== undefined &&
                         nft?.unlockableContent !== "" ? (
                           <AnimatePresence>
@@ -1048,8 +1053,8 @@ const NFTDetails = (props) => {
                         cursor="pointer"
                       >
                         {(isXdc(wallet?.address)
-                          ? fromXdc(wallet?.address)
-                          : wallet?.address) === nft?.owner &&
+                          ? fromXdc(wallet?.address?.toLowerCase())
+                          : wallet?.address?.toLowerCase()) === nft?.owner?.toLowerCase() &&
                         nft?.unlockableContent !== undefined &&
                         nft?.unlockableContent !== "" ? (
                           <AnimatePresence>
@@ -1113,8 +1118,8 @@ const NFTDetails = (props) => {
                         padding="15px"
                       >
                         {(isXdc(wallet?.address)
-                          ? fromXdc(wallet?.address)
-                          : wallet?.address) === nft?.owner &&
+                          ? fromXdc(wallet?.address?.toLowerCase())
+                          : wallet?.address?.toLowerCase()) === nft?.owner?.toLowerCase() &&
                         nft?.unlockableContent !== undefined &&
                         nft?.unlockableContent !== "" ? (
                           <AnimatePresence>
@@ -1426,8 +1431,8 @@ const NFTDetails = (props) => {
                   <Spacer></Spacer>
                   <FacebookShareButton
                     url={"https://www.xdsea.com" + webLocation.pathname}
-                    quote={"Look at this NFT"}
-                    hashtag={["#XDSeaMarketplace"]}
+                    quote={"Check out this NFT!"}
+                    hashtag={["#XDSea"]}
                     description={"XDSea NFT Marketplace"}
                     className="Demo__some-network__share-button"
                   >
@@ -1438,10 +1443,9 @@ const NFTDetails = (props) => {
                         height="30px"
                       ></IconImg>
                     </a>
-                    {/* <FacebookIcon size={32} round /> Facebookでshare */}
                   </FacebookShareButton>
                   <TwitterShareButton
-                    title={"Look a this NFT"}
+                    title={"Check out this NFT!"}
                     url={"https://www.xdsea.com" + webLocation.pathname}
                     hashtags={["XDSea", "BuildItOnXDC"]}
                   >
@@ -1454,7 +1458,7 @@ const NFTDetails = (props) => {
                     </a>
                   </TwitterShareButton>
                   <TelegramShareButton
-                    title={"Check this NFT"}
+                    title={"Check out this NFT!"}
                     url={"https://www.xdsea.com" + webLocation.pathname}
                   >
                     <a>
@@ -1466,7 +1470,7 @@ const NFTDetails = (props) => {
                     </a>
                   </TelegramShareButton>
                   <WhatsappShareButton
-                    title={"Check this NFT"}
+                    title={"Check out this NFT!"}
                     url={"https://www.xdsea.com" + webLocation.pathname}
                   >
                     <a>
@@ -1477,7 +1481,6 @@ const NFTDetails = (props) => {
                       ></IconImg>
                     </a>
                   </WhatsappShareButton>
-
                   {copied ? (
                     <HStack
                       background={({ theme }) => theme.faded}
@@ -1553,10 +1556,10 @@ const NFTDetails = (props) => {
                 <HStack>
                   {wallet?.connected ? (
                     nft?.isListed ? (
-                      nft?.owner ===
+                      nft?.owner.toLowerCase() ===
                       (isXdc(wallet?.address)
-                        ? fromXdc(wallet?.address)
-                        : wallet?.address) ? (
+                        ? fromXdc(wallet?.address.toLowerCase())
+                        : wallet?.address.toLowerCase()) ? (
                         <>
                           <ButtonApp
                             btnStatus={withdrawButtonStatus}
@@ -1631,10 +1634,10 @@ const NFTDetails = (props) => {
                       )
                     ) : blacklist?.includes(
                         nft?.tokenId
-                      ) ? null : nft?.owner ===
+                      ) ? null : nft?.owner.toLowerCase() ===
                       (isXdc(wallet?.address)
-                        ? fromXdc(wallet?.address)
-                        : wallet?.address) ? (
+                        ? fromXdc(wallet?.address.toLowerCase())
+                        : wallet?.address.toLowerCase()) ? (
                       <>
                         <ButtonApp
                           icon={tagWhite}
@@ -1786,12 +1789,13 @@ const NFTDetails = (props) => {
                   key={i}
                 >
                   <NftContainer
+                    isVerified={verifiedProfiles.includes(item.creator)}
                     iconStatus={item.isListed ? "sale" : "notforsale"}
                     // iconStatus are : notforsale, relist, sale, sold, empty returns null
                     hasOffers={item.offerCount > 0 ? true : false}
                     key={item.name}
                     fileType={item.fileType}
-                    creatorImage={banner1}
+                    creatorImage={item.collectionLogo}
                     itemImage={item.image}
                     price={item.price}
                     collectionName={item.collectionName}

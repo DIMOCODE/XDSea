@@ -20,9 +20,7 @@ import { LayoutGroup } from "framer-motion/dist/framer-motion";
 import { fromXdc, isXdc } from "../common/common";
 
 function WalletButton(props) {
-  const { status, wallet, logout, onClickMetamask } = props;
-
-  const [isMetamask, setIsMetamask] = useState(true);
+  const { status, wallet, logout, onClickMetamask, isMetamask } = props;
 
   const [isVisible, setIsVisible] = useState(false);
   const opacityAnim = {
@@ -84,6 +82,7 @@ function WalletButton(props) {
         >
           <HStack
             height="49px"
+            width= {status ? "auto" : "148.56px"}
             background={({ theme }) => theme.walletButton}
             border="9px"
             spacing="9px"
@@ -141,13 +140,11 @@ function WalletButton(props) {
                               <BodyRegular
                                 textcolor={({ theme }) => theme.walletText}
                               >
-                                {isMetamask
-                                  ? "Metamask Address"
-                                  : showAlert
+                                {showAlert
                                   ? "Address Copied"
                                   : isXdc(wallet?.address)
-                                  ? fromXdc(wallet?.address)
-                                  : wallet?.address}
+                                    ? fromXdc(wallet?.address?.toLowerCase())
+                                    : wallet?.address?.toLowerCase()}
                               </BodyRegular>
                               <IconImg
                                 url={showAlert ? checkIcon : copyIcon}
@@ -157,8 +154,8 @@ function WalletButton(props) {
                                 onClick={() => {
                                   navigator.clipboard.writeText(
                                     isXdc(wallet?.address)
-                                      ? fromXdc(wallet?.address)
-                                      : wallet?.address
+                                      ? fromXdc(wallet?.address?.toLowerCase())
+                                      : wallet?.address?.toLowerCase()
                                   );
                                 }}
                               ></IconImg>
@@ -188,13 +185,11 @@ function WalletButton(props) {
                       cursor={"pointer"}
                     >
                       <BodyRegular textcolor={({ theme }) => theme.walletText}>
-                        {isMetamask
-                          ? "Metahs7shsdjhd"
-                          : truncateAddress(
-                              isXdc(wallet?.address)
-                                ? fromXdc(wallet?.address)
-                                : wallet?.address
-                            )}
+                        {truncateAddress(
+                          isXdc(wallet?.address)
+                            ? fromXdc(wallet?.address)
+                            : wallet?.address
+                        )}
                       </BodyRegular>
                     </ZItem>
                   </ZStack>
@@ -237,6 +232,7 @@ function WalletButton(props) {
                     url={Metamask}
                     width="30px"
                     height="30px"
+                    onClick={onClickMetamask}
                   ></IconImg>
                 </a>
               </>
@@ -247,7 +243,6 @@ function WalletButton(props) {
                   url={Metamask}
                   width="30px"
                   height="30px"
-                  onClick={onClickMetamask}
                 ></IconImg>
               </a>
             ) : (

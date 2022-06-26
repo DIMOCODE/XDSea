@@ -270,6 +270,7 @@ const CollectionDetails = (props) => {
   const copy = async () => {
     await navigator.clipboard.writeText(webLink);
     setCopied(true);
+    setTimeout(() => setCopied(false), 1500)
   };
 
   return (
@@ -335,7 +336,6 @@ const CollectionDetails = (props) => {
 
           <SocialAbsolute>
             <VStack
-              spacing="9px"
               justify="flex-start"
               border="9px"
               padding="12px 6px"
@@ -346,8 +346,8 @@ const CollectionDetails = (props) => {
 
               <FacebookShareButton
                 url={"https://www.xdsea.com" + webLocation.pathname}
-                quote={"Test Social Network"}
-                hashtag={["#XDSeaMarketplace"]}
+                quote={"Check out this NFT Collection!"}
+                hashtag={["#XDSea"]}
                 description={"XDSea"}
                 className="Demo__some-network__share-button"
               >
@@ -361,7 +361,7 @@ const CollectionDetails = (props) => {
                 {/* <FacebookIcon size={32} round /> Facebookでshare */}
               </FacebookShareButton>
               <TwitterShareButton
-                title={"Look a this NFT"}
+                title={"Check out this NFT Collection!"}
                 url={"https://www.xdsea.com" + webLocation.pathname}
                 hashtags={["XDSea", "BuildItOnXDC"]}
               >
@@ -374,7 +374,7 @@ const CollectionDetails = (props) => {
                 </a>
               </TwitterShareButton>
               <TelegramShareButton
-                title={"Check this NFT"}
+                title={"Check out this NFT Collection!"}
                 url={"https://www.xdsea.com" + webLocation.pathname}
               >
                 <a>
@@ -386,7 +386,7 @@ const CollectionDetails = (props) => {
                 </a>
               </TelegramShareButton>
               <WhatsappShareButton
-                title={"Check this NFT"}
+                title={"Check out this NFT Collection!"}
                 url={"https://www.xdsea.com" + webLocation.pathname}
               >
                 <a>
@@ -401,13 +401,6 @@ const CollectionDetails = (props) => {
               {copied ? (
                 <IconImg url={copiedLink} width="28px" height="28px"></IconImg>
               ) : (
-                // <HStack
-                //   background={({ theme }) => theme.faded}
-                //   padding="3px 9px"
-                //   border="6px"
-                // >
-                //   <CaptionBoldShort>COPIED</CaptionBoldShort>
-                // </HStack>
                 <a>
                   <IconImg
                     onClick={copy}
@@ -736,7 +729,7 @@ const CollectionDetails = (props) => {
                       >
                         <NftContainer
                           key={i}
-                          isVerified={true}
+                          // isVerified={verifiedProfiles.includes(item.owner)}
                           iconStatus={item.isListed ? "sale" : "notforsale"}
                           // iconStatus are : notforsale, relist, sale, sold, empty returns null
                           hasOffers={item.offerCount > 0 ? true : false}

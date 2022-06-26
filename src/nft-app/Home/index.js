@@ -6,7 +6,7 @@ import { nftaddress, nftmarketlayeraddress } from "../../config";
 import NFT from "../../abis/NFT.json";
 import NFTMarketLayer1 from "../../abis/NFTMarketLayer1.json";
 import axios from "axios";
-import { featuredNFTList, trendingItemList } from "../../blacklist";
+import { featuredNFTList, trendingItemList, verifiedProfiles } from "../../blacklist";
 import styled from "styled-components";
 import iconTrending from "../../images/trendingNFT.png";
 import { NftContainer } from "../../styles/NftContainer";
@@ -200,6 +200,7 @@ const Home = () => {
             preview: trendingItemMetadata?.data?.collection?.nft?.preview,
             isListed: itemData.isListed,
             offerCount: itemData.offerCount,
+            creator: itemData.creator
           };
           return item;
         })
@@ -748,7 +749,7 @@ const Home = () => {
                   key={i}
                 >
                   <NftContainer
-                    isVerified={true}
+                    isVerified={verifiedProfiles.includes(item.creator)}
                     iconStatus={item.isListed ? "sale" : "notforsale"}
                     // iconStatus are : notforsale, relist, sale, sold, empty returns null
                     hasOffers={item.offerCount > 0 ? true : false}
