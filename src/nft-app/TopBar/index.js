@@ -68,17 +68,27 @@ function TopBar(props) {
   };
 
   const connectMetamask = async () => {
-    const res = await window.ethereum.request({ method: "eth_requestAccounts" });
-    setWallet({
-        connected: true,
-        address: res[0]
-    });
-    onWalletChange({
-      connected: true,
-      address: res[0]
-    });
-    setIsMetamask(true);
-    setShowMetamask(false);
+    if(window.ethereum) {
+      try{
+        const res = await window.ethereum.request({ method: "eth_requestAccounts" });
+        setWallet({
+            connected: true,
+            address: res[0]
+        });
+        onWalletChange({
+          connected: true,
+          address: res[0]
+        });
+        setIsMetamask(true);
+        setShowMetamask(false);
+      }
+      catch (err) {
+        setShowMetamask(false);
+      }
+    }
+    else{
+      setShowMetamask(false);
+    }
   }
 
   const disconnectMetamask = async () => {
