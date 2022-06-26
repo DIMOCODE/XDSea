@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import { useHistory, useParams, useLocation } from "react-router-dom";
 import Xdc3 from "xdc3";
 import { nftaddress, nftmarketlayeraddress } from "../../config";
 import { DEFAULT_PROVIDER } from "../../constant";
@@ -38,6 +38,20 @@ import { Tooltip } from "@mui/material";
 import banner1 from "../../images/Banner1.jpg";
 import verified from "../../images/verified.png";
 import menuContext from "../../context/menuContext";
+import linkSocial from "../../images/linkSocial.png";
+import whatsSocial from "../../images/whatsSocial.png";
+import telegramSocial from "../../images/telegramSocial.png";
+import twitterSocial from "../../images/twitterSocial.png";
+import facebookSocial from "../../images/facebookSocial.png";
+import copiedLink from "../../images/oklink.png";
+
+import {
+  FacebookShareButton,
+  TwitterShareButton,
+  TelegramShareButton,
+  WhatsappShareButton,
+  InstapaperShareButton,
+} from "react-share";
 
 const CollectionDetails = (props) => {
   const history = useHistory();
@@ -248,6 +262,15 @@ const CollectionDetails = (props) => {
   React.useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+  const webLocation = useLocation();
+  const webLink = "https://www.xdsea.com" + webLocation.pathname;
+
+  const [copied, setCopied] = useState(false);
+
+  const copy = async () => {
+    await navigator.clipboard.writeText(webLink);
+    setCopied(true);
+  };
 
   return (
     <CollectionSection>
@@ -309,6 +332,93 @@ const CollectionDetails = (props) => {
               </VStack>
             </HStack>
           </CreatorAbsolute>
+
+          <SocialAbsolute>
+            <VStack
+              spacing="9px"
+              justify="flex-start"
+              border="9px"
+              padding="12px 6px"
+              spacing="15px"
+              background={({ theme }) => theme.backElement}
+            >
+              <CaptionBoldShort>SHARE</CaptionBoldShort>
+
+              <FacebookShareButton
+                url={"https://www.xdsea.com" + webLocation.pathname}
+                quote={"Test Social Network"}
+                hashtag={["#XDSeaMarketplace"]}
+                description={"XDSea"}
+                className="Demo__some-network__share-button"
+              >
+                <a>
+                  <IconImg
+                    url={facebookSocial}
+                    width="30px"
+                    height="30px"
+                  ></IconImg>
+                </a>
+                {/* <FacebookIcon size={32} round /> Facebookでshare */}
+              </FacebookShareButton>
+              <TwitterShareButton
+                title={"Look a this NFT"}
+                url={"https://www.xdsea.com" + webLocation.pathname}
+                hashtags={["XDSea", "BuildItOnXDC"]}
+              >
+                <a>
+                  <IconImg
+                    url={twitterSocial}
+                    width="30px"
+                    height="30px"
+                  ></IconImg>
+                </a>
+              </TwitterShareButton>
+              <TelegramShareButton
+                title={"Check this NFT"}
+                url={"https://www.xdsea.com" + webLocation.pathname}
+              >
+                <a>
+                  <IconImg
+                    url={telegramSocial}
+                    width="30px"
+                    height="30px"
+                  ></IconImg>
+                </a>
+              </TelegramShareButton>
+              <WhatsappShareButton
+                title={"Check this NFT"}
+                url={"https://www.xdsea.com" + webLocation.pathname}
+              >
+                <a>
+                  <IconImg
+                    url={whatsSocial}
+                    width="30px"
+                    height="30px"
+                  ></IconImg>
+                </a>
+              </WhatsappShareButton>
+
+              {copied ? (
+                <IconImg url={copiedLink} width="28px" height="28px"></IconImg>
+              ) : (
+                // <HStack
+                //   background={({ theme }) => theme.faded}
+                //   padding="3px 9px"
+                //   border="6px"
+                // >
+                //   <CaptionBoldShort>COPIED</CaptionBoldShort>
+                // </HStack>
+                <a>
+                  <IconImg
+                    onClick={copy}
+                    url={linkSocial}
+                    width="30px"
+                    height="30px"
+                  ></IconImg>
+                </a>
+              )}
+            </VStack>
+          </SocialAbsolute>
           <VStack
             width={size.width < 768 ? "100%" : "500px"}
             height={size.width < 768 ? "90px" : "290px"}
@@ -342,8 +452,10 @@ const CollectionDetails = (props) => {
                   {collectionName}
                 </TitleBold21>
               </HStack>
+
               <Spacer></Spacer>
             </HStack>
+
             <HStack height={"auto"} spacing="12px" responsive={true}>
               <HStack width="100%">
                 <VStack
@@ -687,4 +799,10 @@ const CreatorAbsolute = styled(motion.div)`
   position: absolute;
   top: 15px;
   left: 15px;
+`;
+
+const SocialAbsolute = styled(motion.div)`
+  position: absolute;
+  top: 15px;
+  right: 15px;
 `;

@@ -11,7 +11,12 @@ import {
   ZStack,
 } from "../../styles/Stacks";
 import ButtonApp from "../../styles/Buttons";
-import { BodyBold, CaptionRegular, TitleBold21 } from "../../styles/TextStyles";
+import {
+  BodyBold,
+  CaptionRegular,
+  TitleBold21,
+  BodyRegular,
+} from "../../styles/TextStyles";
 import XDSealogo from "../../images/LogoXDSEA.png";
 import { WalletButton } from "../../styles/walletButton";
 import { fromXdc, isXdc } from "../../common/common";
@@ -25,6 +30,9 @@ import twitter from "../../images/twitterFaded.png";
 import instagram from "../../images/instagramFaded.png";
 import mail from "../../images/mailFaded.png";
 import menuContext from "../../context/menuContext";
+import gif from "../../images/gifConnect.gif";
+import XDClogo from "../../images/xdcpayLogo.png";
+import Metamask from "../../images/metamaskIcon.png";
 
 function TopBar(props) {
   const { device, themeToggler, devMode, onWalletChange } = props;
@@ -32,6 +40,7 @@ function TopBar(props) {
   const [wallet, setWallet] = useState({});
   const [deviceSize, setDeviceSize] = useState("");
   const [showMenu, setShowMenu] = useContext(menuContext);
+  const [showMetamask, setShowMetamask] = useState(true);
   const menucolor = ({ theme }) => theme.menu;
 
   useEffect(() => {
@@ -63,7 +72,7 @@ function TopBar(props) {
           switch (deviceSize) {
             case "phone":
               return (
-                <AnimatePresence>
+                <AnimatePresence initial={false}>
                   {showMenu && (
                     <SlideMenu
                       key="slidemenu"
@@ -241,7 +250,7 @@ function TopBar(props) {
                       border="12px"
                       background={({ theme }) => theme.faded}
                       whileTap={{ scale: 0.9 }}
-                      onClick={() => setShowMenu((prevCheck) => !prevCheck)}
+                      onClick={() => setShowMenu(!showMenu)}
                     >
                       <svg
                         width="26"
@@ -286,7 +295,7 @@ function TopBar(props) {
               );
             case "tablet":
               return (
-                <AnimatePresence>
+                <AnimatePresence initial={false}>
                   {showMenu && (
                     <SlideMenuTablet
                       key="slidemenu"
@@ -412,32 +421,38 @@ function TopBar(props) {
                     </HStack>
                     <Spacer></Spacer>
 
-                    <VStack maxwidth="156px">
-                      <Connect>
-                        <XdcConnect
-                          btnClass={`walletConnect ${
-                            wallet?.connected ? "hide" : ""
-                          }`}
-                          onConnect={(wallet) => {
-                            setWallet(wallet);
-                            onWalletChange(wallet);
-                          }}
-                          onAddressChange={(wallet) => {
-                            setWallet(wallet);
-                            onWalletChange(wallet);
-                          }}
-                          onDisconnect={(wallet) => {
-                            setWallet(wallet);
-                            onWalletChange(wallet);
-                          }}
-                        />
-                      </Connect>
-
-                      <WalletButton
-                        logout={Disconnect}
-                        status={wallet?.connected}
-                        wallet={wallet}
-                      ></WalletButton>
+                    <VStack maxwidth="180px">
+                      <ZStack>
+                        <ZItem>
+                          <Connect>
+                            <XdcConnect
+                              style={{ backgroundColor: "lightblue" }}
+                              btnClass={`walletConnect ${
+                                wallet?.connected ? "hide" : ""
+                              }`}
+                              onConnect={(wallet) => {
+                                setWallet(wallet);
+                                onWalletChange(wallet);
+                              }}
+                              onAddressChange={(wallet) => {
+                                setWallet(wallet);
+                                onWalletChange(wallet);
+                              }}
+                              onDisconnect={(wallet) => {
+                                setWallet(wallet);
+                                onWalletChange(wallet);
+                              }}
+                            />
+                          </Connect>
+                        </ZItem>
+                        <ZItem>
+                          <WalletButton
+                            logout={Disconnect}
+                            status={wallet?.connected}
+                            wallet={wallet}
+                          ></WalletButton>
+                        </ZItem>
+                      </ZStack>
                     </VStack>
 
                     <SwitchButton clickOnSwitch={themeToggler}></SwitchButton>
@@ -462,7 +477,7 @@ function TopBar(props) {
                       border="12px"
                       background={({ theme }) => theme.faded}
                       whileTap={{ scale: 0.9 }}
-                      onClick={() => setShowMenu((prevCheck) => !prevCheck)}
+                      onClick={() => setShowMenu(!showMenu)}
                     >
                       <svg
                         width="26"
@@ -598,6 +613,7 @@ function TopBar(props) {
                       logout={Disconnect}
                       status={wallet?.connected}
                       wallet={wallet}
+                      onClickMetamask={() => setShowMetamask(true)}
                     ></WalletButton>
 
                     <SwitchButton clickOnSwitch={themeToggler}></SwitchButton>
@@ -621,6 +637,76 @@ function TopBar(props) {
           }
         })()}
       </HStack>
+
+      {showMetamask ? (
+        <AnimatePresence>
+          <MetamaskSteps
+            key="metamaskModal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ type: "spring", damping: 10 }}
+          >
+            <HStack height="100%">
+              <VStack
+                background={({ theme }) => theme.walletButton}
+                maxwidth="360px"
+                height="780px"
+                padding="15px"
+                border="15px"
+              >
+                <IconImg
+                  url={gif}
+                  width="280px"
+                  height="420px"
+                  backsize="cover"
+                  border="9px"
+                ></IconImg>
+
+                <VStack alignment="flex-start">
+                  <BodyBold textcolor={({ theme }) => theme.walletText}>
+                    Add XinFin Network to Metamask
+                  </BodyBold>
+
+                  <BodyRegular textcolor={({ theme }) => theme.walletText}>
+                    <b>Network Name:</b> Xinfin Mainnet
+                  </BodyRegular>
+                  <BodyRegular textcolor={({ theme }) => theme.walletText}>
+                    <b>URL:</b> https://erpc.xinfin.network
+                  </BodyRegular>
+                  <BodyRegular textcolor={({ theme }) => theme.walletText}>
+                    <b>Chain ID:</b> 50
+                  </BodyRegular>
+                  <BodyRegular textcolor={({ theme }) => theme.walletText}>
+                    <b>Currency Symbol:</b> XDC
+                  </BodyRegular>
+                  <BodyRegular textcolor={({ theme }) => theme.walletText}>
+                    <b>Block Explorer URL:</b> https://explorer.xinfin.network
+                  </BodyRegular>
+                </VStack>
+
+                <HStack
+                  whileHover={{ opacity: 0.8 }}
+                  whileTap={{ scale: 0.98 }}
+                  background="orange"
+                  minheight="39px"
+                  border="9px"
+                  cursor="pointer"
+                >
+                  <BodyBold textcolor="black">Connect Metamask</BodyBold>
+                </HStack>
+
+                <BodyRegular
+                  onClick={() => setShowMetamask(false)}
+                  textcolor={({ theme }) => theme.walletText}
+                >
+                  Close this
+                </BodyRegular>
+              </VStack>
+            </HStack>
+          </MetamaskSteps>
+        </AnimatePresence>
+      ) : null}
     </ContentBar>
   );
 }
@@ -654,4 +740,13 @@ const SlideMenuTablet = styled(motion.div)`
 const Connect = styled(motion.div)`
   position: absolute;
   left: -16px;
+`;
+
+const MetamaskSteps = styled(motion.div)`
+  position: absolute;
+  top: 0px;
+  background: rgba(0, 0, 0, 0.6);
+  width: 100%;
+  height: 100vh;
+  z-index: 100;
 `;

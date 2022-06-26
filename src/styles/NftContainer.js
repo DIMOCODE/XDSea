@@ -107,6 +107,7 @@ function NftContainer(props) {
                 loop={true}
                 width="150%"
                 height="100%"
+                volume="0"
               />
             </VStack>
           )}
