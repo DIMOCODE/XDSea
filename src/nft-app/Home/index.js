@@ -342,16 +342,14 @@ const Home = () => {
         {/* Main Logo Square */}
         <VStack
           background={({ theme }) => theme.faded}
-          minwidth={
-            size.width > 768 ? "30%" : size.width > 425 ? "39%" : "100%"
-          }
+          minwidth={size.width > 768 ? "30%" : "100%"}
           border="9px"
-          height={size.width > 425 ? "390px" : "260px"}
+          height={size.width > 768 ? "390px" : "260px"}
         >
           <IconImg
             url={logoXDSEA}
-            width={size.width > 425 ? "150px" : "90px"}
-            height={size.width > 425 ? "150px" : "90px"}
+            width={size.width > 768 ? "150px" : "90px"}
+            height={size.width > 768 ? "150px" : "90px"}
           ></IconImg>
           <HStack padding="0 21px">
             <TitleBold27 align="center">
@@ -374,7 +372,7 @@ const Home = () => {
           </HStack>
         </VStack>
 
-        {size.width > 425 ? (
+        {size.width > 728 ? (
           <>
             {/* First NFT Featured */}
             <VStack
@@ -598,10 +596,8 @@ const Home = () => {
         {/* subtitleHere */}
         <VStack
           background={appStyle.colors.darkgrey10}
-          minwidth={
-            size.width > 768 ? "30%" : size.width > 425 ? "40%" : "100%"
-          }
-          height={size.width > 425 ? "390px" : "210px"}
+          minwidth={size.width > 768 ? "30%" : "100%"}
+          height={size.width > 768 ? "390px" : "210px"}
           border="9px"
         >
           <VStack padding="0 21px" spacing="3px">

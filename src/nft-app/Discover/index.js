@@ -1,7 +1,11 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import Xdc3 from "xdc3";
-import { nftaddress, nftmarketlayeraddress, nftmarketaddress } from "../../config";
+import {
+  nftaddress,
+  nftmarketlayeraddress,
+  nftmarketaddress,
+} from "../../config";
 import { DEFAULT_PROVIDER } from "../../constant";
 import NFT from "../../abis/NFT.json";
 import NFTMarket from "../../abis/NFTMarket.json";
@@ -76,24 +80,24 @@ const Discover = () => {
       //       const uri = await nftContract.methods.tokenURI(data2.tokenId).call()
       //       var metadata = await axios.get(uri)
       //       console.log(data2, event, metadata?.data?.collection?.nft?.name, metadata?.data?.collection?.name)
-            // let data = marketContract.methods.addEventsToItem(
-            //     data2.tokenId,
-            //     i,
-            //     event.eventType,
-            //     event.from,
-            //     event.to,
-            //     event.price,
-            //     event.timestamp
-            // ).encodeABI()
-            // const wallet = await GetWallet();
-            // const tx = {
-            //     from: wallet.wallet.address,
-            //     to: nftmarketlayeraddress,
-            //     data
-            // }
-            // var gasLimit = await xdc3.eth.estimateGas(tx)
-            // tx["gas"] = gasLimit
-            // let transaction = SendTransaction(tx)
+      // let data = marketContract.methods.addEventsToItem(
+      //     data2.tokenId,
+      //     i,
+      //     event.eventType,
+      //     event.from,
+      //     event.to,
+      //     event.price,
+      //     event.timestamp
+      // ).encodeABI()
+      // const wallet = await GetWallet();
+      // const tx = {
+      //     from: wallet.wallet.address,
+      //     to: nftmarketlayeraddress,
+      //     data
+      // }
+      // var gasLimit = await xdc3.eth.estimateGas(tx)
+      // tx["gas"] = gasLimit
+      // let transaction = SendTransaction(tx)
       //       let data = marketContract.methods.editMarketItem(
       //           data2.tokenId,
       //           data2.itemId,
@@ -189,16 +193,34 @@ const Discover = () => {
             name: metadata?.data?.collection?.name,
             description: metadata?.data?.collection?.description,
             creator: metadata?.data?.collection?.creator,
-            banner: metadata?.data?.collection?.banner.split('/')[2] === "ipfs.infura.io" 
-              ? `https://${new CID(metadata?.data?.collection?.banner.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-              : metadata?.data?.collection?.banner,
-            logo: metadata?.data?.collection?.logo.split('/')[2] === "ipfs.infura.io" 
-              ? `https://${new CID(metadata?.data?.collection?.logo.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-              : metadata?.data?.collection?.logo,
+            banner:
+              metadata?.data?.collection?.banner.split("/")[2] ===
+              "ipfs.infura.io"
+                ? `https://${new CID(
+                    metadata?.data?.collection?.banner.split("/")[4]
+                  )
+                    .toV1()
+                    .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
+                : metadata?.data?.collection?.banner,
+            logo:
+              metadata?.data?.collection?.logo.split("/")[2] ===
+              "ipfs.infura.io"
+                ? `https://${new CID(
+                    metadata?.data?.collection?.logo.split("/")[4]
+                  )
+                    .toV1()
+                    .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
+                : metadata?.data?.collection?.logo,
             fileType: metadata?.data?.collection?.nft?.fileType,
-            preview: metadata?.data?.collection?.nft?.preview.split('/')[2] === "ipfs.infura.io" 
-              ? `https://${new CID(metadata?.data?.collection?.nft?.preview.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-              : metadata?.data?.collection?.nft?.preview,
+            preview:
+              metadata?.data?.collection?.nft?.preview.split("/")[2] ===
+              "ipfs.infura.io"
+                ? `https://${new CID(
+                    metadata?.data?.collection?.nft?.preview.split("/")[4]
+                  )
+                    .toV1()
+                    .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
+                : metadata?.data?.collection?.nft?.preview,
             // floorPrice: lowestPrice,
             // volumeTraded: volumeTraded,
             // items: !burnedCollections.includes(metadata?.data?.collection?.name)
@@ -271,17 +293,34 @@ const Discover = () => {
             banner: untitledCollections.includes(i.collectionName)
               ? chooseBanner()
               : metadata?.data?.collection?.banner
-                ? metadata?.data?.collection?.banner.split('/')[2] === "ipfs.infura.io" 
-                  ? `https://${new CID(metadata?.data?.collection?.banner.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-                  : metadata?.data?.collection?.bannner
-                : chooseBanner(),
-            logo: metadata?.data?.collection?.logo.split('/')[2] === "ipfs.infura.io" 
-              ? `https://${new CID(metadata?.data?.collection?.logo.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-              : metadata?.data?.collection?.logo,
+              ? metadata?.data?.collection?.banner.split("/")[2] ===
+                "ipfs.infura.io"
+                ? `https://${new CID(
+                    metadata?.data?.collection?.banner.split("/")[4]
+                  )
+                    .toV1()
+                    .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
+                : metadata?.data?.collection?.bannner
+              : chooseBanner(),
+            logo:
+              metadata?.data?.collection?.logo.split("/")[2] ===
+              "ipfs.infura.io"
+                ? `https://${new CID(
+                    metadata?.data?.collection?.logo.split("/")[4]
+                  )
+                    .toV1()
+                    .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
+                : metadata?.data?.collection?.logo,
             fileType: metadata?.data?.collection?.nft?.fileType,
-            preview: metadata?.data?.collection?.nft?.preview.split('/')[2] === "ipfs.infura.io" 
-              ? `https://${new CID(metadata?.data?.collection?.nft?.preview.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-              : metadata?.data?.collection?.nft?.preview,
+            preview:
+              metadata?.data?.collection?.nft?.preview.split("/")[2] ===
+              "ipfs.infura.io"
+                ? `https://${new CID(
+                    metadata?.data?.collection?.nft?.preview.split("/")[4]
+                  )
+                    .toV1()
+                    .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
+                : metadata?.data?.collection?.nft?.preview,
             // floorPrice: lowestPrice,
             // volumeTraded: volumeTraded,
             // items: !burnedCollections.includes(metadata?.data?.collection?.name)
@@ -395,14 +434,7 @@ const Discover = () => {
                   : collections.map((item) => (
                       <LayoutGroup id="collection" key={item.name}>
                         <VStack
-                          minwidth={
-                            size.width > 768
-                              ? "326px"
-                              : size.width > 425
-                              ? "326px"
-                              : "100%"
-                          }
-                          maxwidth="326px"
+                          width="326px"
                           height={size.width < 768 ? "440px" : "420px"}
                         >
                           <Collection

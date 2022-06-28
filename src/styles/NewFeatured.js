@@ -165,6 +165,7 @@ function NewFeatured(props) {
                       height="48px"
                       border="120px"
                       cursor={"pointer"}
+                      backsize="cover"
                     ></IconImg>
                   </HStack>
                 </AnimatePresence>

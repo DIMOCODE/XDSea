@@ -48,13 +48,15 @@ function Collection(props) {
   const scaleContainer = {
     initial: {
       scale: 1,
+      borderRadius: 15,
     },
     hover: {
-      scale: 1.02,
+      scale: 1,
       transition: {
         type: "spring",
         bounce: 0.15,
       },
+      borderRadius: 15,
     },
   };
   const background = {
@@ -81,25 +83,27 @@ function Collection(props) {
 
   return (
     <VStack
+      overflow="hidden"
+      border="15px"
       animate={isVisible ? "hover" : "initial"}
       variants={scaleContainer}
       onHoverStart={() => setIsVisible(true)}
       onHoverEnd={() => setIsVisible(false)}
-      overflow="hidden"
-      border="15px"
       background={({ theme }) => theme.backElement}
       onClick={onClickCollection}
+      width="100%"
+      bordersize="0px"
     >
-      <ZStack>
+      <ZStack overflow="hidden" border="15px">
         <ZItem>
           <IconImg
             url={collectionImage}
-            width="310px"
+            width="100%"
             height="100%"
             backsize="cover"
             animate={isVisible ? "initial" : "hover"}
             variants={scaleImage}
-            border="15px"
+            border="0px"
             overflow="hidden"
           ></IconImg>
         </ZItem>
@@ -111,8 +115,6 @@ function Collection(props) {
               // animate={isVisible ? "hover" : "initial"}
               variants={background}
               cursor={"pointer"}
-              border="9px"
-              overflow="hidden"
             >
               <VStack
                 cursor={"pointer"}
