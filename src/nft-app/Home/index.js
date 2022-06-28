@@ -6,7 +6,11 @@ import { nftaddress, nftmarketlayeraddress } from "../../config";
 import NFT from "../../abis/NFT.json";
 import NFTMarketLayer1 from "../../abis/NFTMarketLayer1.json";
 import axios from "axios";
-import { featuredNFTList, trendingItemList, verifiedProfiles } from "../../blacklist";
+import {
+  featuredNFTList,
+  trendingItemList,
+  verifiedProfiles,
+} from "../../blacklist";
 import styled from "styled-components";
 import iconTrending from "../../images/trendingNFT.png";
 import { NftContainer } from "../../styles/NftContainer";
@@ -92,29 +96,54 @@ const Home = () => {
           var featuredNFTMetadata = await axios.get(featuredNFTUri);
           let featuredNFTData = {
             collectionName: featuredNFTMetadata?.data?.collection?.name,
-            collectionLogo: featuredNFTMetadata?.data?.collection?.logo.split('/')[2] === "ipfs.infura.io" 
-              ? `https://${new CID(featuredNFTMetadata?.data?.collection?.logo.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-              : featuredNFTMetadata?.data?.collection?.logo,
-            image: featuredNFTMetadata?.data?.collection?.nft?.image.split('/')[2] === "ipfs.infura.io" 
-              ? `https://${new CID(featuredNFTMetadata?.data?.collection?.nft?.image.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-              : featuredNFTMetadata?.data?.collection?.nft?.image,
-            name: i === "3567"
-            ? "TAURULIOMPS 1/12"
-            : i === "3580"
-              ? "GEMINLIOMP 2/12"
-              : i === "3584"
+            collectionLogo:
+              featuredNFTMetadata?.data?.collection?.logo.split("/")[2] ===
+              "ipfs.infura.io"
+                ? `https://${new CID(
+                    featuredNFTMetadata?.data?.collection?.logo.split("/")[4]
+                  )
+                    .toV1()
+                    .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
+                : featuredNFTMetadata?.data?.collection?.logo,
+            image:
+              featuredNFTMetadata?.data?.collection?.nft?.image.split(
+                "/"
+              )[2] === "ipfs.infura.io"
+                ? `https://${new CID(
+                    featuredNFTMetadata?.data?.collection?.nft?.image.split(
+                      "/"
+                    )[4]
+                  )
+                    .toV1()
+                    .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
+                : featuredNFTMetadata?.data?.collection?.nft?.image,
+            name:
+              i === "3567"
+                ? "TAURULIOMPS 1/12"
+                : i === "3580"
+                ? "GEMINLIOMP 2/12"
+                : i === "3584"
                 ? "LIBRIOMP 2/12"
                 : i === "3650"
-                  ? "PISCELIOMPS 8/12"
-                  : i === "3679"
-                    ? "LEOIOMP 10/12"
-                    : i === "3695"
-                      ? "SAGITTARIOMPS 11/12"
-                      : featuredNFTMetadata?.data?.collection?.nft?.name,
+                ? "PISCELIOMPS 8/12"
+                : i === "3679"
+                ? "LEOIOMP 10/12"
+                : i === "3695"
+                ? "SAGITTARIOMPS 11/12"
+                : featuredNFTMetadata?.data?.collection?.nft?.name,
             fileType: featuredNFTMetadata?.data?.collection?.nft?.fileType,
-            preview: featuredNFTMetadata?.data?.collection?.nft?.preview.split('/')[2] === "ipfs.infura.io" 
-              ? `https://${new CID(featuredNFTMetadata?.data?.collection?.nft?.preview.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-              : featuredNFTMetadata?.data?.collection?.nft?.preview,
+            preview:
+              featuredNFTMetadata?.data?.collection?.nft?.preview.split(
+                "/"
+              )[2] === "ipfs.infura.io"
+                ? `https://${new CID(
+                    featuredNFTMetadata?.data?.collection?.nft?.preview.split(
+                      "/"
+                    )[4]
+                  )
+                    .toV1()
+                    .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
+                : featuredNFTMetadata?.data?.collection?.nft?.preview,
             creator: featuredNFTMetadata?.data?.collection?.creator,
             tokenId: i,
           };
@@ -186,34 +215,59 @@ const Home = () => {
           var price = await xdc3.utils.fromWei(itemData.price, "ether");
           let item = {
             price: price,
-            collectionLogo: trendingItemMetadata?.data?.collection?.logo.split('/')[2] === "ipfs.infura.io" 
-              ? `https://${new CID(trendingItemMetadata?.data?.collection?.logo.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-              : trendingItemMetadata?.data?.collection?.logo,
+            collectionLogo:
+              trendingItemMetadata?.data?.collection?.logo.split("/")[2] ===
+              "ipfs.infura.io"
+                ? `https://${new CID(
+                    trendingItemMetadata?.data?.collection?.logo.split("/")[4]
+                  )
+                    .toV1()
+                    .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
+                : trendingItemMetadata?.data?.collection?.logo,
             collectionName: trendingItemMetadata?.data?.collection?.name,
             tokenId: itemData.tokenId,
-            image: trendingItemMetadata?.data?.collection?.nft?.image.split('/')[2] === "ipfs.infura.io" 
-              ? `https://${new CID(trendingItemMetadata?.data?.collection?.nft?.image.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-              : trendingItemMetadata?.data?.collection?.nft?.image,
-            name: itemData.tokenId === "3567"
-              ? "TAURULIOMPS 1/12"
-              : itemData.tokenId === "3580"
+            image:
+              trendingItemMetadata?.data?.collection?.nft?.image.split(
+                "/"
+              )[2] === "ipfs.infura.io"
+                ? `https://${new CID(
+                    trendingItemMetadata?.data?.collection?.nft?.image.split(
+                      "/"
+                    )[4]
+                  )
+                    .toV1()
+                    .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
+                : trendingItemMetadata?.data?.collection?.nft?.image,
+            name:
+              itemData.tokenId === "3567"
+                ? "TAURULIOMPS 1/12"
+                : itemData.tokenId === "3580"
                 ? "GEMINLIOMP 2/12"
                 : itemData.tokenId === "3584"
-                  ? "LIBRIOMP 2/12"
-                  : itemData.tokenId === "3650"
-                    ? "PISCELIOMPS 8/12"
-                    : itemData.tokenId === "3679"
-                      ? "LEOIOMP 10/12"
-                      : itemData.tokenId === "3695"
-                        ? "SAGITTARIOMPS 11/12"
-                        : trendingItemMetadata?.data?.collection?.nft?.name,
+                ? "LIBRIOMP 2/12"
+                : itemData.tokenId === "3650"
+                ? "PISCELIOMPS 8/12"
+                : itemData.tokenId === "3679"
+                ? "LEOIOMP 10/12"
+                : itemData.tokenId === "3695"
+                ? "SAGITTARIOMPS 11/12"
+                : trendingItemMetadata?.data?.collection?.nft?.name,
             fileType: trendingItemMetadata?.data?.collection?.nft?.fileType,
-            preview: trendingItemMetadata?.data?.collection?.nft?.preview.split('/')[2] === "ipfs.infura.io" 
-              ? `https://${new CID(trendingItemMetadata?.data?.collection?.nft?.preview.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-              : trendingItemMetadata?.data?.collection?.nft?.preview,
+            preview:
+              trendingItemMetadata?.data?.collection?.nft?.preview.split(
+                "/"
+              )[2] === "ipfs.infura.io"
+                ? `https://${new CID(
+                    trendingItemMetadata?.data?.collection?.nft?.preview.split(
+                      "/"
+                    )[4]
+                  )
+                    .toV1()
+                    .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
+                : trendingItemMetadata?.data?.collection?.nft?.preview,
             isListed: itemData.isListed,
             offerCount: itemData.offerCount,
-            creator: itemData.creator
+            creator: itemData.creator,
           };
           return item;
         })
@@ -695,43 +749,37 @@ const Home = () => {
       </VStack> */}
 
       <VStack width="100%" padding="60px 0">
-        <VStack
-          width="100%"
-          height={size.width < 768 ? "200px" : "300px"}
-          border={size.width < 768 ? "0px" : "15px"}
-          overflow="hidden"
-          cursor="pointer"
-        >
-          <ZStack>
-            <ZItem>
-              <IconImg
-                url={bannerXDC}
-                width="100%"
-                height="300px"
-                border={size.width < 768 ? "0px" : "15px"}
-                backsize="cover"
-              ></IconImg>
-            </ZItem>
-            <ZItem>
-              <VStack
-                width="100%"
-                whileHover={{ scale: 1.05 }}
-                onClick={() => NavigateTo("HowToStart")}
-              >
-                <TitleBold27 textcolor={appStyle.colors.white}>
-                  Want to Get Started?
-                </TitleBold27>
-                <ButtonApp
-                  text="Here is How"
-                  textcolor={appStyle.colors.black}
-                  background={appStyle.colors.white}
-                  width="180px"
-                  cursor="pointer"
-                ></ButtonApp>
-              </VStack>
-            </ZItem>
-          </ZStack>
-        </VStack>
+        <ZStack height="300px">
+          <ZItem>
+            <IconImg
+              url={bannerXDC}
+              width="100%"
+              height="300px"
+              border={size.width < 768 ? "0px" : "15px"}
+              backsize="cover"
+            ></IconImg>
+          </ZItem>
+
+          <ZItem>
+            <VStack
+              width="100%"
+              height="100%"
+              whileHover={{ scale: 1.05 }}
+              onClick={() => NavigateTo("HowToStart")}
+            >
+              <TitleBold27 textcolor={appStyle.colors.white}>
+                Want to Get Started?
+              </TitleBold27>
+              <ButtonApp
+                text="Here is How"
+                textcolor={appStyle.colors.black}
+                background={appStyle.colors.white}
+                width="180px"
+                cursor="pointer"
+              ></ButtonApp>
+            </VStack>
+          </ZItem>
+        </ZStack>
       </VStack>
 
       <VStack

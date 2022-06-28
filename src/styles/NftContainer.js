@@ -97,7 +97,7 @@ function NftContainer(props) {
             <VStack
               animate={isVisible ? "hover" : "initial"}
               variants={scaleImage}
-              background={appStyle.colors.darkgrey10}
+              background={"black"}
               height="100%"
             >
               <ReactPlayer
@@ -138,15 +138,6 @@ function NftContainer(props) {
                     </ZItem>
 
                     <ZItem>
-                      <AbsoluteVerified>
-                        <IconImg
-                          url={verifiedBlue}
-                          width="21px"
-                          height="21px"
-                          border="120px"
-                        ></IconImg>
-                      </AbsoluteVerified>
-
                       <IconImg
                         url={verifiedShape}
                         width="48px"
@@ -159,6 +150,14 @@ function NftContainer(props) {
                           boxShadow: "0px 4px 2px rgba(0, 0, 0, 0.15)",
                         }}
                       ></IconImg>
+                      <AbsoluteVerified>
+                        <IconImg
+                          url={verifiedBlue}
+                          width="21px"
+                          height="21px"
+                          border="120px"
+                        ></IconImg>
+                      </AbsoluteVerified>
                     </ZItem>
                   </ZStack>
 

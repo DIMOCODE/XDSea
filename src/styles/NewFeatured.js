@@ -81,6 +81,7 @@ function NewFeatured(props) {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          border="9px"
         >
           <ZItem>
             {fileType.match("image.*") ? (
@@ -117,6 +118,7 @@ function NewFeatured(props) {
               spacing="9px"
               background="linear-gradient(180.3deg, rgba(0, 0, 0, 0) 64.14%, rgba(0, 0, 0, 0.3) 78.31%, #000000 96.66%)"
               cursor={"pointer"}
+              border="9px"
             >
               <HStack padding="0 15px">
                 <Spacer></Spacer>
