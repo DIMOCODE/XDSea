@@ -16,6 +16,9 @@ import {
   CaptionRegular,
   TitleBold21,
   BodyRegular,
+  CaptionBoldShort,
+  CaptionBold,
+  TitleBold18,
 } from "../../styles/TextStyles";
 import XDSealogo from "../../images/LogoXDSEA.png";
 import { WalletButton } from "../../styles/walletButton";
@@ -68,41 +71,43 @@ function TopBar(props) {
   };
 
   const connectMetamask = async () => {
-    if(window.ethereum) {
-      try{
-        const res = await window.ethereum.request({ method: "eth_requestAccounts" });
+    if (window.ethereum) {
+      try {
+        const res = await window.ethereum.request({
+          method: "eth_requestAccounts",
+        });
         setWallet({
-            connected: true,
-            address: res[0]
+          connected: true,
+          address: res[0],
         });
         onWalletChange({
           connected: true,
-          address: res[0]
+          address: res[0],
         });
         setIsMetamask(true);
         setShowMetamask(false);
-      }
-      catch (err) {
+      } catch (err) {
         setShowMetamask(false);
       }
-    }
-    else{
+    } else {
       setShowMetamask(false);
     }
-  }
+  };
 
   const disconnectMetamask = async () => {
-    const res = await window.ethereum.request({ method: "eth_requestAccounts" });
+    const res = await window.ethereum.request({
+      method: "eth_requestAccounts",
+    });
     setWallet({
-        connected: false,
-        address: res[0]
+      connected: false,
+      address: res[0],
     });
     onWalletChange({
       connected: false,
-      address: res[0]
+      address: res[0],
     });
     setIsMetamask(false);
-  }
+  };
 
   return (
     <ContentBar>
@@ -485,7 +490,9 @@ function TopBar(props) {
                             />
                           </Connect>
                           <WalletButton
-                            logout={isMetamask ? disconnectMetamask : Disconnect}
+                            logout={
+                              isMetamask ? disconnectMetamask : Disconnect
+                            }
                             status={wallet?.connected}
                             wallet={wallet}
                             onClickMetamask={() => setShowMetamask(true)}
@@ -631,31 +638,41 @@ function TopBar(props) {
                       btnStatus={0}
                     ></ButtonApp>
                     <Spacer></Spacer>
-                    <XdcConnect
-                      btnName=" "
-                      btnClass={`walletConnect ${
-                        wallet?.connected ? "hide" : ""
-                      }`}
-                      onConnect={(wallet) => {
-                        setWallet(wallet);
-                        onWalletChange(wallet);
-                      }}
-                      onAddressChange={(wallet) => {
-                        setWallet(wallet);
-                        onWalletChange(wallet);
-                      }}
-                      onDisconnect={(wallet) => {
-                        setWallet(wallet);
-                        onWalletChange(wallet);
-                      }}
-                    />
-
-                    <WalletButton
-                      logout={Disconnect}
-                      status={wallet?.connected}
-                      wallet={wallet}
-                      onClickMetamask={() => setShowMetamask(true)}
-                    ></WalletButton>
+                    <VStack maxwidth="180px">
+                      <ZStack>
+                        <ZItem>
+                          <Connect>
+                            <XdcConnect
+                              btnName={" "}
+                              btnClass={`walletConnectTablet ${
+                                wallet?.connected ? "hide" : ""
+                              }`}
+                              onConnect={(wallet) => {
+                                setWallet(wallet);
+                                onWalletChange(wallet);
+                              }}
+                              onAddressChange={(wallet) => {
+                                setWallet(wallet);
+                                onWalletChange(wallet);
+                              }}
+                              onDisconnect={(wallet) => {
+                                setWallet(wallet);
+                                onWalletChange(wallet);
+                              }}
+                            />
+                          </Connect>
+                          <WalletButton
+                            logout={
+                              isMetamask ? disconnectMetamask : Disconnect
+                            }
+                            status={wallet?.connected}
+                            wallet={wallet}
+                            onClickMetamask={() => setShowMetamask(true)}
+                            isMetamask={isMetamask}
+                          ></WalletButton>
+                        </ZItem>
+                      </ZStack>
+                    </VStack>
 
                     <SwitchButton clickOnSwitch={themeToggler}></SwitchButton>
                     {wallet?.connected ? (
@@ -688,11 +705,11 @@ function TopBar(props) {
             exit={{ opacity: 0 }}
             transition={{ type: "spring", damping: 10 }}
           >
-            <HStack height="100%">
-              <VStack
+            <VStack width="100%" height="100%" border="15px">
+              <HStack
+                self="none"
                 background={({ theme }) => theme.walletButton}
-                maxwidth="360px"
-                height="780px"
+                width="560px"
                 padding="15px"
                 border="15px"
               >
@@ -704,48 +721,103 @@ function TopBar(props) {
                   border="9px"
                 ></IconImg>
 
-                <VStack alignment="flex-start">
-                  <BodyBold textcolor={({ theme }) => theme.walletText}>
-                    Add XinFin Network to Metamask
-                  </BodyBold>
+                <VStack height="420px">
+                  <VStack alignment="flex-start">
+                    <HStack spacing="9px">
+                      <IconImg
+                        url={Metamask}
+                        width="49px"
+                        height="49px"
+                        backsize="cover"
+                        border="9px"
+                      ></IconImg>
+                      <TitleBold18 textcolor={({ theme }) => theme.walletText}>
+                        Add XinFin Network to Metamask
+                      </TitleBold18>
+                    </HStack>
+                    <Spacer></Spacer>
 
-                  <BodyRegular textcolor={({ theme }) => theme.walletText}>
-                    <b>Network Name:</b> Xinfin Mainnet
-                  </BodyRegular>
-                  <BodyRegular textcolor={({ theme }) => theme.walletText}>
-                    <b>URL:</b> https://erpc.xinfin.network
-                  </BodyRegular>
-                  <BodyRegular textcolor={({ theme }) => theme.walletText}>
-                    <b>Chain ID:</b> 50
-                  </BodyRegular>
-                  <BodyRegular textcolor={({ theme }) => theme.walletText}>
-                    <b>Currency Symbol:</b> XDC
-                  </BodyRegular>
-                  <BodyRegular textcolor={({ theme }) => theme.walletText}>
-                    <b>Block Explorer URL:</b> https://explorer.xinfin.network
-                  </BodyRegular>
+                    <HStack justify="flex-start">
+                      <CaptionRegular textcolor="rgba(255, 255, 255, 0.61)">
+                        Network Name:
+                      </CaptionRegular>
+                      <BodyRegular textcolor={({ theme }) => theme.walletText}>
+                        Xinfin Mainnet
+                      </BodyRegular>
+                    </HStack>
+
+                    <HStack justify="flex-start">
+                      <CaptionRegular textcolor="rgba(255, 255, 255, 0.61)">
+                        URL:
+                      </CaptionRegular>
+                      <BodyRegular textcolor={({ theme }) => theme.walletText}>
+                        https://erpc.xinfin.network
+                      </BodyRegular>
+                    </HStack>
+
+                    <HStack justify="flex-start">
+                      <CaptionRegular textcolor="rgba(255, 255, 255, 0.61)">
+                        Chain ID:
+                      </CaptionRegular>
+                      <BodyRegular textcolor={({ theme }) => theme.walletText}>
+                        50
+                      </BodyRegular>
+                    </HStack>
+
+                    <HStack justify="flex-start">
+                      <CaptionRegular textcolor="rgba(255, 255, 255, 0.61)">
+                        Currency Symbol:
+                      </CaptionRegular>
+                      <BodyRegular textcolor={({ theme }) => theme.walletText}>
+                        XDC
+                      </BodyRegular>
+                    </HStack>
+
+                    <VStack alignment="flex-start" spacing="3px">
+                      <CaptionRegular textcolor="rgba(255, 255, 255, 0.61)">
+                        Block Explorer URL:
+                      </CaptionRegular>
+                      <BodyRegular textcolor={({ theme }) => theme.walletText}>
+                        https://explorer.xinfin.network
+                      </BodyRegular>
+                    </VStack>
+                  </VStack>
+
+                  <Spacer></Spacer>
+
+                  <HStack
+                    whileHover={{ opacity: 0.8 }}
+                    whileTap={{ scale: 0.98 }}
+                    background="blue"
+                    minheight="39px"
+                    border="9px"
+                    cursor="pointer"
+                    onClick={connectMetamask}
+                  >
+                    <BodyBold cursor="pointer" textcolor="white">
+                      Connect Metamask
+                    </BodyBold>
+                  </HStack>
+
+                  <HStack
+                    whileHover={{ opacity: 0.8 }}
+                    whileTap={{ scale: 0.98 }}
+                    background="rgba(255, 255, 255, 0.12)"
+                    minheight="39px"
+                    border="9px"
+                    cursor="pointer"
+                    onClick={connectMetamask}
+                  >
+                    <BodyRegular
+                      onClick={() => setShowMetamask(false)}
+                      textcolor={({ theme }) => theme.walletText}
+                    >
+                      Close this
+                    </BodyRegular>
+                  </HStack>
                 </VStack>
-
-                <HStack
-                  whileHover={{ opacity: 0.8 }}
-                  whileTap={{ scale: 0.98 }}
-                  background="orange"
-                  minheight="39px"
-                  border="9px"
-                  cursor="pointer"
-                  onClick={connectMetamask}
-                >
-                  <BodyBold cursor="pointer" textcolor="black">Connect Metamask</BodyBold>
-                </HStack>
-
-                <BodyRegular
-                  onClick={() => setShowMetamask(false)}
-                  textcolor={({ theme }) => theme.walletText}
-                >
-                  Close this
-                </BodyRegular>
-              </VStack>
-            </HStack>
+              </HStack>
+            </VStack>
           </MetamaskSteps>
         </AnimatePresence>
       ) : null}
@@ -788,7 +860,8 @@ const MetamaskSteps = styled(motion.div)`
   position: absolute;
   top: 0px;
   background: rgba(0, 0, 0, 0.6);
-  width: 100%;
+  width: 100vw;
   height: 100vh;
+
   z-index: 100;
 `;
