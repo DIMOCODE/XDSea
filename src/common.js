@@ -1,6 +1,6 @@
 import Xdc3 from "xdc3";
 import { nftaddress, nftmarketaddress, nftmarketlayeraddress } from "./config";
-import { DEFAULT_PROVIDER } from "./constant";
+import { DEFAULT_PROVIDER, HEADER } from "./constant";
 import NFT from "./abis/NFT.json";
 import NFTMarket from "./abis/NFTMarket.json";
 import NFTMarketLayer1 from "./abis/NFTMarketLayer1.json";
@@ -10,7 +10,7 @@ import { fromXdc, isXdc } from "./common/common";
 export const BuyNFT = async (nft) => {
   try {
     const wallet = await GetWallet();
-    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
+    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
     // console.log(nft)
 
@@ -80,7 +80,7 @@ const countDecimals = (value) => {
 export const LegacyBuyNFT = async (nft) => {
   try {
     const wallet = await GetWallet();
-    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
+    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
     // console.log(nft)
 
@@ -132,7 +132,7 @@ export const SellNFT = async (approved, sellData, sellPrice) => {
   try {
     const wallet = await GetWallet();
     // console.log(wallet, approved, sellData, sellPrice);
-    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
+    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
     if (approved === false) {
       // console.log("Approving")
@@ -212,7 +212,7 @@ export const SellNFT = async (approved, sellData, sellPrice) => {
 export const WithdrawListing = async (approved, nft) => {
   try {
     const wallet = await GetWallet();
-    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
+    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
     if (approved === false) {
       // console.log("Approving")
@@ -280,7 +280,7 @@ export const WithdrawListing = async (approved, nft) => {
 export const LegacyWithdrawListing = async (approved, nft) => {
   try {
     const wallet = await GetWallet();
-    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
+    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
     if (approved === false) {
       // console.log("Approving")
@@ -348,7 +348,7 @@ export const LegacyWithdrawListing = async (approved, nft) => {
 export const TransferNFT = async (approved, transferNFT, transferAddress) => {
   try {
     const wallet = await GetWallet();
-    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
+    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
     // console.log(wallet, approved, transferNFT, transferAddress);
 
@@ -428,7 +428,7 @@ export const TransferNFT = async (approved, transferNFT, transferAddress) => {
 export const Offer = async (approved, offerNFT, offerPrice) => {
   try {
     const wallet = await GetWallet();
-    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
+    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
     if (approved === false) {
       // console.log("Approving")
@@ -507,7 +507,7 @@ export const Offer = async (approved, offerNFT, offerPrice) => {
 export const WithdrawOffer = async (approved, tokenId, offerId) => {
   try {
     const wallet = await GetWallet();
-    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
+    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
     if (approved === false) {
       // console.log("Approving")
@@ -568,7 +568,7 @@ export const WithdrawOffer = async (approved, tokenId, offerId) => {
 export const AcceptOffer = async (approved, tokenId, offerId) => {
   try {
     const wallet = await GetWallet();
-    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
+    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
     if (approved === false) {
       // console.log("Approving")
@@ -630,7 +630,7 @@ export const AcceptOffer = async (approved, tokenId, offerId) => {
 export const EditNFT = async (approved, sellData, sellPrice) => {
   try {
     const wallet = await GetWallet();
-    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
+    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
     if (approved === false) {
       // console.log("Approving")

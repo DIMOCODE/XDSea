@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import Xdc3 from "xdc3";
 import { nftaddress, nftmarketlayeraddress, nftmarketaddress } from "../../config";
-import { DEFAULT_PROVIDER } from "../../constant";
+import { DEFAULT_PROVIDER, HEADER } from "../../constant";
 import NFT from "../../abis/NFT.json";
 import NFTMarket from "../../abis/NFTMarket.json";
 import NFTMarketLayer1 from "../../abis/NFTMarketLayer1.json";
@@ -53,7 +53,7 @@ const Discover = () => {
   const getData = async () => {
     try {
       isSetLoading(true);
-      const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
+      const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
       const marketContract = new xdc3.eth.Contract(
         NFTMarketLayer1.abi,
         nftmarketlayeraddress,
@@ -220,7 +220,7 @@ const Discover = () => {
 
   const fetchMoreCollections = async () => {
     await new Promise((r) => setTimeout(r, 3000));
-    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
+    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
     const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
     var nextPage = [];
     await Promise.all(

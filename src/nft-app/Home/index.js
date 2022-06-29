@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import Xdc3 from "xdc3";
-import { DEFAULT_PROVIDER } from "../../constant";
+import { DEFAULT_PROVIDER, HEADER } from "../../constant";
 import { nftaddress, nftmarketlayeraddress } from "../../config";
 import NFT from "../../abis/NFT.json";
 import NFTMarketLayer1 from "../../abis/NFTMarketLayer1.json";
@@ -79,7 +79,7 @@ const Home = () => {
   const getData = async () => {
     try {
       isSetLoading(true);
-      const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
+      const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
       const marketContract = new xdc3.eth.Contract(
         NFTMarketLayer1.abi,
         nftmarketlayeraddress,

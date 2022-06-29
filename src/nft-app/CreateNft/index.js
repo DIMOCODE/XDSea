@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { create as ipfsHttpClient } from "ipfs-http-client";
 import { SendTransaction } from "xdc-connect";
 import Xdc3 from "xdc3";
-import { DEFAULT_PROVIDER } from "../../constant";
+import { DEFAULT_PROVIDER, HEADER } from "../../constant";
 import NFT from "../../abis/NFT.json";
 import { nftaddress, nftmarketlayeraddress } from "../../config";
 import { fromXdc, isXdc } from "../../common/common";
@@ -229,7 +229,8 @@ function CreateNft(props) {
     setRoyalty(0);
     setIsUnlockableContent(false);
     setUnlockableContent("");
-    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
+    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER
+        , HEADER));
     const marketContract = new xdc3.eth.Contract(
       NFTMarketLayer1.abi,
       nftmarketlayeraddress,
@@ -256,7 +257,8 @@ function CreateNft(props) {
   };
 
   const fetchCollection = async () => {
-    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
+    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER
+      , HEADER));
     const marketContract = new xdc3.eth.Contract(
       NFTMarketLayer1.abi,
       nftmarketlayeraddress,
@@ -294,7 +296,8 @@ function CreateNft(props) {
     const collectionName = document
       .getElementsByClassName("collection-name")[0]
       .value.replace(/\s+$/, "");
-    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
+    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER
+      , HEADER));
     const marketContract = new xdc3.eth.Contract(
       NFTMarketLayer1.abi,
       nftmarketlayeraddress,
@@ -361,7 +364,8 @@ function CreateNft(props) {
           // else {
           setMintButtonStatus(1);
           const xdc3 = new Xdc3(
-            new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER)
+            new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER
+              , HEADER)
           );
           const marketContract = new xdc3.eth.Contract(
             NFTMarketLayer1.abi,
@@ -506,7 +510,8 @@ function CreateNft(props) {
 
   const updateMarketplace = async (url) => {
     try {
-      const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
+      const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER
+        , HEADER));
       const contract = new xdc3.eth.Contract(
         NFT.abi,
         nftaddress,
@@ -1253,7 +1258,8 @@ function CreateNft(props) {
                     onBlur={async () => {
                       if (collection === "") {
                         const xdc3 = new Xdc3(
-                          new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER)
+                          new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER
+                            , HEADER)
                         );
                         const marketContract = new xdc3.eth.Contract(
                           NFTMarketLayer1.abi,
