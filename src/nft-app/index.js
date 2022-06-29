@@ -88,10 +88,12 @@ const NFTApp = () => {
               // isMobile={size.width < 768 ? true : false}
               // device={size.width > 768 ? "tablet" : "phone"}
               device={
-                size.width > 768
+                size.width > 1024
                   ? "computer"
-                  : size.width > 425
+                  : size.width > 768
                   ? "tablet"
+                  : size.width > 425
+                  ? "phone"
                   : "phone"
               }
               onWalletChange={handleWallet}

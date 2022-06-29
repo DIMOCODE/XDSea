@@ -8,14 +8,16 @@ import silver from "../images/silver.png";
 import copper from "../images/cupper.png";
 
 function Property(props) {
-  const { Title, Property, Rarity } = props;
+  const { Title, Property, Rarity, width } = props;
 
   return (
     <VStack
       background={({ theme }) => theme.backElement}
       border="9px"
-      minwidth="160px"
-      maxwidth="160px"
+      // minwidth="160px"
+      // maxwidth="160px"
+      maxwidth={width}
+      minwidth={width}
       height="120px"
       spacing="6px"
     >
@@ -38,7 +40,9 @@ function Property(props) {
         {Title || "Title"}
       </CaptionBoldShort>
       <BodyBold align="center">{Property || "Property"}</BodyBold>
-      <CaptionRegular>{Rarity || "Rarity"}% have this trait.</CaptionRegular>
+      <CaptionRegular align="center">
+        {Rarity || "Rarity"}% have this trait.
+      </CaptionRegular>
     </VStack>
   );
 }

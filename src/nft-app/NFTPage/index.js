@@ -21,7 +21,12 @@ import {
 } from "../../common";
 import { fromXdc, isXdc } from "../../common/common";
 import NFTMarketLayer1 from "../../abis/NFTMarketLayer1.json";
-import { permaBlacklist, contractFix, burnedNFTs, verifiedProfiles } from "../../blacklist";
+import {
+  permaBlacklist,
+  contractFix,
+  burnedNFTs,
+  verifiedProfiles,
+} from "../../blacklist";
 import Tooltip from "@mui/material/Tooltip";
 import lock from "../../images/unlockable2.gif";
 import mint from "../../images/mintIcon.png";
@@ -36,9 +41,20 @@ import offerAcceptedIcon from "../../images/offerAccepted.png";
 import tokenIcon from "../../images/tokenID.png";
 import blockchainIcon from "../../images/blockchainIcon.png";
 import banner1 from "../../images/Banner1.jpg";
-import { HStack, IconImg, VStack, Spacer, ZStack } from "../../styles/Stacks";
+import {
+  HStack,
+  IconImg,
+  VStack,
+  Spacer,
+  ZStack,
+  ZItem,
+} from "../../styles/Stacks";
 import xdclogo from "../../images/miniXdcLogo.png";
-import { AnimatePresence, motion } from "framer-motion/dist/framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  LayoutGroup,
+} from "framer-motion/dist/framer-motion";
 import gradientlocked from "../../images/gradientlocked.jpg";
 
 import linkSocial from "../../images/linkSocial.png";
@@ -112,7 +128,7 @@ const NFTDetails = (props) => {
   const [transferring, setTransferring] = useState(false);
   const [transferButtonStatus, setTransferButtonStatus] = useState(0);
   const [transferAddress, setTransferAddress] = useState(null);
-  const [isActive, setIsActive] = useState(2);
+  const [isActive, setIsActive] = useState(1);
   const [highestOffer, setHighestOffer] = useState(0);
   const [addressIsInvalid, setAddressIsInvalid] = useState(false);
   const [withdrawOfferButtonStatus, setWithdrawOfferButtonStatus] = useState(
@@ -136,7 +152,7 @@ const NFTDetails = (props) => {
   };
   const appear = {
     selected: { opacity: 1, y: 0 },
-    normal: { opacity: 0.3, y: 6 },
+    normal: { opacity: 0.3, y: -6 },
   };
   const flipping = {
     initial: {
@@ -407,33 +423,49 @@ const NFTDetails = (props) => {
         creator: item.creator,
         owner: item.owner,
         collectionName: metadata?.data?.collection?.name,
-        collectionLogo: metadata?.data?.collection?.logo.split('/')[2] === "ipfs.infura.io" 
-          ? `https://${new CID(metadata?.data?.collection?.logo.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-          : metadata?.data?.collection?.logo,
-        image: metadata?.data?.collection?.nft?.image.split('/')[2] === "ipfs.infura.io" 
-          ? `https://${new CID(metadata?.data?.collection?.nft?.image.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-          : metadata?.data?.collection?.nft?.image,
-        name: item.tokenId === "3567"
-          ? "TAURULIOMPS 1/12"
-          : item.tokenId === "3580"
+        collectionLogo:
+          metadata?.data?.collection?.logo.split("/")[2] === "ipfs.infura.io"
+            ? `https://${new CID(metadata?.data?.collection?.logo.split("/")[4])
+                .toV1()
+                .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
+            : metadata?.data?.collection?.logo,
+        image:
+          metadata?.data?.collection?.nft?.image.split("/")[2] ===
+          "ipfs.infura.io"
+            ? `https://${new CID(
+                metadata?.data?.collection?.nft?.image.split("/")[4]
+              )
+                .toV1()
+                .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
+            : metadata?.data?.collection?.nft?.image,
+        name:
+          item.tokenId === "3567"
+            ? "TAURULIOMPS 1/12"
+            : item.tokenId === "3580"
             ? "GEMINLIOMP 2/12"
             : item.tokenId === "3584"
-              ? "LIBRIOMP 2/12"
-              : item.tokenId === "3650"
-                ? "PISCELIOMPS 8/12"
-                : item.tokenId === "3679"
-                  ? "LEOIOMP 10/12"
-                  : item.tokenId === "3695"
-                    ? "SAGITTARIOMPS 11/12"
-                    : metadata?.data?.collection?.nft?.name,
+            ? "LIBRIOMP 2/12"
+            : item.tokenId === "3650"
+            ? "PISCELIOMPS 8/12"
+            : item.tokenId === "3679"
+            ? "LEOIOMP 10/12"
+            : item.tokenId === "3695"
+            ? "SAGITTARIOMPS 11/12"
+            : metadata?.data?.collection?.nft?.name,
         description: metadata?.data?.collection?.nft?.description,
         nftContract: item.nftContract,
         isListed: item.isListed,
         properties: metadata?.data?.collection?.nft?.properties,
         fileType: metadata?.data?.collection?.nft?.fileType,
-        preview: metadata?.data?.collection?.nft?.preview.split('/')[2] === "ipfs.infura.io" 
-          ? `https://${new CID(metadata?.data?.collection?.nft?.preview.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-          : metadata?.data?.collection?.nft?.preview,
+        preview:
+          metadata?.data?.collection?.nft?.preview.split("/")[2] ===
+          "ipfs.infura.io"
+            ? `https://${new CID(
+                metadata?.data?.collection?.nft?.preview.split("/")[4]
+              )
+                .toV1()
+                .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
+            : metadata?.data?.collection?.nft?.preview,
         royalty: metadata?.data?.collection?.nft?.royalty,
         unlockableContent: metadata?.data?.collection?.nft?.unlockableContent,
       };
@@ -456,32 +488,51 @@ const NFTDetails = (props) => {
             owner: i.owner,
             creator: i.creator,
             collectionName: metadata?.data?.collection?.name,
-            collectionLogo: metadata?.data?.collection?.logo.split('/')[2] === "ipfs.infura.io" 
-              ? `https://${new CID(metadata?.data?.collection?.logo.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-              : metadata?.data?.collection?.logo,
-            image: metadata?.data?.collection?.nft?.image.split('/')[2] === "ipfs.infura.io" 
-              ? `https://${new CID(metadata?.data?.collection?.nft?.image.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-              : metadata?.data?.collection?.nft?.image,
-            name: i.tokenId === "3567"
-              ? "TAURULIOMPS 1/12"
-              : i.tokenId === "3580"
+            collectionLogo:
+              metadata?.data?.collection?.logo.split("/")[2] ===
+              "ipfs.infura.io"
+                ? `https://${new CID(
+                    metadata?.data?.collection?.logo.split("/")[4]
+                  )
+                    .toV1()
+                    .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
+                : metadata?.data?.collection?.logo,
+            image:
+              metadata?.data?.collection?.nft?.image.split("/")[2] ===
+              "ipfs.infura.io"
+                ? `https://${new CID(
+                    metadata?.data?.collection?.nft?.image.split("/")[4]
+                  )
+                    .toV1()
+                    .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
+                : metadata?.data?.collection?.nft?.image,
+            name:
+              i.tokenId === "3567"
+                ? "TAURULIOMPS 1/12"
+                : i.tokenId === "3580"
                 ? "GEMINLIOMP 2/12"
                 : i.tokenId === "3584"
-                  ? "LIBRIOMP 2/12"
-                  : i.tokenId === "3650"
-                    ? "PISCELIOMPS 8/12"
-                    : i.tokenId === "3679"
-                      ? "LEOIOMP 10/12"
-                      : i.tokenId === "3695"
-                        ? "SAGITTARIOMPS 11/12"
-                        : metadata?.data?.collection?.nft?.name,
+                ? "LIBRIOMP 2/12"
+                : i.tokenId === "3650"
+                ? "PISCELIOMPS 8/12"
+                : i.tokenId === "3679"
+                ? "LEOIOMP 10/12"
+                : i.tokenId === "3695"
+                ? "SAGITTARIOMPS 11/12"
+                : metadata?.data?.collection?.nft?.name,
             description: metadata?.data?.collection?.nft?.description,
             nftContract: i.nftContract,
             properties: metadata?.data?.collection?.nft?.properties,
             fileType: metadata?.data?.collection?.nft?.fileType,
-            preview: metadata?.data?.collection?.nft?.preview.split('/')[2] === "ipfs.infura.io" 
-              ? `https://${new CID(metadata?.data?.collection?.nft?.preview.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-              : metadata?.data?.collection?.nft?.preview,
+            preview:
+              metadata?.data?.collection?.nft?.preview.split("/")[2] ===
+              "ipfs.infura.io"
+                ? `https://${new CID(
+                    metadata?.data?.collection?.nft?.preview.split("/")[4]
+                  )
+                    .toV1()
+                    .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
+                : metadata?.data?.collection?.nft?.preview,
           };
           if (
             i.tokenId !== currentItem.tokenId &&
@@ -558,7 +609,7 @@ const NFTDetails = (props) => {
 
   const truncateAddress = (address) => {
     return address
-      ? address.substring(0, 7) + "..." + address.substring(38)
+      ? address.substring(0, 7) + "..." + address.substring(33)
       : "undefined";
   };
 
@@ -880,116 +931,120 @@ const NFTDetails = (props) => {
       <ContentNftPage>
         <VStack height="auto" padding="90px 0 0 0 ">
           <HStack height="100%" responsive={true} alignment="flex-start">
-            <VStack width="100%" padding="30px 15px">
-              <VStack width={size.width < 768 ? "100%" : "540px"}>
-                {nft?.name ? (
-                  <VStack width="100%">
-                    <VStack alignment="flex-start" width="100%" spacing="6px">
-                      <TitleBold27>{nft?.name}</TitleBold27>
-                      <ButtonApp
-                        height="30px"
-                        text={nft?.collectionName}
-                        background={({ theme }) => theme.walletButton}
-                        textcolor={({ theme }) => theme.walletText}
-                        cursor="pointer"
-                        onClick={() =>
-                          NavigateTo(`collection/${nft?.collectionName}`)
-                        }
-                        btnStatus={0}
-                      ></ButtonApp>
-                    </VStack>
-                  </VStack>
-                ) : (
-                  <VStack alignment="flex-start" width="100%" spacing="9px">
-                    <HStack
-                      background="rgba(153, 162, 175, 0.21)"
-                      key="Title"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{
-                        repeat: Infinity,
-                        repeatType: "reverse",
-                        duration: 0.6,
-                        delay: 0,
-                      }}
-                      border="9px"
-                      width="300px"
-                      height="39px"
-                    ></HStack>
-                    <HStack
-                      background="rgba(153, 162, 175, 0.21)"
-                      key="Collection"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{
-                        repeat: Infinity,
-                        repeatType: "reverse",
-                        duration: 0.6,
-                        delay: 0,
-                      }}
-                      border="9px"
-                      width="260px"
+            {/* NFT Image  */}
+            <VStack width="100%" padding="21px">
+              {/* NFT Title Loader  */}
+              {nft?.name ? (
+                <VStack width="100%">
+                  <VStack alignment="flex-start" width="100%" spacing="6px">
+                    <TitleBold27>{nft?.name}</TitleBold27>
+                    <ButtonApp
                       height="30px"
-                    ></HStack>
-                    <HStack
-                      background="rgba(153, 162, 175, 0.21)"
-                      key="Creator"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{
-                        repeat: Infinity,
-                        repeatType: "reverse",
-                        duration: 0.6,
-                        delay: 0,
-                      }}
-                      border="9px"
-                      width="360px"
-                      height="26px"
-                    ></HStack>
+                      text={nft?.collectionName}
+                      background={({ theme }) => theme.walletButton}
+                      textcolor={({ theme }) => theme.walletText}
+                      cursor="pointer"
+                      onClick={() =>
+                        NavigateTo(`collection/${nft?.collectionName}`)
+                      }
+                      btnStatus={0}
+                    ></ButtonApp>
                   </VStack>
-                )}
-                {wallet?.address?.toLowerCase() === nft?.owner?.toLowerCase() ? (
-                  <LockedContent>
-                    <VStack
-                      background={({ theme }) => theme.fadedlocked}
-                      width="100%"
-                      height="50%"
-                      border="15px"
-                      alignment="flex-start"
-                      padding="30px 15px 30px 15px"
-                      initial={{ opacity: 0, scale: 1 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{
-                        type: "spring",
-                        duration: 1.1,
-                        delay: 5,
-                      }}
-                    >
-                      <Spacer></Spacer>
-                      <CaptionBold animate={{ opacity: 0.3 }} textcolor="white">
-                        LOCKED CONTENT
-                      </CaptionBold>
-                      <HStack textcolor="white">
-                        {nft?.unlockableContent}
-                      </HStack>
-                    </VStack>
-                  </LockedContent>
-                ) : null}
-
-                <AnimatePresence>
-                  <ZStack
-                    variants={flipping}
-                    animate={isFlip ? "finished" : "initial"}
+                </VStack>
+              ) : (
+                <VStack alignment="flex-start" width="100%" spacing="9px">
+                  <HStack
+                    background="rgba(153, 162, 175, 0.21)"
+                    key="Title"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{
+                      repeat: Infinity,
+                      repeatType: "reverse",
+                      duration: 0.6,
+                      delay: 0,
+                    }}
+                    border="9px"
+                    width="300px"
+                    height="39px"
+                  ></HStack>
+                  <HStack
+                    background="rgba(153, 162, 175, 0.21)"
+                    key="Collection"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{
+                      repeat: Infinity,
+                      repeatType: "reverse",
+                      duration: 0.6,
+                      delay: 0,
+                    }}
+                    border="9px"
+                    width="260px"
+                    height="30px"
+                  ></HStack>
+                  <HStack
+                    background="rgba(153, 162, 175, 0.21)"
+                    key="Creator"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{
+                      repeat: Infinity,
+                      repeatType: "reverse",
+                      duration: 0.6,
+                      delay: 0,
+                    }}
+                    border="9px"
+                    width="360px"
+                    height="26px"
+                  ></HStack>
+                </VStack>
+              )}
+              {/* NFT Locked Content  */}
+              {nft?.name ? (
+                <LockedContent>
+                  <VStack
+                    background={({ theme }) => theme.fadedlocked}
+                    width="100%"
+                    height="50%"
+                    border="15px"
+                    alignment="flex-start"
+                    padding="30px 15px 30px 15px"
+                    initial={{ opacity: 0, scale: 1 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{
+                      type: "spring",
+                      duration: 1.1,
+                      delay: 5,
+                    }}
                   >
+                    <Spacer></Spacer>
+                    <CaptionBold animate={{ opacity: 0.3 }} textcolor="white">
+                      LOCKED CONTENT
+                    </CaptionBold>
+                    <HStack textcolor="white">{nft?.unlockableContent}</HStack>
+                  </VStack>
+                </LockedContent>
+              ) : null}
+
+              {/* NFT Image, Video, Audio, Content  */}
+              <AnimatePresence>
+                <ZStack
+                  variants={flipping}
+                  animate={isFlip ? "finished" : "initial"}
+                  height="540px"
+                >
+                  <ZItem>
                     {isImage(nft?.fileType) ? (
                       <VStack>
                         {(isXdc(wallet?.address)
                           ? fromXdc(wallet?.address?.toLowerCase())
-                          : wallet?.address?.toLowerCase()) === nft?.owner?.toLowerCase() &&
+                          : wallet?.address?.toLowerCase()) ===
+                          nft?.owner?.toLowerCase() &&
                         nft?.unlockableContent !== undefined &&
                         nft?.unlockableContent !== "" ? (
                           <AnimatePresence>
@@ -1035,7 +1090,7 @@ const NFTDetails = (props) => {
                         <IconImg
                           url={nft?.image}
                           width="100%"
-                          height={size.width < 768 ? "360px" : "540px"}
+                          height="540px"
                           border="15px"
                           key="imageNFT"
                           initial={{ opacity: 0, scale: 0.9 }}
@@ -1050,13 +1105,15 @@ const NFTDetails = (props) => {
                         width="100%"
                         height="540px"
                         border="15px"
-                        background={({ theme }) => theme.backElement}
+                        // background={({ theme }) => theme.backElement}
+                        background="black"
                         overflow="hidden"
                         cursor="pointer"
                       >
                         {(isXdc(wallet?.address)
                           ? fromXdc(wallet?.address?.toLowerCase())
-                          : wallet?.address?.toLowerCase()) === nft?.owner?.toLowerCase() &&
+                          : wallet?.address?.toLowerCase()) ===
+                          nft?.owner?.toLowerCase() &&
                         nft?.unlockableContent !== undefined &&
                         nft?.unlockableContent !== "" ? (
                           <AnimatePresence>
@@ -1121,7 +1178,8 @@ const NFTDetails = (props) => {
                       >
                         {(isXdc(wallet?.address)
                           ? fromXdc(wallet?.address?.toLowerCase())
-                          : wallet?.address?.toLowerCase()) === nft?.owner?.toLowerCase() &&
+                          : wallet?.address?.toLowerCase()) ===
+                          nft?.owner?.toLowerCase() &&
                         nft?.unlockableContent !== undefined &&
                         nft?.unlockableContent !== "" ? (
                           <AnimatePresence>
@@ -1176,7 +1234,7 @@ const NFTDetails = (props) => {
                     ) : (
                       <VStack
                         width="100%"
-                        minheight={size.width < 768 ? "360px" : "540px"}
+                        height="100%"
                         key="loader"
                         initial={{ opacity: 0, scale: 1 }}
                         animate={{ opacity: 1, scale: 0.9 }}
@@ -1186,58 +1244,52 @@ const NFTDetails = (props) => {
                         <LoadingNftContainer></LoadingNftContainer>
                       </VStack>
                     )}
-                  </ZStack>
-                </AnimatePresence>
+                  </ZItem>
+                </ZStack>
+              </AnimatePresence>
 
+              <HStack
+                background={({ theme }) => theme.backElement}
+                width="100%"
+                height="49px"
+                border="9px"
+              >
+                <CaptionRegular>Owned by</CaptionRegular>
                 <HStack
-                  background={({ theme }) => theme.backElement}
-                  width="100%"
-                  height="49px"
-                  border="9px"
+                  spacing="6px"
+                  cursor="pointer"
+                  onClick={() => NavigateTo(`UserProfile/${nft?.owner}`)}
                 >
-                  <CaptionRegular>Owned by</CaptionRegular>
-                  <HStack
-                    spacing="6px"
-                    cursor="pointer"
-                    onClick={() => NavigateTo(`UserProfile/${nft?.owner}`)}
-                  >
-                    <IconImg
-                      url={banner1}
-                      width="18px"
-                      height="18px"
-                      backsize="cover"
-                      border="18px"
-                    ></IconImg>
-                    {nft?.owner ? (
-                      <Tooltip title={nft?.owner ? nft.owner : "-"}>
-                        <BodyBold cursor={"pointer"}>
-                          {truncateAddress(nft?.owner)}
-                        </BodyBold>
-                      </Tooltip>
-                    ) : (
-                      <ImpulseSpinner
-                        size={30}
-                        frontColor="#99A2AF"
-                        backColor="#686769"
-                        loading={true}
-                      />
-                    )}
-                  </HStack>
+                  <IconImg
+                    url={banner1}
+                    width="18px"
+                    height="18px"
+                    backsize="cover"
+                    border="18px"
+                  ></IconImg>
+                  {nft?.owner ? (
+                    <Tooltip title={nft?.owner ? nft.owner : "-"}>
+                      <BodyBold cursor={"pointer"}>
+                        {truncateAddress(nft?.owner)}
+                      </BodyBold>
+                    </Tooltip>
+                  ) : (
+                    <ImpulseSpinner
+                      size={30}
+                      frontColor="#99A2AF"
+                      backColor="#686769"
+                      loading={true}
+                    />
+                  )}
                 </HStack>
-              </VStack>
+              </HStack>
             </VStack>
 
             {/* NFT Description */}
             <VStack width="100%" padding="21px 21px">
-              <VStack width={size.width < 768 ? "100%" : "100%"}>
-                <VStack
-                  height={size.width < 768 ? "450px" : "auto"}
-                  width="100%"
-                  spacing="0px"
-                  border="9px"
-                >
-                  <HStack height="60px" justify="flex-start">
-                    {propertyProportions[0]?.property === "" ? null : (
+              {/* NFT Description Tabs */}
+              <HStack height="60px" justify="flex-start">
+                {/* {propertyProportions[0]?.property === "" ? null : (
                       <TitleBold18
                         animate={isActive === 0 ? "selected" : "normal"}
                         variants={variants}
@@ -1246,67 +1298,64 @@ const NFTDetails = (props) => {
                       >
                         Description
                       </TitleBold18>
-                    )}
-                    <TitleBold18
-                      animate={isActive === 1 ? "selected" : "normal"}
-                      variants={variants}
-                      onClick={() => setIsActive(1)}
-                      cursor="pointer"
-                    >
-                      Properties
-                    </TitleBold18>
-                    <TitleBold18
-                      animate={isActive === 2 ? "selected" : "normal"}
-                      variants={variants}
-                      onClick={() => setIsActive(2)}
-                      cursor="pointer"
-                    >
-                      Token Details
-                    </TitleBold18>
-                  </HStack>
-                  <AnimatePresence>
-                    <ZStack>
-                      {isActive === 0 && (
-                        <HStack
-                          variants={appear}
-                          key={1}
-                          initial="normal"
-                          animate="selected"
-                          layoutId={1}
-                          layout="position"
-                          exit="normal"
-                          spacing="6px"
-                          width="100%"
-                          padding="30px"
-                          height="100%"
-                          background={({ theme }) => theme.backElement}
-                          border="9px"
-                        >
+                    )} */}
+                <TitleBold18
+                  animate={isActive === 1 ? "selected" : "normal"}
+                  variants={variants}
+                  onClick={() => setIsActive(1)}
+                  cursor="pointer"
+                >
+                  Properties
+                </TitleBold18>
+                <TitleBold18
+                  animate={isActive === 2 ? "selected" : "normal"}
+                  variants={variants}
+                  onClick={() => setIsActive(2)}
+                  cursor="pointer"
+                >
+                  Token Details
+                </TitleBold18>
+              </HStack>
+
+              {/* Description and Token Info */}
+
+              <AnimatePresence initial={false}>
+                <LayoutGroup id="NFTProperties">
+                  <ZStack>
+                    {isActive === 1 && (
+                      <ZItem>
+                        <VStack height="auto">
                           <BodyRegular>{nft?.description}</BodyRegular>
-                        </HStack>
-                      )}
-                      {isActive === 1 && (
-                        <VStack>
+
                           <motion.div>
                             <HStack
                               variants={appear}
                               key={2}
                               initial="normal"
                               animate="selected"
-                              layoutId={2}
-                              layout="position"
                               exit="normal"
                               flexwrap="wrap"
                               spacing="6px"
                               width="100%"
                               justify="flex-start"
-                              padding={
-                                size.width < 768 ? "0 0 12px 15px" : "5px"
-                              }
+                              // padding={
+                              //   size.width < 768 ? "0 0 12px 15px" : "5px"
+                              // }
                             >
                               {propertyProportions[0]?.property !== ""
                                 ? propertyProportions.map((property, index) => (
                                     <Property
+                                      width={
+                                        size.width > 1300
+                                          ? "176px"
+                                          : size.width > 1024
+                                          ? "164px"
+                                          : size.width > 768
+                                          ? "150px"
+                                          : size.width > 480
+                                          ? "160px"
+                                          : "120px"
+                                      }
                                       key={index}
                                       Title={property.property}
                                       Property={property.value}
@@ -1317,9 +1366,11 @@ const NFTDetails = (props) => {
                             </HStack>
                           </motion.div>
                         </VStack>
-                      )}
-                      {isActive === 2 && (
-                        <HStack
+                      </ZItem>
+                    )}
+                    {isActive === 2 && (
+                      <ZItem>
+                        <VStack
                           variants={appear}
                           key={3}
                           initial="normal"
@@ -1327,371 +1378,380 @@ const NFTDetails = (props) => {
                           layoutId={3}
                           layout="position"
                           exit="normal"
-                          flexwrap="wrap"
                           spacing="6px"
                           width="100%"
                           background={({ theme }) => theme.backElement}
                           border="9px"
                           justify="flex-start"
                           padding={"12px"}
-                          height={"100%"}
+                          height="150px"
                         >
-                          <VStack width="100%" height="auto">
-                            <HStack width="100%" height="36px">
-                              <IconImg
-                                url={mint}
-                                width="21px"
-                                height="21px"
-                              ></IconImg>
-                              <CaptionBoldShort>NFT Address</CaptionBoldShort>
-                              <Spacer></Spacer>
-                              <HStack spacing="6px">
-                                <Tooltip title={nftaddress}>
-                                  <TitleBold18>
-                                    {truncateAddress(nftaddress)}
-                                  </TitleBold18>
-                                </Tooltip>
-                              </HStack>
+                          <HStack width="100%" height="36px">
+                            <IconImg
+                              url={mint}
+                              width="21px"
+                              height="21px"
+                            ></IconImg>
+                            <CaptionBoldShort>NFT Address</CaptionBoldShort>
+                            <Spacer></Spacer>
+                            <HStack spacing="6px">
+                              <Tooltip title={nftaddress}>
+                                <TitleBold18>
+                                  {truncateAddress(nftaddress)}
+                                </TitleBold18>
+                              </Tooltip>
                             </HStack>
-                            <HStack width="100%" height="36px">
-                              <IconImg
-                                url={tokenIcon}
-                                width="21px"
-                                height="21px"
-                              ></IconImg>
-                              <CaptionBoldShort>Token ID</CaptionBoldShort>
-                              <Spacer></Spacer>
-                              <HStack spacing="6px">
-                                <TitleBold18>{nft?.tokenId}</TitleBold18>
-                              </HStack>
+                          </HStack>
+                          <HStack width="100%" height="36px">
+                            <IconImg
+                              url={tokenIcon}
+                              width="21px"
+                              height="21px"
+                            ></IconImg>
+                            <CaptionBoldShort>Token ID</CaptionBoldShort>
+                            <Spacer></Spacer>
+                            <HStack spacing="6px">
+                              <TitleBold18>{nft?.tokenId}</TitleBold18>
                             </HStack>
-                            <HStack width="100%" height="36px">
+                          </HStack>
+                          <HStack width="100%" height="36px">
+                            <IconImg
+                              url={blockchainIcon}
+                              width="21px"
+                              height="21px"
+                            ></IconImg>
+                            <CaptionBoldShort>Blockchain</CaptionBoldShort>
+                            <Spacer></Spacer>
+                            <HStack spacing="6px">
                               <IconImg
-                                url={blockchainIcon}
-                                width="21px"
-                                height="21px"
+                                url={xinfinLogo}
+                                width="18px"
+                                height="18px"
                               ></IconImg>
-                              <CaptionBoldShort>Blockchain</CaptionBoldShort>
-                              <Spacer></Spacer>
-                              <HStack spacing="6px">
-                                <IconImg
-                                  url={xinfinLogo}
-                                  width="18px"
-                                  height="18px"
-                                ></IconImg>
-                                <TitleBold18>XDC</TitleBold18>
-                              </HStack>
+                              <TitleBold18>XDC</TitleBold18>
                             </HStack>
-                          </VStack>
-                        </HStack>
-                      )}
-                    </ZStack>
-                  </AnimatePresence>
-                </VStack>
-                <HStack
-                  spacing="9px"
-                  justify="flex-start"
-                  border="9px"
-                  padding="12px"
-                  background={({ theme }) => theme.backElement}
-                >
-                  <VStack spacing="6px" alignment="flex-start">
-                    <CaptionBoldShort>CREATOR</CaptionBoldShort>
-                    <HStack
-                      spacing="6px"
+                          </HStack>
+                        </VStack>
+                      </ZItem>
+                    )}
+                  </ZStack>
+                </LayoutGroup>
+              </AnimatePresence>
+
+              {/* Creator */}
+              <HStack
+                spacing="9px"
+                justify="flex-start"
+                border="9px"
+                padding="12px"
+                background={({ theme }) => theme.backElement}
+              >
+                <CaptionBoldShort>CREATOR</CaptionBoldShort>
+                <Spacer></Spacer>
+
+                {nft?.creator ? (
+                  <HStack
+                    spacing="6px"
+                    cursor={"pointer"}
+                    width="auto"
+                    onClick={() => NavigateTo(`UserProfile/${nft?.creator}`)}
+                  >
+                    <IconImg
+                      url={nft?.collectionLogo}
+                      width="26px"
+                      height="26px"
+                      border="30px"
                       cursor={"pointer"}
-                      width="auto"
-                      onClick={() => NavigateTo(`UserProfile/${nft?.creator}`)}
-                    >
-                      <IconImg
-                        url={nft?.collectionLogo}
-                        width="18px"
-                        height="18px"
-                        border="30px"
-                        cursor={"pointer"}
-                      ></IconImg>
-                      {/* {console.log(nft)} */}
-                      <Tooltip title={nft?.creator ? nft.creator : "-"}>
-                        <BodyBold>{truncateAddress(nft?.creator)}</BodyBold>
-                      </Tooltip>
-                    </HStack>
-                  </VStack>
-                  <Spacer></Spacer>
-                  <CaptionRegular>
-                    {nft?.royalty ? parseInt(nft?.royalty) : "0"}% Royalty
-                  </CaptionRegular>
-                </HStack>
+                      backsize="cover"
+                    ></IconImg>
 
-                <HStack
-                  justify="flex-start"
-                  border="9px"
-                  padding="12px"
-                  spacing="15px"
-                  background={({ theme }) => theme.backElement}
-                >
-                  <CaptionBoldShort>SHARE</CaptionBoldShort>
-                  <Spacer></Spacer>
-                  <FacebookShareButton
-                    url={"https://www.xdsea.com" + webLocation.pathname}
-                    quote={"Check out this NFT!"}
-                    hashtag={["#XDSea"]}
-                    description={"XDSea NFT Marketplace"}
-                    className="Demo__some-network__share-button"
-                  >
-                    <a>
-                      <IconImg
-                        url={facebookSocial}
-                        width="30px"
-                        height="30px"
-                      ></IconImg>
-                    </a>
-                  </FacebookShareButton>
-                  <TwitterShareButton
-                    title={"Check out this NFT!"}
-                    url={"https://www.xdsea.com" + webLocation.pathname}
-                    hashtags={["XDSea", "BuildItOnXDC"]}
-                  >
-                    <a>
-                      <IconImg
-                        url={twitterSocial}
-                        width="30px"
-                        height="30px"
-                      ></IconImg>
-                    </a>
-                  </TwitterShareButton>
-                  <TelegramShareButton
-                    title={"Check out this NFT!"}
-                    url={"https://www.xdsea.com" + webLocation.pathname}
-                  >
-                    <a>
-                      <IconImg
-                        url={telegramSocial}
-                        width="30px"
-                        height="30px"
-                      ></IconImg>
-                    </a>
-                  </TelegramShareButton>
-                  <WhatsappShareButton
-                    title={"Check out this NFT!"}
-                    url={"https://www.xdsea.com" + webLocation.pathname}
-                  >
-                    <a>
-                      <IconImg
-                        url={whatsSocial}
-                        width="30px"
-                        height="30px"
-                      ></IconImg>
-                    </a>
-                  </WhatsappShareButton>
-                  {copied ? (
-                    <HStack
-                      background={({ theme }) => theme.faded}
-                      padding="3px 9px"
-                      border="6px"
-                    >
-                      <CaptionBoldShort>COPIED</CaptionBoldShort>
-                    </HStack>
-                  ) : (
-                    <a>
-                      <IconImg
-                        onClick={copy}
-                        url={linkSocial}
-                        width="30px"
-                        height="30px"
-                      ></IconImg>
-                    </a>
-                  )}
-
-                  <Spacer></Spacer>
-                </HStack>
-
-                <VStack
-                  background={({ theme }) => theme.backElement}
-                  width="100%"
-                  height="auto"
-                  border="9px"
-                  padding="6px 15px"
-                >
-                  <HStack width="100%" height="36px">
-                    <IconImg url={star} width="18px" height="18px"></IconImg>
-                    <CaptionBoldShort>Price</CaptionBoldShort>
-                    <Spacer></Spacer>
-                    <HStack spacing="6px">
-                      <IconImg
-                        url={xdclogo}
-                        width="18px"
-                        height="18px"
-                      ></IconImg>
-                      <TitleBold18>
-                        {Number(nft?.price).toLocaleString(undefined, {
-                          maximumFractionDigits: 2,
-                        })}
-                      </TitleBold18>
-                      <CaptionBoldShort>XDC</CaptionBoldShort>
-                    </HStack>
+                    <Tooltip title={nft?.creator ? nft.creator : "-"}>
+                      <BodyBold>{truncateAddress(nft?.creator)}</BodyBold>
+                    </Tooltip>
                   </HStack>
-                  <HStack width="100%" height="36px">
-                    <IconImg url={tagBlue} width="18px" height="18px"></IconImg>
-                    <CaptionBoldShort>Highest Offer</CaptionBoldShort>
-                    <Spacer></Spacer>
-                    <HStack spacing="6px">
-                      {highestOffer === 0 ? (
-                        <TitleBold18>-</TitleBold18>
-                      ) : (
-                        <>
-                          <IconImg
-                            url={xdclogo}
-                            width="18px"
-                            height="18px"
-                          ></IconImg>
-                          <TitleBold18>
-                            {parseInt(highestOffer).toLocaleString(undefined, {
-                              maximumFractionDigits: 2,
-                            })}
-                          </TitleBold18>
-                          <CaptionBoldShort>XDC</CaptionBoldShort>
-                        </>
-                      )}
-                    </HStack>
+                ) : (
+                  "Loading"
+                )}
+
+                <Spacer></Spacer>
+                <BodyRegular>
+                  {nft?.royalty ? parseInt(nft?.royalty) : "0"}% Royalty
+                </BodyRegular>
+              </HStack>
+
+              {/* Share */}
+              <HStack
+                justify="flex-start"
+                border="9px"
+                padding="12px"
+                spacing="15px"
+                background={({ theme }) => theme.backElement}
+              >
+                <CaptionBoldShort>SHARE</CaptionBoldShort>
+                <Spacer></Spacer>
+                <FacebookShareButton
+                  url={"https://www.xdsea.com" + webLocation.pathname}
+                  quote={"Check out this NFT!"}
+                  hashtag={["#XDSea"]}
+                  description={"XDSea NFT Marketplace"}
+                  className="Demo__some-network__share-button"
+                >
+                  <a>
+                    <IconImg
+                      url={facebookSocial}
+                      width="30px"
+                      height="30px"
+                    ></IconImg>
+                  </a>
+                </FacebookShareButton>
+                <TwitterShareButton
+                  title={"Check out this NFT!"}
+                  url={"https://www.xdsea.com" + webLocation.pathname}
+                  hashtags={["XDSea", "BuildItOnXDC"]}
+                >
+                  <a>
+                    <IconImg
+                      url={twitterSocial}
+                      width="30px"
+                      height="30px"
+                    ></IconImg>
+                  </a>
+                </TwitterShareButton>
+                <TelegramShareButton
+                  title={"Check out this NFT!"}
+                  url={"https://www.xdsea.com" + webLocation.pathname}
+                >
+                  <a>
+                    <IconImg
+                      url={telegramSocial}
+                      width="30px"
+                      height="30px"
+                    ></IconImg>
+                  </a>
+                </TelegramShareButton>
+                <WhatsappShareButton
+                  title={"Check out this NFT!"}
+                  url={"https://www.xdsea.com" + webLocation.pathname}
+                >
+                  <a>
+                    <IconImg
+                      url={whatsSocial}
+                      width="30px"
+                      height="30px"
+                    ></IconImg>
+                  </a>
+                </WhatsappShareButton>
+                {copied ? (
+                  <HStack
+                    background={({ theme }) => theme.faded}
+                    padding="3px 9px"
+                    border="6px"
+                  >
+                    <CaptionBoldShort>COPIED</CaptionBoldShort>
                   </HStack>
-                </VStack>
-                <HStack>
-                  {wallet?.connected ? (
-                    nft?.isListed ? (
-                      nft?.owner.toLowerCase() ===
-                      (isXdc(wallet?.address)
-                        ? fromXdc(wallet?.address.toLowerCase())
-                        : wallet?.address.toLowerCase()) ? (
-                        <>
-                          <ButtonApp
-                            btnStatus={withdrawButtonStatus}
-                            func={"Withdraw"}
-                            icon={tagWhite}
-                            iconWidth="21px"
-                            iconHeight="21px"
-                            text={
-                              contractFixes?.includes(nft?.tokenId)
-                                ? "Withdraw Old"
-                                : "Withdraw Listing"
-                            }
-                            onClick={() => {
-                              withdrawListing();
-                            }}
-                            textcolor={appStyle.colors.white}
-                            width="100%"
-                            cursor={"pointer"}
-                          ></ButtonApp>
-                          {blacklist?.includes(nft?.tokenId) ? null : (
-                            <ButtonApp
-                              icon={star}
-                              btnStatus={editButtonStatus}
-                              func={"Edit"}
-                              iconWidth="21px"
-                              iconHeight="21px"
-                              text="Edit Listing"
-                              onClick={() => {
-                                editListing();
-                              }}
-                              textcolor={({ theme }) => theme.walletText}
-                              width="100%"
-                              background={({ theme }) => theme.walletButton}
-                              cursor={"pointer"}
-                            ></ButtonApp>
-                          )}
-                        </>
-                      ) : (
-                        <>
-                          {blacklist?.includes(nft?.tokenId) ? null : (
-                            <ButtonApp
-                              btnStatus={offerButtonStatus}
-                              func={"Offer"}
-                              icon={star}
-                              iconWidth="21px"
-                              iconHeight="21px"
-                              text="Place Offer"
-                              onClick={() => {
-                                placeOffer();
-                              }}
-                              cursor={"pointer"}
-                              textcolor={({ theme }) => theme.walletText}
-                              width="100%"
-                              background={({ theme }) => theme.walletButton}
-                            ></ButtonApp>
-                          )}
-                          <ButtonApp
-                            btnStatus={buyButtonStatus}
-                            func={"Buy"}
-                            icon={tagWhite}
-                            iconWidth="21px"
-                            iconHeight="21px"
-                            text="Buy Now"
-                            onClick={() => {
-                              buyNFT();
-                            }}
-                            textcolor={appStyle.colors.white}
-                            width="100%"
-                            cursor="pointer"
-                          ></ButtonApp>
-                        </>
-                      )
-                    ) : blacklist?.includes(
-                        nft?.tokenId
-                      ) ? null : nft?.owner.toLowerCase() ===
-                      (isXdc(wallet?.address)
-                        ? fromXdc(wallet?.address.toLowerCase())
-                        : wallet?.address.toLowerCase()) ? (
-                      <>
-                        <ButtonApp
-                          icon={tagWhite}
-                          btnStatus={listButtonStatus}
-                          func={"List"}
-                          iconWidth="21px"
-                          iconHeight="21px"
-                          text="List NFT"
-                          onClick={() => {
-                            startSale();
-                          }}
-                          cursor="pointer"
-                          textcolor={appStyle.colors.white}
-                          width="100%"
-                        ></ButtonApp>
-                        <ButtonApp
-                          icon={tagWhite}
-                          btnStatus={transferButtonStatus}
-                          func={"Transfer"}
-                          iconWidth="21px"
-                          iconHeight="21px"
-                          text="Transfer"
-                          onClick={() => {
-                            startTransfer(nft);
-                          }}
-                          cursor="pointer"
-                          textcolor={appStyle.colors.white}
-                          width="100%"
-                        ></ButtonApp>
-                      </>
+                ) : (
+                  <a>
+                    <IconImg
+                      onClick={copy}
+                      url={linkSocial}
+                      width="30px"
+                      height="30px"
+                    ></IconImg>
+                  </a>
+                )}
+
+                <Spacer></Spacer>
+              </HStack>
+
+              {/* Price */}
+              <VStack
+                background={({ theme }) => theme.backElement}
+                width="100%"
+                height="auto"
+                border="9px"
+                padding="6px 15px"
+              >
+                <HStack width="100%" height="36px">
+                  <IconImg url={star} width="18px" height="18px"></IconImg>
+                  <CaptionBoldShort>Price</CaptionBoldShort>
+                  <Spacer></Spacer>
+                  <HStack spacing="6px">
+                    <IconImg url={xdclogo} width="18px" height="18px"></IconImg>
+
+                    <TitleBold18>
+                      {nft?.price
+                        ? Number(nft?.price).toLocaleString(undefined, {
+                            maximumFractionDigits: 2,
+                          })
+                        : "0.00"}
+                    </TitleBold18>
+                    <CaptionBoldShort>XDC</CaptionBoldShort>
+                  </HStack>
+                </HStack>
+                <HStack width="100%" height="36px">
+                  <IconImg url={tagBlue} width="18px" height="18px"></IconImg>
+                  <CaptionBoldShort>Highest Offer</CaptionBoldShort>
+                  <Spacer></Spacer>
+                  <HStack spacing="6px">
+                    {highestOffer === 0 ? (
+                      <TitleBold18>-</TitleBold18>
                     ) : (
-                      <ButtonApp
-                        btnStatus={offerButtonStatus}
-                        func={"Offer"}
-                        icon={star}
-                        iconWidth="21px"
-                        iconHeight="21px"
-                        text="Place Offer"
-                        onClick={() => {
-                          placeOffer();
-                        }}
-                        cursor="pointer"
-                        textcolor={({ theme }) => theme.walletText}
-                        width="100%"
-                        background={({ theme }) => theme.walletButton}
-                      ></ButtonApp>
-                    )
-                  ) : null}
+                      <>
+                        <IconImg
+                          url={xdclogo}
+                          width="18px"
+                          height="18px"
+                        ></IconImg>
+                        <TitleBold18>
+                          {parseInt(highestOffer).toLocaleString(undefined, {
+                            maximumFractionDigits: 2,
+                          })}
+                        </TitleBold18>
+                        <CaptionBoldShort>XDC</CaptionBoldShort>
+                      </>
+                    )}
+                  </HStack>
                 </HStack>
               </VStack>
+
+              {/* Buttons */}
+              <HStack>
+                {wallet?.connected ? (
+                  nft?.isListed ? (
+                    nft?.owner.toLowerCase() ===
+                    (isXdc(wallet?.address)
+                      ? fromXdc(wallet?.address.toLowerCase())
+                      : wallet?.address.toLowerCase()) ? (
+                      <>
+                        <ButtonApp
+                          btnStatus={withdrawButtonStatus}
+                          func={"Withdraw"}
+                          icon={tagWhite}
+                          iconWidth="21px"
+                          iconHeight="21px"
+                          text={
+                            contractFixes?.includes(nft?.tokenId)
+                              ? "Withdraw Old"
+                              : "Withdraw Listing"
+                          }
+                          onClick={() => {
+                            withdrawListing();
+                          }}
+                          textcolor={appStyle.colors.white}
+                          width="100%"
+                          cursor={"pointer"}
+                        ></ButtonApp>
+                        {blacklist?.includes(nft?.tokenId) ? null : (
+                          <ButtonApp
+                            icon={star}
+                            btnStatus={editButtonStatus}
+                            func={"Edit"}
+                            iconWidth="21px"
+                            iconHeight="21px"
+                            text="Edit Listing"
+                            onClick={() => {
+                              editListing();
+                            }}
+                            textcolor={({ theme }) => theme.walletText}
+                            width="100%"
+                            background={({ theme }) => theme.walletButton}
+                            cursor={"pointer"}
+                          ></ButtonApp>
+                        )}
+                      </>
+                    ) : (
+                      <>
+                        {blacklist?.includes(nft?.tokenId) ? null : (
+                          <ButtonApp
+                            btnStatus={offerButtonStatus}
+                            func={"Offer"}
+                            icon={star}
+                            iconWidth="21px"
+                            iconHeight="21px"
+                            text="Place Offer"
+                            onClick={() => {
+                              placeOffer();
+                            }}
+                            cursor={"pointer"}
+                            textcolor={({ theme }) => theme.walletText}
+                            width="100%"
+                            background={({ theme }) => theme.walletButton}
+                          ></ButtonApp>
+                        )}
+                        <ButtonApp
+                          btnStatus={buyButtonStatus}
+                          func={"Buy"}
+                          icon={tagWhite}
+                          iconWidth="21px"
+                          iconHeight="21px"
+                          text="Buy Now"
+                          onClick={() => {
+                            buyNFT();
+                          }}
+                          textcolor={appStyle.colors.white}
+                          width="100%"
+                          cursor="pointer"
+                        ></ButtonApp>
+                      </>
+                    )
+                  ) : blacklist?.includes(
+                      nft?.tokenId
+                    ) ? null : nft?.owner.toLowerCase() ===
+                    (isXdc(wallet?.address)
+                      ? fromXdc(wallet?.address.toLowerCase())
+                      : wallet?.address.toLowerCase()) ? (
+                    <>
+                      <ButtonApp
+                        icon={tagWhite}
+                        btnStatus={listButtonStatus}
+                        func={"List"}
+                        iconWidth="21px"
+                        iconHeight="21px"
+                        text="List NFT"
+                        onClick={() => {
+                          startSale();
+                        }}
+                        cursor="pointer"
+                        textcolor={appStyle.colors.white}
+                        width="100%"
+                      ></ButtonApp>
+                      <ButtonApp
+                        icon={tagWhite}
+                        btnStatus={transferButtonStatus}
+                        func={"Transfer"}
+                        iconWidth="21px"
+                        iconHeight="21px"
+                        text="Transfer"
+                        onClick={() => {
+                          startTransfer(nft);
+                        }}
+                        cursor="pointer"
+                        textcolor={appStyle.colors.white}
+                        width="100%"
+                      ></ButtonApp>
+                    </>
+                  ) : (
+                    <ButtonApp
+                      btnStatus={offerButtonStatus}
+                      func={"Offer"}
+                      icon={star}
+                      iconWidth="21px"
+                      iconHeight="21px"
+                      text="Place Offer"
+                      onClick={() => {
+                        placeOffer();
+                      }}
+                      cursor="pointer"
+                      textcolor={({ theme }) => theme.walletText}
+                      width="100%"
+                      background={({ theme }) => theme.walletButton}
+                    ></ButtonApp>
+                  )
+                ) : null}
+              </HStack>
             </VStack>
           </HStack>
+
           <VStack width="100%" padding="15px 30px">
             <TitleBold27>Offers</TitleBold27>
             <HStack
@@ -1782,7 +1842,11 @@ const NFTDetails = (props) => {
           <VStack width="100%" alignment="flex">
             <TitleBold27 align="center">More from this Collection</TitleBold27>
 
-            <HStack responsive={true} padding="0 15px">
+            <HStack
+              responsive={true}
+              padding="0 15px"
+              height={size.width < 768 ? "1800px" : "auto"}
+            >
               {moreFromCollectionNfts.map((item, i) => (
                 <VStack
                   width="100%"
@@ -1835,6 +1899,7 @@ const LockedContent = styled(motion.div)`
   top: 349px;
   width: 100%;
   height: 80%;
+  padding: 21px;
 `;
 
 const NFTPage = styled(motion.div)`

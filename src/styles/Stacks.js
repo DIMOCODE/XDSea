@@ -195,6 +195,7 @@ export const IconImg = styled(motion.div).attrs((props) => ({
   border-width: ${(props) => props.bordersize};
   cursor: ${(props) => props.cursor};
   overflow: ${(props) => props.overflow};
+  transform: translateZ(0);
 `;
 
 // Example of Styled Component with attributes

@@ -48,13 +48,15 @@ function Collection(props) {
   const scaleContainer = {
     initial: {
       scale: 1,
+      borderRadius: 15,
     },
     hover: {
-      scale: 1.02,
+      scale: 1,
       transition: {
         type: "spring",
         bounce: 0.15,
       },
+      borderRadius: 15,
     },
   };
   const background = {
@@ -81,28 +83,29 @@ function Collection(props) {
 
   return (
     <VStack
+      overflow="hidden"
+      border="15px"
       animate={isVisible ? "hover" : "initial"}
       variants={scaleContainer}
       onHoverStart={() => setIsVisible(true)}
       onHoverEnd={() => setIsVisible(false)}
-      overflow="hidden"
-      border="15px"
       background={({ theme }) => theme.backElement}
       onClick={onClickCollection}
+      width="100%"
+      bordersize="0px"
     >
-      <ZStack>
+      <ZStack overflow="hidden" border="15px">
         <ZItem>
-          <ZItem>
-            <IconImg
-              url={collectionImage}
-              width="310px"
-              height="100%"
-              border="15px"
-              backsize="cover"
-              animate={isVisible ? "initial" : "hover"}
-              variants={scaleImage}
-            ></IconImg>
-          </ZItem>
+          <IconImg
+            url={collectionImage}
+            width="100%"
+            height="100%"
+            backsize="cover"
+            animate={isVisible ? "initial" : "hover"}
+            variants={scaleImage}
+            border="0px"
+            overflow="hidden"
+          ></IconImg>
         </ZItem>
         <ZItem>
           <AnimatePresence>
@@ -131,6 +134,7 @@ function Collection(props) {
                 }}
                 layout
                 width="100%"
+                border="9px"
               >
                 <Spacer></Spacer>
                 <motion.div layout="position" cursor={"pointer"}>
@@ -154,15 +158,7 @@ function Collection(props) {
 
                           <ZItem>
                             <HStack>
-                              <AbsoluteVerified>
-                                <IconImg
-                                  url={verifiedBlue}
-                                  width="21px"
-                                  height="21px"
-                                  border="120px"
-                                ></IconImg>
-                              </AbsoluteVerified>
-
+                              {" "}
                               <IconImg
                                 url={verifiedShape}
                                 width="60px"
@@ -175,6 +171,14 @@ function Collection(props) {
                                   boxShadow: "0px 4px 2px rgba(0, 0, 0, 0.15)",
                                 }}
                               ></IconImg>
+                              <AbsoluteVerified>
+                                <IconImg
+                                  url={verifiedBlue}
+                                  width="21px"
+                                  height="21px"
+                                  border="120px"
+                                ></IconImg>
+                              </AbsoluteVerified>
                             </HStack>
                           </ZItem>
                         </ZStack>
