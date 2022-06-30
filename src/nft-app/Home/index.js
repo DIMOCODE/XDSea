@@ -799,7 +799,35 @@ const Home = () => {
                   <LoadingNftContainer></LoadingNftContainer>
                 </VStack>
               ))
-            : nfts.map((item, i) => (
+            : size.width > 728 
+              ? nfts.map((item, i) => (
+                <VStack
+                  minwidth={size.width < 768 ? "300px" : "280px"}
+                  height="450px"
+                  key={i}
+                >
+                  <NftContainer
+                    isVerified={verifiedProfiles.includes(item.creator)}
+                    iconStatus={item.isListed ? "sale" : "notforsale"}
+                    // iconStatus are : notforsale, relist, sale, sold, empty returns null
+                    hasOffers={item.offerCount > 0 ? true : false}
+                    fileType={item.fileType}
+                    creatorImage={item.collectionLogo}
+                    itemImage={item.image}
+                    price={item.price}
+                    collectionName={item.collectionName}
+                    itemNumber={item.name}
+                    background={({ theme }) => theme.backElement}
+                    onClick={() =>
+                      NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
+                    }
+                    onClickCreator={() =>
+                      NavigateTo(`collection/${item.collectionName}`)
+                    }
+                  ></NftContainer>
+                </VStack>
+              ))
+              : nfts.slice(0, 3).map((item, i) => (
                 <VStack
                   minwidth={size.width < 768 ? "300px" : "280px"}
                   height="450px"
