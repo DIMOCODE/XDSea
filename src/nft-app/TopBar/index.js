@@ -73,24 +73,46 @@ function TopBar(props) {
   const connectMetamask = async () => {
     if (window.ethereum) {
       try {
-        const res = await window.ethereum.request({
-          method: "eth_requestAccounts",
-        });
-        setWallet({
-          connected: true,
-          address: res[0],
-        });
-        onWalletChange({
-          connected: true,
-          address: res[0],
-        });
-        setIsMetamask(true);
-        setShowMetamask(false);
+        if(window.ethereum.chainId === "0x32") {
+          const res = await window.ethereum.request({
+            method: "eth_requestAccounts",
+          });
+          setWallet({
+            connected: true,
+            address: res[0],
+          });
+          onWalletChange({
+            connected: true,
+            address: res[0],
+          });
+          window.ethereum.on("accountsChanged", (accounts) => {
+            setWallet({
+              connected: true,
+              address: accounts[0],
+            });
+            onWalletChange({
+              connected: true,
+              address: accounts[0],
+            });
+          });
+          setIsMetamask(true);
+          setShowMetamask(false);
+        }
+        else {
+          console.error("Connect to the XDC Mainnet");
+        }
       } catch (err) {
         setShowMetamask(false);
+        console.error("Connection Error");
       }
-    } else {
+    } 
+    else if (!window.ethereum.isMetamask) {
       setShowMetamask(false);
+      console.error("Connect using XDCPay");
+    }
+    else {
+      setShowMetamask(false);
+      console.error("Install Metamask");
     }
   };
 
@@ -195,10 +217,13 @@ function TopBar(props) {
                             />
                           </Connect>
                           <WalletButton
-                            logout={Disconnect}
+                            logout={
+                              isMetamask ? disconnectMetamask : Disconnect
+                            }
                             status={wallet?.connected}
                             wallet={wallet}
                             onClickMetamask={() => setShowMetamask(true)}
+                            isMetamask={isMetamask}
                           ></WalletButton>
                         </VStack>
 

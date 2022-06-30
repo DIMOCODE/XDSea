@@ -77,8 +77,8 @@ const NFTApp = () => {
                       This Developer Page is for feature testing purposes. All
                       transactions
                     </b>
-                    &nbsp; made on the developer page
-                    <b> are executed on the main network, please be careful.</b>
+                    &nbsp;made on the developer page
+                    <b> are executed on the test network. They will not affect your XDC balance.</b>
                   </CaptionRegular>
                 </HStack>
               </DevMode>

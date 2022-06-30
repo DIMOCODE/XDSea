@@ -97,10 +97,47 @@ const CollectionDetails = (props) => {
         .call();
       // const meta = {}
       // const collectionMetadata = await Promise.all(
-      //   collectionData.slice(380, 460).map(async (i) => {
-      //     const uri = await nftContract.methods.tokenURI(i.tokenId).call();
-      //     const metadata = await axios.get(uri);
-      //     meta[i.tokenId] = metadata?.data;
+      //   collectionData.map(async (i) => {
+          // var item = await marketContract.methods.idToMarketItem(i.tokenId).call();
+          // let nft = {
+          //   tokenId: item.tokenId,
+          //   itemId: item.itemId,
+          //   owner: item.owner,
+          //   creator: item.creator,
+          //   price: item.price,
+          //   isListed: item.isListed,
+          //   royalty: item.royalty,
+          //   eventCount: item.eventCount,
+          //   offerCount: item.offerCount,
+          //   name: item.name,
+          //   collectionName: item.collectionName
+          // }
+          // var item = await marketContract.methods.getTokenEventHistory(i.tokenId).call();
+          // var events = []
+          // for(var j = 0; j < item.length; j++) {
+          //   let event = {
+          //     eventType: item[j].eventType,
+          //     from: item[j].from,
+          //     to: item[j].to,
+          //     price: item[j].price,
+          //     timestamp: item[j].timestamp
+          //   }
+          //   events.push(event)
+          // }
+          // var item = await marketContract.methods.getTokenOfferList(i.tokenId).call();
+          // var offers = []
+          // for(var j = 0; j < item.length; j++) {
+          //   let offer = {
+          //     price: item[j].price,
+          //     from: item[j].from,
+          //     to: item[j].to,
+          //     isWithdrawn: item[j].isWithdrawn,
+          //     isAccepted: item[j].isAccepted
+          //   }
+          //   offers.push(offer)
+          // }
+          // if(offers.length !== 0)
+            // meta[i.tokenId] = item;
       //   })
       // )
       // console.log(JSON.stringify(meta))
