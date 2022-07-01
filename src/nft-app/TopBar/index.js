@@ -29,7 +29,10 @@ import { UserMenuButton } from "./UserMenuButton";
 import { appStyle } from "../../styles/AppStyles";
 import "../../styles/App.css";
 
+import infoIcon from "../../images/infoIcon.png";
+import closeIcon from "../../images/closeIcon.png";
 import twitter from "../../images/twitterFaded.png";
+
 import instagram from "../../images/instagramFaded.png";
 import mail from "../../images/mailFaded.png";
 import menuContext from "../../context/menuContext";
@@ -47,6 +50,8 @@ function TopBar(props) {
   const [showMetamask, setShowMetamask] = useState(false);
   const [isMetamask, setIsMetamask] = useState(false);
   const menucolor = ({ theme }) => theme.menu;
+  const [showError, setShowError] = useState(2);
+  const [showInfo, setShowInfo] = useState(false);
 
   useEffect(() => {
     setDeviceSize(device);
@@ -73,7 +78,7 @@ function TopBar(props) {
   const connectMetamask = async () => {
     if (window.ethereum) {
       try {
-        if(window.ethereum.chainId === "0x32") {
+        if (window.ethereum.chainId === "0x32") {
           const res = await window.ethereum.request({
             method: "eth_requestAccounts",
           });
@@ -97,20 +102,17 @@ function TopBar(props) {
           });
           setIsMetamask(true);
           setShowMetamask(false);
-        }
-        else {
+        } else {
           console.error("Connect to the XDC Mainnet");
         }
       } catch (err) {
         setShowMetamask(false);
         console.error("Connection Error");
       }
-    } 
-    else if (!window.ethereum.isMetamask) {
+    } else if (!window.ethereum.isMetamask) {
       setShowMetamask(false);
       console.error("Connect using XDCPay");
-    }
-    else {
+    } else {
       setShowMetamask(false);
       console.error("Install Metamask");
     }
@@ -151,7 +153,7 @@ function TopBar(props) {
                         background={({ theme }) => theme.backElement}
                         width="375px"
                         padding="60px 30px"
-                        height="360px"
+                        height="420px"
                         border="0 0 15px 15px"
                       >
                         {/* <HStack background="pink">
@@ -224,9 +226,12 @@ function TopBar(props) {
                             wallet={wallet}
                             onClickMetamask={() => setShowMetamask(true)}
                             isMetamask={isMetamask}
+                            isMobile={true}
+                            hasAlert={true}
+                            clickAlert={() => setShowInfo(true)}
                           ></WalletButton>
                         </VStack>
-
+                        <Spacer></Spacer>
                         <HStack>
                           <SwitchButton
                             clickOnSwitch={themeToggler}
@@ -522,6 +527,8 @@ function TopBar(props) {
                             wallet={wallet}
                             onClickMetamask={() => setShowMetamask(true)}
                             isMetamask={isMetamask}
+                            hasAlert={true}
+                            clickAlert={() => setShowInfo(true)}
                           ></WalletButton>
                         </ZItem>
                       </ZStack>
@@ -694,6 +701,8 @@ function TopBar(props) {
                             wallet={wallet}
                             onClickMetamask={() => setShowMetamask(true)}
                             isMetamask={isMetamask}
+                            hasAlert={true}
+                            clickAlert={() => setShowInfo(true)}
                           ></WalletButton>
                         </ZItem>
                       </ZStack>
@@ -721,6 +730,103 @@ function TopBar(props) {
         })()}
       </HStack>
 
+      {showInfo ? (
+        <AnimatePresence>
+          <MetamaskSteps
+            key="metamaskModal"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ type: "spring", damping: 10 }}
+          >
+            <VStack width="100%" height="100%" border="15px">
+              <VStack
+                self="none"
+                background={({ theme }) => theme.walletButton}
+                width={deviceSize === "phone" ? "100%" : "390px"}
+                padding="15px"
+                border="15px"
+                maxheight="300px"
+              >
+                <HStack>
+                  <Spacer></Spacer>
+                  <IconImg
+                    url={closeIcon}
+                    width="21px"
+                    height="21px"
+                    onClick={() => setShowInfo(false)}
+                  ></IconImg>
+                </HStack>
+
+                <CaptionBold textcolor={({ theme }) => theme.walletText}>
+                  XDCPAY WALLET USERS
+                </CaptionBold>
+
+                <BodyRegular
+                  align="center"
+                  textcolor={({ theme }) => theme.walletText}
+                >
+                  In order to only use XDCPay, please uninstall Metamask from
+                  your browser
+                </BodyRegular>
+                <Spacer></Spacer>
+
+                <CaptionBold textcolor={({ theme }) => theme.walletText}>
+                  RECENT ALERTS
+                </CaptionBold>
+                {showError === 0 && (
+                  <HStack
+                    border="9px"
+                    padding="18px"
+                    background={appStyle.colors.darkgrey30}
+                    cursor="pointer"
+                  >
+                    <BodyRegular
+                      align="center"
+                      textcolor={({ theme }) => theme.walletText}
+                    >
+                      No recent alerts
+                    </BodyRegular>
+                  </HStack>
+                )}
+                {showError === 1 && (
+                  <HStack
+                    border="9px"
+                    padding="18px"
+                    background={appStyle.colors.softRed}
+                    cursor="pointer"
+                  >
+                    <BodyRegular
+                      align="center"
+                      textcolor={appStyle.colors.darkRed}
+                    >
+                      Connection Error, check your wallet connection and try
+                      again
+                    </BodyRegular>
+                  </HStack>
+                )}
+                {showError === 2 && (
+                  <HStack
+                    border="9px"
+                    background={appStyle.colors.yellow}
+                    cursor="pointer"
+                    padding="18px"
+                  >
+                    <BodyRegular
+                      align="center"
+                      textcolor={appStyle.colors.darkYellow}
+                    >
+                      Metamask is not detected, install the official wallet to
+                      connect with our marketplace
+                    </BodyRegular>
+                  </HStack>
+                )}
+              </VStack>
+            </VStack>
+          </MetamaskSteps>
+        </AnimatePresence>
+      ) : null}
+
       {showMetamask ? (
         <AnimatePresence>
           <MetamaskSteps
@@ -734,19 +840,31 @@ function TopBar(props) {
               <HStack
                 self="none"
                 background={({ theme }) => theme.walletButton}
-                width="560px"
+                width={deviceSize === "phone" ? "100%" : "560px"}
                 padding="15px"
                 border="15px"
+                responsive={true}
               >
-                <IconImg
-                  url={gif}
-                  width="280px"
-                  height="420px"
-                  backsize="cover"
-                  border="9px"
-                ></IconImg>
+                {deviceSize === "phone" ? null : (
+                  <IconImg
+                    url={gif}
+                    width="280px"
+                    height="420px"
+                    backsize="cover"
+                    border="9px"
+                  ></IconImg>
+                )}
 
                 <VStack height="420px">
+                  <HStack>
+                    <Spacer></Spacer>
+                    <IconImg
+                      url={closeIcon}
+                      width="21px"
+                      height="21px"
+                      onClick={() => setShowMetamask(false)}
+                    ></IconImg>
+                  </HStack>
                   <VStack alignment="flex-start">
                     <HStack spacing="9px">
                       <IconImg
@@ -763,7 +881,9 @@ function TopBar(props) {
                     <Spacer></Spacer>
 
                     <HStack justify="flex-start">
-                      <CaptionRegular textcolor="rgba(255, 255, 255, 0.61)">
+                      <CaptionRegular
+                        textcolor={({ theme }) => theme.walletText}
+                      >
                         Network Name:
                       </CaptionRegular>
                       <BodyRegular textcolor={({ theme }) => theme.walletText}>
@@ -772,7 +892,9 @@ function TopBar(props) {
                     </HStack>
 
                     <HStack justify="flex-start">
-                      <CaptionRegular textcolor="rgba(255, 255, 255, 0.61)">
+                      <CaptionRegular
+                        textcolor={({ theme }) => theme.walletText}
+                      >
                         URL:
                       </CaptionRegular>
                       <BodyRegular textcolor={({ theme }) => theme.walletText}>
@@ -781,7 +903,9 @@ function TopBar(props) {
                     </HStack>
 
                     <HStack justify="flex-start">
-                      <CaptionRegular textcolor="rgba(255, 255, 255, 0.61)">
+                      <CaptionRegular
+                        textcolor={({ theme }) => theme.walletText}
+                      >
                         Chain ID:
                       </CaptionRegular>
                       <BodyRegular textcolor={({ theme }) => theme.walletText}>
@@ -790,7 +914,9 @@ function TopBar(props) {
                     </HStack>
 
                     <HStack justify="flex-start">
-                      <CaptionRegular textcolor="rgba(255, 255, 255, 0.61)">
+                      <CaptionRegular
+                        textcolor={({ theme }) => theme.walletText}
+                      >
                         Currency Symbol:
                       </CaptionRegular>
                       <BodyRegular textcolor={({ theme }) => theme.walletText}>
@@ -799,7 +925,9 @@ function TopBar(props) {
                     </HStack>
 
                     <VStack alignment="flex-start" spacing="3px">
-                      <CaptionRegular textcolor="rgba(255, 255, 255, 0.61)">
+                      <CaptionRegular
+                        textcolor={({ theme }) => theme.walletText}
+                      >
                         Block Explorer URL:
                       </CaptionRegular>
                       <BodyRegular textcolor={({ theme }) => theme.walletText}>
@@ -809,7 +937,6 @@ function TopBar(props) {
                   </VStack>
 
                   <Spacer></Spacer>
-
                   <HStack
                     whileHover={{ opacity: 0.8 }}
                     whileTap={{ scale: 0.98 }}
@@ -824,22 +951,38 @@ function TopBar(props) {
                     </BodyBold>
                   </HStack>
 
-                  <HStack
-                    whileHover={{ opacity: 0.8 }}
-                    whileTap={{ scale: 0.98 }}
-                    background="rgba(255, 255, 255, 0.12)"
-                    minheight="39px"
-                    border="9px"
-                    cursor="pointer"
-                    onClick={connectMetamask}
-                  >
-                    <BodyRegular
-                      onClick={() => setShowMetamask(false)}
-                      textcolor={({ theme }) => theme.walletText}
+                  {showError === 0 && null}
+                  {showError === 2 && (
+                    <HStack
+                      whileHover={{ opacity: 0.8 }}
+                      whileTap={{ scale: 0.98 }}
+                      minheight="39px"
+                      border="9px"
+                      bordersize="1px"
+                      background={appStyle.colors.softRed}
+                      cursor="pointer"
                     >
-                      Close this
-                    </BodyRegular>
-                  </HStack>
+                      <BodyBold textcolor={appStyle.colors.darkRed}>
+                        Connection Error
+                      </BodyBold>
+                    </HStack>
+                  )}
+                  {showError === 1 && (
+                    <HStack
+                      whileHover={{ opacity: 0.8 }}
+                      whileTap={{ scale: 0.98 }}
+                      minheight="39px"
+                      border="9px"
+                      bordersize="1px"
+                      bordercolor={appStyle.colors.yellow}
+                      background={appStyle.colors.yellow}
+                      cursor="pointer"
+                    >
+                      <BodyBold textcolor={appStyle.colors.darkYellow}>
+                        Install Metamask
+                      </BodyBold>
+                    </HStack>
+                  )}
                 </VStack>
               </HStack>
             </VStack>
