@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
+
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { XdcConnect, Disconnect } from "xdc-connect";
@@ -40,6 +41,7 @@ import gif from "../../images/gifConnect.gif";
 import XDClogo from "../../images/xdcpayLogo.png";
 import Metamask from "../../images/metamaskIcon.png";
 import { findAllByDisplayValue } from "@testing-library/react";
+import {useClickAway} from 'react-use';
 
 function TopBar(props) {
   const { device, themeToggler, devMode, onWalletChange } = props;
@@ -52,7 +54,32 @@ function TopBar(props) {
   const menucolor = ({ theme }) => theme.menu;
   const [showError, setShowError] = useState(0);
   const [showInfo, setShowInfo] = useState(false);
+  
 
+  
+  // const [clickedOutside, setClickedOutside] = useState(false);
+  //   const myRef = useRef();
+
+  //   const handleClickOutside = e => {
+  //       if (!myRef.current.contains(e.target)) {
+  //           setClickedOutside(true);
+  //           setShowMenu(true);
+  //       }
+  //   };
+
+  //   const handleClickInside = () => {setClickedOutside(false)};
+
+  //   useEffect(() => {
+  //       document.addEventListener('mousedown', handleClickOutside);
+  //       return () => document.removeEventListener('mousedown', handleClickOutside);
+  //   });
+
+  const ref = useRef(null);
+  useClickAway(ref, () => {
+    setShowMenu(false)
+    console.log('OUTSIDE CLICKED');
+  });
+  
   useEffect(() => {
     setDeviceSize(device);
     return () => {
@@ -105,8 +132,7 @@ function TopBar(props) {
           setShowError(0);
         } else if (window.ethereum.chainId === undefined) {
           setShowError(3);
-        }
-        else {
+        } else {
           setShowError(4);
         }
       } catch (err) {
@@ -147,6 +173,7 @@ function TopBar(props) {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -12 }}
                       transition={{ type: "spring", damping: 10 }}
+                      ref={ref} 
                     >
                       <VStack
                         background={({ theme }) => theme.backElement}
@@ -164,6 +191,9 @@ function TopBar(props) {
                         ></IconImg>
                         <Spacer></Spacer>
                       </HStack> */}
+                      
+                  
+        
 
                         <VStack
                           alignment="flex-start"
@@ -377,6 +407,7 @@ function TopBar(props) {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -12 }}
                       transition={{ type: "spring", damping: 10 }}
+                      ref={ref} 
                     >
                       <VStack
                         background={({ theme }) => theme.backElement}
@@ -765,8 +796,8 @@ function TopBar(props) {
                   align="center"
                   textcolor={({ theme }) => theme.walletText}
                 >
-                  In order to only use XDCPay, please uninstall or disable Metamask from
-                  your browser
+                  In order to only use XDCPay, please uninstall or disable
+                  Metamask from your browser
                 </BodyRegular>
                 <Spacer></Spacer>
 
@@ -778,8 +809,8 @@ function TopBar(props) {
                   align="center"
                   textcolor={({ theme }) => theme.walletText}
                 >
-                  In order to only use Metamask, please configure Metamask to connect
-                  to the XDC network
+                  In order to only use Metamask, please configure Metamask to
+                  connect to the XDC network
                 </BodyRegular>
                 <Spacer></Spacer>
 
@@ -844,8 +875,8 @@ function TopBar(props) {
                       align="center"
                       textcolor={appStyle.colors.darkYellow}
                     >
-                      It appears you are trying to connect using XDCPay. Connect to
-                      XDCPay using the XDC icon button.
+                      It appears you are trying to connect using XDCPay. Connect
+                      to XDCPay using the XDC icon button.
                     </BodyRegular>
                   </HStack>
                 )}
@@ -860,8 +891,8 @@ function TopBar(props) {
                       align="center"
                       textcolor={appStyle.colors.darkRed}
                     >
-                      Metamask is not connected to the right network. Change the Metamask
-                      network to the configured XDC network. 
+                      Metamask is not connected to the right network. Change the
+                      Metamask network to the configured XDC network.
                     </BodyRegular>
                   </HStack>
                 )}
