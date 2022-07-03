@@ -50,7 +50,7 @@ function TopBar(props) {
   const [showMetamask, setShowMetamask] = useState(false);
   const [isMetamask, setIsMetamask] = useState(false);
   const menucolor = ({ theme }) => theme.menu;
-  const [showError, setShowError] = useState(2);
+  const [showError, setShowError] = useState(0);
   const [showInfo, setShowInfo] = useState(false);
 
   useEffect(() => {
@@ -92,29 +92,28 @@ function TopBar(props) {
           });
           window.ethereum.on("accountsChanged", (accounts) => {
             setWallet({
-              connected: true,
+              connected: false,
               address: accounts[0],
             });
             onWalletChange({
-              connected: true,
+              connected: false,
               address: accounts[0],
             });
           });
           setIsMetamask(true);
           setShowMetamask(false);
-        } else {
-          console.error("Connect to the XDC Mainnet");
+          setShowError(0);
+        } else if (window.ethereum.chainId === undefined) {
+          setShowError(3);
+        }
+        else {
+          setShowError(4);
         }
       } catch (err) {
-        setShowMetamask(false);
-        console.error("Connection Error");
+        setShowError(2);
       }
-    } else if (!window.ethereum.isMetamask) {
-      setShowMetamask(false);
-      console.error("Connect using XDCPay");
     } else {
-      setShowMetamask(false);
-      console.error("Install Metamask");
+      setShowError(1);
     }
   };
 
@@ -676,7 +675,7 @@ function TopBar(props) {
                           <Connect>
                             <XdcConnect
                               btnName={" "}
-                              btnClass={`walletConnectTablet ${
+                              btnClass={`walletConnect ${
                                 wallet?.connected ? "hide" : ""
                               }`}
                               onConnect={(wallet) => {
@@ -743,10 +742,10 @@ function TopBar(props) {
               <VStack
                 self="none"
                 background={({ theme }) => theme.walletButton}
-                width={deviceSize === "phone" ? "100%" : "390px"}
                 padding="15px"
                 border="15px"
-                maxheight="300px"
+                maxheight="400px"
+                maxwidth="390px"
               >
                 <HStack>
                   <Spacer></Spacer>
@@ -766,8 +765,21 @@ function TopBar(props) {
                   align="center"
                   textcolor={({ theme }) => theme.walletText}
                 >
-                  In order to only use XDCPay, please uninstall Metamask from
+                  In order to only use XDCPay, please uninstall or disable Metamask from
                   your browser
+                </BodyRegular>
+                <Spacer></Spacer>
+
+                <CaptionBold textcolor={({ theme }) => theme.walletText}>
+                  METAMASK WALLET USERS
+                </CaptionBold>
+
+                <BodyRegular
+                  align="center"
+                  textcolor={({ theme }) => theme.walletText}
+                >
+                  In order to only use Metamask, please configure Metamask to connect
+                  to the XDC network
                 </BodyRegular>
                 <Spacer></Spacer>
 
@@ -789,7 +801,7 @@ function TopBar(props) {
                     </BodyRegular>
                   </HStack>
                 )}
-                {showError === 1 && (
+                {showError === 2 && (
                   <HStack
                     border="9px"
                     padding="18px"
@@ -800,12 +812,12 @@ function TopBar(props) {
                       align="center"
                       textcolor={appStyle.colors.darkRed}
                     >
-                      Connection Error, check your wallet connection and try
-                      again
+                      Connection Error. Check your wallet connection and try
+                      again.
                     </BodyRegular>
                   </HStack>
                 )}
-                {showError === 2 && (
+                {showError === 1 && (
                   <HStack
                     border="9px"
                     background={appStyle.colors.yellow}
@@ -816,8 +828,40 @@ function TopBar(props) {
                       align="center"
                       textcolor={appStyle.colors.darkYellow}
                     >
-                      Metamask is not detected, install the official wallet to
+                      Metamask is not detected. Install the official wallet to
                       connect with our marketplace
+                    </BodyRegular>
+                  </HStack>
+                )}
+                {showError === 3 && (
+                  <HStack
+                    border="9px"
+                    background={appStyle.colors.yellow}
+                    cursor="pointer"
+                    padding="18px"
+                  >
+                    <BodyRegular
+                      align="center"
+                      textcolor={appStyle.colors.darkYellow}
+                    >
+                      It appears you are trying to connect using XDCPay. Connect to
+                      XDCPay using the XDC icon button.
+                    </BodyRegular>
+                  </HStack>
+                )}
+                {showError === 4 && (
+                  <HStack
+                    border="9px"
+                    padding="18px"
+                    background={appStyle.colors.softRed}
+                    cursor="pointer"
+                  >
+                    <BodyRegular
+                      align="center"
+                      textcolor={appStyle.colors.darkRed}
+                    >
+                      Metamask is not connected to the right network. Change the Metamask
+                      network to the configured XDC network. 
                     </BodyRegular>
                   </HStack>
                 )}
@@ -952,6 +996,22 @@ function TopBar(props) {
                   </HStack>
 
                   {showError === 0 && null}
+                  {showError === 1 && (
+                    <HStack
+                      whileHover={{ opacity: 0.8 }}
+                      whileTap={{ scale: 0.98 }}
+                      minheight="39px"
+                      border="9px"
+                      bordersize="1px"
+                      bordercolor={appStyle.colors.yellow}
+                      background={appStyle.colors.yellow}
+                      cursor="pointer"
+                    >
+                      <BodyBold textcolor={appStyle.colors.darkYellow}>
+                        Install Metamask
+                      </BodyBold>
+                    </HStack>
+                  )}
                   {showError === 2 && (
                     <HStack
                       whileHover={{ opacity: 0.8 }}
@@ -967,7 +1027,7 @@ function TopBar(props) {
                       </BodyBold>
                     </HStack>
                   )}
-                  {showError === 1 && (
+                  {showError === 3 && (
                     <HStack
                       whileHover={{ opacity: 0.8 }}
                       whileTap={{ scale: 0.98 }}
@@ -979,7 +1039,22 @@ function TopBar(props) {
                       cursor="pointer"
                     >
                       <BodyBold textcolor={appStyle.colors.darkYellow}>
-                        Install Metamask
+                        Use XDCPay Button
+                      </BodyBold>
+                    </HStack>
+                  )}
+                  {showError === 4 && (
+                    <HStack
+                      whileHover={{ opacity: 0.8 }}
+                      whileTap={{ scale: 0.98 }}
+                      minheight="39px"
+                      border="9px"
+                      bordersize="1px"
+                      background={appStyle.colors.softRed}
+                      cursor="pointer"
+                    >
+                      <BodyBold textcolor={appStyle.colors.darkRed}>
+                        Connect to XDC Mainnet
                       </BodyBold>
                     </HStack>
                   )}

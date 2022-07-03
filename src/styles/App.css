@@ -87,8 +87,8 @@ iframe {
   border-radius: 12px;
   color: transparent !important;
   z-index: 1;
-  margin-top: -13px;
-  margin-left: 87px;
+  margin-top: 32px;
+  margin-left: 77px;
   position: absolute;
 }
 
@@ -100,7 +100,7 @@ iframe {
   border-radius: 12px;
   color: transparent !important;
   margin-top: 32px;
-  margin-left: 72px;
+  margin-left: 77px;
   position: absolute;
   z-index: 1;
 }
@@ -112,8 +112,8 @@ iframe {
   border: none !important;
   border-radius: 12px;
   color: transparent !important;
-  margin-top: 27px;
-  margin-left: -2px;
+  margin-top: 24px;
+  margin-left: -13px;
   position: absolute;
   z-index: 1;
 }

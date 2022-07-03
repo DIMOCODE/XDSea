@@ -66,7 +66,7 @@ const Discover = () => {
       //   nftmarketaddress,
       //   xdc3
       // );
-      // const data2 = await oldMarketContract.methods.idToMarketItem(754).call()
+      // const data2 = await oldMarketContract.methods.idToMarketItem(1124).call()
       // console.log(data2)
       // var eventCount = data2.eventCount
       // var events = []
@@ -76,45 +76,45 @@ const Discover = () => {
       //       const uri = await nftContract.methods.tokenURI(data2.tokenId).call()
       //       var metadata = await axios.get(uri)
       //       console.log(data2, event, metadata?.data?.collection?.nft?.name, metadata?.data?.collection?.name)
-      // let data = marketContract.methods.addEventsToItem(
-      //     data2.tokenId,
-      //     i,
-      //     event.eventType,
-      //     event.from,
-      //     event.to,
-      //     event.price,
-      //     event.timestamp
-      // ).encodeABI()
-      // const wallet = await GetWallet();
-      // const tx = {
-      //     from: wallet.wallet.address,
-      //     to: nftmarketlayeraddress,
-      //     data
-      // }
-      // var gasLimit = await xdc3.eth.estimateGas(tx)
-      // tx["gas"] = gasLimit
-      // let transaction = SendTransaction(tx)
-      //       let data = marketContract.methods.editMarketItem(
-      //           data2.tokenId,
-      //           data2.itemId,
-      //           data2.owner,
-      //           data2.creator,
-      //           data2.price,
-      //           data2.isListed,
-      //           data2.royalty,
-      //           data2.eventCount,
-      //           0,
-      //           metadata?.data?.collection?.nft?.name,
-      //           metadata?.data?.collection?.name,
-      //       ).encodeABI()
-      //       const tx = {
-      //           from: wallet.wallet.address,
-      //           to: nftmarketlayeraddress,
-      //           data
-      //       }
-      //       var gasLimit = await xdc3.eth.estimateGas(tx)
-      //       tx["gas"] = gasLimit
-      //       let transaction = await SendTransaction(tx);
+            // let data = marketContract.methods.addEventsToItem(
+            //     data2.tokenId,
+            //     i,
+            //     event.eventType,
+            //     event.from,
+            //     event.to,
+            //     event.price,
+            //     event.timestamp
+            // ).encodeABI()
+            // const wallet = await GetWallet();
+            // const tx = {
+            //     from: wallet.wallet.address,
+            //     to: nftmarketlayeraddress,
+            //     data
+            // }
+            // var gasLimit = await xdc3.eth.estimateGas(tx)
+            // tx["gas"] = gasLimit
+            // let transaction = SendTransaction(tx)
+            // let data = marketContract.methods.editMarketItem(
+            //     data2.tokenId,
+            //     data2.itemId,
+            //     data2.owner,
+            //     data2.creator,
+            //     data2.price,
+            //     data2.isListed,
+            //     data2.royalty,
+            //     data2.eventCount,
+            //     0,
+            //     metadata?.data?.collection?.nft?.name,
+            //     metadata?.data?.collection?.name,
+            // ).encodeABI()
+            // const tx = {
+            //     from: wallet.wallet.address,
+            //     to: nftmarketlayeraddress,
+            //     data
+            // }
+            // var gasLimit = await xdc3.eth.estimateGas(tx)
+            // tx["gas"] = gasLimit
+            // let transaction = await SendTransaction(tx);
       //   }
       // }
 
@@ -139,6 +139,53 @@ const Discover = () => {
       // //     }
       // // }))
       // console.log("Finished")
+
+      // const meta = {}
+      // const collectionMetadata = await Promise.all(
+      //   collectionData.map(async (i) => {
+          // var item = await marketContract.methods.idToMarketItem(i.tokenId).call();
+          // let nft = {
+          //   tokenId: item.tokenId,
+          //   itemId: item.itemId,
+          //   owner: item.owner,
+          //   creator: item.creator,
+          //   price: item.price,
+          //   isListed: item.isListed,
+          //   royalty: item.royalty,
+          //   eventCount: item.eventCount,
+          //   offerCount: item.offerCount,
+          //   name: item.name,
+          //   collectionName: item.collectionName
+          // }
+          // var item = await marketContract.methods.getTokenEventHistory(i.tokenId).call();
+          // var events = []
+          // for(var j = 0; j < item.length; j++) {
+          //   let event = {
+          //     eventType: item[j].eventType,
+          //     from: item[j].from,
+          //     to: item[j].to,
+          //     price: item[j].price,
+          //     timestamp: item[j].timestamp
+          //   }
+          //   events.push(event)
+          // }
+          // var item = await marketContract.methods.getTokenOfferList(i.tokenId).call();
+          // var offers = []
+          // for(var j = 0; j < item.length; j++) {
+          //   let offer = {
+          //     price: item[j].price,
+          //     from: item[j].from,
+          //     to: item[j].to,
+          //     isWithdrawn: item[j].isWithdrawn,
+          //     isAccepted: item[j].isAccepted
+          //   }
+          //   offers.push(offer)
+          // }
+          // if(offers.length !== 0)
+            // meta[i.tokenId] = item;
+      //   })
+      // )
+      // console.log(JSON.stringify(meta))
 
       const collectionData = await marketContract.methods
         .fetchCollections()
