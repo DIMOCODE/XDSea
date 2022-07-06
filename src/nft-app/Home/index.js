@@ -876,6 +876,5 @@ const Content = styled(motion.div)`
   max-width: 1200px;
   margin: 0 auto;
   box-sizing: border-box;
-
   background: ${({ theme }) => theme.background};
 `;

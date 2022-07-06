@@ -24,6 +24,9 @@ import { CaptionRegular } from "../styles/TextStyles";
 import useWindowSize from "../styles/useWindowSize";
 import { sizeWidth } from "@mui/system";
 import MenuContext from "../context/menuContext";
+import ReactGA from 'react-ga';
+const TRACKING_ID = "UA-105859386-2"; // OUR_TRACKING_ID
+ReactGA.initialize(TRACKING_ID);
 
 const NFTApp = () => {
   const history = useHistory();
@@ -45,6 +48,10 @@ const NFTApp = () => {
 
   useEffect(() => {
     setRandomNumber(Math.floor(Math.random() * 2));
+  }, []);
+
+  useEffect(() => {
+    ReactGA.pageview(window.location.pathname + window.location.search);
   }, []);
 
   return (
