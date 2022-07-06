@@ -783,7 +783,7 @@ const NFTDetails = (props) => {
 
   // console.log(webLocation.pathname);
 
-  const webLink = "https://www.xdsea.com" + webLocation.pathname;
+  const webLink = "https://www.xdsea.com" + webLocation.pathname.replace(/\s+/g, "%20").replace(/%20$/, "");
 
   const [copied, setCopied] = useState(false);
 
@@ -1490,7 +1490,7 @@ const NFTDetails = (props) => {
                 <CaptionBoldShort>SHARE</CaptionBoldShort>
                 <Spacer></Spacer>
                 <FacebookShareButton
-                  url={"https://www.xdsea.com" + webLocation.pathname}
+                  url={"https://www.xdsea.com" + webLocation.pathname.replace(/\s+/g, "%20").replace(/%20$/, "")}
                   quote={"Check out this NFT!"}
                   hashtag={["#XDSea"]}
                   description={"XDSea NFT Marketplace"}
@@ -1506,7 +1506,7 @@ const NFTDetails = (props) => {
                 </FacebookShareButton>
                 <TwitterShareButton
                   title={"Check out this NFT!"}
-                  url={"https://www.xdsea.com" + webLocation.pathname}
+                  url={"https://www.xdsea.com" + webLocation.pathname.replace(/\s+/g, "%20").replace(/%20$/, "")}
                   hashtags={["XDSea", "BuildItOnXDC"]}
                 >
                   <a>
@@ -1519,7 +1519,7 @@ const NFTDetails = (props) => {
                 </TwitterShareButton>
                 <TelegramShareButton
                   title={"Check out this NFT!"}
-                  url={"https://www.xdsea.com" + webLocation.pathname}
+                  url={"https://www.xdsea.com" + webLocation.pathname.replace(/\s+/g, "%20").replace(/%20$/, "")}
                 >
                   <a>
                     <IconImg
@@ -1531,7 +1531,7 @@ const NFTDetails = (props) => {
                 </TelegramShareButton>
                 <WhatsappShareButton
                   title={"Check out this NFT!"}
-                  url={"https://www.xdsea.com" + webLocation.pathname}
+                  url={"https://www.xdsea.com" + webLocation.pathname.replace(/\s+/g, "%20").replace(/%20$/, "")}
                 >
                   <a>
                     <IconImg
