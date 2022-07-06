@@ -140,24 +140,26 @@ const Discover = () => {
       // // }))
       // console.log("Finished")
 
-      // const meta = {}
-      // const collectionMetadata = await Promise.all(
-      //   collectionData.map(async (i) => {
-          // var item = await marketContract.methods.idToMarketItem(i.tokenId).call();
-          // let nft = {
-          //   tokenId: item.tokenId,
-          //   itemId: item.itemId,
-          //   owner: item.owner,
-          //   creator: item.creator,
-          //   price: item.price,
-          //   isListed: item.isListed,
-          //   royalty: item.royalty,
-          //   eventCount: item.eventCount,
-          //   offerCount: item.offerCount,
-          //   name: item.name,
-          //   collectionName: item.collectionName
-          // }
-          // var item = await marketContract.methods.getTokenEventHistory(i.tokenId).call();
+      const meta = {}
+      for(var i = 2001; i < 3893; i++) {
+        const uri = await nftContract.methods.tokenURI(i).call()
+        // var metadata = await axios.get(uri)
+        // meta[i] = metadata.data;
+          var item = await marketContract.methods.idToMarketItem(i).call();
+          let nft = {
+            tokenId: item.tokenId,
+            itemId: item.itemId,
+            owner: item.owner,
+            creator: item.creator,
+            price: item.price,
+            isListed: item.isListed,
+            royalty: item.royalty,
+            eventCount: item.eventCount,
+            offerCount: item.offerCount,
+            name: item.name,
+            collectionName: item.collectionName
+          }
+          // var item = await marketContract.methods.getTokenEventHistory(i).call();
           // var events = []
           // for(var j = 0; j < item.length; j++) {
           //   let event = {
@@ -169,7 +171,7 @@ const Discover = () => {
           //   }
           //   events.push(event)
           // }
-          // var item = await marketContract.methods.getTokenOfferList(i.tokenId).call();
+          // var item = await marketContract.methods.getTokenOfferList(i).call();
           // var offers = []
           // for(var j = 0; j < item.length; j++) {
           //   let offer = {
@@ -182,10 +184,11 @@ const Discover = () => {
           //   offers.push(offer)
           // }
           // if(offers.length !== 0)
-            // meta[i.tokenId] = item;
-      //   })
-      // )
-      // console.log(JSON.stringify(meta))
+            meta[i] = nft;
+          // await new Promise((r) => setTimeout(r, 500));
+          console.log(i)
+      }
+      console.log(JSON.stringify(meta))
 
       const collectionData = await marketContract.methods
         .fetchCollections()
