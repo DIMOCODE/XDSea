@@ -33,8 +33,8 @@ contract NFTMarketLayer1 is ReentrancyGuard, IERC721Receiver {
   }
 
   struct MarketItem {
-    address nftContract;
     uint256 tokenId;
+    uint256 itemId;
     address payable owner;
     address creator;
     uint256 price;
@@ -81,9 +81,31 @@ contract NFTMarketLayer1 is ReentrancyGuard, IERC721Receiver {
     return offers;
   }
 
+  function getUserFromOfferList(address user) external view returns(Offer[] memory) {
+    uint256 currentIndex = 0;
+
+    Offer[] memory offers = new Offer[](offerList._getOfferFromCount(user));
+    for(uint256 i = 0; i < offerList._getOfferFromCount(user); i++) {
+      offers[currentIndex] = offerList._getFromOffer(user, i + 1);
+      currentIndex += 1;
+    }
+    return offers;
+  }
+
+  function getUserToOfferList(address user) external view returns(Offer[] memory) {
+    uint256 currentIndex = 0;
+
+    Offer[] memory offers = new Offer[](offerList._getOfferToCount(user));
+    for(uint256 i = 0; i < offerList._getOfferToCount(user); i++) {
+      offers[currentIndex] = offerList._getToOffer(user, i + 1);
+      currentIndex += 1;
+    }
+    return offers;
+  }
+
   function createMarketItem(
-    address nftContract,
     uint256 tokenId,
+    uint256 itemId,
     address payable nftowner,
     address creator,
     uint256 price,
@@ -91,21 +113,58 @@ contract NFTMarketLayer1 is ReentrancyGuard, IERC721Receiver {
     uint256 royalty,
     uint256 eventCount,
     string memory nftName,
-    string memory collectionName,
-    bool add
+    string memory collectionName  
   ) external payable nonReentrant {
     require(price > 0);
 
-    if(add) {
-      require(msg.sender == owner);
-    }
-    else{
-      eventHistory._addEvent(tokenId, 1, msg.sender, address(0), 0, block.timestamp, 0);
-    }
+    eventHistory._addEvent(tokenId, 1, msg.sender, address(0), 0, block.timestamp, 0);
 
     idToMarketItem[tokenId] = MarketItem(
-      nftContract,
       tokenId,
+      itemId,
+      nftowner,
+      creator,
+      price,
+      isListed,
+      royalty,
+      eventCount,
+      0,
+      nftName,
+      collectionName
+    );
+
+    tokenCount = tokenId;
+
+    if(collectionList._getCollectionCreator(collectionName) == address(0x0)){
+      collectionCount += 1;
+      collectionList._addCollection(collectionName, msg.sender, collectionCount);
+      collectionList._addNFTToCollection(collectionName, 1, tokenId);
+    }
+    else {
+      collectionList._incrementCollectionCount(collectionName);
+      collectionList._addNFTToCollection(collectionName, collectionList._getCollectionCount(collectionName), tokenId);
+    }
+  }
+
+  function addMarketItem(
+    uint256 tokenId,
+    uint256 itemId,
+    address payable nftowner,
+    address creator,
+    uint256 price,
+    bool isListed,
+    uint256 royalty,
+    uint256 eventCount,
+    string memory nftName,
+    string memory collectionName  
+  ) external payable nonReentrant {
+    require(price > 0);
+
+    require(msg.sender == owner);
+
+    idToMarketItem[tokenId] = MarketItem(
+      tokenId,
+      itemId,
       nftowner,
       creator,
       price,
@@ -131,8 +190,8 @@ contract NFTMarketLayer1 is ReentrancyGuard, IERC721Receiver {
   }
 
   function editMarketItem(
-    address nftContract,
     uint256 tokenId,
+    uint256 itemId,
     address payable nftowner,
     address creator,
     uint256 price,
@@ -145,8 +204,8 @@ contract NFTMarketLayer1 is ReentrancyGuard, IERC721Receiver {
   ) external payable nonReentrant {
     require(msg.sender == owner);
     idToMarketItem[tokenId] = MarketItem(
-      nftContract,
       tokenId,
+      itemId,
       nftowner,
       creator,
       price,
@@ -256,7 +315,7 @@ contract NFTMarketLayer1 is ReentrancyGuard, IERC721Receiver {
     offerList._getOfferFrom(tokenId, offerId).transfer(SafeMath.div(SafeMath.mul(offerList._getOfferPrice(tokenId, offerId), 102), 100));
   }
 
-  function acceptOffer(uint256 tokenId, uint256 offerId) external payable nonReentrant {
+  function acceptOffer(uint256 tokenId, uint256 offerId, address nftContract) external payable nonReentrant {
     offerList._acceptOffer(tokenId, offerId);
     for(uint i = 1; i <= idToMarketItem[tokenId].offerCount; i++) {
       if(!offerList._isWithdrawn(tokenId, i)) {
@@ -267,10 +326,10 @@ contract NFTMarketLayer1 is ReentrancyGuard, IERC721Receiver {
             payable(idToMarketItem[tokenId].creator).transfer(SafeMath.div(SafeMath.mul(price, idToMarketItem[tokenId].royalty), 100));
             payable(idToMarketItem[tokenId].owner).transfer(SafeMath.div(SafeMath.mul(price, SafeMath.sub(100, idToMarketItem[tokenId].royalty)), 100));
             if(idToMarketItem[tokenId].isListed){
-              IERC721(idToMarketItem[tokenId].nftContract).transferFrom(address(this), from, tokenId);  
+              IERC721(nftContract).transferFrom(address(this), from, tokenId);  
             }
             else{
-              IERC721(idToMarketItem[tokenId].nftContract).transferFrom(idToMarketItem[tokenId].owner, from, tokenId);
+              IERC721(nftContract).transferFrom(idToMarketItem[tokenId].owner, from, tokenId);
             }
             idToMarketItem[tokenId].eventCount = SafeMath.add(idToMarketItem[tokenId].eventCount, 1);
             eventHistory._addEvent(tokenId, idToMarketItem[tokenId].eventCount, idToMarketItem[tokenId].owner, from, price, block.timestamp, 8);

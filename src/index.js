@@ -1,12 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
-import './App.css';
-import  './styles/components.css'
-import  './styles/globals.css'
-import  './styles/pages.css'
-import  './styles/nft-details.css'
+import "./styles/index.css";
 
+import App from './App';
 
 ReactDOM.render(
   <React.StrictMode>
