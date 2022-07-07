@@ -39,6 +39,7 @@
     "react-spinners-kit": "^1.9.1",
     "react-touch-carousel": "^0.10.2",
     "react-use": "^17.4.0",
+    "secure-ls": "^1.2.6",
     "styled-components": "^5.3.5",
     "truffle-contract-size": "^2.0.1",
     "web-vitals": "^2.1.4",
