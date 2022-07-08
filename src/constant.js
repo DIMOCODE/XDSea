@@ -27,3 +27,9 @@ export const LS = new SecureLS({
   encryptionSecret: process.env.REACT_APP_LS_SECRET_KEY,
 });
 export const LS_ROOT_KEY = "xdsea_metadata";
+export const HTTP_METHODS = {
+  post: "POST",
+  get: "GET",
+  put: "PUT",
+  delete: "DELETE",
+};

@@ -3,7 +3,7 @@ import { LS, LS_ROOT_KEY } from "../constant";
 import { ERROR_CODES, STATUS_CODES } from "../utils/ErrorCatalogue";
 const URL_ROOT = process.env.REACT_APP_URL_SERVER;
 
-const createRequest = async (method, url, params, body) => {
+export const createSignedRequest = async (method, url, params, body) => {
   const data = LS.get(LS_ROOT_KEY);
   if (!data) {
     throw { code: ERROR_CODES.MISSING_TOKEN };
@@ -45,4 +45,13 @@ const createRequest = async (method, url, params, body) => {
     }
     throw error;
   }
+};
+export const createRequest = async (method, url, params, body) => {
+  const bodyRequest = {
+    url: `${URL_ROOT}/${url}`,
+    method,
+    params: params ?? {},
+    data: body ?? {},
+  };
+  return await axios(bodyRequest);
 };
