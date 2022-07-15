@@ -29,7 +29,7 @@ export const darkTheme = {
   walletText: "#20222D",
   backElement: "#292D41",
   hover: "#292D41",
-  faded: "rgba(0, 0, 0, 0.06)",
+  faded: "rgba(255, 255, 255, 0.09)",
   backgroundModal: "rgba(18, 18, 18, 1)",
   menu: "white",
   fadedlocked: "rgba(41, 45, 65, 1)",
