@@ -303,42 +303,49 @@ function CreateNft(props) {
       nftmarketlayeraddress,
       xdc3
     );
-    const data = await marketContract.methods
-      .fetchItemsCreated(
-        isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address
-      )
-      .call();
-    var uniqueCollections = [];
-    await Promise.all(
-      data.map(async (i) => {
-        if (!uniqueCollections.includes(i.collectionName))
-          uniqueCollections.push(i.collectionName);
-      })
-    );
-    const collectionData = await marketContract.methods
-      .fetchCollections()
-      .call();
-    var uniqueCollections2 = [];
-    await Promise.all(
-      collectionData.map(async (i) => {
-        uniqueCollections2.push(i.collectionName);
-      })
-    );
-    if (uniqueCollections2.includes(collectionName)) {
-      if (uniqueCollections.includes(collectionName)) {
-        setCollectionExists(false);
-        setCollectionValid(true);
+    try{
+      var uniqueCollections = [];
+      if(wallet?.address !== undefined){
+        const data = await marketContract.methods
+          .fetchItemsCreated(
+            isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address
+          )
+          .call();
+        await Promise.all(
+          data.map(async (i) => {
+            if (!uniqueCollections.includes(i.collectionName))
+              uniqueCollections.push(i.collectionName);
+          })
+        );
+      }
+      const collectionData = await marketContract.methods
+        .fetchCollections()
+        .call();
+      var uniqueCollections2 = [];
+      await Promise.all(
+        collectionData.map(async (i) => {
+          uniqueCollections2.push(i.collectionName);
+        })
+      );
+      if (uniqueCollections2.includes(collectionName)) {
+        if (uniqueCollections.includes(collectionName)) {
+          setCollectionExists(false);
+          setCollectionValid(true);
+        } else {
+          setCollectionExists(true);
+        }
+        setLoadingIcon(empty);
+        return true;
       } else {
-        setCollectionExists(true);
+        setCollectionExists(false);
+        setCollectionEmpty(false);
       }
       setLoadingIcon(empty);
-      return true;
-    } else {
-      setCollectionExists(false);
-      setCollectionEmpty(false);
+      return false;      
     }
-    setLoadingIcon(empty);
-    return false;
+    catch (e) {
+      console.log(e);
+    }
   };
 
   const mintNFT = async () => {
@@ -357,11 +364,6 @@ function CreateNft(props) {
             .getElementsByClassName("nft-description")[0]
             .scrollIntoView();
         } else {
-          // if(document.getElementsByClassName("nft-collection")[0].value === "") {
-          //   setIsCollectionNotSelected(true);
-          //   document.getElementById("nft-unlockable").scrollIntoView();
-          // }
-          // else {
           setMintButtonStatus(1);
           const xdc3 = new Xdc3(
             new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER
@@ -596,7 +598,6 @@ function CreateNft(props) {
 
   useEffect(() => {
     setWallet(props?.wallet);
-    fetchCollection();
   }, [props?.wallet]);
 
   const [showMenu, setShowMenu] = useContext(menuContext);
