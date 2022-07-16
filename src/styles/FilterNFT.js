@@ -34,6 +34,12 @@ function FilterNFT({
 
   const [isRange, setIsRange] = useState(false);
 
+  const [btnAll, setBtnAll] = useState(false);
+  const [btnSale, setBtnSale] = useState(false);
+  const [btnSold, setBtnSold] = useState(false);
+  const [btnRelist, setBtnRelist] = useState(false);
+  const [btnNFS, setBtnNFS] = useState(false);
+
   const [isSaleType, setIsSaleType] = useState(0);
 
   const [isPublication, setIsPublication] = useState(false);
@@ -279,10 +285,10 @@ function FilterNFT({
               width="33px"
               height="33px"
               cursor="pointer"
-              whileTap={() => setIsSaleType(0)}
+              onTapStart={() => setBtnAll(!btnAll)}
               onClick={clickAll}
               variants={activated}
-              animate={isSaleType === 0 ? "on" : "off"}
+              animate={btnAll ? "off" : "on"}
             ></IconImg>
 
             <IconImg
@@ -290,10 +296,10 @@ function FilterNFT({
               width="33px"
               height="33px"
               cursor="pointer"
-              whileTap={() => setIsSaleType(1)}
+              onTapStart={() => setBtnSale(!btnSale)}
               onClick={clickSale}
               variants={activated}
-              animate={isSaleType === 1 ? "on" : "off"}
+              animate={btnSale ? "off" : "on"}
             ></IconImg>
 
             <IconImg
@@ -301,10 +307,10 @@ function FilterNFT({
               width="33px"
               height="33px"
               cursor="pointer"
-              whileTap={() => setIsSaleType(2)}
+              onTapStart={() => setBtnSold(!btnSold)}
               onClick={clickSold}
               variants={activated}
-              animate={isSaleType === 2 ? "on" : "off"}
+              animate={btnSold ? "off" : "on"}
             ></IconImg>
 
             <IconImg
@@ -312,10 +318,10 @@ function FilterNFT({
               width="33px"
               height="33px"
               cursor="pointer"
-              whileTap={() => setIsSaleType(3)}
+              onTapStart={() => setBtnRelist(!btnRelist)}
               onClick={clickRelist}
               variants={activated}
-              animate={isSaleType === 3 ? "on" : "off"}
+              animate={btnRelist ? "off" : "on"}
             ></IconImg>
 
             <IconImg
@@ -323,10 +329,10 @@ function FilterNFT({
               width="33px"
               height="33px"
               cursor="pointer"
-              whileTap={() => setIsSaleType(4)}
+              onTapStart={() => setBtnNFS(!btnNFS)}
               onClick={clickNFS}
               variants={activated}
-              animate={isSaleType === 4 ? "on" : "off"}
+              animate={btnNFS ? "off" : "on"}
             ></IconImg>
           </HStack>
         </>
@@ -565,10 +571,10 @@ function FilterNFT({
                       width="33px"
                       height="33px"
                       cursor="pointer"
-                      whileTap={() => setIsSaleType(0)}
+                      onTapStart={() => setBtnAll(!btnAll)}
                       onClick={clickAll}
                       variants={activated}
-                      animate={isSaleType === 0 ? "on" : "off"}
+                      animate={btnAll ? "off" : "on"}
                     ></IconImg>
 
                     <IconImg
@@ -576,10 +582,10 @@ function FilterNFT({
                       width="33px"
                       height="33px"
                       cursor="pointer"
-                      whileTap={() => setIsSaleType(1)}
+                      onTapStart={() => setBtnSale(!btnSale)}
                       onClick={clickSale}
                       variants={activated}
-                      animate={isSaleType === 1 ? "on" : "off"}
+                      animate={btnSale ? "off" : "on"}
                     ></IconImg>
 
                     <IconImg
@@ -587,10 +593,10 @@ function FilterNFT({
                       width="33px"
                       height="33px"
                       cursor="pointer"
-                      whileTap={() => setIsSaleType(2)}
+                      onTapStart={() => setBtnSold(!btnSold)}
                       onClick={clickSold}
                       variants={activated}
-                      animate={isSaleType === 2 ? "on" : "off"}
+                      animate={btnSold ? "off" : "on"}
                     ></IconImg>
 
                     <IconImg
@@ -598,10 +604,10 @@ function FilterNFT({
                       width="33px"
                       height="33px"
                       cursor="pointer"
-                      whileTap={() => setIsSaleType(3)}
+                      onTapStart={() => setBtnRelist(!btnRelist)}
                       onClick={clickRelist}
                       variants={activated}
-                      animate={isSaleType === 3 ? "on" : "off"}
+                      animate={btnRelist ? "off" : "on"}
                     ></IconImg>
 
                     <IconImg
@@ -609,10 +615,10 @@ function FilterNFT({
                       width="33px"
                       height="33px"
                       cursor="pointer"
-                      whileTap={() => setIsSaleType(4)}
+                      onTapStart={() => setBtnNFS(!btnNFS)}
                       onClick={clickNFS}
                       variants={activated}
-                      animate={isSaleType === 4 ? "on" : "off"}
+                      animate={btnNFS ? "off" : "on"}
                     ></IconImg>
                   </HStack>
 
