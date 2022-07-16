@@ -69,6 +69,19 @@ export const TitleBold27 = styled(motion.h2).attrs((props) => ({
   text-align: ${(props) => props.align};
 `;
 
+export const TitleRegular27 = styled(motion.h2).attrs((props) => ({
+  textcolor: props.textcolor || props.theme.text,
+  align: props.align || "left",
+}))`
+  font-style: normal;
+  font-weight: 200;
+  font-size: 27px;
+  letter-spacing: -0.03em;
+  line-height: 33px;
+  color: ${(props) => props.textcolor};
+  text-align: ${(props) => props.align};
+`;
+
 export const TitleBold21 = styled(motion.h2).attrs((props) => ({
   textcolor: props.textcolor || appStyle.colors.white,
   align: props.align || "left",
@@ -150,6 +163,11 @@ export const BodyBold = styled(motion.p).attrs((props) => ({
   cursor: ${(props) => props.cursor};
   color: ${(props) => props.textcolor};
   margin-bottom: ${(props) => props.marginBottom};
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -o-user-select: none;
+  user-select: none;
 `;
 
 export const BodyRegular = styled(motion.p).attrs((props) => ({
@@ -198,6 +216,11 @@ export const CaptionBold = styled(motion.p).attrs((props) => ({
   padding: ${(props) => props.padding};
   color: ${(props) => props.textcolor};
   margin-bottom: ${(props) => props.marginBottom};
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -o-user-select: none;
+  user-select: none;
 `;
 
 export const CaptionBoldShort = styled(motion.p).attrs((props) => ({
@@ -214,6 +237,11 @@ export const CaptionBoldShort = styled(motion.p).attrs((props) => ({
   padding: ${(props) => props.padding};
   color: ${(props) => props.textcolor};
   cursor: ${(props) => props.cursor};
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -o-user-select: none;
+  user-select: none;
 `;
 
 export const CaptionRegular = styled.p.attrs((props) => ({
@@ -232,6 +260,11 @@ export const CaptionRegular = styled.p.attrs((props) => ({
   color: ${(props) => props.textcolor};
   margin-top: ${(props) => props.marginTop};
   margin-bottom: 2px;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -o-user-select: none;
+  user-select: none;
 `;
 
 export const CaptionCrypto = styled.p.attrs((props) => ({

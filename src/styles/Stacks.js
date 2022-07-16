@@ -90,6 +90,7 @@ export const HStack = styled(motion.div).attrs((props) => ({
   responsive: props.responsive ?? false,
   flexwrap: props.flexwrap || "nowrap",
   cursor: props.cursor || "default",
+  blur: props.blur || "0px",
 }))`
   display: flex;
   flex-wrap: ${(props) => props.flexwrap};
@@ -112,10 +113,12 @@ export const HStack = styled(motion.div).attrs((props) => ({
   border-color: ${(props) => props.bordercolor};
   border-width: ${(props) => props.bordersize};
   cursor: ${(props) => props.cursor};
-
+  position: relative;
   overflow-x: ${(props) => props.overflowx};
   overflow-y: ${(props) => props.overflowy};
 
+  -webkit-backdrop-filter: blur(${(props) => props.blur});
+  backdrop-filter: blur(${(props) => props.blur});
   @media (max-width: 768px) {
     flex-direction: ${(props) => (props.responsive ? "column" : "row")};
   }

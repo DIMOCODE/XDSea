@@ -320,7 +320,7 @@ function TopBar(props) {
                         top="46px"
                         left="-9px"
                         width="366px"
-                        widthInput="60%"
+                        widthInput="70%"
                         isPhone={true}
                       ></Searchbar>
                       <VStack
@@ -742,6 +742,16 @@ function TopBar(props) {
                       onClick={() => NavigateTo("")}
                       btnStatus={0}
                     ></ButtonApp> */}
+
+                    <ButtonApp
+                      background="rgba(255, 255, 255, 0)"
+                      textcolor={({ theme }) => theme.text}
+                      text="SearchPage"
+                      cursor="pointer"
+                      onClick={() => NavigateTo("SearchPage")}
+                      btnStatus={0}
+                    ></ButtonApp>
+
                     <ButtonApp
                       background="rgba(255, 255, 255, 0)"
                       textcolor={({ theme }) => theme.text}

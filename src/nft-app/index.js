@@ -24,7 +24,8 @@ import { CaptionRegular } from "../styles/TextStyles";
 import useWindowSize from "../styles/useWindowSize";
 import { sizeWidth } from "@mui/system";
 import MenuContext from "../context/menuContext";
-import ReactGA from 'react-ga';
+import ReactGA from "react-ga";
+import { SearchPage } from "./Search/SearchPage";
 const TRACKING_ID = "UA-105859386-2"; // OUR_TRACKING_ID
 ReactGA.initialize(TRACKING_ID);
 
@@ -85,7 +86,11 @@ const NFTApp = () => {
                       transactions
                     </b>
                     &nbsp;made on the developer page
-                    <b> are executed on the test network. They will not affect your XDC balance.</b>
+                    <b>
+                      {" "}
+                      are executed on the test network. They will not affect
+                      your XDC balance.
+                    </b>
                   </CaptionRegular>
                 </HStack>
               </DevMode>
@@ -111,6 +116,7 @@ const NFTApp = () => {
               <Switch>
                 <Route exact path="/" component={Home}></Route>
                 <Route exact path="/discover" component={Discover}></Route>
+                <Route exact path="/SearchPage" component={SearchPage}></Route>
                 <Route
                   exact
                   path="/UserProfile/:urlAddress"
