@@ -118,6 +118,34 @@ const Discover = () => {
       //   }
       // }
 
+      // const data2 = await marketContract.methods.idToMarketItem(5).call()
+      // const uri = await nftContract.methods.tokenURI(data2.tokenId).call()
+      // var metadata = await axios.get(uri)
+      // const wallet = await GetWallet();
+      // let data = marketContract.methods.editMarketItem(
+      //     data2.tokenId,
+      //     data2.itemId,
+      //     "0x0d0C5e0F7F26277794753fBC739612CEd4cD1d18",
+      //     // metadata?.data?.collection?.nft?.owner,
+      //     "0x0d0C5e0F7F26277794753fBC739612CEd4cD1d18",
+      //     // metadata?.data?.collection?.creator,
+      //     data2.price,
+      //     data2.isListed,
+      //     data2.royalty,
+      //     data2.eventCount,
+      //     0,
+      //     metadata?.data?.collection?.nft?.name,
+      //     metadata?.data?.collection?.name,
+      // ).encodeABI()
+      // const tx = {
+      //     from: wallet.wallet.address,
+      //     to: nftmarketlayeraddress,
+      //     data
+      // }
+      // var gasLimit = await xdc3.eth.estimateGas(tx)
+      // tx["gas"] = gasLimit
+      // let transaction = await SendTransaction(tx);
+
       // for(var i = 2000; i < 3200; i++) {
       // const nftData = await marketContract.methods.idToMarketItem(i).call();
       // const offers = await marketContract.methods.getTokenOfferList(i).call();
