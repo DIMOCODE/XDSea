@@ -405,7 +405,9 @@ const NFTDetails = (props) => {
     try {
       setBlacklist(permaBlacklist);
       setContractFixes(contractFix);
-      const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
+      const xdc3 = new Xdc3(
+        new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER)
+      );
       const marketContract = new xdc3.eth.Contract(
         NFTMarketLayer1.abi,
         nftmarketlayeraddress,
@@ -614,7 +616,9 @@ const NFTDetails = (props) => {
   };
 
   const getOffers = async () => {
-    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
+    const xdc3 = new Xdc3(
+      new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER)
+    );
     const marketContract = new xdc3.eth.Contract(
       NFTMarketLayer1.abi,
       nftmarketlayeraddress,
@@ -640,7 +644,9 @@ const NFTDetails = (props) => {
   };
 
   const getEvents = async () => {
-    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
+    const xdc3 = new Xdc3(
+      new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER)
+    );
     const marketContract = new xdc3.eth.Contract(
       NFTMarketLayer1.abi,
       nftmarketlayeraddress,
@@ -734,7 +740,9 @@ const NFTDetails = (props) => {
   };
 
   const getApproval = async () => {
-    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
+    const xdc3 = new Xdc3(
+      new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER)
+    );
     const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
     if (props?.wallet?.address !== "" && props?.wallet?.address !== undefined)
       var getVal = await nftContract.methods
@@ -783,7 +791,9 @@ const NFTDetails = (props) => {
 
   // console.log(webLocation.pathname);
 
-  const webLink = "https://www.xdsea.com" + webLocation.pathname.replace(/\s+/g, "%20").replace(/%20$/, "");
+  const webLink =
+    "https://www.xdsea.com" +
+    webLocation.pathname.replace(/\s+/g, "%20").replace(/%20$/, "");
 
   const [copied, setCopied] = useState(false);
 
@@ -1490,7 +1500,12 @@ const NFTDetails = (props) => {
                 <CaptionBoldShort>SHARE</CaptionBoldShort>
                 <Spacer></Spacer>
                 <FacebookShareButton
-                  url={"https://www.xdsea.com" + webLocation.pathname.replace(/\s+/g, "%20").replace(/%20$/, "")}
+                  url={
+                    "https://www.xdsea.com" +
+                    webLocation.pathname
+                      .replace(/\s+/g, "%20")
+                      .replace(/%20$/, "")
+                  }
                   quote={"Check out this NFT!"}
                   hashtag={["#XDSea"]}
                   description={"XDSea NFT Marketplace"}
@@ -1506,7 +1521,12 @@ const NFTDetails = (props) => {
                 </FacebookShareButton>
                 <TwitterShareButton
                   title={"Check out this NFT!"}
-                  url={"https://www.xdsea.com" + webLocation.pathname.replace(/\s+/g, "%20").replace(/%20$/, "")}
+                  url={
+                    "https://www.xdsea.com" +
+                    webLocation.pathname
+                      .replace(/\s+/g, "%20")
+                      .replace(/%20$/, "")
+                  }
                   hashtags={["XDSea", "BuildItOnXDC"]}
                 >
                   <a>
@@ -1519,7 +1539,12 @@ const NFTDetails = (props) => {
                 </TwitterShareButton>
                 <TelegramShareButton
                   title={"Check out this NFT!"}
-                  url={"https://www.xdsea.com" + webLocation.pathname.replace(/\s+/g, "%20").replace(/%20$/, "")}
+                  url={
+                    "https://www.xdsea.com" +
+                    webLocation.pathname
+                      .replace(/\s+/g, "%20")
+                      .replace(/%20$/, "")
+                  }
                 >
                   <a>
                     <IconImg
@@ -1531,7 +1556,12 @@ const NFTDetails = (props) => {
                 </TelegramShareButton>
                 <WhatsappShareButton
                   title={"Check out this NFT!"}
-                  url={"https://www.xdsea.com" + webLocation.pathname.replace(/\s+/g, "%20").replace(/%20$/, "")}
+                  url={
+                    "https://www.xdsea.com" +
+                    webLocation.pathname
+                      .replace(/\s+/g, "%20")
+                      .replace(/%20$/, "")
+                  }
                 >
                   <a>
                     <IconImg
@@ -1586,6 +1616,7 @@ const NFTDetails = (props) => {
                         : "0.00"}
                     </TitleBold18>
                     <CaptionBoldShort>XDC</CaptionBoldShort>
+                    <CaptionRegular>(000 USD)</CaptionRegular>
                   </HStack>
                 </HStack>
                 <HStack width="100%" height="36px">
@@ -1608,6 +1639,7 @@ const NFTDetails = (props) => {
                           })}
                         </TitleBold18>
                         <CaptionBoldShort>XDC</CaptionBoldShort>
+                        <CaptionRegular>(000 USD)</CaptionRegular>
                       </>
                     )}
                   </HStack>
@@ -1874,6 +1906,7 @@ const NFTDetails = (props) => {
                     onClickCreator={() =>
                       NavigateTo(`collection/${item.collectionName}`)
                     }
+                    usdPrice="000"
                   ></NftContainer>
                 </VStack>
               ))}

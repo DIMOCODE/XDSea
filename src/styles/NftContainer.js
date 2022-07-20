@@ -9,7 +9,7 @@ import verifiedMask from "../images/verifiedMask.png";
 import sale from "../images/sale.png";
 import relist from "../images/relist.png";
 import sold from "../images/sold.png";
-import { CaptionBoldShort, TitleBold18 } from "./TextStyles";
+import { CaptionBoldShort, TitleBold18, CaptionRegular } from "./TextStyles";
 import ReactPlayer from "react-player";
 import { appStyle } from "./AppStyles";
 import styled from "styled-components";
@@ -29,6 +29,7 @@ function NftContainer(props) {
     iconStatus,
     hasOffers,
     isVerified,
+    usdPrice,
   } = props;
 
   const scaleImage = {
@@ -105,7 +106,7 @@ function NftContainer(props) {
                 playing={isPlaying}
                 muted={true}
                 loop={true}
-                width="150%"
+                width="120%"
                 height="100%"
                 volume="0"
               />
@@ -283,6 +284,9 @@ function NftContainer(props) {
                     maximumFractionDigits: 2,
                   }) || "0"}
                 </TitleBold18>
+                <CaptionRegular textcolor="white" animate={{ opacity: 0.6 }}>
+                  ({usdPrice + " USD"})
+                </CaptionRegular>
                 <Spacer></Spacer>
                 {hasOffers && (
                   <HStack

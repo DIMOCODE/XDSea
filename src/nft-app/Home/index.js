@@ -17,6 +17,8 @@ import { NftContainer } from "../../styles/NftContainer";
 import { appStyle } from "../../styles/AppStyles";
 import ButtonApp from "../../styles/Buttons";
 import Carousel from "react-elastic-carousel";
+import { TopCollectionItem } from "../../styles/TopCollectionItem";
+import { LoadingSpot } from "../../styles/LoadingSpot";
 import {
   HStack,
   IconImg,
@@ -46,6 +48,7 @@ import menuContext from "../../context/menuContext";
 import { Icon } from "@mui/material";
 import logoMarketplace from "../../images/logoMarketplace.png";
 import { NewFeatured } from "../../styles/NewFeatured";
+import rocketCollection from "../../images/rocketCollection.png";
 import { borderColor } from "@mui/system";
 import "./customstyles.css";
 import CID from "cids";
@@ -54,20 +57,23 @@ const Home = () => {
   const history = useHistory();
   const [nfts, setNFts] = useState([]);
   const [featuredNFT, setFeaturedNFT] = useState([]);
+  const [collections, setCollections] = useState([]);
+  const [burnedCollections, setBurnedCollections] = useState([]);
   const [setLoading, isSetLoading] = useState(false);
+  const [spotlightCollectionList, setSpotlightCollectionList] = useState([]);
   const [, setShowMenu] = useContext(menuContext);
-  // const [arrayCollection] = useState([
-  //   { id: 1, name: "Collection 1" },
-  //   { id: 2, name: "Collection 2" },
-  //   { id: 3, name: "Collection 3" },
-  //   { id: 4, name: "Collection 4" },
-  //   { id: 5, name: "Collection 5" },
-  //   { id: 6, name: "Collection 6" },
-  //   { id: 7, name: "Collection 7" },
-  //   { id: 8, name: "Collection 8" },
-  //   { id: 9, name: "Collection 9" },
-  //   { id: 10, name: "Collection 10" },
-  // ]);
+  const [arrayCollection] = useState([
+    { id: 1, name: "Collection 1" },
+    { id: 2, name: "Collection 2" },
+    { id: 3, name: "Collection 3" },
+    { id: 4, name: "Collection 4" },
+    { id: 5, name: "Collection 5" },
+    { id: 6, name: "Collection 6" },
+    { id: 7, name: "Collection 7" },
+    { id: 8, name: "Collection 8" },
+    { id: 9, name: "Collection 9" },
+    { id: 10, name: "Collection 10" },
+  ]);
   const [loadingNFT] = useState([
     { id: 1, name: "NFT 1" },
     { id: 2, name: "NFT 2" },
@@ -83,7 +89,9 @@ const Home = () => {
   const getData = async () => {
     try {
       isSetLoading(true);
-      const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
+      const xdc3 = new Xdc3(
+        new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER)
+      );
       const marketContract = new xdc3.eth.Contract(
         NFTMarketLayer1.abi,
         nftmarketlayeraddress,
@@ -150,63 +158,63 @@ const Home = () => {
           return featuredNFTData;
         })
       );
-      // const spotlightCollections = await Promise.all(
-      //   spotlightCollectionList.map(async (name, i) => {
-      //     var collectionData = await marketContract.methods
-      //       .fetchCollection(name)
-      //       .call();
-      //     const collectionUri = await nftContract.methods
-      //       .tokenURI(collectionData.tokenId)
-      //       .call();
-      //     var collectionMetadata = await axios.get(collectionUri);
-      //     const collectionData2 = await marketContract.methods
-      //       .getCollectionNFTs(name)
-      //       .call();
-      //     var volumeTraded = 0;
-      //     const uniqueOwners = [];
-      //     var lowestPrice = 99999999999999999999999999999;
-      //     const allEvents = await Promise.all(
-      //       collectionData2.map(async (item) => {
-      //         var price = await xdc3.utils.fromWei(item.price, "ether");
-      //         if (!uniqueOwners.includes(item.owner)) {
-      //           uniqueOwners.push(item.owner);
-      //         }
-      //         if (parseInt(price) < lowestPrice) {
-      //           lowestPrice = parseInt(price);
-      //         }
-      //         var events = [];
-      //         var tokenEvents = await marketContract.methods
-      //           .getTokenEventHistory(item.tokenId)
-      //           .call();
-      //         for (var j = 0; j < tokenEvents.length; j++) {
-      //           if (
-      //             tokenEvents[j].eventType === "3" ||
-      //             tokenEvents[j].eventType === "8"
-      //           ) {
-      //             volumeTraded += parseInt(
-      //               await xdc3.utils.fromWei(tokenEvents[j].price, "ether")
-      //             );
-      //           }
-      //         }
-      //         return events;
-      //       })
-      //     );
-      //     let collection = {
-      //       id: i,
-      //       name: collectionMetadata?.data?.collection?.name,
-      //       collectionLogo: collectionMetadata?.data?.collection?.logo,
-      //       floorPrice: lowestPrice,
-      //       volumeTraded: volumeTraded,
-      //       items: !burnedCollections.includes(
-      //         collectionMetadata?.data?.collection?.name
-      //       )
-      //         ? collectionData2.length
-      //         : collectionData2.length - 1,
-      //       owners: uniqueOwners.length,
-      //     };
-      //     return collection;
-      //   })
-      // );
+      const spotlightCollections = await Promise.all(
+        spotlightCollectionList.map(async (name, i) => {
+          var collectionData = await marketContract.methods
+            .fetchCollection(name)
+            .call();
+          const collectionUri = await nftContract.methods
+            .tokenURI(collectionData.tokenId)
+            .call();
+          var collectionMetadata = await axios.get(collectionUri);
+          const collectionData2 = await marketContract.methods
+            .getCollectionNFTs(name)
+            .call();
+          var volumeTraded = 0;
+          const uniqueOwners = [];
+          var lowestPrice = 99999999999999999999999999999;
+          const allEvents = await Promise.all(
+            collectionData2.map(async (item) => {
+              var price = await xdc3.utils.fromWei(item.price, "ether");
+              if (!uniqueOwners.includes(item.owner)) {
+                uniqueOwners.push(item.owner);
+              }
+              if (parseInt(price) < lowestPrice) {
+                lowestPrice = parseInt(price);
+              }
+              var events = [];
+              var tokenEvents = await marketContract.methods
+                .getTokenEventHistory(item.tokenId)
+                .call();
+              for (var j = 0; j < tokenEvents.length; j++) {
+                if (
+                  tokenEvents[j].eventType === "3" ||
+                  tokenEvents[j].eventType === "8"
+                ) {
+                  volumeTraded += parseInt(
+                    await xdc3.utils.fromWei(tokenEvents[j].price, "ether")
+                  );
+                }
+              }
+              return events;
+            })
+          );
+          let collection = {
+            id: i,
+            name: collectionMetadata?.data?.collection?.name,
+            collectionLogo: collectionMetadata?.data?.collection?.logo,
+            floorPrice: lowestPrice,
+            volumeTraded: volumeTraded,
+            items: !burnedCollections.includes(
+              collectionMetadata?.data?.collection?.name
+            )
+              ? collectionData2.length
+              : collectionData2.length - 1,
+            owners: uniqueOwners.length,
+          };
+          return collection;
+        })
+      );
       const trendingItems = await Promise.all(
         trendingItemList.map(async (i) => {
           var itemData = await marketContract.methods.idToMarketItem(i).call();
@@ -272,7 +280,7 @@ const Home = () => {
           return item;
         })
       );
-      // setCollections(spotlightCollections);
+      setCollections(spotlightCollections);
       setNFts(trendingItems);
       setFeaturedNFT(featuredNFTs);
       isSetLoading(false);
@@ -298,7 +306,7 @@ const Home = () => {
   //       }
   //     })
   //   );
-  //   console.log(newBlacklist)
+  //   console.log(newBlacklist);
   // };
 
   const truncateAddress = (address) => {
@@ -696,7 +704,9 @@ const Home = () => {
           </VStack>
         </HStack>
       </HStack> */}
-      {/* <VStack
+
+      {/* SpotLight Collections Section */}
+      <VStack
         height={size.width < 768 ? "auto" : "700px"}
         width="100%"
         spacing="9px"
@@ -742,7 +752,7 @@ const Home = () => {
                 ))}
           </VStack>
         </HStack>
-      </VStack> */}
+      </VStack>
 
       <VStack width="100%" padding="60px 0">
         <ZStack height="300px">
@@ -799,8 +809,8 @@ const Home = () => {
                   <LoadingNftContainer></LoadingNftContainer>
                 </VStack>
               ))
-            : size.width > 728 
-              ? nfts.map((item, i) => (
+            : size.width > 728
+            ? nfts.map((item, i) => (
                 <VStack
                   minwidth={size.width < 768 ? "300px" : "280px"}
                   height="450px"
@@ -824,10 +834,11 @@ const Home = () => {
                     onClickCreator={() =>
                       NavigateTo(`collection/${item.collectionName}`)
                     }
+                    usdPrice="000"
                   ></NftContainer>
                 </VStack>
               ))
-              : nfts.slice(0, 3).map((item, i) => (
+            : nfts.slice(0, 3).map((item, i) => (
                 <VStack
                   minwidth={size.width < 768 ? "300px" : "280px"}
                   height="450px"

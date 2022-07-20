@@ -85,7 +85,9 @@ const CollectionDetails = (props) => {
 
   const getData = async () => {
     try {
-      const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
+      const xdc3 = new Xdc3(
+        new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER)
+      );
       const marketContract = new xdc3.eth.Contract(
         NFTMarketLayer1.abi,
         nftmarketlayeraddress,
@@ -114,39 +116,63 @@ const CollectionDetails = (props) => {
             collectionBanner: untitledCollections.includes(collectionName)
               ? banner1
               : metadata?.data?.collection?.banner
-                ? metadata?.data?.collection?.banner.split('/')[2] === "ipfs.infura.io" 
-                  ? `https://${new CID(metadata?.data?.collection?.banner.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-                  : metadata?.data?.collection?.banner
-                : banner1,
+              ? metadata?.data?.collection?.banner.split("/")[2] ===
+                "ipfs.infura.io"
+                ? `https://${new CID(
+                    metadata?.data?.collection?.banner.split("/")[4]
+                  )
+                    .toV1()
+                    .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
+                : metadata?.data?.collection?.banner
+              : banner1,
             collectionCreator: metadata?.data?.collection?.creator,
             collectionDescription: metadata?.data?.collection?.description,
             collectionDiscord: metadata?.data?.collection?.discordUrl,
             collectionInstagram: metadata?.data?.collection?.instagramUrl,
-            collectionLogo: metadata?.data?.collection?.logo.split('/')[2] === "ipfs.infura.io" 
-              ? `https://${new CID(metadata?.data?.collection?.logo.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-              : metadata?.data?.collection?.logo,
+            collectionLogo:
+              metadata?.data?.collection?.logo.split("/")[2] ===
+              "ipfs.infura.io"
+                ? `https://${new CID(
+                    metadata?.data?.collection?.logo.split("/")[4]
+                  )
+                    .toV1()
+                    .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
+                : metadata?.data?.collection?.logo,
             collectionTwitter: metadata?.data?.collection?.twitterUrl,
             collectionWebsite: metadata?.data?.collection?.websiteUrl,
-            image: metadata?.data?.collection?.nft?.image.split('/')[2] === "ipfs.infura.io" 
-              ? `https://${new CID(metadata?.data?.collection?.nft?.image.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-              : metadata?.data?.collection?.nft?.image,
-            name: i.tokenId === "3567"
-              ? "TAURULIOMPS 1/12"
-              : i.tokenId === "3580"
+            image:
+              metadata?.data?.collection?.nft?.image.split("/")[2] ===
+              "ipfs.infura.io"
+                ? `https://${new CID(
+                    metadata?.data?.collection?.nft?.image.split("/")[4]
+                  )
+                    .toV1()
+                    .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
+                : metadata?.data?.collection?.nft?.image,
+            name:
+              i.tokenId === "3567"
+                ? "TAURULIOMPS 1/12"
+                : i.tokenId === "3580"
                 ? "GEMINLIOMP 2/12"
                 : i.tokenId === "3584"
-                  ? "LIBRIOMP 2/12"
-                  : i.tokenId === "3650"
-                    ? "PISCELIOMPS 8/12"
-                    : i.tokenId === "3679"
-                      ? "LEOIOMP 10/12"
-                      : i.tokenId === "3695"
-                        ? "SAGITTARIOMPS 11/12"
-                        : metadata?.data?.collection?.nft?.name,
+                ? "LIBRIOMP 2/12"
+                : i.tokenId === "3650"
+                ? "PISCELIOMPS 8/12"
+                : i.tokenId === "3679"
+                ? "LEOIOMP 10/12"
+                : i.tokenId === "3695"
+                ? "SAGITTARIOMPS 11/12"
+                : metadata?.data?.collection?.nft?.name,
             fileType: metadata?.data?.collection?.nft?.fileType,
-            preview: metadata?.data?.collection?.nft?.preview.split('/')[2] === "ipfs.infura.io" 
-              ? `https://${new CID(metadata?.data?.collection?.nft?.preview.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-              : metadata?.data?.collection?.nft?.preview,
+            preview:
+              metadata?.data?.collection?.nft?.preview.split("/")[2] ===
+              "ipfs.infura.io"
+                ? `https://${new CID(
+                    metadata?.data?.collection?.nft?.preview.split("/")[4]
+                  )
+                    .toV1()
+                    .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
+                : metadata?.data?.collection?.nft?.preview,
           };
           return item;
         })
@@ -203,7 +229,9 @@ const CollectionDetails = (props) => {
   const fetchMoreNFTs = async () => {
     await new Promise((r) => setTimeout(r, 3000));
     setPageCount(pageCount + 1);
-    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
+    const xdc3 = new Xdc3(
+      new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER)
+    );
     const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
     const newNFTs = await Promise.all(
       page.slice(pageCount * 12, 12 * (pageCount + 1)).map(async (i) => {
@@ -217,26 +245,39 @@ const CollectionDetails = (props) => {
           offerCount: i.offerCount,
           owner: i.owner,
           collectionName: metadata?.data?.collection?.name,
-          image: metadata?.data?.collection?.nft?.image.split('/')[2] === "ipfs.infura.io" 
-            ? `https://${new CID(metadata?.data?.collection?.nft?.image.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-            : metadata?.data?.collection?.nft?.image,
-          name: i.tokenId === "3567"
-            ? "TAURULIOMPS 1/12"
-            : i.tokenId === "3580"
+          image:
+            metadata?.data?.collection?.nft?.image.split("/")[2] ===
+            "ipfs.infura.io"
+              ? `https://${new CID(
+                  metadata?.data?.collection?.nft?.image.split("/")[4]
+                )
+                  .toV1()
+                  .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
+              : metadata?.data?.collection?.nft?.image,
+          name:
+            i.tokenId === "3567"
+              ? "TAURULIOMPS 1/12"
+              : i.tokenId === "3580"
               ? "GEMINLIOMP 2/12"
               : i.tokenId === "3584"
-                ? "LIBRIOMP 2/12"
-                : i.tokenId === "3650"
-                  ? "PISCELIOMPS 8/12"
-                  : i.tokenId === "3679"
-                    ? "LEOIOMP 10/12"
-                    : i.tokenId === "3695"
-                      ? "SAGITTARIOMPS 11/12"
-                      : metadata?.data?.collection?.nft?.name,
+              ? "LIBRIOMP 2/12"
+              : i.tokenId === "3650"
+              ? "PISCELIOMPS 8/12"
+              : i.tokenId === "3679"
+              ? "LEOIOMP 10/12"
+              : i.tokenId === "3695"
+              ? "SAGITTARIOMPS 11/12"
+              : metadata?.data?.collection?.nft?.name,
           fileType: metadata?.data?.collection?.nft?.fileType,
-          preview: metadata?.data?.collection?.nft?.preview.split('/')[2] === "ipfs.infura.io" 
-            ? `https://${new CID(metadata?.data?.collection?.nft?.preview.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-            : metadata?.data?.collection?.nft?.preview,
+          preview:
+            metadata?.data?.collection?.nft?.preview.split("/")[2] ===
+            "ipfs.infura.io"
+              ? `https://${new CID(
+                  metadata?.data?.collection?.nft?.preview.split("/")[4]
+                )
+                  .toV1()
+                  .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
+              : metadata?.data?.collection?.nft?.preview,
         };
         return nft;
       })
@@ -267,14 +308,16 @@ const CollectionDetails = (props) => {
     window.scrollTo(0, 0);
   }, []);
   const webLocation = useLocation();
-  const webLink = "https://www.xdsea.com" + (webLocation.pathname.replace(/\s+/g, "%20").replace(/%20$/, ""));
+  const webLink =
+    "https://www.xdsea.com" +
+    webLocation.pathname.replace(/\s+/g, "%20").replace(/%20$/, "");
 
   const [copied, setCopied] = useState(false);
 
   const copy = async () => {
     await navigator.clipboard.writeText(webLink);
     setCopied(true);
-    setTimeout(() => setCopied(false), 1500)
+    setTimeout(() => setCopied(false), 1500);
   };
 
   return (
@@ -349,7 +392,12 @@ const CollectionDetails = (props) => {
               <CaptionBoldShort>SHARE</CaptionBoldShort>
 
               <FacebookShareButton
-                url={"https://www.xdsea.com" + webLocation.pathname.replace(/\s+/g, "%20").replace(/%20$/, "")}
+                url={
+                  "https://www.xdsea.com" +
+                  webLocation.pathname
+                    .replace(/\s+/g, "%20")
+                    .replace(/%20$/, "")
+                }
                 quote={"Check out this NFT Collection!"}
                 hashtag={["#XDSea"]}
                 description={"XDSea"}
@@ -366,7 +414,12 @@ const CollectionDetails = (props) => {
               </FacebookShareButton>
               <TwitterShareButton
                 title={"Check out this NFT Collection!"}
-                url={"https://www.xdsea.com" + webLocation.pathname.replace(/\s+/g, "%20").replace(/%20$/, "")}
+                url={
+                  "https://www.xdsea.com" +
+                  webLocation.pathname
+                    .replace(/\s+/g, "%20")
+                    .replace(/%20$/, "")
+                }
                 hashtags={["XDSea", "BuildItOnXDC"]}
               >
                 <a>
@@ -379,7 +432,12 @@ const CollectionDetails = (props) => {
               </TwitterShareButton>
               <TelegramShareButton
                 title={"Check out this NFT Collection!"}
-                url={"https://www.xdsea.com" + webLocation.pathname.replace(/\s+/g, "%20").replace(/%20$/, "")}
+                url={
+                  "https://www.xdsea.com" +
+                  webLocation.pathname
+                    .replace(/\s+/g, "%20")
+                    .replace(/%20$/, "")
+                }
               >
                 <a>
                   <IconImg
@@ -391,7 +449,12 @@ const CollectionDetails = (props) => {
               </TelegramShareButton>
               <WhatsappShareButton
                 title={"Check out this NFT Collection!"}
-                url={"https://www.xdsea.com" + webLocation.pathname.replace(/\s+/g, "%20").replace(/%20$/, "")}
+                url={
+                  "https://www.xdsea.com" +
+                  webLocation.pathname
+                    .replace(/\s+/g, "%20")
+                    .replace(/%20$/, "")
+                }
               >
                 <a>
                   <IconImg
@@ -524,8 +587,8 @@ const CollectionDetails = (props) => {
                       {burnedCollections.includes(collectionName)
                         ? page.length - 1
                         : collectionName === "XDSEA MONKEYS ORIGINAL ART"
-                          ? page.length - 7
-                          : page.length}
+                        ? page.length - 7
+                        : page.length}
                     </BodyBold>
                   )}
                   <CaptionBoldShort textcolor={({ theme }) => theme.text}>
@@ -751,6 +814,7 @@ const CollectionDetails = (props) => {
                             NavigateTo(`UserProfile/${item.owner}`)
                           }
                           owner={true}
+                          usdPrice="000"
                         ></NftContainer>
                       </VStack>
                     ))

@@ -1,6 +1,6 @@
 import React from "react";
 import { HStack, IconImg, VStack, Spacer, Divider } from "./Stacks";
-import { BodyBold, BodyRegular } from "./TextStyles";
+import { BodyBold, BodyRegular, CaptionRegular } from "./TextStyles";
 import transferIcon from "../images/transferIcon.png";
 import star from "../images/starColor.png";
 import xdclogo from "../images/miniXdcLogo.png";
@@ -113,11 +113,14 @@ function TableActivityNft(props) {
                 <HStack padding="0 60px">
                   <HStack spacing="6px">
                     <IconImg url={xdclogo} width="18px" height="18px"></IconImg>
-                    <BodyRegular>
-                      {Number(item.price).toLocaleString(undefined, {
-                        maximumFractionDigits: 2,
-                      })}
-                    </BodyRegular>
+                    <VStack spacing="0px">
+                      <BodyRegular>
+                        {Number(item.price).toLocaleString(undefined, {
+                          maximumFractionDigits: 2,
+                        })}
+                      </BodyRegular>
+                      <CaptionRegular>(000 USD)</CaptionRegular>
+                    </VStack>
                   </HStack>
                 </HStack>
               )}

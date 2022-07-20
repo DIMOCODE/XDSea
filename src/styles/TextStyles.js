@@ -244,7 +244,7 @@ export const CaptionBoldShort = styled(motion.p).attrs((props) => ({
   user-select: none;
 `;
 
-export const CaptionRegular = styled.p.attrs((props) => ({
+export const CaptionRegular = styled(motion.p).attrs((props) => ({
   textcolor: props.textcolor || props.theme.text,
   align: props.align || "Left",
   padding: props.padding || "0px",
