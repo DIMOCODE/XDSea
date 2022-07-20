@@ -705,6 +705,40 @@ const Home = () => {
         </HStack>
       </HStack> */}
 
+      <VStack width="100%" padding="60px 0">
+        <ZStack height="300px">
+          <ZItem>
+            <IconImg
+              url={bannerXDC}
+              width="100%"
+              height="300px"
+              border={size.width < 768 ? "0px" : "15px"}
+              backsize="cover"
+            ></IconImg>
+          </ZItem>
+
+          <ZItem>
+            <VStack
+              width="100%"
+              height="100%"
+              whileHover={{ scale: 1.05 }}
+              onClick={() => NavigateTo("HowToStart")}
+            >
+              <TitleBold27 textcolor={appStyle.colors.white}>
+                Want to Get Started?
+              </TitleBold27>
+              <ButtonApp
+                text="Here is How"
+                textcolor={appStyle.colors.black}
+                background={appStyle.colors.white}
+                width="180px"
+                cursor="pointer"
+              ></ButtonApp>
+            </VStack>
+          </ZItem>
+        </ZStack>
+      </VStack>
+
       {/* SpotLight Collections Section */}
       <VStack
         height={size.width < 768 ? "auto" : "700px"}
@@ -752,40 +786,6 @@ const Home = () => {
                 ))}
           </VStack>
         </HStack>
-      </VStack>
-
-      <VStack width="100%" padding="60px 0">
-        <ZStack height="300px">
-          <ZItem>
-            <IconImg
-              url={bannerXDC}
-              width="100%"
-              height="300px"
-              border={size.width < 768 ? "0px" : "15px"}
-              backsize="cover"
-            ></IconImg>
-          </ZItem>
-
-          <ZItem>
-            <VStack
-              width="100%"
-              height="100%"
-              whileHover={{ scale: 1.05 }}
-              onClick={() => NavigateTo("HowToStart")}
-            >
-              <TitleBold27 textcolor={appStyle.colors.white}>
-                Want to Get Started?
-              </TitleBold27>
-              <ButtonApp
-                text="Here is How"
-                textcolor={appStyle.colors.black}
-                background={appStyle.colors.white}
-                width="180px"
-                cursor="pointer"
-              ></ButtonApp>
-            </VStack>
-          </ZItem>
-        </ZStack>
       </VStack>
 
       <VStack
