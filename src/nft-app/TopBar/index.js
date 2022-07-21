@@ -47,6 +47,8 @@ import { useClickAway } from "react-use";
 import { InputStyled } from "../../styles/InputStyled";
 import { Searchbar } from "../../styles/Searbar";
 import TestData from "../../styles/Data.json";
+import { anonymousLogin, logout } from "../../API/access";
+import { LS, LS_ROOT_KEY } from "../../constant";
 
 function TopBar(props) {
   const { device, themeToggler, devMode, onWalletChange } = props;
@@ -163,6 +165,21 @@ function TopBar(props) {
 
   const [searchPhone, setSearchPhone] = useState(false);
 
+  const handleOnWalletChange = async (wallet) => {
+    setWallet(wallet);
+    onWalletChange(wallet);
+
+    try {
+      if (wallet.connected) {
+        const { data } = await anonymousLogin(wallet.address);
+        LS.set(LS_ROOT_KEY, data);
+      } else {
+        logout();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <ContentBar>
       <HStack height="90px" width="100%" justify="center">
@@ -236,18 +253,9 @@ function TopBar(props) {
                               btnClass={`walletConnectPhone ${
                                 wallet?.connected ? "hide" : ""
                               }`}
-                              onConnect={(wallet) => {
-                                setWallet(wallet);
-                                onWalletChange(wallet);
-                              }}
-                              onAddressChange={(wallet) => {
-                                setWallet(wallet);
-                                onWalletChange(wallet);
-                              }}
-                              onDisconnect={(wallet) => {
-                                setWallet(wallet);
-                                onWalletChange(wallet);
-                              }}
+                              onConnect={handleOnWalletChange}
+                              onAddressChange={handleOnWalletChange}
+                              onDisconnect={handleOnWalletChange}
                             />
                           </Connect>
                           <WalletButton
@@ -593,18 +601,9 @@ function TopBar(props) {
                               btnClass={`walletConnectTablet ${
                                 wallet?.connected ? "hide" : ""
                               }`}
-                              onConnect={(wallet) => {
-                                setWallet(wallet);
-                                onWalletChange(wallet);
-                              }}
-                              onAddressChange={(wallet) => {
-                                setWallet(wallet);
-                                onWalletChange(wallet);
-                              }}
-                              onDisconnect={(wallet) => {
-                                setWallet(wallet);
-                                onWalletChange(wallet);
-                              }}
+                              onConnect={handleOnWalletChange}
+                              onAddressChange={handleOnWalletChange}
+                              onDisconnect={handleOnWalletChange}
                             />
                           </Connect>
                           <WalletButton
@@ -776,18 +775,9 @@ function TopBar(props) {
                               btnClass={`walletConnect ${
                                 wallet?.connected ? "hide" : ""
                               }`}
-                              onConnect={(wallet) => {
-                                setWallet(wallet);
-                                onWalletChange(wallet);
-                              }}
-                              onAddressChange={(wallet) => {
-                                setWallet(wallet);
-                                onWalletChange(wallet);
-                              }}
-                              onDisconnect={(wallet) => {
-                                setWallet(wallet);
-                                onWalletChange(wallet);
-                              }}
+                              onConnect={handleOnWalletChange}
+                              onAddressChange={handleOnWalletChange}
+                              onDisconnect={handleOnWalletChange}
                             />
                           </Connect>
                           <WalletButton

@@ -1,15 +1,13 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
-import Xdc3 from "xdc3";
-import { DEFAULT_PROVIDER, HEADER } from "../../constant";
-import { nftaddress, nftmarketlayeraddress } from "../../config";
-import NFT from "../../abis/NFT.json";
-import NFTMarketLayer1 from "../../abis/NFTMarketLayer1.json";
-import axios from "axios";
+import { HTTP_METHODS } from "../../constant";
+import { nftaddress } from "../../config";
 import {
   featuredNFTList,
   trendingItemList,
   verifiedProfiles,
+//   spotlightCollectionList,
+//   burnedCollections
 } from "../../blacklist";
 import styled from "styled-components";
 import iconTrending from "../../images/trendingNFT.png";
@@ -26,29 +24,22 @@ import {
   ZStack,
 } from "../../styles/Stacks";
 import {
-  BodyRegular,
   TitleBold18,
   TitleBold27,
-  TitleBold33,
 } from "../../styles/TextStyles";
 import {
   LayoutGroup,
   motion,
-  AnimatePresence,
 } from "framer-motion/dist/framer-motion";
-import { Featured } from "../../styles/Featured";
 import useWindowSize from "../../styles/useWindowSize";
 import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
-import { LogoHover } from "../../styles/LogoHover";
 import logoXDSEA from "../../images/LogoXDSEA.png";
 import bannerXDC from "../../images/bannerXdc.png";
 import menuContext from "../../context/menuContext";
-import { Icon } from "@mui/material";
-import logoMarketplace from "../../images/logoMarketplace.png";
 import { NewFeatured } from "../../styles/NewFeatured";
-import { borderColor } from "@mui/system";
 import "./customstyles.css";
 import CID from "cids";
+import { createRequest } from "../../API/index";
 
 const Home = () => {
   const history = useHistory();
@@ -281,26 +272,6 @@ const Home = () => {
     }
   };
 
-  // const getBlacklist = async () => {
-  //   const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
-  //   const oldMarketContract = new xdc3.eth.Contract(
-  //     NFTMarket.abi,
-  //     nftmarketaddress,
-  //     xdc3
-  //   );
-  //   const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
-  //   const data = await oldMarketContract.methods.fetchMarketItems().call();
-  //   var newBlacklist = [];
-  //   const marketItems = await Promise.all(
-  //     data.map(async (i) => {
-  //       if (i.isListed) {
-  //         newBlacklist.push(i.tokenId);
-  //       }
-  //     })
-  //   );
-  //   console.log(newBlacklist)
-  // };
-
   const truncateAddress = (address) => {
     return address
       ? address.substring(0, 7) + "..." + address.substring(38)
@@ -314,7 +285,6 @@ const Home = () => {
 
   useEffect(() => {
     getData();
-    // getBlacklist()
   }, []);
 
   useEffect(() => {
@@ -333,7 +303,6 @@ const Home = () => {
   }, [scrollTop]);
 
   useEffect(() => {
-    // console.log(scrolling);
   }, [scrolling]);
 
   return (
@@ -376,7 +345,6 @@ const Home = () => {
           <>
             {/* First NFT Featured */}
             <VStack
-              // background="pink"
               minwidth={
                 size.width > 768 ? "30%" : size.width > 425 ? "39%" : "100%"
               }
@@ -401,7 +369,6 @@ const Home = () => {
             </VStack>
             {/* Second NFT Featured */}
             <VStack
-              // background="pink"
               minwidth={
                 size.width > 768 ? "30%" : size.width > 425 ? "39%" : "100%"
               }
@@ -426,7 +393,6 @@ const Home = () => {
             </VStack>
             {/* Third NFT Featured */}
             <VStack
-              // background="pink"
               minwidth={
                 size.width > 768 ? "30%" : size.width > 425 ? "39%" : "100%"
               }
@@ -451,7 +417,6 @@ const Home = () => {
             </VStack>
             {/* Four NFT Featured */}
             <VStack
-              // background="pink"
               minwidth={
                 size.width > 768 ? "30%" : size.width > 425 ? "39%" : "100%"
               }
@@ -489,7 +454,6 @@ const Home = () => {
             >
               {/* First NFT Featured */}
               <VStack
-                // background="pink"
                 minwidth={
                   size.width > 768 ? "30%" : size.width > 425 ? "39%" : "100%"
                 }
@@ -514,7 +478,6 @@ const Home = () => {
               </VStack>
               {/* Second NFT Featured */}
               <VStack
-                // background="pink"
                 minwidth={
                   size.width > 768 ? "30%" : size.width > 425 ? "39%" : "100%"
                 }
@@ -540,7 +503,6 @@ const Home = () => {
 
               {/* Third NFT Featured */}
               <VStack
-                // background="pink"
                 minwidth={
                   size.width > 768 ? "30%" : size.width > 425 ? "39%" : "100%"
                 }
@@ -566,7 +528,6 @@ const Home = () => {
 
               {/* Four NFT Featured */}
               <VStack
-                // background="pink"
                 minwidth={
                   size.width > 768 ? "30%" : size.width > 425 ? "39%" : "100%"
                 }
@@ -593,7 +554,7 @@ const Home = () => {
           </VStack>
         )}
 
-        {/* subtitleHere */}
+        {/* Simpler & Faster Block */}
         <VStack
           background={appStyle.colors.darkgrey10}
           minwidth={size.width > 768 ? "30%" : "100%"}
@@ -611,91 +572,7 @@ const Home = () => {
         </VStack>
       </HStack>
 
-      {/* <HStack
-        width="100%"
-        height={size.width < 768 ? "auto" : "580px"}
-        alignment="flex-start"
-        spacing="15px"
-        padding="0px 30px"
-        responsive={true}
-      >
-        <VStack
-          maxwidth={size.width < 768 ? "100%" : "32%"}
-          alignment="flex-start"
-        >
-          <Spacer></Spacer>
-          <LogoHover></LogoHover>
-          <VStack spacing="9px" alignment="flex-start">
-            <TitleBold27>
-              Exploring, Collecting, and Selling exclusive NFTs has now become
-            </TitleBold27>
-            <TitleBold33 textcolor={({ theme }) => theme.blue}>
-              simpler & faster
-            </TitleBold33>
-          </VStack>
-          <BodyRegular>
-            Be a part of the world's first NFT Marketplace on the XDC
-            blockchain.
-          </BodyRegular>
-         
-          <Spacer></Spacer>
-        </VStack>
-        <HStack
-          width={size.width < 768 ? "100%" : "60%"}
-          height={size.width < 768 ? "390px" : "100%"}
-        >
-          <VStack>
-            <Featured
-              creatorImage={featuredNFT[0]?.collectionLogo}
-              itemImage={featuredNFT[0]?.image}
-              collectionName={featuredNFT[0]?.collectionName}
-              creatorName={truncateAddress(featuredNFT[0]?.creator)}
-              itemNumber={featuredNFT[0]?.name}
-              fileType={featuredNFT[0]?.fileType}
-              onClickCreator={() =>
-                NavigateTo(`collection/${featuredNFT[0]?.collectionName}`)
-              }
-              onClick={() =>
-                NavigateTo(`nft/${nftaddress}/${featuredNFT[0]?.tokenId}`)
-              }
-            ></Featured>
-          </VStack>
-          <VStack>
-            <LayoutGroup id="number2">
-              <Featured
-                creatorImage={featuredNFT[1]?.collectionLogo}
-                itemImage={featuredNFT[1]?.image}
-                collectionName={featuredNFT[1]?.collectionName}
-                creatorName={truncateAddress(featuredNFT[1]?.creator)}
-                itemNumber={featuredNFT[1]?.name}
-                fileType={featuredNFT[1]?.fileType}
-                onClickCreator={() =>
-                  NavigateTo(`collection/${featuredNFT[1]?.collectionName}`)
-                }
-                onClick={() =>
-                  NavigateTo(`nft/${nftaddress}/${featuredNFT[1]?.tokenId}`)
-                }
-              ></Featured>
-            </LayoutGroup>
-            <LayoutGroup id="number3">
-              <Featured
-                creatorImage={featuredNFT[2]?.collectionLogo}
-                itemImage={featuredNFT[2]?.image}
-                collectionName={featuredNFT[2]?.collectionName}
-                creatorName={truncateAddress(featuredNFT[2]?.creator)}
-                itemNumber={featuredNFT[2]?.name}
-                fileType={featuredNFT[2]?.fileType}
-                onClickCreator={() =>
-                  NavigateTo(`collection/${featuredNFT[2]?.collectionName}`)
-                }
-                onClick={() =>
-                  NavigateTo(`nft/${nftaddress}/${featuredNFT[2]?.tokenId}`)
-                }
-              ></Featured>
-            </LayoutGroup>
-          </VStack>
-        </HStack>
-      </HStack> */}
+        {/* Top Collections Section */}
       {/* <VStack
         height={size.width < 768 ? "auto" : "700px"}
         width="100%"
@@ -744,6 +621,7 @@ const Home = () => {
         </HStack>
       </VStack> */}
 
+      {/* How to get started Banner */}
       <VStack width="100%" padding="60px 0">
         <ZStack height="300px">
           <ZItem>
@@ -778,6 +656,7 @@ const Home = () => {
         </ZStack>
       </VStack>
 
+      {/* Trending NFTs Section */}
       <VStack
         height="auto"
         // height={size.width < 768 ? "auto" : "auto"}
