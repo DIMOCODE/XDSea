@@ -103,23 +103,23 @@ const CollectionDetails = (props) => {
             collectionName: i.collectionId.name,
             collectionBanner: untitledCollections.includes(collectionName)
               ? banner1
-              : collectionData.collection.banner
-                ? collectionData.collection.banner.split('/')[2] === "ipfs.infura.io" 
-                  ? `https://${new CID(collectionData.collection.banner.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-                  : collectionData.collection.banner
+              : metadata?.data?.collection?.banner
+                ? metadata?.data?.collection?.banner?.split('/')[2] === "xdsea.infura-ipfs.io" 
+                  ? `https://${new CID(metadata?.data?.collection?.banner.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+                  : metadata?.data?.collection?.banner
                 : banner1,
-            collectionCreator: collectionData.collection.addressCreator,
-            collectionDescription: collectionData.collection.description,
-            collectionDiscord: collectionData.collection.discordUrl,
-            collectionInstagram: collectionData.collection.instagramUrl,
-            collectionLogo: collectionData.collection.logo.split('/')[2] === "ipfs.infura.io" 
-              ? `https://${new CID(collectionData.collection.logo.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-              : collectionData.collection.logo,
-            collectionTwitter: collectionData.collection.twitterUrl,
-            collectionWebsite: collectionData.collection.websiteUrl,
-            image: i.urlFile.split('/')[2] === "ipfs.infura.io" 
-              ? `https://${new CID(i.urlFile.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-              : i.urlFile,
+            collectionCreator: metadata?.data?.collection?.creator,
+            collectionDescription: metadata?.data?.collection?.description,
+            collectionDiscord: metadata?.data?.collection?.discordUrl,
+            collectionInstagram: metadata?.data?.collection?.instagramUrl,
+            collectionLogo: metadata?.data?.collection?.logo?.split('/')[2] === "xdsea.infura-ipfs.io" 
+              ? `https://${new CID(metadata?.data?.collection?.logo.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+              : metadata?.data?.collection?.logo,
+            collectionTwitter: metadata?.data?.collection?.twitterUrl,
+            collectionWebsite: metadata?.data?.collection?.websiteUrl,
+            image: metadata?.data?.collection?.nft?.image?.split('/')[2] === "xdsea.infura-ipfs.io" 
+              ? `https://${new CID(metadata?.data?.collection?.nft?.image.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+              : metadata?.data?.collection?.nft?.image,
             name: i.tokenId === "3567"
               ? "TAURULIOMPS 1/12"
               : i.tokenId === "3580"
@@ -132,11 +132,11 @@ const CollectionDetails = (props) => {
                       ? "LEOIOMP 10/12"
                       : i.tokenId === "3695"
                         ? "SAGITTARIOMPS 11/12"
-                        : i.name,
-            fileType: i.fileType,
-            preview: i.preview.split('/')[2] === "ipfs.infura.io" 
-              ? `https://${new CID(i.preview.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-              : i.preview,
+                        : metadata?.data?.collection?.nft?.name,
+            fileType: metadata?.data?.collection?.nft?.fileType,
+            preview: metadata?.data?.collection?.nft?.preview?.split('/')[2] === "xdsea.infura-ipfs.io" 
+              ? `https://${new CID(metadata?.data?.collection?.nft?.preview.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+              : metadata?.data?.collection?.nft?.preview,
           };
           return item;
         })
@@ -174,12 +174,12 @@ const CollectionDetails = (props) => {
           price: i.price,
           tokenId: i.tokenId,
           isListed: i.isListed,
-          // offerCount: i.offerCount,
-          owner: i.addressOwner,
-          collectionName: collection.collection.name,
-          image: i.urlFile.split('/')[2] === "ipfs.infura.io" 
-            ? `https://${new CID(i.urlFile.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-            : i.urlFile,
+          offerCount: i.offerCount,
+          owner: i.owner,
+          collectionName: metadata?.data?.collection?.name,
+          image: metadata?.data?.collection?.nft?.image?.split('/')[2] === "xdsea.infura-ipfs.io" 
+            ? `https://${new CID(metadata?.data?.collection?.nft?.image.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+            : metadata?.data?.collection?.nft?.image,
           name: i.tokenId === "3567"
             ? "TAURULIOMPS 1/12"
             : i.tokenId === "3580"
@@ -192,11 +192,11 @@ const CollectionDetails = (props) => {
                     ? "LEOIOMP 10/12"
                     : i.tokenId === "3695"
                       ? "SAGITTARIOMPS 11/12"
-                      : i.name,
-          fileType: i.fileType,
-          preview: i.preview.split('/')[2] === "ipfs.infura.io" 
-            ? `https://${new CID(i.preview.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-            : i.preview,
+                      : metadata?.data?.collection?.nft?.name,
+          fileType: metadata?.data?.collection?.nft?.fileType,
+          preview: metadata?.data?.collection?.nft?.preview?.split('/')[2] === "xdsea.infura-ipfs.io" 
+            ? `https://${new CID(metadata?.data?.collection?.nft?.preview.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+            : metadata?.data?.collection?.nft?.preview,
         };
         return nft;
       })

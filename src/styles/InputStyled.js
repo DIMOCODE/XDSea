@@ -24,7 +24,7 @@ function InputStyled(props) {
     fontsize,
     texttransform,
     height,
-    inputId
+    inputId,
   } = props;
 
   const [hasURL] = useState(false);

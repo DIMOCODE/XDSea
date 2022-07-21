@@ -29,6 +29,7 @@ import { motion, AnimatePresence } from "framer-motion/dist/framer-motion";
 import { UserMenuButton } from "./UserMenuButton";
 import { appStyle } from "../../styles/AppStyles";
 import "../../styles/App.css";
+import chevronRight from "../../images/chevronRight.png";
 
 import infoIcon from "../../images/infoIcon.png";
 import closeIcon from "../../images/closeIcon.png";
@@ -38,10 +39,16 @@ import instagram from "../../images/instagramFaded.png";
 import mail from "../../images/mailFaded.png";
 import menuContext from "../../context/menuContext";
 import gif from "../../images/gifConnect.gif";
+import search from "../../images/searchIcon.png";
 import XDClogo from "../../images/xdcpayLogo.png";
 import Metamask from "../../images/metamaskIcon.png";
 import { findAllByDisplayValue } from "@testing-library/react";
-import {useClickAway} from 'react-use';
+import { useClickAway } from "react-use";
+import { InputStyled } from "../../styles/InputStyled";
+import { Searchbar } from "../../styles/Searbar";
+import TestData from "../../styles/Data.json";
+import { anonymousLogin, logout } from "../../API/access";
+import { LS, LS_ROOT_KEY } from "../../constant";
 
 function TopBar(props) {
   const { device, themeToggler, devMode, onWalletChange } = props;
@@ -54,9 +61,7 @@ function TopBar(props) {
   const menucolor = ({ theme }) => theme.menu;
   const [showError, setShowError] = useState(0);
   const [showInfo, setShowInfo] = useState(false);
-  
 
-  
   // const [clickedOutside, setClickedOutside] = useState(false);
   //   const myRef = useRef();
 
@@ -76,10 +81,10 @@ function TopBar(props) {
 
   const ref = useRef(null);
   useClickAway(ref, () => {
-    setShowMenu(false)
-    console.log('OUTSIDE CLICKED');
+    setShowMenu(false);
+    console.log("OUTSIDE CLICKED");
   });
-  
+
   useEffect(() => {
     setDeviceSize(device);
     return () => {
@@ -158,6 +163,23 @@ function TopBar(props) {
     setIsMetamask(false);
   };
 
+  const [searchPhone, setSearchPhone] = useState(false);
+
+  const handleOnWalletChange = async (wallet) => {
+    setWallet(wallet);
+    onWalletChange(wallet);
+
+    try {
+      if (wallet.connected) {
+        const { data } = await anonymousLogin(wallet.address);
+        LS.set(LS_ROOT_KEY, data);
+      } else {
+        logout();
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <ContentBar>
       <HStack height="90px" width="100%" justify="center">
@@ -173,7 +195,7 @@ function TopBar(props) {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -12 }}
                       transition={{ type: "spring", damping: 10 }}
-                      ref={ref} 
+                      ref={ref}
                     >
                       <VStack
                         background={({ theme }) => theme.backElement}
@@ -191,14 +213,12 @@ function TopBar(props) {
                         ></IconImg>
                         <Spacer></Spacer>
                       </HStack> */}
-                      
-                  
-        
 
                         <VStack
                           alignment="flex-start"
                           width="180px"
                           spacing="21px"
+                          style={{ zIndex: -100 }}
                         >
                           <TitleBold21
                             onClick={() => NavigateTo("")}
@@ -226,25 +246,16 @@ function TopBar(props) {
                           </TitleBold21>
                         </VStack>
 
-                        <VStack>
+                        <VStack style={{ zIndex: -100 }}>
                           <Connect>
                             <XdcConnect
                               btnName={" "}
                               btnClass={`walletConnectPhone ${
                                 wallet?.connected ? "hide" : ""
                               }`}
-                              onConnect={(wallet) => {
-                                setWallet(wallet);
-                                onWalletChange(wallet);
-                              }}
-                              onAddressChange={(wallet) => {
-                                setWallet(wallet);
-                                onWalletChange(wallet);
-                              }}
-                              onDisconnect={(wallet) => {
-                                setWallet(wallet);
-                                onWalletChange(wallet);
-                              }}
+                              onConnect={handleOnWalletChange}
+                              onAddressChange={handleOnWalletChange}
+                              onDisconnect={handleOnWalletChange}
                             />
                           </Connect>
                           <WalletButton
@@ -261,7 +272,7 @@ function TopBar(props) {
                           ></WalletButton>
                         </VStack>
                         <Spacer></Spacer>
-                        <HStack>
+                        <HStack style={{ zIndex: -100 }}>
                           <SwitchButton
                             clickOnSwitch={themeToggler}
                           ></SwitchButton>
@@ -308,75 +319,120 @@ function TopBar(props) {
                       </VStack>
                     </SlideMenu>
                   )}
-                  <HStack
-                    width="100%"
-                    padding="0 26px"
-                    style={{ position: "relative" }}
-                  >
-                    <HStack onClick={() => NavigateTo("")} cursor={"pointer"}>
-                      <IconImg
-                        url={XDSealogo}
-                        width="52px"
-                        height="52px"
-                        cursor={"pointer"}
-                      ></IconImg>
+
+                  {searchPhone ? (
+                    <HStack>
+                      <Searchbar
+                        placeholder="Search for NFTs and Collections"
+                        data={TestData}
+                        top="46px"
+                        left="-9px"
+                        width="366px"
+                        widthInput="60%"
+                        isPhone={true}
+                      ></Searchbar>
                       <VStack
-                        cursor={"pointer"}
-                        spacing="1px"
-                        alignment="flex-start"
+                        maxwidth="46px"
+                        height="46px"
+                        border="12px"
+                        background={({ theme }) => theme.faded}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() => setSearchPhone(!searchPhone)}
                       >
-                        <BodyBold textcolor={({ theme }) => theme.text}>
-                          XDSea
-                        </BodyBold>
-                        {!devMode ? (
-                          <BodyBold textcolor={({ theme }) => theme.blue}>
-                            βeta v1.6.2
-                          </BodyBold>
-                        ) : (
-                          <HStack
-                            background="linear-gradient(180deg, #044DC4 0%, #192EA6 100%)"
-                            border="6px"
-                            padding="3px 6px"
-                            cursor={"pointer"}
-                          >
-                            <CaptionRegular textcolor={appStyle.colors.white}>
-                              Developer
-                            </CaptionRegular>
-                          </HStack>
-                        )}
+                        <IconImg
+                          url={chevronRight}
+                          width="21px"
+                          height="21px"
+                          cursor={"pointer"}
+                        ></IconImg>
                       </VStack>
                     </HStack>
-                    <Spacer></Spacer>
-
-                    <VStack
-                      maxwidth="46px"
-                      height="46px"
-                      border="12px"
-                      background={({ theme }) => theme.faded}
-                      whileTap={{ scale: 0.9 }}
-                      onClick={() => setShowMenu(!showMenu)}
+                  ) : (
+                    <HStack
+                      width="100%"
+                      padding="0 26px"
+                      style={{ position: "relative" }}
                     >
-                      <svg
-                        width="26"
-                        height="26"
-                        viewBox="-2 0 26 26"
-                        fill={"#5C6976"}
-                        // fill={({ theme }) => theme.menubars}
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <motion.path
-                          animate={showMenu ? "open" : "closed"}
-                          variants={variant1}
-                          d="M2.16108 19.8381C1.18477 18.8618 1.18477 17.2789 2.16108 16.3025L16.3032 2.16041C17.2795 1.1841 18.8624 1.1841 19.8387 2.16041V2.16041C20.8151 3.13672 20.8151 4.71963 19.8387 5.69594L5.69661 19.8381C4.7203 20.8144 3.13739 20.8144 2.16108 19.8381V19.8381Z"
-                        />
-                        <motion.path
-                          animate={showMenu ? "open" : "closed"}
-                          variants={variant2}
-                          d="M2.16143 2.16035C3.13774 1.18403 4.72066 1.18403 5.69697 2.16035L19.8391 16.3025C20.8154 17.2788 20.8154 18.8617 19.8391 19.838V19.838C18.8628 20.8143 17.2799 20.8143 16.3036 19.838L2.16143 5.69588C1.18512 4.71957 1.18512 3.13666 2.16143 2.16035V2.16035Z"
-                        />
-                      </svg>
+                      <HStack onClick={() => NavigateTo("")} cursor={"pointer"}>
+                        <IconImg
+                          url={XDSealogo}
+                          width="52px"
+                          height="52px"
+                          cursor={"pointer"}
+                        ></IconImg>
+                        <VStack
+                          cursor={"pointer"}
+                          spacing="1px"
+                          alignment="flex-start"
+                        >
+                          <BodyBold textcolor={({ theme }) => theme.text}>
+                            XDSea
+                          </BodyBold>
+                          {!devMode ? (
+                            <BodyBold textcolor={({ theme }) => theme.blue}>
+                              βeta v1.6.2
+                            </BodyBold>
+                          ) : (
+                            <HStack
+                              background="linear-gradient(180deg, #044DC4 0%, #192EA6 100%)"
+                              border="6px"
+                              padding="3px 6px"
+                              cursor={"pointer"}
+                            >
+                              <CaptionRegular textcolor={appStyle.colors.white}>
+                                Developer
+                              </CaptionRegular>
+                            </HStack>
+                          )}
+                        </VStack>
+                      </HStack>
+                      <Spacer></Spacer>
 
-                      {/* <svg
+                      <VStack
+                        maxwidth="46px"
+                        height="46px"
+                        border="12px"
+                        background={({ theme }) => theme.faded}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() => setSearchPhone(!searchPhone)}
+                      >
+                        <IconImg
+                          url={search}
+                          width="26px"
+                          height="26px"
+                          cursor={"pointer"}
+                        ></IconImg>
+                      </VStack>
+
+                      <VStack
+                        maxwidth="46px"
+                        height="46px"
+                        border="12px"
+                        background={({ theme }) => theme.faded}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={() => setShowMenu(!showMenu)}
+                      >
+                        <svg
+                          width="26"
+                          height="26"
+                          viewBox="-2 0 26 26"
+                          fill={"#5C6976"}
+                          // fill={({ theme }) => theme.menubars}
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <motion.path
+                            animate={showMenu ? "open" : "closed"}
+                            variants={variant1}
+                            d="M2.16108 19.8381C1.18477 18.8618 1.18477 17.2789 2.16108 16.3025L16.3032 2.16041C17.2795 1.1841 18.8624 1.1841 19.8387 2.16041V2.16041C20.8151 3.13672 20.8151 4.71963 19.8387 5.69594L5.69661 19.8381C4.7203 20.8144 3.13739 20.8144 2.16108 19.8381V19.8381Z"
+                          />
+                          <motion.path
+                            animate={showMenu ? "open" : "closed"}
+                            variants={variant2}
+                            d="M2.16143 2.16035C3.13774 1.18403 4.72066 1.18403 5.69697 2.16035L19.8391 16.3025C20.8154 17.2788 20.8154 18.8617 19.8391 19.838V19.838C18.8628 20.8143 17.2799 20.8143 16.3036 19.838L2.16143 5.69588C1.18512 4.71957 1.18512 3.13666 2.16143 2.16035V2.16035Z"
+                          />
+                        </svg>
+
+                        {/* <svg
                         width="26"
                         height="16"
                         viewBox="0 0 26 16"
@@ -393,8 +449,9 @@ function TopBar(props) {
                           fill={({ theme }) => theme.menubars}
                         />
                       </svg> */}
-                    </VStack>
-                  </HStack>
+                      </VStack>
+                    </HStack>
+                  )}
                 </AnimatePresence>
               );
             case "tablet":
@@ -407,7 +464,7 @@ function TopBar(props) {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -12 }}
                       transition={{ type: "spring", damping: 10 }}
-                      ref={ref} 
+                      ref={ref}
                     >
                       <VStack
                         background={({ theme }) => theme.backElement}
@@ -524,6 +581,15 @@ function TopBar(props) {
                         )}
                       </VStack>
                     </HStack>
+
+                    {/* Search  */}
+                    <Searchbar
+                      placeholder="Search for NFTs and Collections"
+                      data={TestData}
+                      top="78px"
+                      left="-30px"
+                      width={"240px"}
+                    ></Searchbar>
                     <Spacer></Spacer>
 
                     <VStack maxwidth="180px">
@@ -535,18 +601,9 @@ function TopBar(props) {
                               btnClass={`walletConnectTablet ${
                                 wallet?.connected ? "hide" : ""
                               }`}
-                              onConnect={(wallet) => {
-                                setWallet(wallet);
-                                onWalletChange(wallet);
-                              }}
-                              onAddressChange={(wallet) => {
-                                setWallet(wallet);
-                                onWalletChange(wallet);
-                              }}
-                              onDisconnect={(wallet) => {
-                                setWallet(wallet);
-                                onWalletChange(wallet);
-                              }}
+                              onConnect={handleOnWalletChange}
+                              onAddressChange={handleOnWalletChange}
+                              onDisconnect={handleOnWalletChange}
                             />
                           </Connect>
                           <WalletButton
@@ -666,15 +723,24 @@ function TopBar(props) {
                         )}
                       </VStack>
                     </HStack>
-                    <Spacer></Spacer>
-                    <ButtonApp
+
+                    {/* Search  */}
+                    <Searchbar
+                      top="54px"
+                      left="0px"
+                      placeholder="Search for NFTs and Collections"
+                      data={TestData}
+                      width={"240px"}
+                    ></Searchbar>
+
+                    {/* <ButtonApp
                       background="rgba(255, 255, 255, 0)"
                       textcolor={({ theme }) => theme.text}
                       text="Home"
                       cursor="pointer"
                       onClick={() => NavigateTo("")}
                       btnStatus={0}
-                    ></ButtonApp>
+                    ></ButtonApp> */}
                     <ButtonApp
                       background="rgba(255, 255, 255, 0)"
                       textcolor={({ theme }) => theme.text}
@@ -709,18 +775,9 @@ function TopBar(props) {
                               btnClass={`walletConnect ${
                                 wallet?.connected ? "hide" : ""
                               }`}
-                              onConnect={(wallet) => {
-                                setWallet(wallet);
-                                onWalletChange(wallet);
-                              }}
-                              onAddressChange={(wallet) => {
-                                setWallet(wallet);
-                                onWalletChange(wallet);
-                              }}
-                              onDisconnect={(wallet) => {
-                                setWallet(wallet);
-                                onWalletChange(wallet);
-                              }}
+                              onConnect={handleOnWalletChange}
+                              onAddressChange={handleOnWalletChange}
+                              onDisconnect={handleOnWalletChange}
                             />
                           </Connect>
                           <WalletButton

@@ -105,8 +105,7 @@ dist
 .tern-port
 2ed0f7c940c200635bceed7ed1967a2b6134f7ed
 
-src/.DS_Store
-
 # Sensitive data
 CIDS.txt
 CIDS_dedupe.txt
+src/.DS_Store
