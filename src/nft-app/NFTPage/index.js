@@ -97,6 +97,8 @@ import {
   WhatsappShareButton,
   InstapaperShareButton,
 } from "react-share";
+import { createRequest } from "../../API";
+import { HTTP_METHODS } from "../../constant";
 
 const NFTDetails = (props) => {
   const webLocation = useLocation();
@@ -405,6 +407,8 @@ const NFTDetails = (props) => {
     try {
       setBlacklist(permaBlacklist);
       setContractFixes(contractFix);
+      const nftData = await (await createRequest(HTTP_METHODS.get, `nft/byToken/${id}`, null, null)).data.nft;
+      console.log(nftData)
       const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
       const marketContract = new xdc3.eth.Contract(
         NFTMarketLayer1.abi,
@@ -417,57 +421,45 @@ const NFTDetails = (props) => {
       var metadata = await axios.get(uri);
       var price = await xdc3.utils.fromWei(item.price, "ether");
       let currentItem = {
-        price: price,
-        tokenId: item.tokenId,
-        itemId: item.itemId,
-        creator: item.creator,
-        owner: item.owner,
-        collectionName: metadata?.data?.collection?.name,
-        collectionLogo:
-          metadata?.data?.collection?.logo.split("/")[2] === "ipfs.infura.io"
-            ? `https://${new CID(metadata?.data?.collection?.logo.split("/")[4])
-                .toV1()
+        price: nftData.price,
+        tokenId: nftData.tokenId,
+        itemId: nftData.itemId,
+        creator: nftData.addressCreator,
+        owner: nftData.addressOwner,
+        collectionName: nftData.collectionId.name,
+        collectionLogo: nftData.collectionId.logo.split("/")[2] === "ipfs.infura.io"
+            ? `https://${new CID(nftData.collectionId.logo.split("/")[4]).toV1()
                 .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
-            : metadata?.data?.collection?.logo,
-        image:
-          metadata?.data?.collection?.nft?.image.split("/")[2] ===
-          "ipfs.infura.io"
-            ? `https://${new CID(
-                metadata?.data?.collection?.nft?.image.split("/")[4]
-              )
-                .toV1()
+            : nftData.collectionId.logo,
+        image: nftData.urlFile.split("/")[2] === "ipfs.infura.io"
+            ? `https://${new CID(nftData.urlFile.split("/")[4]).toV1()
                 .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
-            : metadata?.data?.collection?.nft?.image,
+            : nftData.urlFile,
         name:
-          item.tokenId === "3567"
+          id.tokenId === "3567"
             ? "TAURULIOMPS 1/12"
-            : item.tokenId === "3580"
+            : id.tokenId === "3580"
             ? "GEMINLIOMP 2/12"
-            : item.tokenId === "3584"
+            : id.tokenId === "3584"
             ? "LIBRIOMP 2/12"
-            : item.tokenId === "3650"
+            : id.tokenId === "3650"
             ? "PISCELIOMPS 8/12"
-            : item.tokenId === "3679"
+            : id.tokenId === "3679"
             ? "LEOIOMP 10/12"
-            : item.tokenId === "3695"
+            : id.tokenId === "3695"
             ? "SAGITTARIOMPS 11/12"
-            : metadata?.data?.collection?.nft?.name,
-        description: metadata?.data?.collection?.nft?.description,
-        nftContract: item.nftContract,
-        isListed: item.isListed,
-        properties: metadata?.data?.collection?.nft?.properties,
-        fileType: metadata?.data?.collection?.nft?.fileType,
-        preview:
-          metadata?.data?.collection?.nft?.preview.split("/")[2] ===
-          "ipfs.infura.io"
-            ? `https://${new CID(
-                metadata?.data?.collection?.nft?.preview.split("/")[4]
-              )
-                .toV1()
-                .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
-            : metadata?.data?.collection?.nft?.preview,
-        royalty: metadata?.data?.collection?.nft?.royalty,
-        unlockableContent: metadata?.data?.collection?.nft?.unlockableContent,
+            : nftData.name,
+        description: nftData.description,
+        // nftContract: nftData.nftContract,
+        isListed: nftData.isListed,
+        properties: nftData.properties,
+        fileType: nftData.fileType,
+        preview: nftData.preview.split("/")[2] === "ipfs.infura.io"
+          ? `https://${new CID(nftData.preview.split("/")[4]).toV1()
+              .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
+            : nftData.preview,
+        royalty: nftData.royalty,
+        unlockableContent: nftData.unlockableContent,
       };
       const data = await marketContract.methods
         .getCollectionNFTs(metadata?.data?.collection?.name)
