@@ -17,7 +17,7 @@ import useWindowSize from "../../styles/useWindowSize";
 import { FilterNFT } from "../../styles/FilterNFT";
 
 function SearchPage() {
-  const [isSelected, setIsSelected] = useState(false);
+  const [isSelected, setIsSelected] = useState(true);
   const size = useWindowSize();
 
   return (

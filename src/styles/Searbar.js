@@ -50,8 +50,6 @@ function Searchbar({
   const ref = useRef(null);
   useClickAway(ref, () => {
     setFilteredData([]);
-    setResult("");
-    console.log("OUTSIDE CLICKED");
   });
 
   const handleFilter = (event) => {

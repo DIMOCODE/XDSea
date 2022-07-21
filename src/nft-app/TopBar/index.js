@@ -78,9 +78,9 @@ function TopBar(props) {
   //   });
 
   const ref = useRef(null);
+
   useClickAway(ref, () => {
     setShowMenu(false);
-    console.log("OUTSIDE CLICKED");
   });
 
   useEffect(() => {
@@ -362,7 +362,7 @@ function TopBar(props) {
                           </BodyBold>
                           {!devMode ? (
                             <BodyBold textcolor={({ theme }) => theme.blue}>
-                              βeta v1.6.2
+                              βeta v1.6.3
                             </BodyBold>
                           ) : (
                             <HStack
@@ -423,24 +423,6 @@ function TopBar(props) {
                             d="M2.16143 2.16035C3.13774 1.18403 4.72066 1.18403 5.69697 2.16035L19.8391 16.3025C20.8154 17.2788 20.8154 18.8617 19.8391 19.838V19.838C18.8628 20.8143 17.2799 20.8143 16.3036 19.838L2.16143 5.69588C1.18512 4.71957 1.18512 3.13666 2.16143 2.16035V2.16035Z"
                           />
                         </svg>
-
-                        {/* <svg
-                        width="26"
-                        height="16"
-                        viewBox="0 0 26 16"
-                        fill={({ theme }) => theme.menubars}
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <motion.path
-                          animate={{ rotate: 45 }}
-                          d="M0.5 2.5C0.5 1.11929 1.61929 0 3 0H23C24.3807 0 25.5 1.11929 25.5 2.5V2.5C25.5 3.88071 24.3807 5 23 5H3C1.61929 5 0.5 3.88071 0.5 2.5V2.5Z"
-                          fill={({ theme }) => theme.menubars}
-                        />
-                        <motion.path
-                          d="M0.5 13.5C0.5 12.1193 1.61929 11 3 11H23C24.3807 11 25.5 12.1193 25.5 13.5V13.5C25.5 14.8807 24.3807 16 23 16H3C1.61929 16 0.5 14.8807 0.5 13.5V13.5Z"
-                          fill={({ theme }) => theme.menubars}
-                        />
-                      </svg> */}
                       </VStack>
                     </HStack>
                   )}
@@ -465,16 +447,6 @@ function TopBar(props) {
                         height="300px"
                         border="0 0 15px 15px"
                       >
-                        {/* <HStack background="pink">
-                    <IconImg
-                      url={XDSealogo}
-                      width="66px"
-                      height="66px"
-                      cursor={"pointer"}
-                    ></IconImg>
-                    <Spacer></Spacer>
-                  </HStack> */}
-
                         <VStack
                           alignment="flex-end"
                           width="180px"
@@ -557,7 +529,7 @@ function TopBar(props) {
                         </BodyBold>
                         {!devMode ? (
                           <BodyBold textcolor={({ theme }) => theme.blue}>
-                            βeta v1.6.2
+                            βeta v1.6.3
                           </BodyBold>
                         ) : (
                           <HStack
@@ -651,7 +623,6 @@ function TopBar(props) {
                         height="26"
                         viewBox="-2 0 26 26"
                         fill={"#5C6976"}
-                        // fill={({ theme }) => theme.menubars}
                         xmlns="http://www.w3.org/2000/svg"
                       >
                         <motion.path
@@ -665,24 +636,6 @@ function TopBar(props) {
                           d="M2.16143 2.16035C3.13774 1.18403 4.72066 1.18403 5.69697 2.16035L19.8391 16.3025C20.8154 17.2788 20.8154 18.8617 19.8391 19.838V19.838C18.8628 20.8143 17.2799 20.8143 16.3036 19.838L2.16143 5.69588C1.18512 4.71957 1.18512 3.13666 2.16143 2.16035V2.16035Z"
                         />
                       </svg>
-
-                      {/* <svg
-                    width="26"
-                    height="16"
-                    viewBox="0 0 26 16"
-                    fill={({ theme }) => theme.menubars}
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <motion.path
-                      animate={{ rotate: 45 }}
-                      d="M0.5 2.5C0.5 1.11929 1.61929 0 3 0H23C24.3807 0 25.5 1.11929 25.5 2.5V2.5C25.5 3.88071 24.3807 5 23 5H3C1.61929 5 0.5 3.88071 0.5 2.5V2.5Z"
-                      fill={({ theme }) => theme.menubars}
-                    />
-                    <motion.path
-                      d="M0.5 13.5C0.5 12.1193 1.61929 11 3 11H23C24.3807 11 25.5 12.1193 25.5 13.5V13.5C25.5 14.8807 24.3807 16 23 16H3C1.61929 16 0.5 14.8807 0.5 13.5V13.5Z"
-                      fill={({ theme }) => theme.menubars}
-                    />
-                  </svg> */}
                     </VStack>
                   </HStack>
                 </AnimatePresence>
@@ -708,7 +661,7 @@ function TopBar(props) {
                         </BodyBold>
                         {!devMode ? (
                           <BodyBold textcolor={({ theme }) => theme.blue}>
-                            βeta v1.6.2
+                            βeta v1.6.3
                           </BodyBold>
                         ) : (
                           <HStack
@@ -733,15 +686,6 @@ function TopBar(props) {
                       data={TestData}
                       width={"240px"}
                     ></Searchbar>
-
-                    {/* <ButtonApp
-                      background="rgba(255, 255, 255, 0)"
-                      textcolor={({ theme }) => theme.text}
-                      text="Home"
-                      cursor="pointer"
-                      onClick={() => NavigateTo("")}
-                      btnStatus={0}
-                    ></ButtonApp> */}
 
                     <ButtonApp
                       background="rgba(255, 255, 255, 0)"

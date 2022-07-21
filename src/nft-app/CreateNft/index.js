@@ -543,7 +543,6 @@ function CreateNft(props) {
       var txReceipt = await xdc3.eth.getTransactionReceipt(
         transaction.transactionHash
       );
-      console.log(txReceipt)
       var tokenId = await txReceipt.logs[0].topics[3];
       setTokenId(tokenId);
       const weiprice = await xdc3.utils.toWei(price, "ether");

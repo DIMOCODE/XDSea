@@ -145,7 +145,7 @@ function FilterCollections({
             <CaptionBoldShort>Floor Price</CaptionBoldShort>
             <HStack spacing="15px" self="none">
               <BodyBold animate={{ opacity: 0.6 }} cursor="pointer">
-                {isFloor ? "Hight to Low" : "Low to High"}
+                {isFloor ? "High to Low" : "Low to High"}
               </BodyBold>
 
               <IconImg
@@ -230,7 +230,7 @@ function FilterCollections({
               padding="6px 9px"
               border="6px"
               width="100%"
-              onTapStart={() => setShowMiniModal(true)}
+              onTapStart={() => setShowMiniModal(!showMiniModal)}
               style={{
                 boxShadow: "0px 3px 6px rgba(0, 0, 0, 0.12)",
               }}
@@ -333,7 +333,7 @@ function FilterCollections({
                     <CaptionBoldShort>Floor Price</CaptionBoldShort>
                     <HStack spacing="15px" self="none">
                       <BodyBold animate={{ opacity: 0.6 }} cursor="pointer">
-                        {isFloor ? "Hight to Low" : "Low to High"}
+                        {isFloor ? "High to Low" : "Low to High"}
                       </BodyBold>
 
                       <IconImg
