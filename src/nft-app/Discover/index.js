@@ -252,15 +252,15 @@ const Discover = () => {
         .fetchCollections()
         .call();
 
-      const spotlightCollections = await Promise.all(
-        spotlightCollectionList.map(async (i) => {
-          var collectionData = await marketContract.methods
-            .fetchCollection(i)
-            .call();
-          const uri = await nftContract.methods
-            .tokenURI(collectionData.tokenId)
-            .call();
-          var metadata = await axios.get(uri);
+      // const spotlightCollections = await Promise.all(
+      //   spotlightCollectionList.map(async (i) => {
+      //     var collectionData = await marketContract.methods
+      //       .fetchCollection(i)
+      //       .call();
+      //     const uri = await nftContract.methods
+      //       .tokenURI(collectionData.tokenId)
+      //       .call();
+      //     var metadata = await axios.get(uri);
           // const collectionData2 = await marketContract.methods
           //   .getCollectionNFTs(metadata?.data?.collection?.name)
           //   .call();
@@ -293,48 +293,48 @@ const Discover = () => {
           //     return events;
           //   })
           // );
-          let collection = {
-            name: metadata?.data?.collection?.name,
-            description: metadata?.data?.collection?.description,
-            creator: metadata?.data?.collection?.creator,
-            banner:
-              metadata?.data?.collection?.banner?.split("/")[2] ===
-              "xdsea.infura-ipfs.io"
-                ? `https://${new CID(
-                    metadata?.data?.collection?.banner.split("/")[4]
-                  )
-                    .toV1()
-                    .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
-                : metadata?.data?.collection?.banner,
-            logo:
-              metadata?.data?.collection?.logo?.split("/")[2] ===
-              "xdsea.infura-ipfs.io"
-                ? `https://${new CID(
-                    metadata?.data?.collection?.logo.split("/")[4]
-                  )
-                    .toV1()
-                    .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
-                : metadata?.data?.collection?.logo,
-            fileType: metadata?.data?.collection?.nft?.fileType,
-            preview:
-              metadata?.data?.collection?.nft?.preview?.split("/")[2] ===
-              "xdsea.infura-ipfs.io"
-                ? `https://${new CID(
-                    metadata?.data?.collection?.nft?.preview.split("/")[4]
-                  )
-                    .toV1()
-                    .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
-                : metadata?.data?.collection?.nft?.preview,
+          // let collection = {
+          //   name: metadata?.data?.collection?.name,
+          //   description: metadata?.data?.collection?.description,
+          //   creator: metadata?.data?.collection?.creator,
+          //   banner:
+          //     metadata?.data?.collection?.banner?.split("/")[2] ===
+          //     "xdsea.infura-ipfs.io"
+          //       ? `https://${new CID(
+          //           metadata?.data?.collection?.banner.split("/")[4]
+          //         )
+          //           .toV1()
+          //           .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
+          //       : metadata?.data?.collection?.banner,
+          //   logo:
+          //     metadata?.data?.collection?.logo?.split("/")[2] ===
+          //     "xdsea.infura-ipfs.io"
+          //       ? `https://${new CID(
+          //           metadata?.data?.collection?.logo.split("/")[4]
+          //         )
+          //           .toV1()
+          //           .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
+          //       : metadata?.data?.collection?.logo,
+          //   fileType: metadata?.data?.collection?.nft?.fileType,
+          //   preview:
+          //     metadata?.data?.collection?.nft?.preview?.split("/")[2] ===
+          //     "xdsea.infura-ipfs.io"
+          //       ? `https://${new CID(
+          //           metadata?.data?.collection?.nft?.preview.split("/")[4]
+          //         )
+          //           .toV1()
+          //           .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
+          //       : metadata?.data?.collection?.nft?.preview,
             // floorPrice: lowestPrice,
             // volumeTraded: volumeTraded,
             // items: !burnedCollections.includes(metadata?.data?.collection?.name)
             //   ? collectionData2.length
             //   : collectionData2.length - 1,
             // owners: uniqueOwners.length,
-          };
-          return collection;
-        })
-      );
+      //     };
+      //     return collection;
+      //   })
+      // );
 
       setCollections(spotlightCollections);
       setCollectionPage(collectionData);
