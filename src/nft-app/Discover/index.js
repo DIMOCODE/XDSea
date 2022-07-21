@@ -268,8 +268,8 @@ const Discover = () => {
             description: metadata?.data?.collection?.description,
             creator: metadata?.data?.collection?.creator,
             banner:
-              metadata?.data?.collection?.banner.split("/")[2] ===
-              "ipfs.infura.io"
+              metadata?.data?.collection?.banner?.split("/")[2] ===
+              "xdsea.infura-ipfs.io"
                 ? `https://${new CID(
                     metadata?.data?.collection?.banner.split("/")[4]
                   )
@@ -277,8 +277,8 @@ const Discover = () => {
                     .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
                 : metadata?.data?.collection?.banner,
             logo:
-              metadata?.data?.collection?.logo.split("/")[2] ===
-              "ipfs.infura.io"
+              metadata?.data?.collection?.logo?.split("/")[2] ===
+              "xdsea.infura-ipfs.io"
                 ? `https://${new CID(
                     metadata?.data?.collection?.logo.split("/")[4]
                   )
@@ -287,8 +287,8 @@ const Discover = () => {
                 : metadata?.data?.collection?.logo,
             fileType: metadata?.data?.collection?.nft?.fileType,
             preview:
-              metadata?.data?.collection?.nft?.preview.split("/")[2] ===
-              "ipfs.infura.io"
+              metadata?.data?.collection?.nft?.preview?.split("/")[2] ===
+              "xdsea.infura-ipfs.io"
                 ? `https://${new CID(
                     metadata?.data?.collection?.nft?.preview.split("/")[4]
                   )
@@ -367,8 +367,8 @@ const Discover = () => {
             banner: untitledCollections.includes(i.collectionName)
               ? chooseBanner()
               : metadata?.data?.collection?.banner
-              ? metadata?.data?.collection?.banner.split("/")[2] ===
-                "ipfs.infura.io"
+              ? metadata?.data?.collection?.banner?.split("/")[2] ===
+                "xdsea.infura-ipfs.io"
                 ? `https://${new CID(
                     metadata?.data?.collection?.banner.split("/")[4]
                   )
@@ -377,8 +377,8 @@ const Discover = () => {
                 : metadata?.data?.collection?.bannner
               : chooseBanner(),
             logo:
-              metadata?.data?.collection?.logo.split("/")[2] ===
-              "ipfs.infura.io"
+              metadata?.data?.collection?.logo?.split("/")[2] ===
+              "xdsea.infura-ipfs.io"
                 ? `https://${new CID(
                     metadata?.data?.collection?.logo.split("/")[4]
                   )
@@ -387,8 +387,8 @@ const Discover = () => {
                 : metadata?.data?.collection?.logo,
             fileType: metadata?.data?.collection?.nft?.fileType,
             preview:
-              metadata?.data?.collection?.nft?.preview.split("/")[2] ===
-              "ipfs.infura.io"
+              metadata?.data?.collection?.nft?.preview?.split("/")[2] ===
+              "xdsea.infura-ipfs.io"
                 ? `https://${new CID(
                     metadata?.data?.collection?.nft?.preview.split("/")[4]
                   )

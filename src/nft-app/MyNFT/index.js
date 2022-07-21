@@ -94,8 +94,8 @@ const MyNFT = (props) => {
           let nft = {
             tokenId: j.tokenId,
             image:
-              metadata?.data?.collection?.nft?.image.split("/")[2] ===
-              "ipfs.infura.io"
+              metadata?.data?.collection?.nft?.image?.split("/")[2] ===
+              "xdsea.infura-ipfs.io"
                 ? `https://${new CID(
                     metadata?.data?.collection?.nft?.image.split("/")[4]
                   )
@@ -117,8 +117,8 @@ const MyNFT = (props) => {
                 ? "SAGITTARIOMPS 11/12"
                 : j.name,
             logo:
-              metadata?.data?.collection?.logo.split("/")[2] ===
-              "ipfs.infura.io"
+              metadata?.data?.collection?.logo?.split("/")[2] ===
+              "xdsea.infura-ipfs.io"
                 ? `https://${new CID(
                     metadata?.data?.collection?.logo.split("/")[4]
                   )
@@ -126,8 +126,8 @@ const MyNFT = (props) => {
                     .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
                 : metadata?.data?.collection?.logo,
             preview:
-              metadata?.data?.collection?.nft?.preview.split("/")[2] ===
-              "ipfs.infura.io"
+              metadata?.data?.collection?.nft?.preview?.split("/")[2] ===
+              "xdsea.infura-ipfs.io"
                 ? `https://${new CID(
                     metadata?.data?.collection?.nft?.preview.split("/")[4]
                   )
@@ -181,8 +181,8 @@ const MyNFT = (props) => {
         let nft = {
           tokenId: i.tokenId,
           image:
-            metadata?.data?.collection?.nft?.image.split("/")[2] ===
-            "ipfs.infura.io"
+            metadata?.data?.collection?.nft?.image?.split("/")[2] ===
+            "xdsea.infura-ipfs.io"
               ? `https://${new CID(
                   metadata?.data?.collection?.nft?.image.split("/")[4]
                 )
@@ -190,8 +190,8 @@ const MyNFT = (props) => {
                   .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
               : metadata?.data?.collection?.nft?.image,
           preview:
-            metadata?.data?.collection?.nft?.preview.split("/")[2] ===
-            "ipfs.infura.io"
+            metadata?.data?.collection?.nft?.preview?.split("/")[2] ===
+            "xdsea.infura-ipfs.io"
               ? `https://${new CID(
                   metadata?.data?.collection?.nft?.preview.split("/")[4]
                 )
@@ -213,7 +213,7 @@ const MyNFT = (props) => {
               ? "SAGITTARIOMPS 11/12"
               : metadata?.data?.collection?.nft?.name,
           logo:
-            metadata?.data?.collection?.logo.split("/")[2] === "ipfs.infura.io"
+            metadata?.data?.collection?.logo?.split("/")[2] === "xdsea.infura-ipfs.io"
               ? `https://${new CID(
                   metadata?.data?.collection?.logo.split("/")[4]
                 )
@@ -313,8 +313,8 @@ const MyNFT = (props) => {
         let nft = {
           tokenId: i.tokenId,
           image:
-            metadata?.data?.collection?.nft?.image.split("/")[2] ===
-            "ipfs.infura.io"
+            metadata?.data?.collection?.nft?.image?.split("/")[2] ===
+            "xdsea.infura-ipfs.io"
               ? `https://${new CID(
                   metadata?.data?.collection?.nft?.image.split("/")[4]
                 )
@@ -322,8 +322,8 @@ const MyNFT = (props) => {
                   .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
               : metadata?.data?.collection?.nft?.image,
           preview:
-            metadata?.data?.collection?.nft?.preview.split("/")[2] ===
-            "ipfs.infura.io"
+            metadata?.data?.collection?.nft?.preview?.split("/")[2] ===
+            "xdsea.infura-ipfs.io"
               ? `https://${new CID(
                   metadata?.data?.collection?.nft?.preview.split("/")[4]
                 )
@@ -345,7 +345,7 @@ const MyNFT = (props) => {
               ? "SAGITTARIOMPS 11/12"
               : metadata?.data?.collection?.nft?.name,
           logo:
-            metadata?.data?.collection?.logo.split("/")[2] === "ipfs.infura.io"
+            metadata?.data?.collection?.logo?.split("/")[2] === "xdsea.infura-ipfs.io"
               ? `https://${new CID(
                   metadata?.data?.collection?.logo.split("/")[4]
                 )

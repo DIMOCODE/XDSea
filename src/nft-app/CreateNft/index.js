@@ -41,8 +41,6 @@ import { TxModal } from "../../styles/TxModal";
 import { useHistory } from "react-router-dom";
 import menuContext from "../../context/menuContext";
 
-const client = ipfsHttpClient("https://ipfs.infura.io:5001/api/v0");
-
 function CreateNft(props) {
   const [uploadBannerStatus, setUploadBannerStatus] = useState(false);
   const [uploadLogoStatus, setUploadLogoStatus] = useState(false);
@@ -103,13 +101,25 @@ function CreateNft(props) {
   const [collectionValid, setCollectionValid] = useState(false);
   const size = useWindowSize();
 
+  /**
+   * Adding Authentication for pinning new uploads to the IPFS Project
+   */
+  const auth = 'Basic ' + Buffer.from(process.env.REACT_APP_PROJECT_ID + ':' + process.env.REACT_APP_PROJECT_SECRET).toString('base64');
+  const client = ipfsHttpClient({
+    host: 'ipfs.infura.io',
+    port: 5001,
+    protocol: 'https',
+    headers: {
+        authorization: auth,
+    },
+  });
+
   const addToIPFS = async () => {
     setUploadNFT(true);
     const file = document.getElementById("upload-button").files[0];
     try {
       const added = await client.add(file);
-
-      const url = `https://ipfs.infura.io/ipfs/${added.path}`;
+      const url = `https://xdsea.infura-ipfs.io/ipfs/${added.path}`;
       setAssetURL(url);
       setUploadNFT(false);
     } catch (error) {
@@ -122,8 +132,7 @@ function CreateNft(props) {
     const file = document.getElementById("upload-button-collection").files[0];
     try {
       const added = await client.add(file);
-
-      const url = `https://ipfs.infura.io/ipfs/${added.path}`;
+      const url = `https://xdsea.infura-ipfs.io/ipfs/${added.path}`;
       setCollectionBannerURL(url);
       setUploadBannerStatus(false);
     } catch (error) {
@@ -136,7 +145,7 @@ function CreateNft(props) {
     const file = document.getElementById("upload-button-logo").files[0];
     try {
       const added = await client.add(file);
-      const url = `https://ipfs.infura.io/ipfs/${added.path}`;
+      const url = `https://xdsea.infura-ipfs.io/ipfs/${added.path}`;
       setCollectionLogoURL(url);
       setUploadLogoStatus(false);
     } catch (error) {
@@ -149,7 +158,7 @@ function CreateNft(props) {
     const file = document.getElementById("preview-file").files[0];
     try {
       const added = await client.add(file);
-      const url = `https://ipfs.infura.io/ipfs/${added.path}`;
+      const url = `https://xdsea.infura-ipfs.io/ipfs/${added.path}`;
       setPreviewURL(url);
       setUploadPreviewStatus(false);
     } catch (error) {
@@ -452,7 +461,7 @@ function CreateNft(props) {
                   });
                   // console.log(uploadData);
                   const added = await client.add(uploadData);
-                  const url = `https://ipfs.infura.io/ipfs/${added.path}`;
+                  const url = `https://xdsea.infura-ipfs.io/ipfs/${added.path}`;
                   updateMarketplace(url);
                 } else {
                   document
@@ -492,7 +501,7 @@ function CreateNft(props) {
                 });
                 // console.log(uploadData);
                 const added = await client.add(uploadData);
-                const url = `https://ipfs.infura.io/ipfs/${added.path}`;
+                const url = `https://xdsea.infura-ipfs.io/ipfs/${added.path}`;
                 updateMarketplace(url);
               }
             } catch (error) {
@@ -534,6 +543,7 @@ function CreateNft(props) {
       var txReceipt = await xdc3.eth.getTransactionReceipt(
         transaction.transactionHash
       );
+      console.log(txReceipt)
       var tokenId = await txReceipt.logs[0].topics[3];
       setTokenId(tokenId);
       const weiprice = await xdc3.utils.toWei(price, "ether");

@@ -97,8 +97,8 @@ const Home = () => {
           let featuredNFTData = {
             collectionName: featuredNFTMetadata?.data?.collection?.name,
             collectionLogo:
-              featuredNFTMetadata?.data?.collection?.logo.split("/")[2] ===
-              "ipfs.infura.io"
+              featuredNFTMetadata?.data?.collection?.logo?.split("/")[2] ===
+              "xdsea.infura-ipfs.io"
                 ? `https://${new CID(
                     featuredNFTMetadata?.data?.collection?.logo.split("/")[4]
                   )
@@ -106,9 +106,9 @@ const Home = () => {
                     .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
                 : featuredNFTMetadata?.data?.collection?.logo,
             image:
-              featuredNFTMetadata?.data?.collection?.nft?.image.split(
+              featuredNFTMetadata?.data?.collection?.nft?.image?.split(
                 "/"
-              )[2] === "ipfs.infura.io"
+              )[2] === "xdsea.infura-ipfs.io"
                 ? `https://${new CID(
                     featuredNFTMetadata?.data?.collection?.nft?.image.split(
                       "/"
@@ -133,9 +133,9 @@ const Home = () => {
                 : featuredNFTMetadata?.data?.collection?.nft?.name,
             fileType: featuredNFTMetadata?.data?.collection?.nft?.fileType,
             preview:
-              featuredNFTMetadata?.data?.collection?.nft?.preview.split(
+              featuredNFTMetadata?.data?.collection?.nft?.preview?.split(
                 "/"
-              )[2] === "ipfs.infura.io"
+              )[2] === "xdsea.infura-ipfs.io"
                 ? `https://${new CID(
                     featuredNFTMetadata?.data?.collection?.nft?.preview.split(
                       "/"
@@ -216,8 +216,8 @@ const Home = () => {
           let item = {
             price: price,
             collectionLogo:
-              trendingItemMetadata?.data?.collection?.logo.split("/")[2] ===
-              "ipfs.infura.io"
+              trendingItemMetadata?.data?.collection?.logo?.split("/")[2] ===
+              "xdsea.infura-ipfs.io"
                 ? `https://${new CID(
                     trendingItemMetadata?.data?.collection?.logo.split("/")[4]
                   )
@@ -227,9 +227,9 @@ const Home = () => {
             collectionName: trendingItemMetadata?.data?.collection?.name,
             tokenId: itemData.tokenId,
             image:
-              trendingItemMetadata?.data?.collection?.nft?.image.split(
+              trendingItemMetadata?.data?.collection?.nft?.image?.split(
                 "/"
-              )[2] === "ipfs.infura.io"
+              )[2] === "xdsea.infura-ipfs.io"
                 ? `https://${new CID(
                     trendingItemMetadata?.data?.collection?.nft?.image.split(
                       "/"
@@ -254,9 +254,9 @@ const Home = () => {
                 : trendingItemMetadata?.data?.collection?.nft?.name,
             fileType: trendingItemMetadata?.data?.collection?.nft?.fileType,
             preview:
-              trendingItemMetadata?.data?.collection?.nft?.preview.split(
+              trendingItemMetadata?.data?.collection?.nft?.preview?.split(
                 "/"
-              )[2] === "ipfs.infura.io"
+              )[2] === "xdsea.infura-ipfs.io"
                 ? `https://${new CID(
                     trendingItemMetadata?.data?.collection?.nft?.preview.split(
                       "/"
