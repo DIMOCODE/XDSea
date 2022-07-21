@@ -426,14 +426,14 @@ const NFTDetails = (props) => {
         owner: item.owner,
         collectionName: metadata?.data?.collection?.name,
         collectionLogo:
-          metadata?.data?.collection?.logo.split("/")[2] === "ipfs.infura.io"
+          metadata?.data?.collection?.logo?.split("/")[2] === "xdsea.infura-ipfs.io"
             ? `https://${new CID(metadata?.data?.collection?.logo.split("/")[4])
                 .toV1()
                 .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
             : metadata?.data?.collection?.logo,
         image:
-          metadata?.data?.collection?.nft?.image.split("/")[2] ===
-          "ipfs.infura.io"
+          metadata?.data?.collection?.nft?.image?.split("/")[2] ===
+          "xdsea.infura-ipfs.io"
             ? `https://${new CID(
                 metadata?.data?.collection?.nft?.image.split("/")[4]
               )
@@ -460,8 +460,8 @@ const NFTDetails = (props) => {
         properties: metadata?.data?.collection?.nft?.properties,
         fileType: metadata?.data?.collection?.nft?.fileType,
         preview:
-          metadata?.data?.collection?.nft?.preview.split("/")[2] ===
-          "ipfs.infura.io"
+          metadata?.data?.collection?.nft?.preview?.split("/")[2] ===
+          "xdsea.infura-ipfs.io"
             ? `https://${new CID(
                 metadata?.data?.collection?.nft?.preview.split("/")[4]
               )
@@ -491,8 +491,8 @@ const NFTDetails = (props) => {
             creator: i.creator,
             collectionName: metadata?.data?.collection?.name,
             collectionLogo:
-              metadata?.data?.collection?.logo.split("/")[2] ===
-              "ipfs.infura.io"
+              metadata?.data?.collection?.logo?.split("/")[2] ===
+              "xdsea.infura-ipfs.io"
                 ? `https://${new CID(
                     metadata?.data?.collection?.logo.split("/")[4]
                   )
@@ -500,8 +500,8 @@ const NFTDetails = (props) => {
                     .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
                 : metadata?.data?.collection?.logo,
             image:
-              metadata?.data?.collection?.nft?.image.split("/")[2] ===
-              "ipfs.infura.io"
+              metadata?.data?.collection?.nft?.image?.split("/")[2] ===
+              "xdsea.infura-ipfs.io"
                 ? `https://${new CID(
                     metadata?.data?.collection?.nft?.image.split("/")[4]
                   )
@@ -527,8 +527,8 @@ const NFTDetails = (props) => {
             properties: metadata?.data?.collection?.nft?.properties,
             fileType: metadata?.data?.collection?.nft?.fileType,
             preview:
-              metadata?.data?.collection?.nft?.preview.split("/")[2] ===
-              "ipfs.infura.io"
+              metadata?.data?.collection?.nft?.preview?.split("/")[2] ===
+              "xdsea.infura-ipfs.io"
                 ? `https://${new CID(
                     metadata?.data?.collection?.nft?.preview.split("/")[4]
                   )
