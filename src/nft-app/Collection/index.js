@@ -1,13 +1,21 @@
-import React, { useEffect, useState, useContext } from "react";
-import { useHistory, useParams, useLocation } from "react-router-dom";
-import Xdc3 from "xdc3";
-import { nftaddress, nftmarketlayeraddress } from "../../config";
-import { DEFAULT_PROVIDER, HEADER, HTTP_METHODS } from "../../constant";
-import NFT from "../../abis/NFT.json";
-import axios from "axios";
-import NFTMarketLayer1 from "../../abis/NFTMarketLayer1.json";
+import React, { 
+  useEffect, 
+  useState, 
+  useContext 
+} from "react";
+import { 
+  useHistory, 
+  useParams, 
+  useLocation 
+} from "react-router-dom";
+import { nftaddress } from "../../config";
 import ButtonApp from "../../styles/Buttons";
-import { HStack, IconImg, Spacer, VStack } from "../../styles/Stacks";
+import { 
+  HStack, 
+  IconImg, 
+  Spacer, 
+  VStack 
+} from "../../styles/Stacks";
 import {
   BodyRegular,
   BodyBold,
@@ -29,11 +37,9 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { LoopBars } from "../../styles/LoopBars";
 import { LoopLogo } from "../../styles/LoopLogo";
 import {
-  burnedNFTs,
   burnedCollections,
   verifiedProfiles,
 } from "../../blacklist";
-import { untitledCollections } from "../../blacklist";
 import { Tooltip } from "@mui/material";
 import banner1 from "../../images/Banner1.jpg";
 import verified from "../../images/verified.png";
@@ -44,31 +50,25 @@ import telegramSocial from "../../images/telegramSocial.png";
 import twitterSocial from "../../images/twitterSocial.png";
 import facebookSocial from "../../images/facebookSocial.png";
 import copiedLink from "../../images/oklink.png";
-import CID from "cids";
-
 import {
   FacebookShareButton,
   TwitterShareButton,
   TelegramShareButton,
   WhatsappShareButton,
-  InstapaperShareButton,
 } from "react-share";
-import { createRequest } from "../../API";
 
-const CollectionDetails = (props) => {
+const CollectionDetails = () => {
   const history = useHistory();
-  const [nfts, setNFts] = useState([]);
+  const [nfts, setNfts] = useState([]);
   const [loadingState, setLoadingState] = useState("not-loaded");
-  const [page, setPage] = useState([]);
-  const [pageCount, setPageCount] = useState(1);
+  const [page, setPage] = useState(0);
   const [NFTCount, setNFTCount] = useState(0);
   const [collectionOwners, setCollectionOwners] = useState(0);
-  const [floorPrice, setFloorPrice] =
-    useState(999999999999999999999999999999999999999999999);
+  const [floorPrice, setFloorPrice] = useState(0);
   const [volume, setVolume] = useState(-1);
   const size = useWindowSize();
   const [collection, setCollection] = useState({});
-  const [loadingNFT] = useState([
+  const [loadingNFTs] = useState([
     { id: 1, name: "NFT 1" },
     { id: 2, name: "NFT 2" },
     { id: 3, name: "NFT 3" },
@@ -83,75 +83,75 @@ const CollectionDetails = (props) => {
     { id: 12, name: "NFT 12" },
   ]);
 
-  const { collectionName } = useParams();
+  const { collectionNickName } = useParams();
   const [, setShowMenu] = useContext(menuContext);
 
   const getData = async () => {
     try {
-      const collectionData = await (await createRequest(HTTP_METHODS.get, `collection/byNickName/${collectionName
-        .replace(/\s/g, "-").replace(/#/g, "%23").replace(/^-+/, "").replace(/-+$/, "")}`, null, null)).data;
-      const collectionItems = await (await createRequest(HTTP_METHODS.get, `collection/nft/${collectionData
-        .collection._id}/${pageCount}`)).data.nfts
-      const collectionItems2 = await Promise.all(
-        collectionItems.map(async (i) => {
-          let item = {
-            price: i.price,
-            tokenId: i.tokenId,
-            owner: i.addressOwner,
-            isListed: i.isListed,
-            // offerCount: i.offerCount,
-            collectionName: i.collectionId.name,
-            collectionBanner: untitledCollections.includes(collectionName)
-              ? banner1
-              : metadata?.data?.collection?.banner
-                ? metadata?.data?.collection?.banner?.split('/')[2] === "xdsea.infura-ipfs.io" 
-                  ? `https://${new CID(metadata?.data?.collection?.banner.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-                  : metadata?.data?.collection?.banner
-                : banner1,
-            collectionCreator: metadata?.data?.collection?.creator,
-            collectionDescription: metadata?.data?.collection?.description,
-            collectionDiscord: metadata?.data?.collection?.discordUrl,
-            collectionInstagram: metadata?.data?.collection?.instagramUrl,
-            collectionLogo: metadata?.data?.collection?.logo?.split('/')[2] === "xdsea.infura-ipfs.io" 
-              ? `https://${new CID(metadata?.data?.collection?.logo.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-              : metadata?.data?.collection?.logo,
-            collectionTwitter: metadata?.data?.collection?.twitterUrl,
-            collectionWebsite: metadata?.data?.collection?.websiteUrl,
-            image: metadata?.data?.collection?.nft?.image?.split('/')[2] === "xdsea.infura-ipfs.io" 
-              ? `https://${new CID(metadata?.data?.collection?.nft?.image.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-              : metadata?.data?.collection?.nft?.image,
-            name: i.tokenId === "3567"
-              ? "TAURULIOMPS 1/12"
-              : i.tokenId === "3580"
-                ? "GEMINLIOMP 2/12"
-                : i.tokenId === "3584"
-                  ? "LIBRIOMP 2/12"
-                  : i.tokenId === "3650"
-                    ? "PISCELIOMPS 8/12"
-                    : i.tokenId === "3679"
-                      ? "LEOIOMP 10/12"
-                      : i.tokenId === "3695"
-                        ? "SAGITTARIOMPS 11/12"
-                        : metadata?.data?.collection?.nft?.name,
-            fileType: metadata?.data?.collection?.nft?.fileType,
-            preview: metadata?.data?.collection?.nft?.preview?.split('/')[2] === "xdsea.infura-ipfs.io" 
-              ? `https://${new CID(metadata?.data?.collection?.nft?.preview.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-              : metadata?.data?.collection?.nft?.preview,
-          };
-          return item;
-        })
-      );
-      var filteredCollectionItems = collectionItems2.filter((element) => {
-        return !burnedNFTs.includes(element?.tokenId);
-      });
+      // const collectionData = await (await createRequest(HTTP_METHODS.get, `collection/byNickName/${collectionName
+      //   .replace(/\s/g, "-").replace(/#/g, "%23").replace(/^-+/, "").replace(/-+$/, "")}`, null, null)).data;
+      // const collectionItems = await (await createRequest(HTTP_METHODS.get, `collection/nft/${collectionData
+      //   .collection._id}/${pageCount}`)).data.nfts
+      // const collectionItems2 = await Promise.all(
+      //   collectionItems.map(async (i) => {
+      //     let item = {
+      //       price: i.price,
+      //       tokenId: i.tokenId,
+      //       owner: i.addressOwner,
+      //       isListed: i.isListed,
+      //       // offerCount: i.offerCount,
+      //       collectionName: i.collectionId.name,
+      //       collectionBanner: untitledCollections.includes(collectionName)
+      //         ? banner1
+      //         : metadata?.data?.collection?.banner
+      //           ? metadata?.data?.collection?.banner?.split('/')[2] === "xdsea.infura-ipfs.io" 
+      //             ? `https://${new CID(metadata?.data?.collection?.banner.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+      //             : metadata?.data?.collection?.banner
+      //           : banner1,
+      //       collectionCreator: metadata?.data?.collection?.creator,
+      //       collectionDescription: metadata?.data?.collection?.description,
+      //       collectionDiscord: metadata?.data?.collection?.discordUrl,
+      //       collectionInstagram: metadata?.data?.collection?.instagramUrl,
+      //       collectionLogo: metadata?.data?.collection?.logo?.split('/')[2] === "xdsea.infura-ipfs.io" 
+      //         ? `https://${new CID(metadata?.data?.collection?.logo.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+      //         : metadata?.data?.collection?.logo,
+      //       collectionTwitter: metadata?.data?.collection?.twitterUrl,
+      //       collectionWebsite: metadata?.data?.collection?.websiteUrl,
+      //       image: metadata?.data?.collection?.nft?.image?.split('/')[2] === "xdsea.infura-ipfs.io" 
+      //         ? `https://${new CID(metadata?.data?.collection?.nft?.image.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+      //         : metadata?.data?.collection?.nft?.image,
+      //       name: i.tokenId === "3567"
+      //         ? "TAURULIOMPS 1/12"
+      //         : i.tokenId === "3580"
+      //           ? "GEMINLIOMP 2/12"
+      //           : i.tokenId === "3584"
+      //             ? "LIBRIOMP 2/12"
+      //             : i.tokenId === "3650"
+      //               ? "PISCELIOMPS 8/12"
+      //               : i.tokenId === "3679"
+      //                 ? "LEOIOMP 10/12"
+      //                 : i.tokenId === "3695"
+      //                   ? "SAGITTARIOMPS 11/12"
+      //                   : metadata?.data?.collection?.nft?.name,
+      //       fileType: metadata?.data?.collection?.nft?.fileType,
+      //       preview: metadata?.data?.collection?.nft?.preview?.split('/')[2] === "xdsea.infura-ipfs.io" 
+      //         ? `https://${new CID(metadata?.data?.collection?.nft?.preview.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+      //         : metadata?.data?.collection?.nft?.preview,
+      //     };
+      //     return item;
+      //   })
+      // );
+      // var filteredCollectionItems = collectionItems2.filter((element) => {
+      //   return !burnedNFTs.includes(element?.tokenId);
+      // });
 
-      setFloorPrice(collectionData.metrics.floorPrice);
-      // setVolume(volumeTraded);
-      setLoadingState("loaded");
-      setNFts(filteredCollectionItems);
-      setCollectionOwners(collectionData.metrics.owners);
-      setCollection(collectionData);
-      setNFTCount(collectionData.metrics.nftsCount);
+      // setFloorPrice(collectionData.metrics.floorPrice);
+      // // setVolume(volumeTraded);
+      // setLoadingState("loaded");
+      // setNFts(filteredCollectionItems);
+      // setCollectionOwners(collectionData.metrics.owners);
+      // setCollection(collectionData);
+      // setNFTCount(collectionData.metrics.nftsCount);
     } catch (error) {
       console.log(error);
     }
@@ -165,46 +165,46 @@ const CollectionDetails = (props) => {
 
   const fetchMoreNFTs = async () => {
     // await new Promise((r) => setTimeout(r, 3000));
-    setPageCount(pageCount + 1);
-    const collectionItems = await (await createRequest(HTTP_METHODS.get, `collection/nft/${collection
-      .collection._id}/${pageCount + 1}`)).data.nfts
-    const newNFTs = await Promise.all(
-      collectionItems.map(async (i) => {
-        let nft = {
-          price: i.price,
-          tokenId: i.tokenId,
-          isListed: i.isListed,
-          offerCount: i.offerCount,
-          owner: i.owner,
-          collectionName: metadata?.data?.collection?.name,
-          image: metadata?.data?.collection?.nft?.image?.split('/')[2] === "xdsea.infura-ipfs.io" 
-            ? `https://${new CID(metadata?.data?.collection?.nft?.image.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-            : metadata?.data?.collection?.nft?.image,
-          name: i.tokenId === "3567"
-            ? "TAURULIOMPS 1/12"
-            : i.tokenId === "3580"
-              ? "GEMINLIOMP 2/12"
-              : i.tokenId === "3584"
-                ? "LIBRIOMP 2/12"
-                : i.tokenId === "3650"
-                  ? "PISCELIOMPS 8/12"
-                  : i.tokenId === "3679"
-                    ? "LEOIOMP 10/12"
-                    : i.tokenId === "3695"
-                      ? "SAGITTARIOMPS 11/12"
-                      : metadata?.data?.collection?.nft?.name,
-          fileType: metadata?.data?.collection?.nft?.fileType,
-          preview: metadata?.data?.collection?.nft?.preview?.split('/')[2] === "xdsea.infura-ipfs.io" 
-            ? `https://${new CID(metadata?.data?.collection?.nft?.preview.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-            : metadata?.data?.collection?.nft?.preview,
-        };
-        return nft;
-      })
-    );
-    var filteredCollectionItems = newNFTs.filter((element) => {
-      return !burnedNFTs.includes(element?.tokenId);
-    });
-    setNFts((prevState) => [...prevState, ...filteredCollectionItems]);
+    // setPageCount(pageCount + 1);
+    // const collectionItems = await (await createRequest(HTTP_METHODS.get, `collection/nft/${collection
+    //   .collection._id}/${pageCount + 1}`)).data.nfts
+    // const newNFTs = await Promise.all(
+    //   collectionItems.map(async (i) => {
+    //     let nft = {
+    //       price: i.price,
+    //       tokenId: i.tokenId,
+    //       isListed: i.isListed,
+    //       offerCount: i.offerCount,
+    //       owner: i.owner,
+    //       collectionName: metadata?.data?.collection?.name,
+    //       image: metadata?.data?.collection?.nft?.image?.split('/')[2] === "xdsea.infura-ipfs.io" 
+    //         ? `https://${new CID(metadata?.data?.collection?.nft?.image.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+    //         : metadata?.data?.collection?.nft?.image,
+    //       name: i.tokenId === "3567"
+    //         ? "TAURULIOMPS 1/12"
+    //         : i.tokenId === "3580"
+    //           ? "GEMINLIOMP 2/12"
+    //           : i.tokenId === "3584"
+    //             ? "LIBRIOMP 2/12"
+    //             : i.tokenId === "3650"
+    //               ? "PISCELIOMPS 8/12"
+    //               : i.tokenId === "3679"
+    //                 ? "LEOIOMP 10/12"
+    //                 : i.tokenId === "3695"
+    //                   ? "SAGITTARIOMPS 11/12"
+    //                   : metadata?.data?.collection?.nft?.name,
+    //       fileType: metadata?.data?.collection?.nft?.fileType,
+    //       preview: metadata?.data?.collection?.nft?.preview?.split('/')[2] === "xdsea.infura-ipfs.io" 
+    //         ? `https://${new CID(metadata?.data?.collection?.nft?.preview.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
+    //         : metadata?.data?.collection?.nft?.preview,
+    //     };
+    //     return nft;
+    // })
+    // );
+    // var filteredCollectionItems = newNFTs.filter((element) => {
+    //   return !burnedNFTs.includes(element?.tokenId);
+    // });
+    // setNFts((prevState) => [...prevState, ...filteredCollectionItems]);
   };
 
   function NavigateTo(route) {
@@ -412,7 +412,7 @@ const CollectionDetails = (props) => {
                   align="center"
                   textcolor={({ theme }) => theme.walletText}
                 >
-                  {collectionName}
+                  {collectionNickName}
                 </TitleBold21>
               </HStack>
 
@@ -488,9 +488,9 @@ const CollectionDetails = (props) => {
                     <LoopBars width="54px"></LoopBars>
                   ) : (
                     <BodyBold textcolor={({ theme }) => theme.text}>
-                      {burnedCollections.includes(collectionName)
+                      {burnedCollections.includes(collectionNickName)
                         ? NFTCount - 1
-                        : collectionName === "XDSEA MONKEYS ORIGINAL ART"
+                        : collectionNickName === "XDSEA-MONKEYS-ORIGINAL-ART"
                           ? NFTCount - 7
                           : NFTCount}
                     </BodyBold>
@@ -539,7 +539,7 @@ const CollectionDetails = (props) => {
           <VStack width={size.width < 768 ? "100%" : "60%"} padding="15px">
             {nfts[0]?.collectionDescription !== "null" ? (
               <BodyRegular textcolor={({ theme }) => theme.text} align="center">
-                {collectionName === "DØP3 Punks "
+                {collectionNickName === "DØP3 Punks "
                   ? `A multichain NFT project minting collections on every major blockchain!\n\nWhere DØP3 Art Meets Web3`
                   : nfts[0]?.collectionDescription}
               </BodyRegular>
@@ -671,9 +671,9 @@ const CollectionDetails = (props) => {
           dataLength={nfts.length}
           next={fetchMoreNFTs}
           hasMore={
-            burnedCollections.includes(collectionName)
+            burnedCollections.includes(collectionNickName)
               ? nfts.length < NFTCount - 1
-              : collectionName === "XDSEA MONKEYS ORIGINAL ART"
+              : collectionNickName === "XDSEA-MONKEYS-ORIGINAL-ART"
                 ? nfts.length < NFTCount - 7
                 : nfts.length < NFTCount
           }
@@ -715,7 +715,7 @@ const CollectionDetails = (props) => {
                           creatorImage={banner1}
                           itemImage={item.image}
                           price={item.price}
-                          collectionName={collectionName}
+                          collectionName={item.collectionName}
                           itemNumber={item.name}
                           fileType={item.fileType}
                           background={({ theme }) => theme.backElement}
@@ -729,7 +729,7 @@ const CollectionDetails = (props) => {
                         ></NftContainer>
                       </VStack>
                     ))
-                  : loadingNFT.map((item) => (
+                  : loadingNFTs.map((item) => (
                       <VStack
                         minwidth={size.width < 768 ? "230px" : "280px"}
                         height="450px"

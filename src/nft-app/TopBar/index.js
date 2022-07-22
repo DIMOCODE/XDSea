@@ -370,7 +370,7 @@ function TopBar(props) {
                           </BodyBold>
                           {!devMode ? (
                             <BodyBold textcolor={({ theme }) => theme.blue}>
-                              βeta v1.6.2
+                              βeta v1.6.3
                             </BodyBold>
                           ) : (
                             <HStack
@@ -565,7 +565,7 @@ function TopBar(props) {
                         </BodyBold>
                         {!devMode ? (
                           <BodyBold textcolor={({ theme }) => theme.blue}>
-                            βeta v1.6.2
+                            βeta v1.6.3
                           </BodyBold>
                         ) : (
                           <HStack
@@ -707,7 +707,7 @@ function TopBar(props) {
                         </BodyBold>
                         {!devMode ? (
                           <BodyBold textcolor={({ theme }) => theme.blue}>
-                            βeta v1.6.2
+                            βeta v1.6.3
                           </BodyBold>
                         ) : (
                           <HStack
