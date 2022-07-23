@@ -70,6 +70,7 @@ typings/
 
 # dotenv environment variables file
 .env
+.env.development
 .env.test
 
 # parcel-bundler cache (https://parceljs.org/)
@@ -107,3 +108,4 @@ dist
 # Sensitive data
 CIDS.txt
 CIDS_dedupe.txt
+src/.DS_Store
