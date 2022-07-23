@@ -59,23 +59,8 @@ function TopBar(props) {
   const menucolor = ({ theme }) => theme.menu;
   const [showError, setShowError] = useState(0);
   const [showInfo, setShowInfo] = useState(false);
-
-  // const [clickedOutside, setClickedOutside] = useState(false);
-  //   const myRef = useRef();
-
-  //   const handleClickOutside = e => {
-  //       if (!myRef.current.contains(e.target)) {
-  //           setClickedOutside(true);
-  //           setShowMenu(true);
-  //       }
-  //   };
-
-  //   const handleClickInside = () => {setClickedOutside(false)};
-
-  //   useEffect(() => {
-  //       document.addEventListener('mousedown', handleClickOutside);
-  //       return () => document.removeEventListener('mousedown', handleClickOutside);
-  //   });
+  const [isSearch, setIsSearch] = useState(false);
+  const [clickedOutside, setClickedOutside] = useState(false);
 
   const ref = useRef(null);
 
@@ -93,6 +78,10 @@ function TopBar(props) {
   function NavigateTo(route) {
     setShowMenu(false);
     history.push(`/${route}`);
+  }
+
+  function handleBarStatus(status) {
+    setIsSearch(status);
   }
 
   const variant1 = {
@@ -178,7 +167,6 @@ function TopBar(props) {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -12 }}
                       transition={{ type: "spring", damping: 10 }}
-                      ref={ref}
                     >
                       <VStack
                         background={({ theme }) => theme.backElement}
@@ -313,15 +301,16 @@ function TopBar(props) {
                   )}
 
                   {searchPhone ? (
-                    <HStack>
+                    <HStack width="100%" padding=" 0 12px">
                       <Searchbar
                         placeholder="Search for NFTs and Collections"
                         data={TestData}
                         top="46px"
-                        left="-9px"
-                        width="366px"
+                        left="-12px"
+                        width="100vw"
                         widthInput="70%"
                         isPhone={true}
+                        switchBarStatus={handleBarStatus}
                       ></Searchbar>
                       <VStack
                         maxwidth="46px"
@@ -403,6 +392,7 @@ function TopBar(props) {
                         background={({ theme }) => theme.faded}
                         whileTap={{ scale: 0.9 }}
                         onClick={() => setShowMenu(!showMenu)}
+                        ref={ref}
                       >
                         <svg
                           width="26"
@@ -438,7 +428,6 @@ function TopBar(props) {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -12 }}
                       transition={{ type: "spring", damping: 10 }}
-                      ref={ref}
                     >
                       <VStack
                         background={({ theme }) => theme.backElement}
@@ -550,9 +539,11 @@ function TopBar(props) {
                     <Searchbar
                       placeholder="Search for NFTs and Collections"
                       data={TestData}
-                      top="78px"
-                      left="-30px"
-                      width={"240px"}
+                      top="58px"
+                      left="0px"
+                      widthInput="50%"
+                      width="68%"
+                      switchBarStatus={handleBarStatus}
                     ></Searchbar>
                     <Spacer></Spacer>
 
@@ -610,13 +601,15 @@ function TopBar(props) {
                       ></UserMenuButton>
                     ) : null}
 
+                    {console.log(showMenu)}
                     <VStack
-                      maxwidth="46px"
+                      minwidth="46px"
                       height="46px"
                       border="12px"
                       background={({ theme }) => theme.faded}
                       whileTap={{ scale: 0.9 }}
-                      onClick={() => setShowMenu(!showMenu)}
+                      onTapStart={() => setShowMenu(!showMenu)}
+                      ref={ref}
                     >
                       <svg
                         width="26"
@@ -655,6 +648,7 @@ function TopBar(props) {
                         cursor={"pointer"}
                         spacing="1px"
                         alignment="flex-start"
+                        width="80px"
                       >
                         <BodyBold textcolor={({ theme }) => theme.text}>
                           XDSea
@@ -677,49 +671,67 @@ function TopBar(props) {
                         )}
                       </VStack>
                     </HStack>
-
+                    <Spacer></Spacer>
                     {/* Search  */}
+
                     <Searchbar
                       top="54px"
                       left="0px"
                       placeholder="Search for NFTs and Collections"
                       data={TestData}
-                      width={"240px"}
+                      widthInput={isSearch ? "741px" : "310px"}
+                      width="741px"
+                      switchBarStatus={handleBarStatus}
                     ></Searchbar>
 
-                    <ButtonApp
-                      background="rgba(255, 255, 255, 0)"
-                      textcolor={({ theme }) => theme.text}
-                      text="SearchPage"
-                      cursor="pointer"
-                      onClick={() => NavigateTo("SearchPage")}
-                      btnStatus={0}
-                    ></ButtonApp>
+                    {console.log(isSearch)}
+                    <AnimatePresence>
+                      {!isSearch && (
+                        <HStack
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          spacing="3px"
+                        >
+                          {/* <ButtonApp
+                            background="rgba(255, 255, 255, 0)"
+                            textcolor={({ theme }) => theme.text}
+                            text="SearchPage"
+                            cursor="pointer"
+                            onClick={() => NavigateTo("SearchPage")}
+                            btnStatus={0}
+                          ></ButtonApp> */}
+                          <ButtonApp
+                            background="rgba(255, 255, 255, 0)"
+                            textcolor={({ theme }) => theme.text}
+                            text="Discover"
+                            cursor="pointer"
+                            onClick={() => NavigateTo("Discover")}
+                            btnStatus={0}
+                          ></ButtonApp>
+                          <ButtonApp
+                            background="rgba(255, 255, 255, 0)"
+                            textcolor={({ theme }) => theme.text}
+                            text="How To Start"
+                            cursor="pointer"
+                            onClick={() => NavigateTo("HowToStart")}
+                            btnStatus={0}
+                            width="150px"
+                            padding="0px"
+                          ></ButtonApp>
+                          <ButtonApp
+                            background="rgba(255, 255, 255, 0)"
+                            textcolor={({ theme }) => theme.blue}
+                            text="Create an NFT"
+                            cursor="pointer"
+                            onClick={() => NavigateTo("CreateNFT")}
+                            btnStatus={0}
+                            width="150px"
+                            padding="0px"
+                          ></ButtonApp>
+                        </HStack>
+                      )}
+                    </AnimatePresence>
 
-                    <ButtonApp
-                      background="rgba(255, 255, 255, 0)"
-                      textcolor={({ theme }) => theme.text}
-                      text="Discover"
-                      cursor="pointer"
-                      onClick={() => NavigateTo("Discover")}
-                      btnStatus={0}
-                    ></ButtonApp>
-                    <ButtonApp
-                      background="rgba(255, 255, 255, 0)"
-                      textcolor={({ theme }) => theme.text}
-                      text="How To Start"
-                      cursor="pointer"
-                      onClick={() => NavigateTo("HowToStart")}
-                      btnStatus={0}
-                    ></ButtonApp>
-                    <ButtonApp
-                      background="rgba(255, 255, 255, 0)"
-                      textcolor={({ theme }) => theme.blue}
-                      text="Create an NFT"
-                      cursor="pointer"
-                      onClick={() => NavigateTo("CreateNFT")}
-                      btnStatus={0}
-                    ></ButtonApp>
                     <Spacer></Spacer>
                     <VStack maxwidth="180px">
                       <ZStack>

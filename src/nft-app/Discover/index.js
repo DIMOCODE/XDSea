@@ -1,18 +1,26 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import Xdc3 from "xdc3";
-import { nftaddress, nftmarketlayeraddress, nftmarketaddress } from "../../config";
+import {
+  nftaddress,
+  nftmarketlayeraddress,
+  nftmarketaddress,
+} from "../../config";
 import { DEFAULT_PROVIDER, HEADER } from "../../constant";
 import NFT from "../../abis/NFT.json";
 import NFTMarket from "../../abis/NFTMarket.json";
 import NFTMarketLayer1 from "../../abis/NFTMarketLayer1.json";
 import axios from "axios";
 import styled from "styled-components";
-import { LayoutGroup, motion } from "framer-motion/dist/framer-motion";
+import {
+  LayoutGroup,
+  AnimatePresence,
+  motion,
+} from "framer-motion/dist/framer-motion";
 import { Collection } from "../../styles/Collection";
 import DiscoverBar from "../../images/DiscoverBar.png";
-import { HStack, Spacer, VStack } from "../../styles/Stacks";
-import { TitleBold27 } from "../../styles/TextStyles";
+import { HStack, Spacer, VStack, ZItem, ZStack } from "../../styles/Stacks";
+import { CaptionBoldShort, TitleBold27 } from "../../styles/TextStyles";
 import { appStyle } from "../../styles/AppStyles";
 import useWindowSize from "../../styles/useWindowSize";
 import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
@@ -26,6 +34,8 @@ import {
 } from "../../blacklist";
 import menuContext from "../../context/menuContext";
 import CID from "cids";
+import { FilterCollections } from "../../styles/FilterCollections";
+import { FilterNFT } from "../../styles/FilterNFT";
 
 const Discover = () => {
   const history = useHistory();
@@ -33,6 +43,7 @@ const Discover = () => {
   const [collectionPage, setCollectionPage] = useState([]);
   const [setLoading, isSetLoading] = useState(false);
   const [lastIndex, setLastIndex] = useState(0);
+  const [isSelected, setIsSelected] = useState(false);
   const [loadingCollection] = useState([
     { id: 1, name: "Collection 1" },
     { id: 2, name: "Collection 2" },
@@ -53,7 +64,9 @@ const Discover = () => {
   const getData = async () => {
     try {
       isSetLoading(true);
-      const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
+      const xdc3 = new Xdc3(
+        new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER)
+      );
       const marketContract = new xdc3.eth.Contract(
         NFTMarketLayer1.abi,
         nftmarketlayeraddress,
@@ -76,45 +89,45 @@ const Discover = () => {
       //       const uri = await nftContract.methods.tokenURI(data2.tokenId).call()
       //       var metadata = await axios.get(uri)
       //       console.log(data2, event, metadata?.data?.collection?.nft?.name, metadata?.data?.collection?.name)
-            // let data = marketContract.methods.addEventsToItem(
-            //     data2.tokenId,
-            //     i,
-            //     event.eventType,
-            //     event.from,
-            //     event.to,
-            //     event.price,
-            //     event.timestamp
-            // ).encodeABI()
-            // const wallet = await GetWallet();
-            // const tx = {
-            //     from: wallet.wallet.address,
-            //     to: nftmarketlayeraddress,
-            //     data
-            // }
-            // var gasLimit = await xdc3.eth.estimateGas(tx)
-            // tx["gas"] = gasLimit
-            // let transaction = SendTransaction(tx)
-            // let data = marketContract.methods.editMarketItem(
-            //     data2.tokenId,
-            //     data2.itemId,
-            //     data2.owner,
-            //     data2.creator,
-            //     data2.price,
-            //     data2.isListed,
-            //     data2.royalty,
-            //     data2.eventCount,
-            //     0,
-            //     metadata?.data?.collection?.nft?.name,
-            //     metadata?.data?.collection?.name,
-            // ).encodeABI()
-            // const tx = {
-            //     from: wallet.wallet.address,
-            //     to: nftmarketlayeraddress,
-            //     data
-            // }
-            // var gasLimit = await xdc3.eth.estimateGas(tx)
-            // tx["gas"] = gasLimit
-            // let transaction = await SendTransaction(tx);
+      // let data = marketContract.methods.addEventsToItem(
+      //     data2.tokenId,
+      //     i,
+      //     event.eventType,
+      //     event.from,
+      //     event.to,
+      //     event.price,
+      //     event.timestamp
+      // ).encodeABI()
+      // const wallet = await GetWallet();
+      // const tx = {
+      //     from: wallet.wallet.address,
+      //     to: nftmarketlayeraddress,
+      //     data
+      // }
+      // var gasLimit = await xdc3.eth.estimateGas(tx)
+      // tx["gas"] = gasLimit
+      // let transaction = SendTransaction(tx)
+      // let data = marketContract.methods.editMarketItem(
+      //     data2.tokenId,
+      //     data2.itemId,
+      //     data2.owner,
+      //     data2.creator,
+      //     data2.price,
+      //     data2.isListed,
+      //     data2.royalty,
+      //     data2.eventCount,
+      //     0,
+      //     metadata?.data?.collection?.nft?.name,
+      //     metadata?.data?.collection?.name,
+      // ).encodeABI()
+      // const tx = {
+      //     from: wallet.wallet.address,
+      //     to: nftmarketlayeraddress,
+      //     data
+      // }
+      // var gasLimit = await xdc3.eth.estimateGas(tx)
+      // tx["gas"] = gasLimit
+      // let transaction = await SendTransaction(tx);
       //   }
       // }
 
@@ -171,50 +184,50 @@ const Discover = () => {
       // const meta = {}
       // for(var i = 2001; i < 3893; i++) {
       //   const uri = await nftContract.methods.tokenURI(i).call()
-        // var metadata = await axios.get(uri)
-        // meta[i] = metadata.data;
-          // var item = await marketContract.methods.idToMarketItem(i).call();
-          // let nft = {
-          //   tokenId: item.tokenId,
-          //   itemId: item.itemId,
-          //   owner: item.owner,
-          //   creator: item.creator,
-          //   price: item.price,
-          //   isListed: item.isListed,
-          //   royalty: item.royalty,
-          //   eventCount: item.eventCount,
-          //   offerCount: item.offerCount,
-          //   name: item.name,
-          //   collectionName: item.collectionName
-          // }
-          // var item = await marketContract.methods.getTokenEventHistory(i).call();
-          // var events = []
-          // for(var j = 0; j < item.length; j++) {
-          //   let event = {
-          //     eventType: item[j].eventType,
-          //     from: item[j].from,
-          //     to: item[j].to,
-          //     price: item[j].price,
-          //     timestamp: item[j].timestamp
-          //   }
-          //   events.push(event)
-          // }
-          // var item = await marketContract.methods.getTokenOfferList(i).call();
-          // var offers = []
-          // for(var j = 0; j < item.length; j++) {
-          //   let offer = {
-          //     price: item[j].price,
-          //     from: item[j].from,
-          //     to: item[j].to,
-          //     isWithdrawn: item[j].isWithdrawn,
-          //     isAccepted: item[j].isAccepted
-          //   }
-          //   offers.push(offer)
-          // }
-          // if(offers.length !== 0)
-            // meta[i] = nft;
-          // await new Promise((r) => setTimeout(r, 500));
-          // console.log(i)
+      // var metadata = await axios.get(uri)
+      // meta[i] = metadata.data;
+      // var item = await marketContract.methods.idToMarketItem(i).call();
+      // let nft = {
+      //   tokenId: item.tokenId,
+      //   itemId: item.itemId,
+      //   owner: item.owner,
+      //   creator: item.creator,
+      //   price: item.price,
+      //   isListed: item.isListed,
+      //   royalty: item.royalty,
+      //   eventCount: item.eventCount,
+      //   offerCount: item.offerCount,
+      //   name: item.name,
+      //   collectionName: item.collectionName
+      // }
+      // var item = await marketContract.methods.getTokenEventHistory(i).call();
+      // var events = []
+      // for(var j = 0; j < item.length; j++) {
+      //   let event = {
+      //     eventType: item[j].eventType,
+      //     from: item[j].from,
+      //     to: item[j].to,
+      //     price: item[j].price,
+      //     timestamp: item[j].timestamp
+      //   }
+      //   events.push(event)
+      // }
+      // var item = await marketContract.methods.getTokenOfferList(i).call();
+      // var offers = []
+      // for(var j = 0; j < item.length; j++) {
+      //   let offer = {
+      //     price: item[j].price,
+      //     from: item[j].from,
+      //     to: item[j].to,
+      //     isWithdrawn: item[j].isWithdrawn,
+      //     isAccepted: item[j].isAccepted
+      //   }
+      //   offers.push(offer)
+      // }
+      // if(offers.length !== 0)
+      // meta[i] = nft;
+      // await new Promise((r) => setTimeout(r, 500));
+      // console.log(i)
       // }
       // console.log(JSON.stringify(meta))
 
@@ -316,7 +329,9 @@ const Discover = () => {
 
   const fetchMoreCollections = async () => {
     await new Promise((r) => setTimeout(r, 3000));
-    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
+    const xdc3 = new Xdc3(
+      new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER)
+    );
     const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
     var nextPage = [];
     await Promise.all(
@@ -455,98 +470,166 @@ const Discover = () => {
     <DiscoverSection id="scrollableDiv">
       <HStack backgroundimage={DiscoverBar}>
         <HStack width="1200px" height="157px" padding="0px 30px">
-          <TitleBold27 textcolor={appStyle.colors.white}>
-            Discover Collections
-          </TitleBold27>
+          <TitleBold27 textcolor={appStyle.colors.white}>Discover</TitleBold27>
           <Spacer></Spacer>
+          {/* Toggle */}
+          <HStack
+            background="rgb(0,0,0,0.3)"
+            padding="3px"
+            border="6px"
+            height="49px"
+            self="none"
+            spacing="3px"
+            blur="10px"
+          >
+            <ZStack>
+              <ZItem>
+                {/* Selector */}
+                <AnimatePresence inital="false">
+                  <HStack
+                    height="43px"
+                    self="none"
+                    spacing="3px"
+                    justify={isSelected ? "flex-start" : "flex-end"}
+                  >
+                    <HStack
+                      width="96px"
+                      background="white"
+                      border="6px"
+                      layout
+                    ></HStack>
+                  </HStack>
+                </AnimatePresence>
+              </ZItem>
+              <ZItem>
+                <HStack height="43px" self="none" spacing="3px">
+                  <HStack
+                    width="96px"
+                    onClick={() => setIsSelected(true)}
+                    cursor="pointer"
+                  >
+                    <CaptionBoldShort
+                      textcolor={isSelected ? "black" : "white"}
+                      cursor="pointer"
+                    >
+                      Collections
+                    </CaptionBoldShort>
+                  </HStack>
+
+                  <HStack
+                    width="96px"
+                    cursor="pointer"
+                    onClick={() => setIsSelected(false)}
+                  >
+                    <CaptionBoldShort
+                      textcolor={isSelected ? "white" : "black"}
+                      cursor="pointer"
+                    >
+                      NFTs
+                    </CaptionBoldShort>
+                  </HStack>
+                </HStack>
+              </ZItem>
+            </ZStack>
+          </HStack>
         </HStack>
       </HStack>
       <ContentDiscover id="scrollableDiv">
-        <InfiniteScroll
-          dataLength={collections.length}
-          next={fetchMoreCollections}
-          hasMore={collections.length < collectionPage.length - 2}
-          scrollThreshold={0.8}
-          loader={
-            <HStack
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              height="210px"
+        {isSelected ? (
+          <VStack>
+            <FilterCollections></FilterCollections>
+            <InfiniteScroll
+              dataLength={collections.length}
+              next={fetchMoreCollections}
+              hasMore={collections.length < collectionPage.length - 2}
+              scrollThreshold={0.8}
+              loader={
+                <HStack
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  height="210px"
+                >
+                  <LoopLogo></LoopLogo>
+                </HStack>
+              }
+              scrollableTarget="#scrollableDiv"
+              style={{ overflow: "hidden" }}
             >
-              <LoopLogo></LoopLogo>
-            </HStack>
-          }
-          scrollableTarget="#scrollableDiv"
-          style={{ overflow: "hidden" }}
-        >
-          <VStack spacing="30px">
-            {/* <HStack>
+              <VStack spacing="30px">
+                {/* <HStack>
                   <DiscoverFilter
                     textcolor={({ theme }) => theme.text}
                     background={({ theme }) => theme.backElement}
                   ></DiscoverFilter>
               </HStack> */}
-            <HStack>
-              <HStack
-                spacing="21px"
-                flexwrap="wrap"
-                padding="15px 30px"
-                justify="flex-start"
-                width={size.width < 768 ? "100%" : "1100px"}
-              >
-                {setLoading
-                  ? loadingCollection.map((item) => (
-                      <VStack
-                        key={item.name}
-                        minwidth={size.width < 768 ? "100%" : "326px"}
-                        maxwidth="326px"
-                        height={size.width < 768 ? "440px" : "420px"}
-                      >
-                        <LoadingNftContainer></LoadingNftContainer>
-                      </VStack>
-                    ))
-                  : collections.map((item) => (
-                      <LayoutGroup id="collection" key={item.name}>
-                        <VStack
-                          width="326px"
-                          height={size.width < 768 ? "440px" : "420px"}
-                        >
-                          <Collection
+                <HStack>
+                  <HStack
+                    spacing="21px"
+                    flexwrap="wrap"
+                    padding="15px 30px"
+                    justify="flex-start"
+                    width={size.width < 768 ? "100%" : "1100px"}
+                  >
+                    {setLoading
+                      ? loadingCollection.map((item) => (
+                          <VStack
                             key={item.name}
-                            isVerified={true}
-                            keyContent={item.name}
-                            keyID={item.creator}
-                            collectionImage={item.banner}
-                            creatorLogo={
-                              untitledCollections.includes(item.name)
-                                ? item.banner
-                                : item.logo
-                            }
-                            collectionName={item.name}
-                            collectionDescription={
-                              item.name === "DØP3 Punks "
-                                ? `A multichain NFT project minting collections on every major blockchain!\n\nWhere DØP3 Art Meets Web3`
-                                : item.description
-                            }
-                            creatorName={item.creator}
-                            onClickCollection={() =>
-                              NavigateTo(`collection/${item.name}`)
-                            }
-                            floorprice={item.floorPrice}
-                            owners={item.owners}
-                            nfts={item.items}
-                            volumetraded={item.volumeTraded}
-                            onClickCreator={() =>
-                              NavigateTo(`UserProfile/${item.creator}`)
-                            }
-                          ></Collection>
-                        </VStack>
-                      </LayoutGroup>
-                    ))}
-              </HStack>
-            </HStack>
+                            minwidth={size.width < 768 ? "100%" : "326px"}
+                            maxwidth="326px"
+                            height={size.width < 768 ? "440px" : "420px"}
+                          >
+                            <LoadingNftContainer></LoadingNftContainer>
+                          </VStack>
+                        ))
+                      : collections.map((item) => (
+                          <LayoutGroup id="collection" key={item.name}>
+                            <VStack
+                              width="326px"
+                              height={size.width < 768 ? "440px" : "420px"}
+                            >
+                              <Collection
+                                key={item.name}
+                                isVerified={true}
+                                keyContent={item.name}
+                                keyID={item.creator}
+                                collectionImage={item.banner}
+                                creatorLogo={
+                                  untitledCollections.includes(item.name)
+                                    ? item.banner
+                                    : item.logo
+                                }
+                                collectionName={item.name}
+                                collectionDescription={
+                                  item.name === "DØP3 Punks "
+                                    ? `A multichain NFT project minting collections on every major blockchain!\n\nWhere DØP3 Art Meets Web3`
+                                    : item.description
+                                }
+                                creatorName={item.creator}
+                                onClickCollection={() =>
+                                  NavigateTo(`collection/${item.name}`)
+                                }
+                                floorprice={item.floorPrice}
+                                owners={item.owners}
+                                nfts={item.items}
+                                volumetraded={item.volumeTraded}
+                                onClickCreator={() =>
+                                  NavigateTo(`UserProfile/${item.creator}`)
+                                }
+                              ></Collection>
+                            </VStack>
+                          </LayoutGroup>
+                        ))}
+                  </HStack>
+                </HStack>
+              </VStack>
+            </InfiniteScroll>
           </VStack>
-        </InfiniteScroll>
+        ) : (
+          <VStack>
+            <FilterNFT></FilterNFT>
+            NFTs here
+          </VStack>
+        )}
       </ContentDiscover>
     </DiscoverSection>
   );
