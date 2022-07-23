@@ -123,7 +123,7 @@ const NFTApp = () => {
                 ></Route>
                 <Route
                   exact
-                  path="/collection/:collectionName"
+                  path="/collection/:collectionNickName"
                   component={Collection}
                 ></Route>
                 <Route

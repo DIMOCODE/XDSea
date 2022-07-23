@@ -61,6 +61,7 @@ const Discover = () => {
     try {
       setLoading(true);
       const collectionData = await (await getCollections({page: 1})).data.collections;
+      console.log(collectionData)
       const collectionList = await Promise.all(
         collectionData.map(async (collectionItem) => {
           let collection = {
@@ -353,15 +354,11 @@ const Discover = () => {
                         >
                           <Collection
                             key={item.name}
-                            isVerified={verifiedProfiles.includes(item.creator)}
+                            isVerified={item.isVerified}
                             keyContent={item.name}
                             keyID={item.creator}
                             collectionImage={item.banner}
-                            creatorLogo={
-                              untitledCollections.includes(item.name)
-                                ? item.banner
-                                : item.logo
-                            }
+                            creatorLogo = {item.logo}
                             collectionName={item.name}
                             collectionDescription={
                               item.name === "DØP3 Punks "
@@ -374,8 +371,8 @@ const Discover = () => {
                             }
                             floorprice={item.floorPrice}
                             owners={item.owners}
-                            nfts={item.items}
-                            volumetraded={item.volumeTraded}
+                            nfts={item.nfts}
+                            volumetraded={item.tradeVolume}
                             onClickCreator={() =>
                               NavigateTo(`UserProfile/${item.creator}`)
                             }

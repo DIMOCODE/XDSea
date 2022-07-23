@@ -56,12 +56,16 @@ import {
   TelegramShareButton,
   WhatsappShareButton,
 } from "react-share";
+import { 
+  getCollection,
+  getCollectionNFTs 
+} from "../../API/Collection";
 
 const CollectionDetails = () => {
   const history = useHistory();
   const [nfts, setNfts] = useState([]);
   const [loadingState, setLoadingState] = useState("not-loaded");
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [NFTCount, setNFTCount] = useState(0);
   const [collectionOwners, setCollectionOwners] = useState(0);
   const [floorPrice, setFloorPrice] = useState(0);
@@ -86,14 +90,31 @@ const CollectionDetails = () => {
   const { collectionNickName } = useParams();
   const [, setShowMenu] = useContext(menuContext);
 
+  /**
+   * Get collection NFT data for the first page
+   */
   const getData = async () => {
     try {
-      // const collectionData = await (await createRequest(HTTP_METHODS.get, `collection/byNickName/${collectionName
-      //   .replace(/\s/g, "-").replace(/#/g, "%23").replace(/^-+/, "").replace(/-+$/, "")}`, null, null)).data;
-      // const collectionItems = await (await createRequest(HTTP_METHODS.get, `collection/nft/${collectionData
-      //   .collection._id}/${pageCount}`)).data.nfts
-      // const collectionItems2 = await Promise.all(
-      //   collectionItems.map(async (i) => {
+      const collectionData = await (await getCollection(collectionNickName)).data;
+      let collection = {
+        banner: collectionData.collection.banner,
+        creator: collectionData.collection.addressCreator,
+        isVerified: collectionData.collection.creator.isVerified,
+        description: collectionData.collection.description,
+        discordUrl: collectionData.collection.discordUrl,
+        floorPrice: collectionData.collection.floorPrice,
+        instagramUrl: collectionData.collection.instagramUrl,
+        logo: collectionData.collection.logo,
+        name: collectionData.collection.name,
+        twitterUrl: collectionData.collection.twitterUrl,
+        volumeTrade: collectionData.collection.volumeTrade,
+        websiteUrl: collectionData.collection.websiteUrl,
+        nftsCount: collectionData.metrics.nftsCount,
+        owners: collectionData.metrics.owners
+      }
+      const collectionNFTData = await (await getCollectionNFTs(collectionData.collection._id, page)).data.nfts;
+      // const collectionNFTs = await Promise.all(
+      //   collectionNFTData.map(async (collectionItem) => {
       //     let item = {
       //       price: i.price,
       //       tokenId: i.tokenId,
@@ -145,13 +166,9 @@ const CollectionDetails = () => {
       //   return !burnedNFTs.includes(element?.tokenId);
       // });
 
-      // setFloorPrice(collectionData.metrics.floorPrice);
-      // // setVolume(volumeTraded);
-      // setLoadingState("loaded");
+      setLoadingState("loaded");
       // setNFts(filteredCollectionItems);
-      // setCollectionOwners(collectionData.metrics.owners);
-      // setCollection(collectionData);
-      // setNFTCount(collectionData.metrics.nftsCount);
+      setCollection(collectionData);
     } catch (error) {
       console.log(error);
     }
@@ -159,7 +176,7 @@ const CollectionDetails = () => {
 
   const truncateAddress = (address) => {
     return address
-      ? address.substring(0, 7) + "..." + address.substring(38)
+      ? address.substring(0, 6) + "..." + address.substring(38)
       : "undefined";
   };
 

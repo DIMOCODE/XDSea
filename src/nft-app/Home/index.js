@@ -38,8 +38,7 @@ import bannerXDC from "../../images/bannerXdc.png";
 import menuContext from "../../context/menuContext";
 import { NewFeatured } from "../../styles/NewFeatured";
 import "./customstyles.css";
-
-import { verifiedProfiles } from "../../blacklist";
+import banner1 from "../../images/Banner1.jpg";
 
 const Home = () => {
   const history = useHistory();
@@ -79,6 +78,7 @@ const Home = () => {
     try {
       setLoading(true);
       const homeData = (await getHomeData()).data;
+      console.log(homeData)
 
       const featuredNFTList = await Promise.all(
         homeData.featuredNfts.map(async (nft) => {
@@ -173,14 +173,15 @@ const Home = () => {
         homeData.trendingNfts.map(async (nft) => {
           let trendingNFT = {
             collectionName: nft.nftId.collectionName,
-            collectionLogo: nft.nftId.collectionLogo,
+            creatorLogo: banner1,
             image: nft.nftId.urlFile,
             name: nft.nftId.name,
             price: nft.nftId.price,
             fileType: nft.nftId.fileType,
             preview: nft.nftId.preview,
             creator: nft.nftId.creator,
-            tokenId: nft.nftId.tokenId
+            tokenId: nft.nftId.tokenId,
+            saleType: nft.nftId.saleType.toLowerCase()
           }
           return trendingNFT;
         })
@@ -500,7 +501,7 @@ const Home = () => {
               url={bannerXDC}
               width="100%"
               height="300px"
-              border={size.width < 768 ? "0px" : "15px"}
+              border={size.width < 1200 ? "0px" : "15px"}
               backsize="cover"
             ></IconImg>
           </ZItem>
@@ -529,7 +530,7 @@ const Home = () => {
 
       {/* Top Collections Section */}
       <VStack
-        height={size.width < 768 ? "auto" : "700px"}
+        height={size.width < 1200 ? "auto" : "700px"}
         width="100%"
         spacing="9px"
         padding="60px 0"
@@ -539,27 +540,27 @@ const Home = () => {
         <HStack>
           <IconImg url={rocketCollection} width="45px" height="45px"></IconImg>
           <TitleBold27 textcolor={({ theme }) => theme.text}>
-            Spotlight Collections
+            Top Collections
           </TitleBold27>
         </HStack>
         <HStack responsive={true}>
           <VStack
-            flexwrap={size.width < 768 ? "nowrap" : "wrap"}
-            height={size.width < 768 ? "auto" : "630px"}
+            flexwrap={size.width < 1200 ? "nowrap" : "wrap"}
+            height={size.width < 1200 ? "auto" : "630px"}
             spacing="15px"
           >
             {loading
               ? loadingCollections.map((item) => (
                   <LoadingSpot
                     key={item.name}
-                    width={size.width < 768 ? "100%" : "580px"}
+                    width={size.width < 1200 ? "100%" : "580px"}
                   ></LoadingSpot>
                 ))
               : topCollections.map((item) => (
                   <LayoutGroup id={item.id + 1}>
                     <TopCollectionItem
                       key={item?.id + 1}
-                      width={size.width < 768 ? "100%" : "580px"}
+                      width={size.width < 1200 ? "100%" : "580px"}
                       imageCreator={item?.logo}
                       collectionName={item?.name}
                       position={item?.id + 1}
@@ -605,12 +606,11 @@ const Home = () => {
                   key={i}
                 >
                   <NftContainer
-                    isVerified={verifiedProfiles.includes(item.creator)}
-                    iconStatus={item.isListed ? "sale" : "notforsale"}
-                    // iconStatus are : notforsale, relist, sale, sold, empty returns null
+                    isVerified={item.isVerified}
+                    iconStatus={item.saleType}
                     hasOffers={item.offerCount > 0 ? true : false}
                     fileType={item.fileType}
-                    creatorImage={item.collectionLogo}
+                    creatorImage={item.creatorLogo}
                     itemImage={item.image}
                     price={item.price}
                     collectionName={item.collectionName}
@@ -633,12 +633,11 @@ const Home = () => {
                     key={i}
                   >
                     <NftContainer
-                      isVerified={verifiedProfiles.includes(item.creator)}
-                      iconStatus={item.isListed ? "sale" : "notforsale"}
-                      // iconStatus are : notforsale, relist, sale, sold, empty returns null
+                      isVerified={item.isVerified}
+                      iconStatus={item.saleType}
                       hasOffers={item.offerCount > 0 ? true : false}
                       fileType={item.fileType}
-                      creatorImage={item.collectionLogo}
+                      creatorImage={item.creatorLogo}
                       itemImage={item.image}
                       price={item.price}
                       collectionName={item.collectionName}
@@ -660,12 +659,11 @@ const Home = () => {
                   key={i}
                 >
                   <NftContainer
-                    isVerified={verifiedProfiles.includes(item.creator)}
-                    iconStatus={item.isListed ? "sale" : "notforsale"}
-                    // iconStatus are : notforsale, relist, sale, sold, empty returns null
+                    isVerified={item.isVerified}
+                    iconStatus={item.saleType}
                     hasOffers={item.offerCount > 0 ? true : false}
                     fileType={item.fileType}
-                    creatorImage={item.collectionLogo}
+                    creatorImage={item.creatorLogo}
                     itemImage={item.image}
                     price={item.price}
                     collectionName={item.collectionName}

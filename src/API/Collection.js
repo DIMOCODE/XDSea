@@ -7,6 +7,10 @@ export const getCollections = ({searchTerm, page, userId, categoryId}) => {
   return createRequest(HTTP_METHODS.get, `collection/${params}`, null, null);
 };
 
-// export const getCollection = ({nickName}) => {
-//   return createRequest(HTTP_METHODS.get, `collection/${params}`, null, null);
-// };
+export const getCollection = (nickName) => {
+  return createRequest(HTTP_METHODS.get, `collection/byNickName/${nickName}`, null, null);
+};
+
+export const getCollectionNFTs = (collectionId, page) => {
+  return createRequest(HTTP_METHODS.get, `collection/nft/${collectionId}/${page}`, null, null);
+};
