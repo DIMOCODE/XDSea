@@ -5,18 +5,15 @@ import React, {
 } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { 
-  LayoutGroup, 
-  motion 
-} from "framer-motion/dist/framer-motion";
 import { Collection } from "../../styles/Collection";
 import DiscoverBar from "../../images/DiscoverBar.png";
-import { 
-  HStack, 
-  Spacer, 
-  VStack 
-} from "../../styles/Stacks";
-import { TitleBold27 } from "../../styles/TextStyles";
+import {
+  LayoutGroup,
+  AnimatePresence,
+  motion,
+} from "framer-motion/dist/framer-motion";
+import { HStack, Spacer, VStack, ZItem, ZStack } from "../../styles/Stacks";
+import { CaptionBoldShort, TitleBold27 } from "../../styles/TextStyles";
 import { appStyle } from "../../styles/AppStyles";
 import useWindowSize from "../../styles/useWindowSize";
 import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
@@ -29,12 +26,16 @@ import {
   untitledCollections,
   verifiedProfiles
 } from "../../blacklist";
+import CID from "cids";
+import { FilterCollections } from "../../styles/FilterCollections";
+import { FilterNFT } from "../../styles/FilterNFT";
 
 const Discover = () => {
   const history = useHistory();
   const [collections, setCollections] = useState([]);
   const [collectionPage, setCollectionPage] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [isSelected, setIsSelected] = useState(false);
   const [loadingCollections] = useState([
     { id: 1, name: "Collection 1" },
     { id: 2, name: "Collection 2" },
@@ -296,94 +297,162 @@ const Discover = () => {
     <DiscoverSection id="scrollableDiv">
       <HStack backgroundimage={DiscoverBar}>
         <HStack width="1200px" height="157px" padding="0px 30px">
-          <TitleBold27 textcolor={appStyle.colors.white}>
-            Discover Collections
-          </TitleBold27>
+          <TitleBold27 textcolor={appStyle.colors.white}>Discover</TitleBold27>
           <Spacer></Spacer>
+          {/* Toggle */}
+          <HStack
+            background="rgb(0,0,0,0.3)"
+            padding="3px"
+            border="6px"
+            height="49px"
+            self="none"
+            spacing="3px"
+            blur="10px"
+          >
+            <ZStack>
+              <ZItem>
+                {/* Selector */}
+                <AnimatePresence inital="false">
+                  <HStack
+                    height="43px"
+                    self="none"
+                    spacing="3px"
+                    justify={isSelected ? "flex-start" : "flex-end"}
+                  >
+                    <HStack
+                      width="96px"
+                      background="white"
+                      border="6px"
+                      layout
+                    ></HStack>
+                  </HStack>
+                </AnimatePresence>
+              </ZItem>
+              <ZItem>
+                <HStack height="43px" self="none" spacing="3px">
+                  <HStack
+                    width="96px"
+                    onClick={() => setIsSelected(true)}
+                    cursor="pointer"
+                  >
+                    <CaptionBoldShort
+                      textcolor={isSelected ? "black" : "white"}
+                      cursor="pointer"
+                    >
+                      Collections
+                    </CaptionBoldShort>
+                  </HStack>
+
+                  <HStack
+                    width="96px"
+                    cursor="pointer"
+                    onClick={() => setIsSelected(false)}
+                  >
+                    <CaptionBoldShort
+                      textcolor={isSelected ? "white" : "black"}
+                      cursor="pointer"
+                    >
+                      NFTs
+                    </CaptionBoldShort>
+                  </HStack>
+                </HStack>
+              </ZItem>
+            </ZStack>
+          </HStack>
         </HStack>
       </HStack>
       <ContentDiscover id="scrollableDiv">
-        <InfiniteScroll
-          dataLength={collections.length}
-          next={fetchMoreCollections}
-          hasMore={collections.length < 1000000}
-          scrollThreshold={0.8}
-          loader={
-            <HStack
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              height="210px"
+        {isSelected ? (
+          <VStack>
+            <FilterCollections></FilterCollections>
+            <InfiniteScroll
+              dataLength={collections.length}
+              next={fetchMoreCollections}
+              hasMore={collections.length < 1000000}
+              scrollThreshold={0.8}
+              loader={
+                <HStack
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  height="210px"
+                >
+                  <LoopLogo></LoopLogo>
+                </HStack>
+              }
+              scrollableTarget="#scrollableDiv"
+              style={{ overflow: "hidden" }}
             >
-              <LoopLogo></LoopLogo>
-            </HStack>
-          }
-          scrollableTarget="#scrollableDiv"
-          style={{ overflow: "hidden" }}
-        >
-          <VStack spacing="30px">
-            {/* <HStack>
+              <VStack spacing="30px">
+                {/* <HStack>
                   <DiscoverFilter
                     textcolor={({ theme }) => theme.text}
                     background={({ theme }) => theme.backElement}
                   ></DiscoverFilter>
               </HStack> */}
-            <HStack>
-              <HStack
-                spacing="21px"
-                flexwrap="wrap"
-                padding="15px 30px"
-                justify="flex-start"
-                width={size.width < 768 ? "100%" : "1100px"}
-              >
-                {loading
-                  ? loadingCollections.map((item) => (
-                      <VStack
-                        key={item.name}
-                        minwidth={size.width < 768 ? "100%" : "326px"}
-                        maxwidth="326px"
-                        height={size.width < 768 ? "440px" : "420px"}
-                      >
-                        <LoadingNftContainer></LoadingNftContainer>
-                      </VStack>
-                    ))
-                  : collections.map((item) => (
-                      <LayoutGroup id="collection" key={item.name}>
-                        <VStack
-                          width="326px"
-                          height={size.width < 768 ? "440px" : "420px"}
-                        >
-                          <Collection
+                <HStack>
+                  <HStack
+                    spacing="21px"
+                    flexwrap="wrap"
+                    padding="15px 30px"
+                    justify="flex-start"
+                    width={size.width < 768 ? "100%" : "1100px"}
+                  >
+                    {loading
+                      ? loadingCollections.map((item) => (
+                          <VStack
                             key={item.name}
-                            isVerified={item.isVerified}
-                            keyContent={item.name}
-                            keyID={item.creator}
-                            collectionImage={item.banner}
-                            creatorLogo = {item.logo}
-                            collectionName={item.name}
-                            collectionDescription={
-                              item.name === "DØP3 Punks "
-                                ? `A multichain NFT project minting collections on every major blockchain!\n\nWhere DØP3 Art Meets Web3`
-                                : item.description
-                            }
-                            creatorName={item.creator}
-                            onClickCollection={() =>
-                              NavigateTo(`collection/${item.nickName}`)
-                            }
-                            floorprice={item.floorPrice}
-                            owners={item.owners}
-                            nfts={item.nfts}
-                            volumetraded={item.tradeVolume}
-                            onClickCreator={() =>
-                              NavigateTo(`UserProfile/${item.creator}`)
-                            }
-                          ></Collection>
-                        </VStack>
-                      </LayoutGroup>
-                    ))}
-              </HStack>
-            </HStack>
+                            minwidth={size.width < 768 ? "100%" : "326px"}
+                            maxwidth="326px"
+                            height={size.width < 768 ? "440px" : "420px"}
+                          >
+                            <LoadingNftContainer></LoadingNftContainer>
+                          </VStack>
+                        ))
+                      : collections.map((item) => (
+                          <LayoutGroup id="collection" key={item.name}>
+                            <VStack
+                              width="326px"
+                              height={size.width < 768 ? "440px" : "420px"}
+                            >
+                              <Collection
+                                key={item.name}
+                                isVerified={item.isVerified}
+                                keyContent={item.name}
+                                keyID={item.creator}
+                                collectionImage={item.banner}
+                                creatorLogo = {item.logo}
+                                collectionName={item.name}
+                                collectionDescription={
+                                  item.name === "DØP3 Punks "
+                                    ? `A multichain NFT project minting collections on every major blockchain!\n\nWhere DØP3 Art Meets Web3`
+                                    : item.description
+                                }
+                                creatorName={item.creator}
+                                onClickCollection={() =>
+                                  NavigateTo(`collection/${item.nickName}`)
+                                }
+                                floorprice={item.floorPrice}
+                                owners={item.owners}
+                                nfts={item.nfts}
+                                volumetraded={item.tradeVolume}
+                                onClickCreator={() =>
+                                  NavigateTo(`UserProfile/${item.creator}`)
+                                }
+                              ></Collection>
+                            </VStack>
+                          </LayoutGroup>
+                        ))}
+                  </HStack>
+                </HStack>
+              </VStack>
+            </InfiniteScroll>
           </VStack>
-        </InfiniteScroll>
+        ) : (
+          <VStack>
+            <FilterNFT></FilterNFT>
+            NFTs here
+          </VStack>
+        )}
       </ContentDiscover>
     </DiscoverSection>
   );

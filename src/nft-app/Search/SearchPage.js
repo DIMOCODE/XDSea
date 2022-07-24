@@ -1,20 +1,29 @@
 import React from "react";
 import { useState } from "react";
 import styled from "styled-components";
-import { VStack, HStack, Spacer, ZItem, ZStack } from "../../styles/Stacks";
+import {
+  VStack,
+  HStack,
+  Spacer,
+  ZItem,
+  ZStack,
+  IconImg,
+} from "../../styles/Stacks";
 import {
   CaptionBoldShort,
+  TitleBold18,
   TitleBold27,
   TitleRegular27,
 } from "../../styles/TextStyles";
 import { appStyle } from "../../styles/AppStyles";
 
-import { LayoutGroup, motion } from "framer-motion/dist/framer-motion";
+import { AnimatePresence, motion } from "framer-motion/dist/framer-motion";
 import DiscoverBar from "../../images/DiscoverBar.png";
 
 import { FilterCollections } from "../../styles/FilterCollections";
 import useWindowSize from "../../styles/useWindowSize";
 import { FilterNFT } from "../../styles/FilterNFT";
+import noResult from "../../images/noResult.png";
 
 function SearchPage() {
   const [isSelected, setIsSelected] = useState(true);
@@ -31,17 +40,19 @@ function SearchPage() {
           alignment="center"
           responsive="true"
         >
-          <HStack>
+          <HStack
+            width="100%"
+            justify={size.width > 1023 ? "flex-start" : "center"}
+          >
             <TitleRegular27 textcolor={appStyle.colors.white}>
               Search results for:
             </TitleRegular27>
             <TitleBold27 textcolor={appStyle.colors.white}>"Lu"</TitleBold27>
           </HStack>
 
-          {size.width > 425 && <Spacer></Spacer>}
-
+          {/* Toggle */}
           <HStack
-            background="rgb(255,255,255,0.1)"
+            background="rgb(0,0,0,0.3)"
             padding="3px"
             border="6px"
             height="49px"
@@ -52,19 +63,21 @@ function SearchPage() {
             <ZStack>
               <ZItem>
                 {/* Selector */}
-                <HStack
-                  height="43px"
-                  self="none"
-                  spacing="3px"
-                  justify={isSelected ? "flex-start" : "flex-end"}
-                >
+                <AnimatePresence inital="false">
                   <HStack
-                    width="96px"
-                    background="white"
-                    border="6px"
-                    layout
-                  ></HStack>
-                </HStack>
+                    height="43px"
+                    self="none"
+                    spacing="3px"
+                    justify={isSelected ? "flex-start" : "flex-end"}
+                  >
+                    <HStack
+                      width="96px"
+                      background="white"
+                      border="6px"
+                      layout
+                    ></HStack>
+                  </HStack>
+                </AnimatePresence>
               </ZItem>
               <ZItem>
                 <HStack height="43px" self="none" spacing="3px">
@@ -102,28 +115,40 @@ function SearchPage() {
 
       <ContentSearch id="scrollableDiv">
         {isSelected ? (
-          <VStack style={{ zIndex: "20" }}>
+          <VStack style={{ zIndex: "20" }} padding="0 21px" spacing="30px">
             <FilterCollections style={{ zIndex: "60" }}></FilterCollections>
 
+            {/* Collections Goes Here */}
+
+            {/* Empty state no results */}
             <VStack
-              padding="30px"
+              padding="90px"
               width="100%"
               background={({ theme }) => theme.faded}
               style={{ zIndex: "-50" }}
+              border="6px"
             >
-              Collections Goes Here
+              <IconImg url={noResult} width="90px" height="90px"></IconImg>
+              <TitleBold18 animate={{ opacity: 0.6 }}>
+                Nothing Found
+              </TitleBold18>
             </VStack>
           </VStack>
         ) : (
-          <VStack>
-            <FilterNFT></FilterNFT>
+          <VStack padding="0 21px" spacing="30px">
+            <FilterNFT valueFrom={500} valueTo={1000}></FilterNFT>
+            {/* Empty state no results */}
             <VStack
-              padding="30px"
+              padding="90px"
               width="100%"
               background={({ theme }) => theme.faded}
               style={{ zIndex: "-50" }}
+              border="6px"
             >
-              NFT Goes Here{" "}
+              <IconImg url={noResult} width="90px" height="90px"></IconImg>
+              <TitleBold18 animate={{ opacity: 0.6 }}>
+                Nothing Found
+              </TitleBold18>
             </VStack>
           </VStack>
         )}
