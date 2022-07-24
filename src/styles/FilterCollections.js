@@ -19,25 +19,45 @@ function FilterCollections({
   clickOwners,
   clickNFTs,
   clickStatus,
+  onChange,
+  params
 }) {
   const size = useWindowSize();
-  const [isPublication, setIsPublication] = useState(false);
-  const togglePublication = () => setIsPublication(!isPublication);
+  const [isPublication, setIsPublication] = useState(true);
+  const togglePublication = () => {
+    setIsPublication(!isPublication);
+    onChange({...params, page: 1, sortBy: "publication", sortDirection: params.sortDirection * -1});
+  };
 
-  const [isVolume, setIsVolume] = useState(false);
-  const toggleVolume = () => setIsVolume(!isVolume);
+  const [isVolume, setIsVolume] = useState(true);
+  const toggleVolume = () => {
+    setIsVolume(!isVolume);
+    onChange({...params, page: 1, sortBy: "volumeTrade", sortDirection: params.sortDirection * -1});
+  };
 
-  const [isFloor, setIsFloor] = useState(false);
-  const toggleFloor = () => setIsFloor(!isFloor);
+  const [isFloor, setIsFloor] = useState(true);
+  const toggleFloor = () => {
+    setIsFloor(!isFloor);
+    onChange({...params, page: 1, sortBy: "floorPrice", sortDirection: params.sortDirection * -1});
+  };
 
-  const [isOwners, setIsOwners] = useState(false);
-  const toggleOwners = () => setIsOwners(!isOwners);
+  const [isOwners, setIsOwners] = useState(true);
+  const toggleOwners = () => {
+    setIsOwners(!isOwners);
+    onChange({...params, page: 1, sortBy: "owners", sortDirection: params.sortDirection * -1});
+  };
 
-  const [isNFT, setIsNFT] = useState(false);
-  const toggleNFT = () => setIsNFT(!isNFT);
+  const [isNFT, setIsNFT] = useState(true);
+  const toggleNFT = () => {
+    setIsNFT(!isNFT);
+    onChange({...params, page: 1, sortBy: "nfts", sortDirection: params.sortDirection * -1});
+  };
 
   const [isVerified, setIsVerified] = useState(false);
-  const toggleVerified = () => setIsVerified(!isVerified);
+  const toggleVerified = () => {
+    setIsVerified(!isVerified);
+    onChange({...params, page: 1, verified: !isVerified});
+  };
 
   const [showMiniModal, setShowMiniModal] = useState(false);
 

@@ -84,75 +84,19 @@ const Home = () => {
       const featuredNFTList = await Promise.all(
         homeData.featuredNfts.map(async (nft) => {
           let featuredNFT = {
-            collectionName: nft.nftId.collectionName,
-            collectionLogo: nft.nftId.collectionLogo,
+            collectionName: nft.nftId.collectionId.name,
+            collectionNickName: nft.nftId.collectionId.nickName,
+            collectionLogo: nft.nftId.collectionId.logo,
             image: nft.nftId.urlFile,
             name: nft.nftId.name,
             fileType: nft.nftId.fileType,
             preview: nft.nftId.preview,
-            creator: nft.nftId.creator,
+            creator: nft.nftId.creator.userName,
             tokenId: nft.nftId.tokenId
           }
           return featuredNFT;
         })
       );
-
-      //     let featuredNFTData = {
-      //       collectionName: featuredNFTMetadata?.data?.collection?.name,
-      //       collectionLogo:
-      //         featuredNFTMetadata?.data?.collection?.logo?.split("/")[2] ===
-      //         "xdsea.infura-ipfs.io"
-      //           ? `https://${new CID(
-      //               featuredNFTMetadata?.data?.collection?.logo.split("/")[4]
-      //             )
-      //               .toV1()
-      //               .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
-      //           : featuredNFTMetadata?.data?.collection?.logo,
-      //       image:
-      //         featuredNFTMetadata?.data?.collection?.nft?.image?.split(
-      //           "/"
-      //         )[2] === "xdsea.infura-ipfs.io"
-      //           ? `https://${new CID(
-      //               featuredNFTMetadata?.data?.collection?.nft?.image.split(
-      //                 "/"
-      //               )[4]
-      //             )
-      //               .toV1()
-      //               .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
-      //           : featuredNFTMetadata?.data?.collection?.nft?.image,
-      //       name:
-      //         i === "3567"
-      //           ? "TAURULIOMPS 1/12"
-      //           : i === "3580"
-      //           ? "GEMINLIOMP 2/12"
-      //           : i === "3584"
-      //           ? "LIBRIOMP 2/12"
-      //           : i === "3650"
-      //           ? "PISCELIOMPS 8/12"
-      //           : i === "3679"
-      //           ? "LEOIOMP 10/12"
-      //           : i === "3695"
-      //           ? "SAGITTARIOMPS 11/12"
-      //           : featuredNFTMetadata?.data?.collection?.nft?.name,
-      //       fileType: featuredNFTMetadata?.data?.collection?.nft?.fileType,
-      //       preview:
-      //         featuredNFTMetadata?.data?.collection?.nft?.preview?.split(
-      //           "/"
-      //         )[2] === "xdsea.infura-ipfs.io"
-      //           ? `https://${new CID(
-      //               featuredNFTMetadata?.data?.collection?.nft?.preview.split(
-      //                 "/"
-      //               )[4]
-      //             )
-      //               .toV1()
-      //               .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
-      //           : featuredNFTMetadata?.data?.collection?.nft?.preview,
-      //       creator: featuredNFTMetadata?.data?.collection?.creator,
-      //       tokenId: i,
-      //     };
-      //     return featuredNFTData;
-      //   })
-      // );
       
       const topCollectionList = await Promise.all(
         homeData.topCollections.map(async (collection, i) => {
@@ -173,14 +117,15 @@ const Home = () => {
       const trendingNFTList = await Promise.all(
         homeData.trendingNfts.map(async (nft) => {
           let trendingNFT = {
-            collectionName: nft.nftId.collectionName,
+            collectionName: nft.nftId.collectionId.name,
+            collectionNickName: nft.nftId.collectionId.nickName,
             creatorLogo: banner1,
             image: nft.nftId.urlFile,
             name: nft.nftId.name,
             price: nft.nftId.price,
             fileType: nft.nftId.fileType,
             preview: nft.nftId.preview,
-            creator: nft.nftId.creator,
+            creator: nft.nftId.creator.userName,
             tokenId: nft.nftId.tokenId,
             saleType: nft.nftId.saleType.toLowerCase()
           }
@@ -281,7 +226,7 @@ const Home = () => {
                   itemNumber={featuredNFTs[0]?.name}
                   fileType={featuredNFTs[0]?.fileType}
                   onClickCreator={() =>
-                    NavigateTo(`collection/${featuredNFTs[0]?.collectionName}`)
+                    NavigateTo(`collection/${featuredNFTs[0]?.collectionNickName}`)
                   }
                   onClick={() =>
                     NavigateTo(`nft/${nftaddress}/${featuredNFTs[0]?.tokenId}`)
@@ -305,7 +250,7 @@ const Home = () => {
                   itemNumber={featuredNFTs[1]?.name}
                   fileType={featuredNFTs[1]?.fileType}
                   onClickCreator={() =>
-                    NavigateTo(`collection/${featuredNFTs[1]?.collectionName}`)
+                    NavigateTo(`collection/${featuredNFTs[1]?.collectionNickName}`)
                   }
                   onClick={() =>
                     NavigateTo(`nft/${nftaddress}/${featuredNFTs[1]?.tokenId}`)
@@ -329,7 +274,7 @@ const Home = () => {
                   itemNumber={featuredNFTs[2]?.name}
                   fileType={featuredNFTs[2]?.fileType}
                   onClickCreator={() =>
-                    NavigateTo(`collection/${featuredNFTs[2]?.collectionName}`)
+                    NavigateTo(`collection/${featuredNFTs[2]?.collectionNickName}`)
                   }
                   onClick={() =>
                     NavigateTo(`nft/${nftaddress}/${featuredNFTs[2]?.tokenId}`)
@@ -353,7 +298,7 @@ const Home = () => {
                   itemNumber={featuredNFTs[3]?.name}
                   fileType={featuredNFTs[3]?.fileType}
                   onClickCreator={() =>
-                    NavigateTo(`collection/${featuredNFTs[3]?.collectionName}`)
+                    NavigateTo(`collection/${featuredNFTs[3]?.collectionNickName}`)
                   }
                   onClick={() =>
                     NavigateTo(`nft/${nftaddress}/${featuredNFTs[3]?.tokenId}`)
@@ -390,7 +335,7 @@ const Home = () => {
                     itemNumber={featuredNFTs[0]?.name}
                     fileType={featuredNFTs[0]?.fileType}
                     onClickCreator={() =>
-                      NavigateTo(`collection/${featuredNFTs[0]?.collectionName}`)
+                      NavigateTo(`collection/${featuredNFTs[0]?.collectionNickName}`)
                     }
                     onClick={() =>
                       NavigateTo(`nft/${nftaddress}/${featuredNFTs[0]?.tokenId}`)
@@ -414,7 +359,7 @@ const Home = () => {
                     itemNumber={featuredNFTs[1]?.name}
                     fileType={featuredNFTs[1]?.fileType}
                     onClickCreator={() =>
-                      NavigateTo(`collection/${featuredNFTs[1]?.collectionName}`)
+                      NavigateTo(`collection/${featuredNFTs[1]?.collectionNickName}`)
                     }
                     onClick={() =>
                       NavigateTo(`nft/${nftaddress}/${featuredNFTs[1]?.tokenId}`)
@@ -439,7 +384,7 @@ const Home = () => {
                     itemNumber={featuredNFTs[2]?.name}
                     fileType={featuredNFTs[2]?.fileType}
                     onClickCreator={() =>
-                      NavigateTo(`collection/${featuredNFTs[2]?.collectionName}`)
+                      NavigateTo(`collection/${featuredNFTs[2]?.collectionNickName}`)
                     }
                     onClick={() =>
                       NavigateTo(`nft/${nftaddress}/${featuredNFTs[2]?.tokenId}`)
@@ -464,7 +409,7 @@ const Home = () => {
                     itemNumber={featuredNFTs[3]?.name}
                     fileType={featuredNFTs[3]?.fileType}
                     onClickCreator={() =>
-                      NavigateTo(`collection/${featuredNFTs[3]?.collectionName}`)
+                      NavigateTo(`collection/${featuredNFTs[3]?.collectionNickName}`)
                     }
                     onClick={() =>
                       NavigateTo(`nft/${nftaddress}/${featuredNFTs[3]?.tokenId}`)
@@ -621,7 +566,7 @@ const Home = () => {
                       NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
                     }
                     onClickCreator={() =>
-                      NavigateTo(`collection/${item.collectionName}`)
+                      NavigateTo(`UserProfile/${item.creator}`)
                     }
                     usdPrice="000"
                   ></NftContainer>
@@ -649,7 +594,7 @@ const Home = () => {
                         NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
                       }
                       onClickCreator={() =>
-                        NavigateTo(`collection/${item.collectionName}`)
+                        NavigateTo(`UserProfile/${item.creator}`)
                       }
                     ></NftContainer>
                   </VStack>
@@ -675,7 +620,7 @@ const Home = () => {
                       NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
                     }
                     onClickCreator={() =>
-                      NavigateTo(`collection/${item.collectionName}`)
+                      NavigateTo(`UserProfile/${item.creator}`)
                     }
                   ></NftContainer>
                 </VStack>
