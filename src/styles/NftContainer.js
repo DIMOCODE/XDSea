@@ -188,17 +188,6 @@ function NftContainer(props) {
 
               {(() => {
                 switch (nftStatus) {
-                  case "notforsale":
-                    return (
-                      <IconImg
-                        url={notforsale}
-                        width="48px"
-                        height="48px"
-                        border="120px"
-                        backsize="cover"
-                        cursor={"pointer"}
-                      ></IconImg>
-                    );
                   case "relist":
                     return (
                       <IconImg
@@ -233,7 +222,16 @@ function NftContainer(props) {
                       ></IconImg>
                     );
                   default:
-                    return null;
+                    return (
+                      <IconImg
+                        url={notforsale}
+                        width="48px"
+                        height="48px"
+                        border="120px"
+                        backsize="cover"
+                        cursor={"pointer"}
+                      ></IconImg>
+                    );
                 }
               })()}
             </HStack>

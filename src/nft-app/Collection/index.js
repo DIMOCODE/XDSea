@@ -36,10 +36,6 @@ import { NftContainer } from "../../styles/NftContainer";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { LoopBars } from "../../styles/LoopBars";
 import { LoopLogo } from "../../styles/LoopLogo";
-import {
-  burnedCollections,
-  verifiedProfiles,
-} from "../../blacklist";
 import { Tooltip } from "@mui/material";
 import banner1 from "../../images/Banner1.jpg";
 import verified from "../../images/verified.png";
@@ -66,10 +62,6 @@ const CollectionDetails = () => {
   const [nfts, setNfts] = useState([]);
   const [loadingState, setLoadingState] = useState("not-loaded");
   const [page, setPage] = useState(1);
-  const [NFTCount, setNFTCount] = useState(0);
-  const [collectionOwners, setCollectionOwners] = useState(0);
-  const [floorPrice, setFloorPrice] = useState(0);
-  const [volume, setVolume] = useState(-1);
   const size = useWindowSize();
   const [collection, setCollection] = useState({});
   const [loadingNFTs] = useState([
@@ -97,6 +89,7 @@ const CollectionDetails = () => {
     try {
       const collectionData = await (await getCollection(collectionNickName)).data;
       let collection = {
+        _id: collectionData.collection._id,
         banner: collectionData.collection.banner,
         creator: collectionData.collection.addressCreator,
         isVerified: collectionData.collection.creator.isVerified,
@@ -113,62 +106,28 @@ const CollectionDetails = () => {
         owners: collectionData.metrics.owners
       }
       const collectionNFTData = await (await getCollectionNFTs(collectionData.collection._id, page)).data.nfts;
-      // const collectionNFTs = await Promise.all(
-      //   collectionNFTData.map(async (collectionItem) => {
-      //     let item = {
-      //       price: i.price,
-      //       tokenId: i.tokenId,
-      //       owner: i.addressOwner,
-      //       isListed: i.isListed,
-      //       // offerCount: i.offerCount,
-      //       collectionName: i.collectionId.name,
-      //       collectionBanner: untitledCollections.includes(collectionName)
-      //         ? banner1
-      //         : metadata?.data?.collection?.banner
-      //           ? metadata?.data?.collection?.banner?.split('/')[2] === "xdsea.infura-ipfs.io" 
-      //             ? `https://${new CID(metadata?.data?.collection?.banner.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-      //             : metadata?.data?.collection?.banner
-      //           : banner1,
-      //       collectionCreator: metadata?.data?.collection?.creator,
-      //       collectionDescription: metadata?.data?.collection?.description,
-      //       collectionDiscord: metadata?.data?.collection?.discordUrl,
-      //       collectionInstagram: metadata?.data?.collection?.instagramUrl,
-      //       collectionLogo: metadata?.data?.collection?.logo?.split('/')[2] === "xdsea.infura-ipfs.io" 
-      //         ? `https://${new CID(metadata?.data?.collection?.logo.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-      //         : metadata?.data?.collection?.logo,
-      //       collectionTwitter: metadata?.data?.collection?.twitterUrl,
-      //       collectionWebsite: metadata?.data?.collection?.websiteUrl,
-      //       image: metadata?.data?.collection?.nft?.image?.split('/')[2] === "xdsea.infura-ipfs.io" 
-      //         ? `https://${new CID(metadata?.data?.collection?.nft?.image.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-      //         : metadata?.data?.collection?.nft?.image,
-      //       name: i.tokenId === "3567"
-      //         ? "TAURULIOMPS 1/12"
-      //         : i.tokenId === "3580"
-      //           ? "GEMINLIOMP 2/12"
-      //           : i.tokenId === "3584"
-      //             ? "LIBRIOMP 2/12"
-      //             : i.tokenId === "3650"
-      //               ? "PISCELIOMPS 8/12"
-      //               : i.tokenId === "3679"
-      //                 ? "LEOIOMP 10/12"
-      //                 : i.tokenId === "3695"
-      //                   ? "SAGITTARIOMPS 11/12"
-      //                   : metadata?.data?.collection?.nft?.name,
-      //       fileType: metadata?.data?.collection?.nft?.fileType,
-      //       preview: metadata?.data?.collection?.nft?.preview?.split('/')[2] === "xdsea.infura-ipfs.io" 
-      //         ? `https://${new CID(metadata?.data?.collection?.nft?.preview.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-      //         : metadata?.data?.collection?.nft?.preview,
-      //     };
-      //     return item;
-      //   })
-      // );
-      // var filteredCollectionItems = collectionItems2.filter((element) => {
-      //   return !burnedNFTs.includes(element?.tokenId);
-      // });
+      console.log(collectionNFTData)
+      const collectionNFTList = await Promise.all(
+        collectionNFTData.map(async (nft) => {
+          let collectionNFT = {
+            // collectionName: nft.collectionName,
+            creatorLogo: banner1,
+            image: nft.urlFile,
+            name: nft.name,
+            price: nft.price,
+            fileType: nft.fileType,
+            preview: nft.preview,
+            owner: nft.owner.userName,
+            tokenId: nft.tokenId,
+            saleType: nft.saleType.toLowerCase()
+          }
+          return collectionNFT;
+        })
+      );
 
       setLoadingState("loaded");
-      // setNFts(filteredCollectionItems);
-      setCollection(collectionData);
+      setNfts(collectionNFTList);
+      setCollection(collection);
     } catch (error) {
       console.log(error);
     }
@@ -181,47 +140,27 @@ const CollectionDetails = () => {
   };
 
   const fetchMoreNFTs = async () => {
-    // await new Promise((r) => setTimeout(r, 3000));
-    // setPageCount(pageCount + 1);
-    // const collectionItems = await (await createRequest(HTTP_METHODS.get, `collection/nft/${collection
-    //   .collection._id}/${pageCount + 1}`)).data.nfts
-    // const newNFTs = await Promise.all(
-    //   collectionItems.map(async (i) => {
-    //     let nft = {
-    //       price: i.price,
-    //       tokenId: i.tokenId,
-    //       isListed: i.isListed,
-    //       offerCount: i.offerCount,
-    //       owner: i.owner,
-    //       collectionName: metadata?.data?.collection?.name,
-    //       image: metadata?.data?.collection?.nft?.image?.split('/')[2] === "xdsea.infura-ipfs.io" 
-    //         ? `https://${new CID(metadata?.data?.collection?.nft?.image.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-    //         : metadata?.data?.collection?.nft?.image,
-    //       name: i.tokenId === "3567"
-    //         ? "TAURULIOMPS 1/12"
-    //         : i.tokenId === "3580"
-    //           ? "GEMINLIOMP 2/12"
-    //           : i.tokenId === "3584"
-    //             ? "LIBRIOMP 2/12"
-    //             : i.tokenId === "3650"
-    //               ? "PISCELIOMPS 8/12"
-    //               : i.tokenId === "3679"
-    //                 ? "LEOIOMP 10/12"
-    //                 : i.tokenId === "3695"
-    //                   ? "SAGITTARIOMPS 11/12"
-    //                   : metadata?.data?.collection?.nft?.name,
-    //       fileType: metadata?.data?.collection?.nft?.fileType,
-    //       preview: metadata?.data?.collection?.nft?.preview?.split('/')[2] === "xdsea.infura-ipfs.io" 
-    //         ? `https://${new CID(metadata?.data?.collection?.nft?.preview.split('/')[4]).toV1().toBaseEncodedString('base32')}.ipfs.infura-ipfs.io`
-    //         : metadata?.data?.collection?.nft?.preview,
-    //     };
-    //     return nft;
-    // })
-    // );
-    // var filteredCollectionItems = newNFTs.filter((element) => {
-    //   return !burnedNFTs.includes(element?.tokenId);
-    // });
-    // setNFts((prevState) => [...prevState, ...filteredCollectionItems]);
+    const collectionNFTData = await (await getCollectionNFTs(collection._id, page + 1)).data.nfts;
+      const collectionNFTList = await Promise.all(
+        collectionNFTData.map(async (nft) => {
+          let collectionNFT = {
+            // collectionName: nft.collectionName,
+            creatorLogo: banner1,
+            image: nft.urlFile,
+            name: nft.name,
+            price: nft.price,
+            fileType: nft.fileType,
+            preview: nft.preview,
+            owner: nft.owner.userName,
+            tokenId: nft.tokenId,
+            saleType: nft.saleType.toLowerCase()
+          }
+          return collectionNFT;
+        })
+      );
+
+    setPage(page + 1);
+    setNfts((prevState) => [...prevState, ...collectionNFTList]);
   };
 
   function NavigateTo(route) {
@@ -229,24 +168,14 @@ const CollectionDetails = () => {
     history.push(`/${route}`);
   }
 
-  function validateAddress(address) {
-    var url = address;
-    if (url.indexOf("http://") === 0 || url.indexOf("https://") === 0) {
-      return url;
-    } else return "https://" + address;
-  }
-
   useEffect(() => {
+    window.scrollTo(0, 0);
     getData();
   }, []);
 
-  React.useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
   const webLocation = useLocation();
   const webLink =
-    "https://www.xdsea.com" +
-    webLocation.pathname.replace(/\s+/g, "%20").replace(/%20$/, "");
+    `https://www.xdsea.com/collection/${collectionNickName}`;
 
   const [copied, setCopied] = useState(false);
 
@@ -261,7 +190,7 @@ const CollectionDetails = () => {
     {/* Banner */}
       <BannerAbsolute>
         <IconImg
-          url={nfts[0]?.collectionBanner}
+          url={collection.banner}
           width="100%"
           height="355px"
           backsize="cover"
@@ -284,7 +213,7 @@ const CollectionDetails = () => {
           <CreatorAbsolute>
             <HStack
               onClick={() =>
-                NavigateTo(`UserProfile/${nfts[0]?.collectionCreator}`)
+                NavigateTo(`UserProfile/${collection.creator}`)
               }
               border="30px"
               padding="6px 15px"
@@ -294,7 +223,7 @@ const CollectionDetails = () => {
               cursor={"pointer"}
               background={({ theme }) => theme.backElement}
             >
-              {verifiedProfiles.includes(nfts[0]?.collectionCreator) ? (
+              {collection.isVerified ? (
                 <IconImg
                   cursor={"pointer"}
                   url={verified}
@@ -306,10 +235,10 @@ const CollectionDetails = () => {
                 <CaptionBold textcolor={({ theme }) => theme.text}>
                   CREATOR
                 </CaptionBold>
-                {nfts[0]?.collectionCreator ? (
+                {collection.creator ? (
                   <Tooltip title={nfts[0]?.collectionCreator}>
                     <CaptionBold textcolor={({ theme }) => theme.text}>
-                      {truncateAddress(nfts[0]?.collectionCreator)}
+                      {truncateAddress(collection.creator)}
                     </CaptionBold>
                   </Tooltip>
                 ) : (
@@ -331,12 +260,7 @@ const CollectionDetails = () => {
               <CaptionBoldShort>SHARE</CaptionBoldShort>
 
               <FacebookShareButton
-                url={
-                  "https://www.xdsea.com" +
-                  webLocation.pathname
-                    .replace(/\s+/g, "%20")
-                    .replace(/%20$/, "")
-                }
+                url={webLink}
                 quote={"Check out this NFT Collection!"}
                 hashtag={["#XDSea"]}
                 description={"XDSea"}
@@ -352,12 +276,7 @@ const CollectionDetails = () => {
               </FacebookShareButton>
               <TwitterShareButton
                 title={"Check out this NFT Collection!"}
-                url={
-                  "https://www.xdsea.com" +
-                  webLocation.pathname
-                    .replace(/\s+/g, "%20")
-                    .replace(/%20$/, "")
-                }
+                url={webLink}
                 hashtags={["XDSea", "BuildItOnXDC"]}
               >
                 <a>
@@ -370,12 +289,7 @@ const CollectionDetails = () => {
               </TwitterShareButton>
               <TelegramShareButton
                 title={"Check out this NFT Collection!"}
-                url={
-                  "https://www.xdsea.com" +
-                  webLocation.pathname
-                    .replace(/\s+/g, "%20")
-                    .replace(/%20$/, "")
-                }
+                url={webLink}
               >
                 <a>
                   <IconImg
@@ -387,12 +301,7 @@ const CollectionDetails = () => {
               </TelegramShareButton>
               <WhatsappShareButton
                 title={"Check out this NFT Collection!"}
-                url={
-                  "https://www.xdsea.com" +
-                  webLocation.pathname
-                    .replace(/\s+/g, "%20")
-                    .replace(/%20$/, "")
-                }
+                url={webLink}
               >
                 <a>
                   <IconImg
@@ -424,7 +333,7 @@ const CollectionDetails = () => {
           >
             {/* Collection Logo */}
             <IconImg
-              url={nfts[0]?.collectionLogo}
+              url={collection.logo}
               width="150px"
               height="150px"
               border="150px"
@@ -451,7 +360,7 @@ const CollectionDetails = () => {
                   align="center"
                   textcolor={({ theme }) => theme.walletText}
                 >
-                  {collectionNickName}
+                  {collection.name}
                 </TitleBold21>
               </HStack>
 
@@ -476,15 +385,14 @@ const CollectionDetails = () => {
                       width="18px"
                       height="18px"
                     ></IconImg>
-                    {floorPrice ===
-                    999999999999999999999999999999999999999999999 ? (
-                      <LoopBars width="54px"></LoopBars>
-                    ) : (
+                    {collection.floorPrice ? (
                       <BodyBold textcolor={({ theme }) => theme.text}>
-                        {floorPrice.toLocaleString(undefined, {
+                        {collection.floorPrice.toLocaleString(undefined, {
                           maximumFractionDigits: 2,
                         }) || "0"}
                       </BodyBold>
+                    ) : (
+                      <LoopBars width="54px"></LoopBars>
                     )}
                   </HStack>
                   <CaptionBoldShort textcolor={({ theme }) => theme.text}>
@@ -500,12 +408,12 @@ const CollectionDetails = () => {
                     boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
                   }}
                 >
-                  {collectionOwners === 0 ? (
-                    <LoopBars width="54px"></LoopBars>
-                  ) : (
+                  {collection.owners ? (
                     <BodyBold textcolor={({ theme }) => theme.text}>
-                      {collectionOwners}
+                      {collection.owners}
                     </BodyBold>
+                  ) : (
+                    <LoopBars width="54px"></LoopBars>
                   )}
                   <CaptionBoldShort textcolor={({ theme }) => theme.text}>
                     Owners
@@ -523,19 +431,15 @@ const CollectionDetails = () => {
                     boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
                   }}
                 >
-                  {NFTCount === 0 ? (
-                    <LoopBars width="54px"></LoopBars>
-                  ) : (
+                  {collection.nftsCount ? (
                     <BodyBold textcolor={({ theme }) => theme.text}>
-                      {burnedCollections.includes(collectionNickName)
-                        ? NFTCount - 1
-                        : collectionNickName === "XDSEA-MONKEYS-ORIGINAL-ART"
-                          ? NFTCount - 7
-                          : NFTCount}
+                      {collection.nftsCount}
                     </BodyBold>
+                  ) : (
+                    <LoopBars width="54px"></LoopBars>
                   )}
                   <CaptionBoldShort textcolor={({ theme }) => theme.text}>
-                    NFT's
+                    NFTs
                   </CaptionBoldShort>
                 </VStack>
                 <VStack
@@ -553,14 +457,14 @@ const CollectionDetails = () => {
                       width="18px"
                       height="18px"
                     ></IconImg>
-                    {volume === -1 ? (
-                      <LoopBars width="54px"></LoopBars>
-                    ) : (
+                    {collection.volumeTrade ? (
                       <BodyBold textcolor={({ theme }) => theme.text}>
-                        {volume.toLocaleString(undefined, {
+                        {collection.volumeTrade.toLocaleString(undefined, {
                           maximumFractionDigits: 2,
                         }) || "0"}
                       </BodyBold>
+                    ) : (
+                      <LoopBars width="54px"></LoopBars>
                     )}
                   </HStack>
                   <CaptionBoldShort
@@ -576,11 +480,9 @@ const CollectionDetails = () => {
 
           {/* Collection Description */}
           <VStack width={size.width < 768 ? "100%" : "60%"} padding="15px">
-            {nfts[0]?.collectionDescription !== "null" ? (
+            {collection.description ? (
               <BodyRegular textcolor={({ theme }) => theme.text} align="center">
-                {collectionNickName === "DØP3 Punks "
-                  ? `A multichain NFT project minting collections on every major blockchain!\n\nWhere DØP3 Art Meets Web3`
-                  : nfts[0]?.collectionDescription}
+                {collection.description}
               </BodyRegular>
             ) : (
               <VStack>
@@ -591,10 +493,9 @@ const CollectionDetails = () => {
 
             {/* Collection Social Links */}
             <HStack>
-              {nfts[0]?.collectionTwitter !== undefined &&
-              nfts[0]?.collectionTwitter !== "" ? (
+              {collection.twitterUrl ? (
                 <a
-                  href={nfts[0]?.collectionTwitter}
+                  href={collection.twitterUrl}
                   style={{
                     boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
                     borderRadius: 9,
@@ -618,10 +519,9 @@ const CollectionDetails = () => {
               ) : (
                 <></>
               )}
-              {nfts[0]?.collectionInstagram !== undefined &&
-              nfts[0]?.collectionInstagram !== "" ? (
+              {collection.instagramUrl ? (
                 <a
-                  href={nfts[0]?.collectionInstagram}
+                  href={collection.instagramUrl}
                   style={{
                     boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
                     borderRadius: 9,
@@ -645,10 +545,9 @@ const CollectionDetails = () => {
               ) : (
                 <></>
               )}
-              {nfts[0]?.collectionDiscord !== undefined &&
-              nfts[0]?.collectionDiscord !== "" ? (
+              {collection.discordUrl ? (
                 <a
-                  href={nfts[0].collectionDiscord}
+                  href={collection.discordUrl}
                   style={{
                     boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
                     borderRadius: 9,
@@ -672,10 +571,9 @@ const CollectionDetails = () => {
               ) : (
                 <></>
               )}
-              {nfts[0]?.collectionWebsite !== undefined &&
-              nfts[0]?.collectionWebsite !== "" ? (
+              {collection.websiteUrl ? (
                 <a
-                  href={validateAddress(nfts[0].collectionWebsite)}
+                  href={collection.websiteUrl}
                   style={{
                     boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
                     borderRadius: 9,
@@ -709,13 +607,7 @@ const CollectionDetails = () => {
         <InfiniteScroll
           dataLength={nfts.length}
           next={fetchMoreNFTs}
-          hasMore={
-            burnedCollections.includes(collectionNickName)
-              ? nfts.length < NFTCount - 1
-              : collectionNickName === "XDSEA-MONKEYS-ORIGINAL-ART"
-                ? nfts.length < NFTCount - 7
-                : nfts.length < NFTCount
-          }
+          hasMore={nfts.length < collection.nftsCount}
           loader={
             <HStack
               initial={{ opacity: 0 }}
@@ -748,8 +640,7 @@ const CollectionDetails = () => {
                         <NftContainer
                           key={i}
                           // isVerified={verifiedProfiles.includes(item.owner)}
-                          iconStatus={item.isListed ? "sale" : "notforsale"}
-                          // iconStatus are : notforsale, relist, sale, sold, empty returns null
+                          iconStatus={item.saleType}
                           hasOffers={item.offerCount > 0 ? true : false}
                           creatorImage={banner1}
                           itemImage={item.image}
