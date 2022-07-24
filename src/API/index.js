@@ -46,7 +46,9 @@ export const createSignedRequest = async (method, url, params, body) => {
     throw error;
   }
 };
+
 export const createRequest = async (method, url, params, body) => {
+  console.log(URL_ROOT);
   const bodyRequest = {
     url: `${URL_ROOT}/${url}`,
     method,
