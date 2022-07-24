@@ -47,7 +47,7 @@
     "xdc3": "^1.3.13416"
   },
   "scripts": {
-    "start": "sh -ac '. .env.development; PORT=4200 react-scripts start'",
+    "start": "react-scripts start'",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
