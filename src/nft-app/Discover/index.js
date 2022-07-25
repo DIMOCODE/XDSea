@@ -1,8 +1,4 @@
-import React, { 
-  useEffect, 
-  useState, 
-  useContext 
-} from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { Collection } from "../../styles/Collection";
@@ -22,16 +18,15 @@ import { LoopLogo } from "../../styles/LoopLogo";
 import menuContext from "../../context/menuContext";
 import { getCollections } from "../../API/Collection";
 
-import {
-  untitledCollections,
-  verifiedProfiles
-} from "../../blacklist";
+import { untitledCollections, verifiedProfiles } from "../../blacklist";
 import CID from "cids";
+import { SortButtonCollections } from "../../styles/SortButtonCollections";
 import { FilterCollections } from "../../styles/FilterCollections";
 import { FilterNFT } from "../../styles/FilterNFT";
 
 const Discover = () => {
   const history = useHistory();
+
   const [collections, setCollections] = useState([]);
   const [nfts, setNfts] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -71,12 +66,12 @@ const Discover = () => {
   const [collectionParams, setCollectionParams] = useState({
     page: 1,
     sortBy: "volumeTrade",
-    sortDirection: -1
-  })
+    sortDirection: -1,
+  });
   const [nftParams, setNftParams] = useState({
     page: 1,
     sortBy: "publications",
-    sortDirection: -1
+    sortDirection: -1,
   });
 
   /**
@@ -85,7 +80,9 @@ const Discover = () => {
   const getData = async () => {
     try {
       setLoading(true);
-      const collectionData = await (await getCollections(collectionParams)).data.collections;
+      const collectionData = await (
+        await getCollections(collectionParams)
+      ).data.collections;
       const collectionList = await Promise.all(
         collectionData.map(async (collectionItem) => {
           let collection = {
@@ -99,14 +96,15 @@ const Discover = () => {
             floorPrice: collectionItem.floorPrice,
             nfts: collectionItem.totalNfts,
             owners: collectionItem.owners,
-            tradeVolume: collectionItem.volumeTrade
+            tradeVolume: collectionItem.volumeTrade,
           };
           return collection;
         })
       );
 
       // Old to new contract migration of NFTs function
-      {/*
+      {
+        /*
         // const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
         // const marketContract = new xdc3.eth.Contract(
         //   NFTMarketLayer1.abi,
@@ -170,10 +168,12 @@ const Discover = () => {
               // let transaction = await SendTransaction(tx);
         //   }
         // }
-      */}
-      
+      */
+      }
+
       // Update payout addresses of NFTs function
-      {/*
+      {
+        /*
         // const data2 = await marketContract.methods.idToMarketItem(5).call()
         // const uri = await nftContract.methods.tokenURI(data2.tokenId).call()
         // var metadata = await axios.get(uri)
@@ -201,10 +201,12 @@ const Discover = () => {
         // var gasLimit = await xdc3.eth.estimateGas(tx)
         // tx["gas"] = gasLimit
         // let transaction = await SendTransaction(tx);
-      */}
+      */
+      }
 
       // Export Contract data for migration to DB function
-      {/*
+      {
+        /*
         // const meta = {}
         // for(var i = 2001; i < 3893; i++) {
         //   const uri = await nftContract.methods.tokenURI(i).call()
@@ -254,10 +256,14 @@ const Discover = () => {
         //     console.log(i)
         // }
         // console.log(JSON.stringify(meta))
-      */}
+      */
+      }
 
       setCollections(collectionList);
-      setCollectionParams(prevState => ({...prevState, page: prevState.page + 1}));
+      setCollectionParams((prevState) => ({
+        ...prevState,
+        page: prevState.page + 1,
+      }));
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -268,7 +274,9 @@ const Discover = () => {
    * Get the collections data for the next page
    */
   const fetchMoreCollections = async () => {
-    const collectionData = await (await getCollections(collectionParams)).data.collections;
+    const collectionData = await (
+      await getCollections(collectionParams)
+    ).data.collections;
     const collectionList = await Promise.all(
       collectionData.map(async (collectionItem) => {
         let collection = {
@@ -282,36 +290,41 @@ const Discover = () => {
           floorPrice: collectionItem.floorPrice,
           nfts: collectionItem.totalNfts,
           owners: collectionItem.owners,
-          tradeVolume: collectionItem.volumeTrade
+          tradeVolume: collectionItem.volumeTrade,
         };
         return collection;
       })
     );
-    
-    setCollectionParams(prevState => ({...prevState, page: prevState.page + 1}));
+
+    setCollectionParams((prevState) => ({
+      ...prevState,
+      page: prevState.page + 1,
+    }));
     setCollections((prevState) => [...prevState, ...collectionList]);
   };
 
   /**
    * Update the state of the component and update the collection data
-   * 
+   *
    * @param {*} params - Collection Search Params
    */
   const handleChangeFilter = (params) => {
     setCollectionParams(params);
     updateCollections(params);
-  }
+  };
 
   /**
    * Update the collection items
-   * 
+   *
    * @param {*} params - Collection Search Params
    */
   const updateCollections = async (params) => {
-    console.log(params)
+    console.log(params);
     setLoading(true);
-    const collectionData = await (await getCollections(params)).data.collections;
-    console.log(collectionData)
+    const collectionData = await (
+      await getCollections(params)
+    ).data.collections;
+    console.log(collectionData);
     const collectionList = await Promise.all(
       collectionData.map(async (collectionItem) => {
         let collection = {
@@ -325,24 +338,29 @@ const Discover = () => {
           floorPrice: collectionItem.floorPrice,
           nfts: collectionItem.totalNfts,
           owners: collectionItem.owners,
-          tradeVolume: collectionItem.volumeTrade
+          tradeVolume: collectionItem.volumeTrade,
         };
         return collection;
       })
     );
 
     setCollections(collectionList);
-    setCollectionParams(prevState => ({...prevState, page: prevState.page + 1}));
+    setCollectionParams((prevState) => ({
+      ...prevState,
+      page: prevState.page + 1,
+    }));
     setLoading(false);
-  }
+  };
 
   /**
    * Get the nfts data for the first page
    */
-   const getNFTData = async () => {
+  const getNFTData = async () => {
     try {
       setLoading(true);
-      const nftData = await (await getCollections(collectionParams)).data.collections;
+      const nftData = await (
+        await getCollections(collectionParams)
+      ).data.collections;
       const collectionList = await Promise.all(
         nftData.map(async (collectionItem) => {
           let collection = {
@@ -356,14 +374,15 @@ const Discover = () => {
             floorPrice: collectionItem.floorPrice,
             nfts: collectionItem.totalNfts,
             owners: collectionItem.owners,
-            tradeVolume: collectionItem.volumeTrade
+            tradeVolume: collectionItem.volumeTrade,
           };
           return collection;
         })
       );
 
       // Old to new contract migration of NFTs function
-      {/*
+      {
+        /*
         // const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
         // const marketContract = new xdc3.eth.Contract(
         //   NFTMarketLayer1.abi,
@@ -427,10 +446,12 @@ const Discover = () => {
               // let transaction = await SendTransaction(tx);
         //   }
         // }
-      */}
-      
+      */
+      }
+
       // Update payout addresses of NFTs function
-      {/*
+      {
+        /*
         // const data2 = await marketContract.methods.idToMarketItem(5).call()
         // const uri = await nftContract.methods.tokenURI(data2.tokenId).call()
         // var metadata = await axios.get(uri)
@@ -458,10 +479,12 @@ const Discover = () => {
         // var gasLimit = await xdc3.eth.estimateGas(tx)
         // tx["gas"] = gasLimit
         // let transaction = await SendTransaction(tx);
-      */}
+      */
+      }
 
       // Export Contract data for migration to DB function
-      {/*
+      {
+        /*
         // const meta = {}
         // for(var i = 2001; i < 3893; i++) {
         //   const uri = await nftContract.methods.tokenURI(i).call()
@@ -511,10 +534,14 @@ const Discover = () => {
         //     console.log(i)
         // }
         // console.log(JSON.stringify(meta))
-      */}
+      */
+      }
 
       setCollections(collectionList);
-      setCollectionParams(prevState => ({...prevState, page: prevState.page + 1}));
+      setCollectionParams((prevState) => ({
+        ...prevState,
+        page: prevState.page + 1,
+      }));
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -542,8 +569,7 @@ const Discover = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, [scrollTop]);
 
-  useEffect(() => {
-  }, [scrolling]);
+  useEffect(() => {}, [scrolling]);
 
   return (
     <DiscoverSection id="scrollableDiv">
@@ -600,7 +626,7 @@ const Discover = () => {
                     cursor="pointer"
                     onClick={() => {
                       setIsSelected(false);
-                      if(nfts.length === 0) {
+                      if (nfts.length === 0) {
                         getNFTData();
                       }
                     }}
@@ -621,10 +647,21 @@ const Discover = () => {
       <ContentDiscover id="scrollableDiv">
         {isSelected ? (
           <VStack>
-            <FilterCollections
+            {/* <FilterCollections
               params={collectionParams}
               onChange={handleChangeFilter}
-            ></FilterCollections>
+            ></FilterCollections> */}
+
+            <HStack
+              style={{ zIndex: 1 }}
+              background="rgb(0,0,0, 0.06)"
+              padding="6px"
+              border="9px"
+            >
+              <Spacer></Spacer>
+              <SortButtonCollections></SortButtonCollections>
+            </HStack>
+
             <InfiniteScroll
               dataLength={collections.length}
               next={fetchMoreCollections}
@@ -674,7 +711,7 @@ const Discover = () => {
                                 keyContent={item.name}
                                 keyID={item.creator}
                                 collectionImage={item.banner}
-                                creatorLogo = {item.logo}
+                                creatorLogo={item.logo}
                                 collectionName={item.name}
                                 collectionDescription={
                                   item.name === "DØP3 Punks "
@@ -705,6 +742,7 @@ const Discover = () => {
           <VStack>
             <FilterNFT></FilterNFT>
             NFTs here
+            <Spacer></Spacer>
           </VStack>
         )}
       </ContentDiscover>
