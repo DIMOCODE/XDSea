@@ -152,7 +152,7 @@ function TableActivityNft(props) {
 
             <HStack background={debugColor} width={widthRow}>
               <Tooltip
-                title={new Date(item.date * 1000).toLocaleDateString("en-US", {
+                title={new Date(item.date).toLocaleDateString("en-US", {
                   day: "2-digit",
                   month: "short",
                   year: "2-digit",
@@ -163,7 +163,7 @@ function TableActivityNft(props) {
               >
                 <BodyRegular>
                   {item.event.props.children[1].props.children !== "Mint"
-                    ? determineAgoTime(new Date(item.date * 1000))
+                    ? determineAgoTime(new Date(item.date))
                     : null}
                 </BodyRegular>
               </Tooltip>

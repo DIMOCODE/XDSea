@@ -19,6 +19,7 @@ function TableOffersNft(props) {
     onClickWithdraw,
     withdrawStatus,
     acceptStatus,
+    offerUser,
   } = props;
 
   const widthRow = "100%";
@@ -54,7 +55,7 @@ function TableOffersNft(props) {
             <HStack
               justify="flex-start"
               spacing="6px"
-              onClick={() => NavigateTo(`UserProfile/${offerBy}`)}
+              onClick={() => NavigateTo(`UserProfile/${offerUser}`)}
             >
               <IconImg
                 url={imageBuyer}

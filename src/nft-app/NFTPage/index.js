@@ -1,8 +1,17 @@
-import React, { useEffect, useState } from "react";
-
-import { useParams, useHistory, useLocation } from "react-router-dom";
+import React, { 
+  useEffect, 
+  useState 
+} from "react";
+import { 
+  useParams, 
+  useHistory, 
+  useLocation 
+} from "react-router-dom";
 import Xdc3 from "xdc3";
-import { DEFAULT_PROVIDER, HEADER } from "../../constant";
+import { 
+  DEFAULT_PROVIDER, 
+  HEADER 
+} from "../../constant";
 import { nftmarketlayeraddress } from "../../config";
 import NFT from "../../abis/NFT.json";
 import axios from "axios";
@@ -19,7 +28,10 @@ import {
   WithdrawOffer,
   AcceptOffer,
 } from "../../common";
-import { fromXdc, isXdc } from "../../common/common";
+import { 
+  fromXdc, 
+  isSafari, 
+  isXdc } from "../../common/common";
 import NFTMarketLayer1 from "../../abis/NFTMarketLayer1.json";
 import {
   permaBlacklist,
@@ -63,7 +75,6 @@ import telegramSocial from "../../images/telegramSocial.png";
 import twitterSocial from "../../images/twitterSocial.png";
 import facebookSocial from "../../images/facebookSocial.png";
 import copiedLink from "../../images/oklink.png";
-
 import {
   BodyBold,
   BodyRegular,
@@ -97,8 +108,11 @@ import {
   WhatsappShareButton,
   InstapaperShareButton,
 } from "react-share";
-import { createRequest } from "../../API";
-import { HTTP_METHODS } from "../../constant";
+import { 
+  getNFT,
+  getNFTEvents,
+  getNFTOffers
+} from "../../API/NFT";
 
 const NFTDetails = (props) => {
   const webLocation = useLocation();
@@ -133,9 +147,7 @@ const NFTDetails = (props) => {
   const [isActive, setIsActive] = useState(1);
   const [highestOffer, setHighestOffer] = useState(0);
   const [addressIsInvalid, setAddressIsInvalid] = useState(false);
-  const [withdrawOfferButtonStatus, setWithdrawOfferButtonStatus] = useState(
-    []
-  );
+  const [withdrawOfferButtonStatus, setWithdrawOfferButtonStatus] = useState([]);
   const [acceptOfferButtonStatus, setAcceptOfferButtonStatus] = useState([]);
   const [processingOffer, setIsProcessingOffer] = useState(false);
   const [processingBuying, setIsProcessingBuying] = useState(false);
@@ -143,8 +155,7 @@ const NFTDetails = (props) => {
   const [processingEditing, setIsProcessingEditing] = useState(false);
   const [processingListing, setIsProcessingListing] = useState(false);
   const [processingTransferring, setIsProcessingTransferring] = useState(false);
-  const [processingWithdrawingOffer, setIsProcessingWithdrawingOffer] =
-    useState(false);
+  const [processingWithdrawingOffer, setIsProcessingWithdrawingOffer] = useState(false);
   const [processingAccepting, setIsProcessingAccepting] = useState(false);
   const [actions, setActions] = useState(0);
   const size = useWindowSize();
@@ -179,7 +190,7 @@ const NFTDetails = (props) => {
     setIsProcessingBuying(true);
     setBuyButtonStatus(1);
     var success = false;
-    if (blacklist.includes(nft.tokenId)) {
+    if (nft.inBlacklist) {
       success = await LegacyBuyNFT(nft);
     } else {
       success = await BuyNFT(nft);
@@ -210,7 +221,7 @@ const NFTDetails = (props) => {
     }
     setPlacingOffer(false);
     var success = false;
-    if (!blacklist.includes(nft.tokenId)) {
+    if (!nft.inBlacklist) {
       success = await Offer(approved, nft, offerPrice);
     }
     if (success) {
@@ -229,7 +240,7 @@ const NFTDetails = (props) => {
     setIsProcessingWithdrawing(true);
     setWithdrawButtonStatus(1);
     var success = false;
-    if (blacklist.includes(nft.tokenId)) {
+    if (nft.inBlacklist) {
       success = await LegacyWithdrawListing(approved, nft);
     } else {
       success = await WithdrawListing(approved, nft);
@@ -260,7 +271,7 @@ const NFTDetails = (props) => {
     }
     setEditingListing(false);
     var success = false;
-    if (!blacklist.includes(nft.tokenId)) {
+    if (!nft.inBlacklist) {
       success = await EditNFT(approved, nft, editPrice);
     }
     if (success) {
@@ -289,8 +300,7 @@ const NFTDetails = (props) => {
     }
     setListingNFT(false);
     var success = false;
-    if (!blacklist.includes(nft.tokenId)) {
-      // console.log(approved);
+    if (!nft.inBlacklist) {
       success = await SellNFT(approved, nft, listPrice);
     }
     if (success) {
@@ -314,7 +324,7 @@ const NFTDetails = (props) => {
     setIsProcessingTransferring(true);
     setTransferring(false);
     var success = false;
-    if (!blacklist.includes(nft.tokenId)) {
+    if (!nft.inBlacklist) {
       success = await TransferNFT(approved, nft, transferAddress);
     }
     if (success) {
@@ -336,7 +346,7 @@ const NFTDetails = (props) => {
       return [...prevState];
     });
     var success = false;
-    if (!blacklist.includes(nft.tokenId)) {
+    if (!nft.inBlacklist) {
       success = await WithdrawOffer(approved, nft.tokenId, i + 1);
     }
     if (success) {
@@ -367,7 +377,7 @@ const NFTDetails = (props) => {
       return [...prevState];
     });
     var success = false;
-    if (!blacklist.includes(nft.tokenId)) {
+    if (!nft.inBlacklist) {
       success = await AcceptOffer(approved, nft.tokenId, i + 1);
     }
     if (success) {
@@ -405,207 +415,167 @@ const NFTDetails = (props) => {
 
   const getData = async () => {
     try {
-      setBlacklist(permaBlacklist);
-      setContractFixes(contractFix);
-      const nftData = await (await createRequest(HTTP_METHODS.get, `nft/byToken/${id}`, null, null)).data.nft;
-      console.log(nftData)
-      const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
-      const marketContract = new xdc3.eth.Contract(
-        NFTMarketLayer1.abi,
-        nftmarketlayeraddress,
-        xdc3
-      );
-      const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
-      var item = await marketContract.methods.idToMarketItem(id).call();
-      var uri = await nftContract.methods.tokenURI(item.tokenId).call();
-      var metadata = await axios.get(uri);
-      var price = await xdc3.utils.fromWei(item.price, "ether");
+      const nftData = await (await getNFT(id)).data;
+      console.log(nftData);
       let currentItem = {
-        price: price,
-        tokenId: item.tokenId,
-        itemId: item.itemId,
-        creator: item.creator,
-        owner: item.owner,
-        collectionName: metadata?.data?.collection?.name,
-        collectionLogo:
-          metadata?.data?.collection?.logo?.split("/")[2] === "xdsea.infura-ipfs.io"
-            ? `https://${new CID(metadata?.data?.collection?.logo.split("/")[4])
-                .toV1()
-                .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
-            : metadata?.data?.collection?.logo,
-        image:
-          metadata?.data?.collection?.nft?.image?.split("/")[2] ===
-          "xdsea.infura-ipfs.io"
-            ? `https://${new CID(
-                metadata?.data?.collection?.nft?.image.split("/")[4]
-              )
-                .toV1()
-                .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
-            : nftData.urlFile,
-        name:
-          id.tokenId === "3567"
-            ? "TAURULIOMPS 1/12"
-            : id.tokenId === "3580"
-            ? "GEMINLIOMP 2/12"
-            : id.tokenId === "3584"
-            ? "LIBRIOMP 2/12"
-            : id.tokenId === "3650"
-            ? "PISCELIOMPS 8/12"
-            : id.tokenId === "3679"
-            ? "LEOIOMP 10/12"
-            : id.tokenId === "3695"
-            ? "SAGITTARIOMPS 11/12"
-            : metadata?.data?.collection?.nft?.name,
-        description: metadata?.data?.collection?.nft?.description,
-        nftContract: item.nftContract,
-        isListed: item.isListed,
-        properties: metadata?.data?.collection?.nft?.properties,
-        fileType: metadata?.data?.collection?.nft?.fileType,
-        preview:
-          metadata?.data?.collection?.nft?.preview?.split("/")[2] ===
-          "xdsea.infura-ipfs.io"
-            ? `https://${new CID(
-                metadata?.data?.collection?.nft?.preview.split("/")[4]
-              )
-                .toV1()
-                .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
-            : metadata?.data?.collection?.nft?.preview,
-        royalty: metadata?.data?.collection?.nft?.royalty,
-        unlockableContent: metadata?.data?.collection?.nft?.unlockableContent,
+        _id: nftData.nft._id,
+        price: nftData.nft.price,
+        tokenId: id,
+        itemId: nftData.nft.itemId,
+        creator: nftData.nft.creator.userName,
+        creatorId: nftData.nft.creator._id,
+        owner: nftData.nft.owner.userName,
+        ownerId: nftData.nft.owner._id,
+        collectionName: nftData.nft.collectionId.name,
+        collectionLogo: isSafari ? nftData.nft.collectionId.logo.v1 : nftData.nft.collectionId.logo.v0,
+        image: isSafari ? nftData.nft.urlFile.v1 : nftData.nft.urlFile.v0,
+        name: nftData.nft.name,
+        description: nftData.nft.description,
+        nftContract: nftaddress,
+        isListed: nftData.nft.isListed,
+        inBlacklist: nftData.nft.inBlacklist,
+        properties: nftData.nft.properties,
+        fileType: nftData.nft.fileType,
+        preview: isSafari ? nftData.nft.preview.v1 : nftData.nft.preview.v0,
+        royalty: nftData.nft.royalty,
+        unlockableContent: nftData.nft.unlockableContent,
       };
-      const data = await marketContract.methods
-        .getCollectionNFTs(metadata?.data?.collection?.name)
-        .call();
-      var moreFromCollectionItems = [];
-      const collection = await Promise.all(
-        data.slice(0, 10).map(async (i) => {
-          var price = await xdc3.utils.fromWei(i.price, "ether");
-          const uri = await nftContract.methods.tokenURI(i.tokenId).call();
-          var metadata = await axios.get(uri);
+
+      const collectionList = await Promise.all(
+        nftData.relatedNfts.map(async (nft) => {
           let item = {
-            price: price,
-            isListed: i.isListed,
-            offerCount: i.offerCount,
-            tokenId: i.tokenId,
-            itemId: i.itemId,
-            seller: i.seller,
-            owner: i.owner,
-            creator: i.creator,
-            collectionName: metadata?.data?.collection?.name,
-            collectionLogo:
-              metadata?.data?.collection?.logo?.split("/")[2] ===
-              "xdsea.infura-ipfs.io"
-                ? `https://${new CID(
-                    metadata?.data?.collection?.logo.split("/")[4]
-                  )
-                    .toV1()
-                    .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
-                : metadata?.data?.collection?.logo,
-            image:
-              metadata?.data?.collection?.nft?.image?.split("/")[2] ===
-              "xdsea.infura-ipfs.io"
-                ? `https://${new CID(
-                    metadata?.data?.collection?.nft?.image.split("/")[4]
-                  )
-                    .toV1()
-                    .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
-                : metadata?.data?.collection?.nft?.image,
-            name:
-              i.tokenId === "3567"
-                ? "TAURULIOMPS 1/12"
-                : i.tokenId === "3580"
-                ? "GEMINLIOMP 2/12"
-                : i.tokenId === "3584"
-                ? "LIBRIOMP 2/12"
-                : i.tokenId === "3650"
-                ? "PISCELIOMPS 8/12"
-                : i.tokenId === "3679"
-                ? "LEOIOMP 10/12"
-                : i.tokenId === "3695"
-                ? "SAGITTARIOMPS 11/12"
-                : metadata?.data?.collection?.nft?.name,
-            description: metadata?.data?.collection?.nft?.description,
-            nftContract: i.nftContract,
-            properties: metadata?.data?.collection?.nft?.properties,
-            fileType: metadata?.data?.collection?.nft?.fileType,
-            preview:
-              metadata?.data?.collection?.nft?.preview?.split("/")[2] ===
-              "xdsea.infura-ipfs.io"
-                ? `https://${new CID(
-                    metadata?.data?.collection?.nft?.preview.split("/")[4]
-                  )
-                    .toV1()
-                    .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
-                : metadata?.data?.collection?.nft?.preview,
-          };
-          if (
-            i.tokenId !== currentItem.tokenId &&
-            moreFromCollectionItems.length < 8 &&
-            !burnedNFTs.includes(i.tokenId)
-          ) {
-            moreFromCollectionItems.push(item);
+            collectionName: nft.collectionId.name,
+            creatorLogo: banner1,
+            image: isSafari ? nft.urlFile.v1 : nft.urlFile.v0,
+            name: nft.name,
+            hasOpenOffer: nft.hasOpenOffer,
+            price: nft.price,
+            fileType: nft.fileType,
+            preview: isSafari ? nft.preview.v1 : nft.preview.v0,
+            owner: nft.owner.userName,
+            ownerId: nft.owner._id,
+            tokenId: nft.tokenId,
+            saleType: nft.saleType.toLowerCase(),
+            isVerified: nft.creator.isVerified
           }
           return item;
         })
       );
-      setCollections(collections);
-      const properties = await Promise.all(
-        metadata.data.collection.nft.properties.map(async (property, i) => {
-          let propertyProp = {
-            property: property.property,
-            value: property.value,
-            proportion: 0,
+
+      const offerData = await (await getNFTOffers(currentItem._id)).data.offers;
+      console.log(offerData);
+      var highestOffer = 0;
+      const offerList = await Promise.all(
+        offerData.map(async (offer) =>  {
+          if(highestOffer < offer.price)
+            highestOffer = offer.price;
+          let offerItem = {
+            _id: offer._id,
+            from: offer.fromAddress,
+            isAccepted: offer.isAccepted,
+            isWithdrawn: offer.isWithdraw,
+            price: offer.price,
+            to: offer.toAddress,
+            userId: offer.userId._id
+          }
+
+          return offerItem;
+        })
+      );
+
+      const eventData = await (await getNFTEvents(currentItem._id)).data.events;
+      console.log(eventData);
+      const eventList = await Promise.all(
+        eventData.map(async (item, i) => {
+          let event = {
+            _id: item._id,
+            id: i + 1,
+            event:
+              item.eventTypeId.eventCode === "MINTED" ? (
+                <HStack>
+                  <IconImg url={mint} width="26px" height="26px"></IconImg>
+                  <CaptionBoldShort>Mint</CaptionBoldShort>
+                </HStack>
+              ) : item.eventTypeId.eventCode === "LISTED" ? (
+                <HStack>
+                  <IconImg url={list} width="26px" height="26px"></IconImg>
+                  <CaptionBoldShort>List</CaptionBoldShort>
+                </HStack>
+              ) : item.eventTypeId.eventCode === "WITHDRAWN" ? (
+                <HStack>
+                  <IconImg
+                    url={withdrawList}
+                    width="26px"
+                    height="26px"
+                  ></IconImg>
+                  <CaptionBoldShort>Withdraw Listing</CaptionBoldShort>
+                </HStack>
+              ) : item.eventTypeId.eventCode === "SALE" ? (
+                <HStack>
+                  <IconImg url={sale} width="26px" height="26px"></IconImg>
+                  <CaptionBoldShort>Sale</CaptionBoldShort>
+                </HStack>
+              ) : item.eventTypeId.eventCode === "TRANSFER" ? (
+                <HStack>
+                  <IconImg
+                    url={transferIcon}
+                    width="26px"
+                    height="26px"
+                  ></IconImg>
+                  <CaptionBoldShort>Transfer</CaptionBoldShort>
+                </HStack>
+              ) : item.eventTypeId.eventCode === "EDIT" ? (
+                <HStack>
+                  <IconImg
+                    url={editListingIcon}
+                    width="26px"
+                    height="26px"
+                  ></IconImg>
+                  <CaptionBoldShort>Edit Listing</CaptionBoldShort>
+                </HStack>
+              ) : item.eventTypeId.eventCode === "OFFER_RECEIVED" ? (
+                <HStack>
+                  <IconImg
+                    url={offerPlacedIcon}
+                    width="26px"
+                    height="26px"
+                  ></IconImg>
+                  <CaptionBoldShort>Offer Placed</CaptionBoldShort>
+                </HStack>
+              ) : item.eventTypeId.eventCode === "OFFER_WITHDRAWN" ? (
+                <HStack>
+                  <IconImg
+                    url={offerRejectedIcon}
+                    width="26px"
+                    height="26px"
+                  ></IconImg>
+                  <CaptionBoldShort>Offer Withdrawn</CaptionBoldShort>
+                </HStack>
+              ) : (
+                <HStack>
+                  <IconImg
+                    url={offerAcceptedIcon}
+                    width="26px"
+                    height="26px"
+                  ></IconImg>
+                  <CaptionBoldShort>Offer Accepted</CaptionBoldShort>
+                </HStack>
+              ),
+            price: item.price,
+            from: item.fromAddress,
+            to: item.toAddress,
+            date: item.timestamp,
           };
-          return propertyProp;
+          return event;
         })
       );
-      const moreFromCollection = await Promise.all(
-        collection.map(async (i) => {
-          const uri = await nftContract.methods.tokenURI(i.tokenId).call();
-          var metadata = await axios.get(uri);
-          var currentItemURI = await nftContract.methods
-            .tokenURI(item.tokenId)
-            .call();
-          var currentItemMetadata = await axios.get(currentItemURI);
-          if (
-            i.tokenId !== id &&
-            metadata?.data?.collection?.name ===
-              currentItemMetadata?.data?.collection?.name
-          ) {
-            var props = await Promise.all(
-              metadata?.data?.collection?.nft?.properties.map(async (prop) => {
-                return prop;
-              })
-            );
-            return props;
-          }
-        })
-      );
-      const filteredCollectionProperties = moreFromCollection.filter(
-        (element) => {
-          return element !== undefined;
-        }
-      );
-      for (var i = 0; i < properties.length; i++) {
-        var propCount = 1;
-        var totalCount = 1;
-        for (var j = 0; j < filteredCollectionProperties.length; j++) {
-          for (var k = 0; k < filteredCollectionProperties[j].length; k++) {
-            if (
-              filteredCollectionProperties[j][k].property ===
-                properties[i].property &&
-              filteredCollectionProperties[j][k].value === properties[i].value
-            ) {
-              propCount += 1;
-            }
-          }
-          totalCount += 1;
-        }
-        properties[i].proportion = (propCount * 100) / totalCount;
-      }
+
       setNFT(currentItem);
-      setPropertyProportions(properties);
-      setMoreFromCollectionNfts(moreFromCollectionItems.slice(0, 4));
+      setMoreFromCollectionNfts(collectionList);
+      setOffers(offerList);
+      setAcceptOfferButtonStatus(new Array(offers.length).fill(0));
+      setWithdrawOfferButtonStatus(new Array(offers.length).fill(0));
+      setEventHistory(eventList);
     } catch (error) {
       console.log(error);
     }
@@ -613,132 +583,8 @@ const NFTDetails = (props) => {
 
   const truncateAddress = (address) => {
     return address
-      ? address.substring(0, 7) + "..." + address.substring(33)
+      ? address.substring(0, 6) + "..." + address.substring(38)
       : "undefined";
-  };
-
-  const getOffers = async () => {
-    const xdc3 = new Xdc3(
-      new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER)
-    );
-    const marketContract = new xdc3.eth.Contract(
-      NFTMarketLayer1.abi,
-      nftmarketlayeraddress,
-      xdc3
-    );
-    var offers = await marketContract.methods.getTokenOfferList(id).call();
-    var highestOfferPrice = 0;
-    await Promise.all(
-      offers.map(async (i) => {
-        if (parseInt(i.price) >= parseInt(highestOfferPrice))
-          highestOfferPrice = i.price;
-      })
-    );
-
-    setHighestOffer(
-      highestOfferPrice === 0
-        ? 0
-        : await xdc3.utils.fromWei(highestOfferPrice, "ether")
-    );
-    setOffers(offers);
-    setAcceptOfferButtonStatus(new Array(offers.length).fill(0));
-    setWithdrawOfferButtonStatus(new Array(offers.length).fill(0));
-  };
-
-  const getEvents = async () => {
-    const xdc3 = new Xdc3(
-      new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER)
-    );
-    const marketContract = new xdc3.eth.Contract(
-      NFTMarketLayer1.abi,
-      nftmarketlayeraddress,
-      xdc3
-    );
-    var events = await marketContract.methods.getTokenEventHistory(id).call();
-    const activity = await Promise.all(
-      events.map(async (item, i) => {
-        let event = {
-          id: i + 1,
-          event:
-            item.eventType === "0" ? (
-              <HStack>
-                <IconImg url={mint} width="26px" height="26px"></IconImg>
-                <CaptionBoldShort>Mint</CaptionBoldShort>
-              </HStack>
-            ) : item.eventType === "1" ? (
-              <HStack>
-                <IconImg url={list} width="26px" height="26px"></IconImg>
-                <CaptionBoldShort>List</CaptionBoldShort>
-              </HStack>
-            ) : item.eventType === "2" ? (
-              <HStack>
-                <IconImg
-                  url={withdrawList}
-                  width="26px"
-                  height="26px"
-                ></IconImg>
-                <CaptionBoldShort>Withdraw Listing</CaptionBoldShort>
-              </HStack>
-            ) : item.eventType === "3" ? (
-              <HStack>
-                <IconImg url={sale} width="26px" height="26px"></IconImg>
-                <CaptionBoldShort>Sale</CaptionBoldShort>
-              </HStack>
-            ) : item.eventType === "4" ? (
-              <HStack>
-                <IconImg
-                  url={transferIcon}
-                  width="26px"
-                  height="26px"
-                ></IconImg>
-                <CaptionBoldShort>Transfer</CaptionBoldShort>
-              </HStack>
-            ) : item.eventType === "5" ? (
-              <HStack>
-                <IconImg
-                  url={editListingIcon}
-                  width="26px"
-                  height="26px"
-                ></IconImg>
-                <CaptionBoldShort>Edit Listing</CaptionBoldShort>
-              </HStack>
-            ) : item.eventType === "6" ? (
-              <HStack>
-                <IconImg
-                  url={offerPlacedIcon}
-                  width="26px"
-                  height="26px"
-                ></IconImg>
-                <CaptionBoldShort>Offer Placed</CaptionBoldShort>
-              </HStack>
-            ) : item.eventType === "7" ? (
-              <HStack>
-                <IconImg
-                  url={offerRejectedIcon}
-                  width="26px"
-                  height="26px"
-                ></IconImg>
-                <CaptionBoldShort>Offer Withdrawn</CaptionBoldShort>
-              </HStack>
-            ) : (
-              <HStack>
-                <IconImg
-                  url={offerAcceptedIcon}
-                  width="26px"
-                  height="26px"
-                ></IconImg>
-                <CaptionBoldShort>Offer Accepted</CaptionBoldShort>
-              </HStack>
-            ),
-          price: xdc3.utils.fromWei(item.price, "ether"),
-          from: item.from,
-          to: item.to,
-          date: item.timestamp,
-        };
-        return event;
-      })
-    );
-    setEventHistory(activity.reverse());
   };
 
   const getApproval = async () => {
@@ -766,8 +612,6 @@ const NFTDetails = (props) => {
     window.scrollTo(0, 0);
     setWallet(props?.wallet);
     getData();
-    getOffers();
-    getEvents();
     getApproval();
   }, []);
 
@@ -775,8 +619,6 @@ const NFTDetails = (props) => {
     window.scrollTo(0, 0);
     setWallet(props?.wallet);
     getData();
-    getOffers();
-    getEvents();
   }, [id]);
 
   useEffect(() => {
@@ -787,15 +629,11 @@ const NFTDetails = (props) => {
   useEffect(() => {
     window.scrollTo(0, 0);
     getData();
-    getOffers();
-    getEvents();
   }, [actions]);
 
-  // console.log(webLocation.pathname);
 
   const webLink =
-    "https://www.xdsea.com" +
-    webLocation.pathname.replace(/\s+/g, "%20").replace(/%20$/, "");
+    `https://www.xdsea.com/${nftaddress}/${id}`;
 
   const [copied, setCopied] = useState(false);
 
@@ -929,15 +767,6 @@ const NFTDetails = (props) => {
           isPurchaised={true}
           PurchaisedNftName={nft?.name}
           ListedImage={nft?.image}
-          confirmBtnPurchaise={() =>
-            NavigateTo(
-              `UserProfile/${
-                isXdc(wallet?.address)
-                  ? fromXdc(wallet?.address)
-                  : wallet?.address
-              }`
-            )
-          }
         ></TxModal>
       ) : null}
       <ContentNftPage>
@@ -1270,7 +1099,7 @@ const NFTDetails = (props) => {
                 <HStack
                   spacing="6px"
                   cursor="pointer"
-                  onClick={() => NavigateTo(`UserProfile/${nft?.owner}`)}
+                  onClick={() => NavigateTo(`UserProfile/${nft?.ownerId}`)}
                 >
                   <IconImg
                     url={banner1}
@@ -1354,8 +1183,8 @@ const NFTDetails = (props) => {
                               //   size.width < 768 ? "0 0 12px 15px" : "5px"
                               // }
                             >
-                              {propertyProportions[0]?.property !== ""
-                                ? propertyProportions.map((property, index) => (
+                              {nft?.properties?.length !== 0
+                                ? nft?.properties.map((property, index) => (
                                     <Property
                                       width={
                                         size.width > 1300
@@ -1371,7 +1200,7 @@ const NFTDetails = (props) => {
                                       key={index}
                                       Title={property.property}
                                       Property={property.value}
-                                      Rarity={property.proportion.toFixed(2)}
+                                      Rarity={property.rarity.toFixed(2)}
                                     />
                                   ))
                                 : null}
@@ -1466,7 +1295,7 @@ const NFTDetails = (props) => {
                     spacing="6px"
                     cursor={"pointer"}
                     width="auto"
-                    onClick={() => NavigateTo(`UserProfile/${nft?.creator}`)}
+                    onClick={() => NavigateTo(`UserProfile/${nft?.creatorId}`)}
                   >
                     <IconImg
                       url={nft?.collectionLogo}
@@ -1664,7 +1493,7 @@ const NFTDetails = (props) => {
                           iconWidth="21px"
                           iconHeight="21px"
                           text={
-                            contractFixes?.includes(nft?.tokenId)
+                            nft.inBlacklist
                               ? "Withdraw Old"
                               : "Withdraw Listing"
                           }
@@ -1675,7 +1504,7 @@ const NFTDetails = (props) => {
                           width="100%"
                           cursor={"pointer"}
                         ></ButtonApp>
-                        {blacklist?.includes(nft?.tokenId) ? null : (
+                        {nft.inBlacklist ? null : (
                           <ButtonApp
                             icon={star}
                             btnStatus={editButtonStatus}
@@ -1695,7 +1524,7 @@ const NFTDetails = (props) => {
                       </>
                     ) : (
                       <>
-                        {blacklist?.includes(nft?.tokenId) ? null : (
+                        {nft.inBlacklist ? null : (
                           <ButtonApp
                             btnStatus={offerButtonStatus}
                             func={"Offer"}
@@ -1728,9 +1557,9 @@ const NFTDetails = (props) => {
                         ></ButtonApp>
                       </>
                     )
-                  ) : blacklist?.includes(
-                      nft?.tokenId
-                    ) ? null : nft?.owner.toLowerCase() ===
+                  ) : nft.inBlacklist 
+                    ? null 
+                    : nft?.owner.toLowerCase() ===
                     (isXdc(wallet?.address)
                       ? fromXdc(wallet?.address.toLowerCase())
                       : wallet?.address.toLowerCase()) ? (
@@ -1823,6 +1652,7 @@ const NFTDetails = (props) => {
                         key={i}
                         imageBuyer={banner1}
                         offerBy={item.from}
+                        offerUser={item.userId}
                         wallet={wallet}
                         owner={item.to}
                         offerAmount={item.price.toLocaleString(undefined, {
@@ -1884,18 +1714,16 @@ const NFTDetails = (props) => {
               {moreFromCollectionNfts.map((item, i) => (
                 <VStack
                   width="100%"
-                  // minwidth={size.width < 768 ? "230px" : "280px"}
                   height="450px"
                   key={i}
                 >
                   <NftContainer
-                    isVerified={verifiedProfiles.includes(item.creator)}
-                    iconStatus={item.isListed ? "sale" : "notforsale"}
-                    // iconStatus are : notforsale, relist, sale, sold, empty returns null
-                    hasOffers={item.offerCount > 0 ? true : false}
+                    isVerified={item.isVerified}
+                    iconStatus={item.saleType}
+                    hasOffers={item.hasOpenOffer ? true : false}
                     key={item.name}
                     fileType={item.fileType}
-                    creatorImage={item.collectionLogo}
+                    creatorImage={item.creatorLogo}
                     itemImage={item.image}
                     price={item.price}
                     collectionName={item.collectionName}
@@ -1906,7 +1734,7 @@ const NFTDetails = (props) => {
                       NavigateTo(`nft/${nftaddress}/${item.tokenId}`);
                     }}
                     onClickCreator={() =>
-                      NavigateTo(`collection/${item.collectionName}`)
+                      NavigateTo(`UserProfile/${item.ownerId}`)
                     }
                     usdPrice="000"
                   ></NftContainer>

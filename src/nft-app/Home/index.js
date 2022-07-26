@@ -30,6 +30,7 @@ import { NewFeatured } from "../../styles/NewFeatured";
 import { borderColor } from "@mui/system";
 import "./customstyles.css";
 import banner1 from "../../images/Banner1.jpg";
+import { isSafari } from "../../common/common";
 
 const Home = () => {
   const history = useHistory();
@@ -76,14 +77,16 @@ const Home = () => {
           let featuredNFT = {
             collectionName: nft.nftId.collectionId.name,
             collectionNickName: nft.nftId.collectionId.nickName,
-            collectionLogo: nft.nftId.collectionId.logo,
-            image: nft.nftId.urlFile,
+            collectionLogo: isSafari ? nft.nftId.collectionId.logo.v1 : nft.nftId.collectionId.logo.v0,
+            image: isSafari ? nft.nftId.urlFile.v1 : nft.nftId.urlFile.v0,
             name: nft.nftId.name,
             fileType: nft.nftId.fileType,
-            preview: nft.nftId.preview,
+            preview: isSafari ? nft.nftId.preview.v1 : nft.nftId.preview.v0,
             creator: nft.nftId.creator.userName,
+            creatorId: nft.nftId.creator._id,
             tokenId: nft.nftId.tokenId,
-          };
+            isVerified: nft.nftId.creator.isVerified
+          }
           return featuredNFT;
         })
       );
@@ -94,7 +97,7 @@ const Home = () => {
             id: i,
             name: collection.name,
             nickName: collection.nickName,
-            logo: collection.logo,
+            logo: isSafari ? collection.logo.v1 : collection.logo.v0,
             floorPrice: collection.floorPrice,
             volumeTraded: collection.volumeTrade,
             items: collection.totalNfts,
@@ -110,15 +113,18 @@ const Home = () => {
             collectionName: nft.nftId.collectionId.name,
             collectionNickName: nft.nftId.collectionId.nickName,
             creatorLogo: banner1,
-            image: nft.nftId.urlFile,
+            image: isSafari ? nft.nftId.urlFile.v1 : nft.nftId.urlFile.v0,
             name: nft.nftId.name,
+            hasOpenOffer: nft.nftId.hasOpenOffer,
             price: nft.nftId.price,
             fileType: nft.nftId.fileType,
-            preview: nft.nftId.preview,
+            preview: isSafari ? nft.nftId.preview.v1 : nft.nftId.preview.v0,
             creator: nft.nftId.creator.userName,
+            creatorId: nft.nftId.creator._id,
             tokenId: nft.nftId.tokenId,
             saleType: nft.nftId.saleType.toLowerCase(),
-          };
+            isVerified: nft.nftId.creator.isVerified
+          }
           return trendingNFT;
         })
       );
@@ -564,7 +570,7 @@ const Home = () => {
                   <NftContainer
                     isVerified={item.isVerified}
                     iconStatus={item.saleType}
-                    hasOffers={item.offerCount > 0 ? true : false}
+                    hasOffers={item.hasOpenOffer ? true : false}
                     fileType={item.fileType}
                     creatorImage={item.creatorLogo}
                     itemImage={item.image}
@@ -576,14 +582,40 @@ const Home = () => {
                       NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
                     }
                     onClickCreator={() =>
-                      NavigateTo(`UserProfile/${item.creator}`)
+                      NavigateTo(`UserProfile/${item.creatorId}`)
                     }
                     usdPrice="000"
                   ></NftContainer>
                 </VStack>
               ))
-            : size.width > 692
-            ? trendingNFTs.slice(0, 4).map((item, i) => (
+              : size.width > 692
+              ? trendingNFTs.slice(0, 4).map((item, i) => (
+                  <VStack
+                    minwidth={size.width < 768 ? "300px" : "280px"}
+                    height="450px"
+                    key={i}
+                  >
+                    <NftContainer
+                      isVerified={item.isVerified}
+                      iconStatus={item.saleType}
+                      hasOffers={item.hasOpenOffer ? true : false}
+                      fileType={item.fileType}
+                      creatorImage={item.creatorLogo}
+                      itemImage={item.image}
+                      price={item.price}
+                      collectionName={item.collectionName}
+                      itemNumber={item.name}
+                      background={({ theme }) => theme.backElement}
+                      onClick={() =>
+                        NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
+                      }
+                      onClickCreator={() =>
+                        NavigateTo(`UserProfile/${item.creatorId}`)
+                      }
+                    ></NftContainer>
+                  </VStack>
+                ))
+              : trendingNFTs.slice(0, 3).map((item, i) => (
                 <VStack
                   minwidth={size.width < 768 ? "300px" : "280px"}
                   height="450px"
@@ -592,7 +624,7 @@ const Home = () => {
                   <NftContainer
                     isVerified={item.isVerified}
                     iconStatus={item.saleType}
-                    hasOffers={item.offerCount > 0 ? true : false}
+                    hasOffers={item.hasOpenOffer ? true : false}
                     fileType={item.fileType}
                     creatorImage={item.creatorLogo}
                     itemImage={item.image}
@@ -604,33 +636,7 @@ const Home = () => {
                       NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
                     }
                     onClickCreator={() =>
-                      NavigateTo(`UserProfile/${item.creator}`)
-                    }
-                  ></NftContainer>
-                </VStack>
-              ))
-            : trendingNFTs.slice(0, 3).map((item, i) => (
-                <VStack
-                  minwidth={size.width < 768 ? "300px" : "280px"}
-                  height="450px"
-                  key={i}
-                >
-                  <NftContainer
-                    isVerified={item.isVerified}
-                    iconStatus={item.saleType}
-                    hasOffers={item.offerCount > 0 ? true : false}
-                    fileType={item.fileType}
-                    creatorImage={item.creatorLogo}
-                    itemImage={item.image}
-                    price={item.price}
-                    collectionName={item.collectionName}
-                    itemNumber={item.name}
-                    background={({ theme }) => theme.backElement}
-                    onClick={() =>
-                      NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
-                    }
-                    onClickCreator={() =>
-                      NavigateTo(`UserProfile/${item.creator}`)
+                      NavigateTo(`UserProfile/${item.creatorId}`)
                     }
                   ></NftContainer>
                 </VStack>
