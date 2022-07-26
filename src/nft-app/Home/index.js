@@ -1,8 +1,4 @@
-import React, { 
-  useEffect, 
-  useState, 
-  useContext 
-} from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import { nftaddress } from "../../config";
 import { getHomeData } from "../../API/Home";
@@ -23,14 +19,8 @@ import {
   ZItem,
   ZStack,
 } from "../../styles/Stacks";
-import {
-  TitleBold18,
-  TitleBold27,
-} from "../../styles/TextStyles";
-import {
-  LayoutGroup,
-  motion,
-} from "framer-motion/dist/framer-motion";
+import { TitleBold18, TitleBold27 } from "../../styles/TextStyles";
+import { LayoutGroup, motion } from "framer-motion/dist/framer-motion";
 import useWindowSize from "../../styles/useWindowSize";
 import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
 import logoXDSEA from "../../images/LogoXDSEA.png";
@@ -80,7 +70,7 @@ const Home = () => {
     try {
       setLoading(true);
       const homeData = (await getHomeData()).data;
-      console.log(homeData)
+      console.log(homeData);
 
       const featuredNFTList = await Promise.all(
         homeData.featuredNfts.map(async (nft) => {
@@ -100,7 +90,7 @@ const Home = () => {
           return featuredNFT;
         })
       );
-      
+
       const topCollectionList = await Promise.all(
         homeData.topCollections.map(async (collection, i) => {
           let topCollection = {
@@ -111,8 +101,8 @@ const Home = () => {
             floorPrice: collection.floorPrice,
             volumeTraded: collection.volumeTrade,
             items: collection.totalNfts,
-            owners: collection.owners
-          }
+            owners: collection.owners,
+          };
           return topCollection;
         })
       );
@@ -138,7 +128,7 @@ const Home = () => {
           return trendingNFT;
         })
       );
-      
+
       setFeaturedNFTs(featuredNFTList);
       setTopCollections(topCollectionList);
       setTrendingNFTs(trendingNFTList);
@@ -175,8 +165,7 @@ const Home = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, [scrollTop]);
 
-  useEffect(() => {
-  }, [scrolling]);
+  useEffect(() => {}, [scrolling]);
 
   return (
     <Content>
@@ -232,7 +221,9 @@ const Home = () => {
                   itemNumber={featuredNFTs[0]?.name}
                   fileType={featuredNFTs[0]?.fileType}
                   onClickCreator={() =>
-                    NavigateTo(`collection/${featuredNFTs[0]?.collectionNickName}`)
+                    NavigateTo(
+                      `collection/${featuredNFTs[0]?.collectionNickName}`
+                    )
                   }
                   onClick={() =>
                     NavigateTo(`nft/${nftaddress}/${featuredNFTs[0]?.tokenId}`)
@@ -256,7 +247,9 @@ const Home = () => {
                   itemNumber={featuredNFTs[1]?.name}
                   fileType={featuredNFTs[1]?.fileType}
                   onClickCreator={() =>
-                    NavigateTo(`collection/${featuredNFTs[1]?.collectionNickName}`)
+                    NavigateTo(
+                      `collection/${featuredNFTs[1]?.collectionNickName}`
+                    )
                   }
                   onClick={() =>
                     NavigateTo(`nft/${nftaddress}/${featuredNFTs[1]?.tokenId}`)
@@ -280,7 +273,9 @@ const Home = () => {
                   itemNumber={featuredNFTs[2]?.name}
                   fileType={featuredNFTs[2]?.fileType}
                   onClickCreator={() =>
-                    NavigateTo(`collection/${featuredNFTs[2]?.collectionNickName}`)
+                    NavigateTo(
+                      `collection/${featuredNFTs[2]?.collectionNickName}`
+                    )
                   }
                   onClick={() =>
                     NavigateTo(`nft/${nftaddress}/${featuredNFTs[2]?.tokenId}`)
@@ -304,7 +299,9 @@ const Home = () => {
                   itemNumber={featuredNFTs[3]?.name}
                   fileType={featuredNFTs[3]?.fileType}
                   onClickCreator={() =>
-                    NavigateTo(`collection/${featuredNFTs[3]?.collectionNickName}`)
+                    NavigateTo(
+                      `collection/${featuredNFTs[3]?.collectionNickName}`
+                    )
                   }
                   onClick={() =>
                     NavigateTo(`nft/${nftaddress}/${featuredNFTs[3]?.tokenId}`)
@@ -341,10 +338,14 @@ const Home = () => {
                     itemNumber={featuredNFTs[0]?.name}
                     fileType={featuredNFTs[0]?.fileType}
                     onClickCreator={() =>
-                      NavigateTo(`collection/${featuredNFTs[0]?.collectionNickName}`)
+                      NavigateTo(
+                        `collection/${featuredNFTs[0]?.collectionNickName}`
+                      )
                     }
                     onClick={() =>
-                      NavigateTo(`nft/${nftaddress}/${featuredNFTs[0]?.tokenId}`)
+                      NavigateTo(
+                        `nft/${nftaddress}/${featuredNFTs[0]?.tokenId}`
+                      )
                     }
                   ></NewFeatured>
                 </LayoutGroup>
@@ -365,10 +366,14 @@ const Home = () => {
                     itemNumber={featuredNFTs[1]?.name}
                     fileType={featuredNFTs[1]?.fileType}
                     onClickCreator={() =>
-                      NavigateTo(`collection/${featuredNFTs[1]?.collectionNickName}`)
+                      NavigateTo(
+                        `collection/${featuredNFTs[1]?.collectionNickName}`
+                      )
                     }
                     onClick={() =>
-                      NavigateTo(`nft/${nftaddress}/${featuredNFTs[1]?.tokenId}`)
+                      NavigateTo(
+                        `nft/${nftaddress}/${featuredNFTs[1]?.tokenId}`
+                      )
                     }
                   ></NewFeatured>
                 </LayoutGroup>
@@ -390,10 +395,14 @@ const Home = () => {
                     itemNumber={featuredNFTs[2]?.name}
                     fileType={featuredNFTs[2]?.fileType}
                     onClickCreator={() =>
-                      NavigateTo(`collection/${featuredNFTs[2]?.collectionNickName}`)
+                      NavigateTo(
+                        `collection/${featuredNFTs[2]?.collectionNickName}`
+                      )
                     }
                     onClick={() =>
-                      NavigateTo(`nft/${nftaddress}/${featuredNFTs[2]?.tokenId}`)
+                      NavigateTo(
+                        `nft/${nftaddress}/${featuredNFTs[2]?.tokenId}`
+                      )
                     }
                   ></NewFeatured>
                 </LayoutGroup>
@@ -415,10 +424,14 @@ const Home = () => {
                     itemNumber={featuredNFTs[3]?.name}
                     fileType={featuredNFTs[3]?.fileType}
                     onClickCreator={() =>
-                      NavigateTo(`collection/${featuredNFTs[3]?.collectionNickName}`)
+                      NavigateTo(
+                        `collection/${featuredNFTs[3]?.collectionNickName}`
+                      )
                     }
                     onClick={() =>
-                      NavigateTo(`nft/${nftaddress}/${featuredNFTs[3]?.tokenId}`)
+                      NavigateTo(
+                        `nft/${nftaddress}/${featuredNFTs[3]?.tokenId}`
+                      )
                     }
                   ></NewFeatured>
                 </LayoutGroup>
@@ -500,6 +513,7 @@ const Home = () => {
             flexwrap={size.width < 1200 ? "nowrap" : "wrap"}
             height={size.width < 1200 ? "auto" : "630px"}
             spacing="15px"
+            padding={size.width > 728 ? "0 150px" : 0}
           >
             {loading
               ? loadingCollections.map((item) => (
@@ -530,11 +544,7 @@ const Home = () => {
       </VStack>
 
       {/* Trending NFTs Section */}
-      <VStack
-        height="auto"
-        width="100%"
-        id="trendingNFTs"
-      >
+      <VStack height="auto" width="100%" id="trendingNFTs">
         <HStack>
           <IconImg url={iconTrending} width="45px" height="45px"></IconImg>
           <TitleBold27>Trending NFTs</TitleBold27>
@@ -550,8 +560,8 @@ const Home = () => {
                   <LoadingNftContainer></LoadingNftContainer>
                 </VStack>
               ))
-            : size.width > 728 
-              ? trendingNFTs.map((item, i) => (
+            : size.width > 728
+            ? trendingNFTs.map((item, i) => (
                 <VStack
                   minwidth={size.width < 768 ? "300px" : "280px"}
                   height="450px"

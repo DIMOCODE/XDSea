@@ -5,6 +5,7 @@ import {
   TitleRegular33,
   BodyBold,
   CaptionBoldShort,
+  TitleRegular21,
 } from "./TextStyles";
 import miniXdcLogo from "../images/miniXdcLogo.png";
 import { useState } from "react";
@@ -25,10 +26,10 @@ function TopCollectionItem(props) {
   const [isVisible, setIsVisible] = useState(false);
   const creator = {
     initial: {
-      background: "rgba(77, 88, 143, 0)",
+      background: "rgba(255, 255, 255, 0)",
     },
     hover: {
-      background: "rgba(77, 88, 143, 0.14)",
+      background: "rgba(255, 255, 255, 1)",
     },
   };
   const opacity = {
@@ -49,12 +50,13 @@ function TopCollectionItem(props) {
       onClick={onClick}
       cursor={"pointer"}
     >
-      <TitleRegular33
+      <TitleRegular21
+        textcolor={({ theme }) => theme.text}
         animate={isVisible ? "hover" : "initial"}
         variants={opacity}
       >
         {position || "0"}
-      </TitleRegular33>
+      </TitleRegular21>
       <IconImg
         url={imageCreator}
         width="54px"
@@ -64,40 +66,65 @@ function TopCollectionItem(props) {
         bordercolor="white"
         cursor={"pointer"}
         backsize="cover"
+        style={{
+          boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
+        }}
       ></IconImg>
       <VStack spacing="6px" alignment="flex-start" cursor={"pointer"}>
         <TitleBold15>{collectionName || "Collection Name"}</TitleBold15>
-        <HStack cursor={"pointer"}>
-          <VStack spacing="3px" cursor={"pointer"}>
-            <CaptionBoldShort>Floor Price</CaptionBoldShort>
-            <HStack spacing="6px">
-              <IconImg url={miniXdcLogo} width="18px" height="18px"></IconImg>
-              <BodyBold>
-                {floorprice.toLocaleString(undefined, {
-                  maximumFractionDigits: 2,
-                }) || "0"}
-              </BodyBold>
-            </HStack>
-          </VStack>
-          <VStack spacing="3px" cursor={"pointer"}>
-            <CaptionBoldShort>Owners</CaptionBoldShort>
-            <BodyBold>{owners || "0"}</BodyBold>
-          </VStack>
-          <VStack spacing="3px" cursor={"pointer"}>
-            <CaptionBoldShort>NFT's</CaptionBoldShort>
-            <BodyBold>{nfts || "0"}</BodyBold>
-          </VStack>
-          <VStack spacing="3px" cursor={"pointer"}>
-            <CaptionBoldShort align="center">Volume Traded</CaptionBoldShort>
-            <HStack spacing="6px">
-              <IconImg url={miniXdcLogo} width="18px" height="18px"></IconImg>
-              <BodyBold>
-                {volumetraded.toLocaleString(undefined, {
-                  maximumFractionDigits: 2,
-                }) || "0"}
-              </BodyBold>
-            </HStack>
-          </VStack>
+
+        <HStack responsive="true" cursor={"pointer"} spacing="6px">
+          {/* Floor Price and Owners */}
+
+          <HStack
+            background={({ theme }) => theme.faded}
+            spacing="6px"
+            border="6px"
+            width="100%"
+          >
+            {" "}
+            <VStack spacing="3px" padding="6px" cursor={"pointer"} width="100%">
+              <CaptionBoldShort>NFT's</CaptionBoldShort>
+              <BodyBold>{nfts || "0"}</BodyBold>
+            </VStack>
+            <VStack spacing="3px" cursor={"pointer"}>
+              <CaptionBoldShort>Owners</CaptionBoldShort>
+              <BodyBold>{owners || "0"}</BodyBold>
+            </VStack>
+          </HStack>
+
+          {/* NFT and Volume */}
+
+          <HStack
+            background={({ theme }) => theme.faded}
+            spacing="6px"
+            border="6px"
+            width="100%"
+          >
+            <VStack spacing="3px" padding="6px" cursor={"pointer"}>
+              <CaptionBoldShort>Floor Price</CaptionBoldShort>
+              <HStack spacing="6px">
+                <IconImg url={miniXdcLogo} width="18px" height="18px"></IconImg>
+                <BodyBold>
+                  {floorprice.toLocaleString(undefined, {
+                    maximumFractionDigits: 2,
+                  }) || "0"}
+                </BodyBold>
+              </HStack>
+            </VStack>
+
+            <VStack spacing="3px" padding="6px" cursor={"pointer"}>
+              <CaptionBoldShort>Volume Traded</CaptionBoldShort>
+              <HStack spacing="6px">
+                <IconImg url={miniXdcLogo} width="18px" height="18px"></IconImg>
+                <BodyBold>
+                  {volumetraded.toLocaleString(undefined, {
+                    maximumFractionDigits: 2,
+                  }) || "0"}
+                </BodyBold>
+              </HStack>
+            </VStack>
+          </HStack>
         </HStack>
       </VStack>
     </HStack>

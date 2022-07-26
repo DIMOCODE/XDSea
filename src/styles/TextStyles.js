@@ -100,6 +100,24 @@ export const TitleBold21 = styled(motion.h2).attrs((props) => ({
   text-align: ${(props) => props.align};
 `;
 
+export const TitleRegular21 = styled(motion.h2).attrs((props) => ({
+  textcolor: props.textcolor || appStyle.colors.white,
+  align: props.align || "left",
+}))`
+  font-style: normal;
+  font-weight: normal;
+  font-size: 21px;
+  color: ${(props) => props.textcolor};
+  display: ${(props) => props.display};
+  -webkit-line-clamp: ${(props) => props.clamp};
+  -webkit-box-orient: ${(props) => props.orient};
+  overflow: ${(props) => props.overflow};
+  white-space: ${(props) => props.whiteSpace};
+  width: ${(props) => props.width};
+  text-overflow: ${(props) => props.textOverflow};
+  text-align: ${(props) => props.align};
+`;
+
 export const TitleBold18 = styled(motion.h3).attrs((props) => ({
   textcolor: props.textcolor || props.theme.text,
 }))`
