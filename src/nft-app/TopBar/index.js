@@ -111,6 +111,8 @@ function TopBar(props) {
             connected: true,
             address: res[0],
           });
+          const { data } = await anonymousLogin(res[0]);
+          LS.set(LS_ROOT_KEY, data);
           window.ethereum.on("accountsChanged", (accounts) => {
             setWallet({
               connected: false,
@@ -120,6 +122,7 @@ function TopBar(props) {
               connected: false,
               address: accounts[0],
             });
+            logout();
           });
           setIsMetamask(true);
           setShowMetamask(false);
@@ -149,6 +152,7 @@ function TopBar(props) {
       connected: false,
       address: res[0],
     });
+    logout();
     setIsMetamask(false);
   };
 
@@ -266,7 +270,8 @@ function TopBar(props) {
                           ></SwitchButton>
                           {wallet?.connected ? (
                             <UserMenuButton
-                              clickOnUser={() =>
+                              clickOnUser={() => {
+                                console.log('Wallet Information: ' + LS.get(LS_ROOT_KEY));
                                 NavigateTo(
                                   `UserProfile/${
                                     isXdc(wallet?.address)
@@ -274,6 +279,7 @@ function TopBar(props) {
                                       : wallet?.address.toLowerCase()
                                   }`
                                 )
+                              }
                               }
                               wallet={wallet}
                             ></UserMenuButton>

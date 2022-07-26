@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import Xdc3 from "xdc3";
 import { nftaddress, nftmarketlayeraddress } from "../../config";
-import { DEFAULT_PROVIDER, HEADER } from "../../constant";
+import { DEFAULT_PROVIDER, HEADER, LS_ROOT_KEY, LS } from "../../constant";
 import NFT from "../../abis/NFT.json";
 import { AnimatePresence } from "framer-motion/dist/framer-motion";
 import { LoopLogo } from "../../styles/LoopLogo";
@@ -81,6 +81,7 @@ const MyNFT = (props) => {
 
   const getOwnedNFTs = async () => {
     setLoading(true);
+    console.log(LS.get(LS_ROOT_KEY));
     const nftData = await (await getNFTs({ page: page, userId: userId })).data;
     console.log(nftData);
 

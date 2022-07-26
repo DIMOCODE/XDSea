@@ -18,7 +18,8 @@ import styled from "styled-components";
 import { useClickAway } from "react-use";
 import useWindowSize from "./useWindowSize";
 
-function SortButtonCollections() {
+function SortButtonCollections(props) {
+  const {onChange, params} = props;
   const ref = useRef(null);
   useClickAway(ref, () => {
     setIsActive(false);
@@ -26,9 +27,9 @@ function SortButtonCollections() {
 
   const size = useWindowSize();
   const [isActive, setIsActive] = useState(false);
-  const [isSelected, setIsSelected] = useState(0);
+  const [isSelected, setIsSelected] = useState(1);
   const [isOld, setIsOld] = useState(false);
-  const [isVolumeTop, setIsVolumeTop] = useState(false);
+  const [isVolumeTop, setIsVolumeTop] = useState(true);
   const [isTopOwners, setIsTopOwners] = useState(false);
   const [isTopQuantity, setIsTopQuantity] = useState(false);
   const [isTopFloor, setIsTopFloor] = useState(false);
@@ -71,20 +72,20 @@ function SortButtonCollections() {
                   : "Newest"
                 : isSelected === 1
                 ? isVolumeTop
-                  ? "Volume Top"
-                  : "Volume Low"
+                  ? "Greatest Volume"
+                  : "Least Volume"
                 : isSelected === 2
                 ? isTopOwners
-                  ? "Top Owners"
-                  : "Low Owners"
+                  ? "Most Owners"
+                  : "Least Owners"
                 : isSelected === 3
-                ? isTopQuantity
-                  ? "Top Quantity NFTs"
-                  : "Low Quantity NFTs"
-                : isSelected === 4
                 ? isTopFloor
-                  ? "Top Floor Price"
-                  : "Low Floor Price"
+                  ? "Highest Floor Price"
+                  : "Lowest Floor Price"
+                : isSelected === 4
+                ? isTopQuantity
+                  ? "Most NFTs"
+                  : "Least NFTs"
                 : isSelected === 5
                 ? isAtoZ
                   ? "A to Z"
@@ -137,7 +138,10 @@ function SortButtonCollections() {
                 width="100%"
                 border="6px"
                 cursor="pointer"
-                onClick={() => setIsOld(true)}
+                onClick={() => {
+                  setIsOld(true);
+                  onChange({...params, page: 1, sortBy: "publication", sortDirection: 1});
+                }}
               >
                 <BodyRegular
                   cursor="pointer"
@@ -165,7 +169,10 @@ function SortButtonCollections() {
                       : ({ theme }) => theme.blue
                     : null
                 }
-                onClick={() => setIsOld(false)}
+                onClick={() => {
+                  setIsOld(false);
+                  onChange({...params, page: 1, sortBy: "publication", sortDirection: -1});
+                }}
               >
                 <BodyRegular
                   cursor="pointer"
@@ -206,7 +213,10 @@ function SortButtonCollections() {
                 width="100%"
                 border="6px"
                 cursor="pointer"
-                onClick={() => setIsVolumeTop(true)}
+                onClick={() => {
+                  setIsVolumeTop(true);
+                  onChange({...params, page: 1, sortBy: "volumeTrade", sortDirection: -1});
+                }}
               >
                 <BodyRegular
                   cursor="pointer"
@@ -218,7 +228,7 @@ function SortButtonCollections() {
                       : ({ theme }) => theme.text
                   }
                 >
-                  Top Volume
+                  Greatest Volume
                 </BodyRegular>
               </HStack>
 
@@ -234,7 +244,10 @@ function SortButtonCollections() {
                       : ({ theme }) => theme.blue
                     : null
                 }
-                onClick={() => setIsVolumeTop(false)}
+                onClick={() => {
+                  setIsVolumeTop(false);
+                  onChange({...params, page: 1, sortBy: "volumeTrade", sortDirection: 1});
+                }}
               >
                 <BodyRegular
                   cursor="pointer"
@@ -246,7 +259,7 @@ function SortButtonCollections() {
                       : ({ theme }) => theme.text
                   }
                 >
-                  Low Volume
+                  Least Volume
                 </BodyRegular>
               </HStack>
             </HStack>
@@ -275,7 +288,10 @@ function SortButtonCollections() {
                 width="100%"
                 border="6px"
                 cursor="pointer"
-                onClick={() => setIsTopOwners(true)}
+                onClick={() => {
+                  setIsTopOwners(true);
+                  onChange({...params, page: 1, sortBy: "owners", sortDirection: -1});
+                }}
               >
                 <BodyRegular
                   cursor="pointer"
@@ -287,7 +303,7 @@ function SortButtonCollections() {
                       : ({ theme }) => theme.text
                   }
                 >
-                  Top Owners
+                  Most Owners
                 </BodyRegular>
               </HStack>
 
@@ -303,7 +319,10 @@ function SortButtonCollections() {
                       : ({ theme }) => theme.blue
                     : null
                 }
-                onClick={() => setIsTopOwners(false)}
+                onClick={() => {
+                  setIsTopOwners(false);
+                  onChange({...params, page: 1, sortBy: "owners", sortDirection: 1});
+                }}
               >
                 <BodyRegular
                   cursor="pointer"
@@ -315,12 +334,12 @@ function SortButtonCollections() {
                       : ({ theme }) => theme.text
                   }
                 >
-                  Low Owners
+                  Least Owners
                 </BodyRegular>
               </HStack>
             </HStack>
 
-            {/*  NFT Quantity  */}
+            {/*  Floor Price  */}
             <VStack
               minheight="98px"
               background={({ theme }) => theme.faded}
@@ -337,7 +356,7 @@ function SortButtonCollections() {
               <HStack
                 background={
                   isSelected === 3
-                    ? isTopQuantity
+                    ? isTopFloor
                       ? ({ theme }) => theme.blue
                       : "transparent"
                     : null
@@ -346,19 +365,22 @@ function SortButtonCollections() {
                 border="6px"
                 cursor="pointer"
                 height="43px"
-                onClick={() => setIsTopQuantity(true)}
+                onClick={() => {
+                  setIsTopFloor(true);
+                  onChange({...params, page: 1, sortBy: "floorPrice", sortDirection: -1});
+                }}
               >
                 <BodyRegular
                   cursor="pointer"
                   textcolor={
                     isSelected === 3
-                      ? isTopQuantity
+                      ? isTopFloor
                         ? "white"
                         : ({ theme }) => theme.text
                       : ({ theme }) => theme.text
                   }
                 >
-                  Top Quantity NFT
+                  Highest Floor Price
                 </BodyRegular>
               </HStack>
 
@@ -369,30 +391,33 @@ function SortButtonCollections() {
                 border="6px"
                 background={
                   isSelected === 3
-                    ? isTopQuantity
+                    ? isTopFloor
                       ? "transparent"
                       : ({ theme }) => theme.blue
                     : null
                 }
-                onClick={() => setIsTopQuantity(false)}
+                onClick={() => {
+                  setIsTopFloor(false);
+                  onChange({...params, page: 1, sortBy: "floorPrice", sortDirection: 1});
+                }}
                 height="43px"
               >
                 <BodyRegular
                   cursor="pointer"
                   textcolor={
                     isSelected === 3
-                      ? isTopQuantity
+                      ? isTopFloor
                         ? ({ theme }) => theme.text
                         : "white"
                       : ({ theme }) => theme.text
                   }
                 >
-                  Low Quantity NFT
+                  Lowest Floor Price
                 </BodyRegular>
               </HStack>
             </VStack>
 
-            {/* Floor Price */}
+            {/* NFT Quantity */}
             <HStack
               height="49px"
               background={({ theme }) => theme.faded}
@@ -408,7 +433,7 @@ function SortButtonCollections() {
               <HStack
                 background={
                   isSelected === 4
-                    ? isTopFloor
+                    ? isTopQuantity
                       ? ({ theme }) => theme.blue
                       : "transparent"
                     : null
@@ -416,19 +441,22 @@ function SortButtonCollections() {
                 width="100%"
                 border="6px"
                 cursor="pointer"
-                onClick={() => setIsTopFloor(true)}
+                onClick={() => {
+                  setIsTopQuantity(true);
+                  onChange({...params, page: 1, sortBy: "nfts", sortDirection: -1});
+                }}
               >
                 <BodyRegular
                   cursor="pointer"
                   textcolor={
                     isSelected === 4
-                      ? isTopFloor
+                      ? isTopQuantity
                         ? "white"
                         : ({ theme }) => theme.text
                       : ({ theme }) => theme.text
                   }
                 >
-                  Top Floor Price
+                  Most NFTs
                 </BodyRegular>
               </HStack>
 
@@ -439,24 +467,27 @@ function SortButtonCollections() {
                 border="6px"
                 background={
                   isSelected === 4
-                    ? isTopFloor
+                    ? isTopQuantity
                       ? "transparent"
                       : ({ theme }) => theme.blue
                     : null
                 }
-                onClick={() => setIsTopFloor(false)}
+                onClick={() => {
+                  setIsTopQuantity(false);
+                  onChange({...params, page: 1, sortBy: "nfts", sortDirection: 1});
+                }}
               >
                 <BodyRegular
                   cursor="pointer"
                   textcolor={
                     isSelected === 4
-                      ? isTopFloor
+                      ? isTopQuantity
                         ? ({ theme }) => theme.text
                         : "white"
                       : ({ theme }) => theme.text
                   }
                 >
-                  Low Floor Price
+                  Least NFTs
                 </BodyRegular>
               </HStack>
             </HStack>
@@ -485,7 +516,10 @@ function SortButtonCollections() {
                 width="100%"
                 border="6px"
                 cursor="pointer"
-                onClick={() => setIsAtoZ(true)}
+                onClick={() => {
+                  setIsAtoZ(true);
+                  onChange({...params, page: 1, sortBy: "alphabet", sortDirection: 1});
+                }}
               >
                 <BodyRegular
                   cursor="pointer"
@@ -513,7 +547,10 @@ function SortButtonCollections() {
                       : ({ theme }) => theme.blue
                     : null
                 }
-                onClick={() => setIsAtoZ(false)}
+                onClick={() => {
+                  setIsAtoZ(false);
+                  onChange({...params, page: 1, sortBy: "alphabet", sortDirection: -1});
+                }}
               >
                 <BodyRegular
                   cursor="pointer"

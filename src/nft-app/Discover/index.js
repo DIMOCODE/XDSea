@@ -17,8 +17,6 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { LoopLogo } from "../../styles/LoopLogo";
 import menuContext from "../../context/menuContext";
 import { getCollections } from "../../API/Collection";
-import { FilterCollections } from "../../styles/FilterCollections";
-import { FilterNFT } from "../../styles/FilterNFT";
 import { getNFTs } from "../../API/NFT";
 import banner1 from "../../images/Banner1.jpg";
 import { nftaddress } from "../../config";
@@ -446,7 +444,7 @@ const Discover = () => {
   const updateNFTs = async (params) => {
     console.log(params)
     setLoading(true);
-    const nftData = await (await getNFTs(nftParams)).data;
+    const nftData = await (await getNFTs(params)).data;
     console.log(nftData)
     const nftList = await Promise.all(
       nftData.nfts.map(async (nft) => {
@@ -587,9 +585,13 @@ const Discover = () => {
               border="9px"
               width="100%"
             >
-              <FiltersButton isNftFilter={false}></FiltersButton>
+              <FiltersButton 
+                onChange={handleChangeFilter} 
+                params={collectionParams} 
+                isNftFilter={false}
+              ></FiltersButton>
               <Spacer></Spacer>
-              <SortButtonCollections></SortButtonCollections>
+              <SortButtonCollections onChange={handleChangeFilter} params={collectionParams}></SortButtonCollections>
             </HStack>
 
             <InfiniteScroll
@@ -675,7 +677,11 @@ const Discover = () => {
               padding="6px"
               border="9px"
             >
-              <FiltersButton isNftFilter={true}></FiltersButton>
+              <FiltersButton 
+                isNftFilter={true}
+                onChange = {handleChangeFilterNFT}
+                params = {nftParams}
+              ></FiltersButton>
               <Spacer></Spacer>
               <SortButtonNFTS></SortButtonNFTS>
             </HStack>
