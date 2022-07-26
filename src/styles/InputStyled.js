@@ -25,6 +25,8 @@ function InputStyled(props) {
     texttransform,
     height,
     inputId,
+    iconHeight,
+    iconWidth,
   } = props;
 
   const [hasURL] = useState(false);
@@ -49,9 +51,15 @@ function InputStyled(props) {
         fontsize={fontsize}
         texttransform={texttransform}
         height={height}
+        iconWidth={iconWidth}
+        iconHeight={iconHeight}
       />
       <InputIcon>
-        <IconImg url={icon || empty} width="18px" height="18px"></IconImg>
+        <IconImg
+          url={icon || empty}
+          width={iconWidth || "18px"}
+          height={iconHeight || "18px"}
+        ></IconImg>
       </InputIcon>
       {hasURL ? (
         <InputURL>

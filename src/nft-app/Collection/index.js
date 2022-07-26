@@ -1,21 +1,8 @@
-import React, { 
-  useEffect, 
-  useState, 
-  useContext 
-} from "react";
-import { 
-  useHistory, 
-  useParams, 
-  useLocation 
-} from "react-router-dom";
+import React, { useEffect, useState, useContext } from "react";
+import { useHistory, useParams, useLocation } from "react-router-dom";
 import { nftaddress } from "../../config";
 import ButtonApp from "../../styles/Buttons";
-import { 
-  HStack, 
-  IconImg, 
-  Spacer, 
-  VStack 
-} from "../../styles/Stacks";
+import { HStack, IconImg, Spacer, VStack } from "../../styles/Stacks";
 import {
   BodyRegular,
   BodyBold,
@@ -52,10 +39,12 @@ import {
   TelegramShareButton,
   WhatsappShareButton,
 } from "react-share";
-import { 
-  getCollection,
-  getCollectionNFTs 
-} from "../../API/Collection";
+import { getCollection, getCollectionNFTs } from "../../API/Collection";
+import { FilterNFT } from "../../styles/FilterNFT";
+import { FiltersButton } from "../../styles/FiltersButton";
+import { SortButtonCollections } from "../../styles/SortButtonCollections";
+import { SortButtonNFTS } from "../../styles/SortButtonNFTS";
+import { SearchCollection } from "../../styles/SearchCollection";
 
 const CollectionDetails = () => {
   const history = useHistory();
@@ -87,7 +76,9 @@ const CollectionDetails = () => {
    */
   const getData = async () => {
     try {
-      const collectionData = await (await getCollection(collectionNickName)).data;
+      const collectionData = await (
+        await getCollection(collectionNickName)
+      ).data;
       let collection = {
         _id: collectionData.collection._id,
         banner: collectionData.collection.banner,
@@ -103,10 +94,12 @@ const CollectionDetails = () => {
         volumeTrade: collectionData.collection.volumeTrade,
         websiteUrl: collectionData.collection.websiteUrl,
         nftsCount: collectionData.metrics.nftsCount,
-        owners: collectionData.metrics.owners
-      }
-      const collectionNFTData = await (await getCollectionNFTs(collectionData.collection._id, page)).data.nfts;
-      console.log(collectionNFTData)
+        owners: collectionData.metrics.owners,
+      };
+      const collectionNFTData = await (
+        await getCollectionNFTs(collectionData.collection._id, page)
+      ).data.nfts;
+      console.log(collectionNFTData);
       const collectionNFTList = await Promise.all(
         collectionNFTData.map(async (nft) => {
           let collectionNFT = {
@@ -119,8 +112,8 @@ const CollectionDetails = () => {
             preview: nft.preview,
             owner: nft.owner.userName,
             tokenId: nft.tokenId,
-            saleType: nft.saleType.toLowerCase()
-          }
+            saleType: nft.saleType.toLowerCase(),
+          };
           return collectionNFT;
         })
       );
@@ -140,24 +133,26 @@ const CollectionDetails = () => {
   };
 
   const fetchMoreNFTs = async () => {
-    const collectionNFTData = await (await getCollectionNFTs(collection._id, page + 1)).data.nfts;
-      const collectionNFTList = await Promise.all(
-        collectionNFTData.map(async (nft) => {
-          let collectionNFT = {
-            // collectionName: nft.collectionName,
-            creatorLogo: banner1,
-            image: nft.urlFile,
-            name: nft.name,
-            price: nft.price,
-            fileType: nft.fileType,
-            preview: nft.preview,
-            owner: nft.owner.userName,
-            tokenId: nft.tokenId,
-            saleType: nft.saleType.toLowerCase()
-          }
-          return collectionNFT;
-        })
-      );
+    const collectionNFTData = await (
+      await getCollectionNFTs(collection._id, page + 1)
+    ).data.nfts;
+    const collectionNFTList = await Promise.all(
+      collectionNFTData.map(async (nft) => {
+        let collectionNFT = {
+          // collectionName: nft.collectionName,
+          creatorLogo: banner1,
+          image: nft.urlFile,
+          name: nft.name,
+          price: nft.price,
+          fileType: nft.fileType,
+          preview: nft.preview,
+          owner: nft.owner.userName,
+          tokenId: nft.tokenId,
+          saleType: nft.saleType.toLowerCase(),
+        };
+        return collectionNFT;
+      })
+    );
 
     setPage(page + 1);
     setNfts((prevState) => [...prevState, ...collectionNFTList]);
@@ -174,8 +169,7 @@ const CollectionDetails = () => {
   }, []);
 
   const webLocation = useLocation();
-  const webLink =
-    `https://www.xdsea.com/collection/${collectionNickName}`;
+  const webLink = `https://www.xdsea.com/collection/${collectionNickName}`;
 
   const [copied, setCopied] = useState(false);
 
@@ -187,7 +181,7 @@ const CollectionDetails = () => {
 
   return (
     <CollectionSection>
-    {/* Banner */}
+      {/* Banner */}
       <BannerAbsolute>
         <IconImg
           url={collection.banner}
@@ -200,7 +194,7 @@ const CollectionDetails = () => {
           exit={{ opacity: 0 }}
         ></IconImg>
       </BannerAbsolute>
-      <HStack>
+      <HStack style={{ zIndex: 1 }}>
         <VStack
           padding={
             size.width < 768 ? "260px 30px 30px 30px" : "260px 30px 30px 30px"
@@ -208,13 +202,12 @@ const CollectionDetails = () => {
           spacing="15px"
           maxwidth="1200px"
           cursor={"pointer"}
+          style={{ zIndex: 1 }}
         >
           {/* Creator Tag */}
           <CreatorAbsolute>
             <HStack
-              onClick={() =>
-                NavigateTo(`UserProfile/${collection.creator}`)
-              }
+              onClick={() => NavigateTo(`UserProfile/${collection.creator}`)}
               border="30px"
               padding="6px 15px"
               style={{
@@ -599,6 +592,16 @@ const CollectionDetails = () => {
               )}
             </HStack>
           </VStack>
+
+          {/* Filters Search and Sort */}
+          <HStack responsive="true">
+            <SearchCollection placeholder="Search inside the collection"></SearchCollection>
+            <HStack>
+              <FiltersButton></FiltersButton>
+              <Spacer></Spacer>
+              <SortButtonNFTS></SortButtonNFTS>
+            </HStack>
+          </HStack>
         </VStack>
       </HStack>
 
