@@ -41,6 +41,9 @@ import {
 } from "react-share";
 import { getCollection, getCollectionNFTs } from "../../API/Collection";
 import { isSafari } from "../../common/common";
+import { SearchCollection } from "../../styles/SearchCollection";
+import { FiltersButton } from "../../styles/FiltersButton";
+import { SortButtonNFTS } from "../../styles/SortButtonNFTS";
 
 const CollectionDetails = () => {
   const history = useHistory();
