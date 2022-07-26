@@ -5,7 +5,7 @@ export const lightTheme = {
   body: "#FFF",
   text: "#363537",
   toggleBorder: "#FFF",
-  blue: "#044FC5",
+  blue: "#3256FF",
   logo: XDSeaLightLogo,
   background: "rgba(0, 0, 0, 0.0)",
   backElement: "#FFF",

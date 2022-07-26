@@ -20,9 +20,12 @@ import { getCollections } from "../../API/Collection";
 
 import { untitledCollections, verifiedProfiles } from "../../blacklist";
 import CID from "cids";
-import { SortButtonCollections } from "../../styles/SortButtonCollections";
+import { SortButtonNFTS } from "../../styles/SortButtonNFTS";
 import { FilterCollections } from "../../styles/FilterCollections";
 import { FilterNFT } from "../../styles/FilterNFT";
+import { FiltersButton } from "../../styles/FiltersButton";
+import "./customstyles.css";
+import { SortButtonCollections } from "../../styles/SortButtonCollections";
 
 const Discover = () => {
   const history = useHistory();
@@ -574,7 +577,7 @@ const Discover = () => {
   return (
     <DiscoverSection id="scrollableDiv">
       <HStack backgroundimage={DiscoverBar}>
-        <HStack width="1200px" height="157px" padding="0px 30px">
+        <HStack width="1200px" height="157px" padding="0px 9px">
           <TitleBold27 textcolor={appStyle.colors.white}>Discover</TitleBold27>
           <Spacer></Spacer>
           {/* Toggle */}
@@ -657,7 +660,9 @@ const Discover = () => {
               background="rgb(0,0,0, 0.06)"
               padding="6px"
               border="9px"
+              width="100%"
             >
+              <FiltersButton isNftFilter={false}></FiltersButton>
               <Spacer></Spacer>
               <SortButtonCollections></SortButtonCollections>
             </HStack>
@@ -679,6 +684,8 @@ const Discover = () => {
               scrollableTarget="#scrollableDiv"
               style={{ overflow: "hidden" }}
             >
+              {/* Filter and Sort for Collections  */}
+
               <VStack spacing="30px">
                 <HStack>
                   <HStack
@@ -740,8 +747,24 @@ const Discover = () => {
           </VStack>
         ) : (
           <VStack>
-            <FilterNFT></FilterNFT>
-            NFTs here
+            {/* Filter and Sort for NFTs  */}
+            <HStack
+              style={{ zIndex: 1 }}
+              background="rgb(0,0,0, 0.06)"
+              padding="6px"
+              border="9px"
+            >
+              <FiltersButton isNftFilter={true}></FiltersButton>
+              <Spacer></Spacer>
+              <SortButtonNFTS></SortButtonNFTS>
+            </HStack>
+            <VStack
+              background="rgb(0,0,0, 0.06)"
+              width="100%"
+              minheight="600px"
+            >
+              NFTS Here
+            </VStack>
             <Spacer></Spacer>
           </VStack>
         )}

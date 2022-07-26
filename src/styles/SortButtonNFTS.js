@@ -18,7 +18,7 @@ import styled from "styled-components";
 import { useClickAway } from "react-use";
 import useWindowSize from "./useWindowSize";
 
-function SortButtonCollections() {
+function SortButtonNFTS() {
   const ref = useRef(null);
   useClickAway(ref, () => {
     setIsActive(false);
@@ -28,10 +28,10 @@ function SortButtonCollections() {
   const [isActive, setIsActive] = useState(false);
   const [isSelected, setIsSelected] = useState(0);
   const [isOld, setIsOld] = useState(false);
-  const [isVolumeTop, setIsVolumeTop] = useState(false);
-  const [isTopOwners, setIsTopOwners] = useState(false);
-  const [isTopQuantity, setIsTopQuantity] = useState(false);
-  const [isTopFloor, setIsTopFloor] = useState(false);
+  const [isTopPrice, setIsTopPrice] = useState(false);
+
+  const [isTopOffer, setIsTopOffer] = useState(false);
+
   const [isAtoZ, setIsAtoZ] = useState(false);
 
   const flip = {
@@ -70,22 +70,14 @@ function SortButtonCollections() {
                   ? "Oldest"
                   : "Newest"
                 : isSelected === 1
-                ? isVolumeTop
-                  ? "Volume Top"
-                  : "Volume Low"
-                : isSelected === 2
-                ? isTopOwners
-                  ? "Top Owners"
-                  : "Low Owners"
+                ? isTopPrice
+                  ? "Top Price"
+                  : "Low Price"
                 : isSelected === 3
-                ? isTopQuantity
-                  ? "Top Quantity NFTs"
-                  : "Low Quantity NFTs"
+                ? isTopOffer
+                  ? "Top Offers on NFTs"
+                  : "Low Offers on NFTs"
                 : isSelected === 4
-                ? isTopFloor
-                  ? "Top Floor Price"
-                  : "Low Floor Price"
-                : isSelected === 5
                 ? isAtoZ
                   ? "A to Z"
                   : "Z to A"
@@ -182,7 +174,7 @@ function SortButtonCollections() {
               </HStack>
             </HStack>
 
-            {/* Volume */}
+            {/* Price */}
             <HStack
               height="49px"
               background={({ theme }) => theme.faded}
@@ -198,7 +190,7 @@ function SortButtonCollections() {
               <HStack
                 background={
                   isSelected === 1
-                    ? isVolumeTop
+                    ? isTopPrice
                       ? ({ theme }) => theme.blue
                       : "transparent"
                     : null
@@ -206,19 +198,19 @@ function SortButtonCollections() {
                 width="100%"
                 border="6px"
                 cursor="pointer"
-                onClick={() => setIsVolumeTop(true)}
+                onClick={() => setIsTopPrice(true)}
               >
                 <BodyRegular
                   cursor="pointer"
                   textcolor={
                     isSelected === 1
-                      ? isVolumeTop
+                      ? isTopPrice
                         ? "white"
                         : ({ theme }) => theme.text
                       : ({ theme }) => theme.text
                   }
                 >
-                  Top Volume
+                  Top Price
                 </BodyRegular>
               </HStack>
 
@@ -229,93 +221,24 @@ function SortButtonCollections() {
                 border="6px"
                 background={
                   isSelected === 1
-                    ? isVolumeTop
+                    ? isTopPrice
                       ? "transparent"
                       : ({ theme }) => theme.blue
                     : null
                 }
-                onClick={() => setIsVolumeTop(false)}
+                onClick={() => setIsTopPrice(false)}
               >
                 <BodyRegular
                   cursor="pointer"
                   textcolor={
                     isSelected === 1
-                      ? isVolumeTop
+                      ? isTopPrice
                         ? ({ theme }) => theme.text
                         : "white"
                       : ({ theme }) => theme.text
                   }
                 >
-                  Low Volume
-                </BodyRegular>
-              </HStack>
-            </HStack>
-
-            {/* Owners */}
-            <HStack
-              height="49px"
-              background={({ theme }) => theme.faded}
-              // background={isSelected === 1 ? "green" : "yellow"}
-              border="6px"
-              spacing="6px"
-              onClick={() => {
-                setIsSelected(2);
-              }}
-              padding="3px"
-            >
-              {/* Option1  */}
-              <HStack
-                background={
-                  isSelected === 2
-                    ? isTopOwners
-                      ? ({ theme }) => theme.blue
-                      : "transparent"
-                    : null
-                }
-                width="100%"
-                border="6px"
-                cursor="pointer"
-                onClick={() => setIsTopOwners(true)}
-              >
-                <BodyRegular
-                  cursor="pointer"
-                  textcolor={
-                    isSelected === 2
-                      ? isTopOwners
-                        ? "white"
-                        : ({ theme }) => theme.text
-                      : ({ theme }) => theme.text
-                  }
-                >
-                  Top Owners
-                </BodyRegular>
-              </HStack>
-
-              {/* Option2  */}
-              <HStack
-                cursor="pointer"
-                width="100%"
-                border="6px"
-                background={
-                  isSelected === 2
-                    ? isTopOwners
-                      ? "transparent"
-                      : ({ theme }) => theme.blue
-                    : null
-                }
-                onClick={() => setIsTopOwners(false)}
-              >
-                <BodyRegular
-                  cursor="pointer"
-                  textcolor={
-                    isSelected === 2
-                      ? isTopOwners
-                        ? ({ theme }) => theme.text
-                        : "white"
-                      : ({ theme }) => theme.text
-                  }
-                >
-                  Low Owners
+                  Low Price
                 </BodyRegular>
               </HStack>
             </HStack>
@@ -337,7 +260,7 @@ function SortButtonCollections() {
               <HStack
                 background={
                   isSelected === 3
-                    ? isTopQuantity
+                    ? isTopOffer
                       ? ({ theme }) => theme.blue
                       : "transparent"
                     : null
@@ -346,19 +269,19 @@ function SortButtonCollections() {
                 border="6px"
                 cursor="pointer"
                 height="43px"
-                onClick={() => setIsTopQuantity(true)}
+                onClick={() => setIsTopOffer(true)}
               >
                 <BodyRegular
                   cursor="pointer"
                   textcolor={
                     isSelected === 3
-                      ? isTopQuantity
+                      ? isTopOffer
                         ? "white"
                         : ({ theme }) => theme.text
                       : ({ theme }) => theme.text
                   }
                 >
-                  Top Quantity NFT
+                  Top Offer on NFTS
                 </BodyRegular>
               </HStack>
 
@@ -369,30 +292,30 @@ function SortButtonCollections() {
                 border="6px"
                 background={
                   isSelected === 3
-                    ? isTopQuantity
+                    ? isTopOffer
                       ? "transparent"
                       : ({ theme }) => theme.blue
                     : null
                 }
-                onClick={() => setIsTopQuantity(false)}
+                onClick={() => setIsTopOffer(false)}
                 height="43px"
               >
                 <BodyRegular
                   cursor="pointer"
                   textcolor={
                     isSelected === 3
-                      ? isTopQuantity
+                      ? isTopOffer
                         ? ({ theme }) => theme.text
                         : "white"
                       : ({ theme }) => theme.text
                   }
                 >
-                  Low Quantity NFT
+                  Low Offer on NFTS
                 </BodyRegular>
               </HStack>
             </VStack>
 
-            {/* Floor Price */}
+            {/* Alphabetical */}
             <HStack
               height="49px"
               background={({ theme }) => theme.faded}
@@ -408,75 +331,6 @@ function SortButtonCollections() {
               <HStack
                 background={
                   isSelected === 4
-                    ? isTopFloor
-                      ? ({ theme }) => theme.blue
-                      : "transparent"
-                    : null
-                }
-                width="100%"
-                border="6px"
-                cursor="pointer"
-                onClick={() => setIsTopFloor(true)}
-              >
-                <BodyRegular
-                  cursor="pointer"
-                  textcolor={
-                    isSelected === 4
-                      ? isTopFloor
-                        ? "white"
-                        : ({ theme }) => theme.text
-                      : ({ theme }) => theme.text
-                  }
-                >
-                  Top Floor Price
-                </BodyRegular>
-              </HStack>
-
-              {/* Option2  */}
-              <HStack
-                cursor="pointer"
-                width="100%"
-                border="6px"
-                background={
-                  isSelected === 4
-                    ? isTopFloor
-                      ? "transparent"
-                      : ({ theme }) => theme.blue
-                    : null
-                }
-                onClick={() => setIsTopFloor(false)}
-              >
-                <BodyRegular
-                  cursor="pointer"
-                  textcolor={
-                    isSelected === 4
-                      ? isTopFloor
-                        ? ({ theme }) => theme.text
-                        : "white"
-                      : ({ theme }) => theme.text
-                  }
-                >
-                  Low Floor Price
-                </BodyRegular>
-              </HStack>
-            </HStack>
-
-            {/* Alphabetical */}
-            <HStack
-              height="49px"
-              background={({ theme }) => theme.faded}
-              // background={isSelected === 1 ? "green" : "yellow"}
-              border="6px"
-              spacing="6px"
-              onClick={() => {
-                setIsSelected(5);
-              }}
-              padding="3px"
-            >
-              {/* Option1  */}
-              <HStack
-                background={
-                  isSelected === 5
                     ? isAtoZ
                       ? ({ theme }) => theme.blue
                       : "transparent"
@@ -490,7 +344,7 @@ function SortButtonCollections() {
                 <BodyRegular
                   cursor="pointer"
                   textcolor={
-                    isSelected === 5
+                    isSelected === 4
                       ? isAtoZ
                         ? "white"
                         : ({ theme }) => theme.text
@@ -507,7 +361,7 @@ function SortButtonCollections() {
                 width="100%"
                 border="6px"
                 background={
-                  isSelected === 5
+                  isSelected === 4
                     ? isAtoZ
                       ? "transparent"
                       : ({ theme }) => theme.blue
@@ -518,7 +372,7 @@ function SortButtonCollections() {
                 <BodyRegular
                   cursor="pointer"
                   textcolor={
-                    isSelected === 5
+                    isSelected === 4
                       ? isAtoZ
                         ? ({ theme }) => theme.text
                         : "white"
@@ -536,7 +390,7 @@ function SortButtonCollections() {
   );
 }
 
-export { SortButtonCollections };
+export { SortButtonNFTS };
 
 const DropDown = styled(motion.div)`
   position: absolute;
