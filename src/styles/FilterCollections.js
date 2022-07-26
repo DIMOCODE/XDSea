@@ -26,31 +26,31 @@ function FilterCollections({
   const [isPublication, setIsPublication] = useState(true);
   const togglePublication = () => {
     setIsPublication(!isPublication);
-    onChange({...params, page: 1, sortBy: "publication", sortDirection: params.sortDirection * -1});
+    onChange({...params, page: 1, sortBy: "publication", sortDirection: isPublication ? 1 : -1});
   };
 
   const [isVolume, setIsVolume] = useState(true);
   const toggleVolume = () => {
     setIsVolume(!isVolume);
-    onChange({...params, page: 1, sortBy: "volumeTrade", sortDirection: params.sortDirection * -1});
+    onChange({...params, page: 1, sortBy: "volumeTrade", sortDirection: isVolume ? 1 : -1});
   };
 
   const [isFloor, setIsFloor] = useState(true);
   const toggleFloor = () => {
     setIsFloor(!isFloor);
-    onChange({...params, page: 1, sortBy: "floorPrice", sortDirection: params.sortDirection * -1});
+    onChange({...params, page: 1, sortBy: "floorPrice", sortDirection: isFloor ? 1 : -1});
   };
 
   const [isOwners, setIsOwners] = useState(true);
   const toggleOwners = () => {
     setIsOwners(!isOwners);
-    onChange({...params, page: 1, sortBy: "owners", sortDirection: params.sortDirection * -1});
+    onChange({...params, page: 1, sortBy: "owners", sortDirection: isOwners ? 1 : -1});
   };
 
   const [isNFT, setIsNFT] = useState(true);
   const toggleNFT = () => {
     setIsNFT(!isNFT);
-    onChange({...params, page: 1, sortBy: "nfts", sortDirection: params.sortDirection * -1});
+    onChange({...params, page: 1, sortBy: "nfts", sortDirection: isNFT ? 1 : -1});
   };
 
   const [isVerified, setIsVerified] = useState(false);
