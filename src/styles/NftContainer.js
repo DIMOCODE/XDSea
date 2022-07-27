@@ -61,6 +61,10 @@ function NftContainer(props) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [nftStatus] = useState(iconStatus);
 
+  const truncate = (str, n) => {
+    return str?.length > n ? str.substr(0, n - 1) + "..." : str;
+  };
+
   return (
     <VStack
       cursor={"pointer"}
@@ -268,7 +272,7 @@ function NftContainer(props) {
                   orient={"vertical"}
                   textcolor={appStyle.colors.white}
                 >
-                  {itemNumber}
+                  {truncate(itemNumber, 33)}
                 </TitleBold18>
               </HStack>
               <HStack spacing="3px" alignment="center" cursor={"pointer"}>
@@ -283,7 +287,7 @@ function NftContainer(props) {
                   }) || "0"}
                 </TitleBold18>
                 <CaptionRegular textcolor="white" animate={{ opacity: 0.6 }}>
-                  ({usdPrice + " USD"})
+                  ({(usdPrice.xdcPrice * Number(price)).toFixed(2) + " USD"})
                 </CaptionRegular>
                 <Spacer></Spacer>
                 {hasOffers && (

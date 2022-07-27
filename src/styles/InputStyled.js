@@ -13,6 +13,7 @@ function InputStyled(props) {
     placeholder,
     icon,
     onChange,
+    onClick,
     onBlur,
     min,
     max,
@@ -53,6 +54,7 @@ function InputStyled(props) {
         height={height}
         iconWidth={iconWidth}
         iconHeight={iconHeight}
+        onClick={onClick}
       />
       <InputIcon>
         <IconImg

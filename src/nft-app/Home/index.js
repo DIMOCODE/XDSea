@@ -32,7 +32,7 @@ import "./customstyles.css";
 import banner1 from "../../images/Banner1.jpg";
 import { isSafari } from "../../common/common";
 
-const Home = () => {
+const Home = (props) => {
   const history = useHistory();
   const [featuredNFTs, setFeaturedNFTs] = useState([]);
   const [topCollections, setTopCollections] = useState([]);
@@ -584,7 +584,7 @@ const Home = () => {
                     onClickCreator={() =>
                       NavigateTo(`UserProfile/${item.creatorId}`)
                     }
-                    usdPrice="000"
+                    usdPrice={props.xdc}
                   ></NftContainer>
                 </VStack>
               ))

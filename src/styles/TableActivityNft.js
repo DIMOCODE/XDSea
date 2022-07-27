@@ -119,7 +119,7 @@ function TableActivityNft(props) {
                           maximumFractionDigits: 2,
                         })}
                       </BodyRegular>
-                      <CaptionRegular>(000 USD)</CaptionRegular>
+                      <CaptionRegular>{`(${(props.xdc.xdcPrice * Number(item.price)).toFixed(2)} USD)`}</CaptionRegular>
                     </VStack>
                   </HStack>
                 </HStack>

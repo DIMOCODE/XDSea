@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import Xdc3 from "xdc3";
 import { nftaddress, nftmarketlayeraddress } from "../../config";
-import { DEFAULT_PROVIDER, HEADER } from "../../constant";
+import { DEFAULT_PROVIDER, HEADER, LS_ROOT_KEY, LS } from "../../constant";
 import NFT from "../../abis/NFT.json";
 import { AnimatePresence } from "framer-motion/dist/framer-motion";
 import { LoopLogo } from "../../styles/LoopLogo";
@@ -45,17 +45,18 @@ import CID from "cids";
 import { getNFTs } from "../../API/NFT";
 import { getCollections } from "../../API/Collection";
 import { isSafari } from "../../common/common";
+import { getUser } from "../../API/User";
 
 const MyNFT = (props) => {
   const { userId } = useParams();
   const history = useHistory();
   const [collections, setCollections] = useState([]);
-  const [totalCollections, setTotalCollections] = useState(0);
   const [nfts, setNfts] = useState([]);
   const [totalNfts, setTotalNfts] = useState(0);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [loadingCollection, setLoadingCollection] = useState(false);
+  const [user, setUser] = useState({});
 
   const getCreatedCollections = async () => {
     setLoadingCollection(true);
@@ -75,13 +76,16 @@ const MyNFT = (props) => {
     )
       
     setCollections(collectionList);
-    setTotalCollections(collectionData.collectionsAmount);
     setLoadingCollection(false);
   };
 
   const getOwnedNFTs = async () => {
     setLoading(true);
-    const nftData = await (await getNFTs({ page: page, userId: userId })).data;
+    console.log(LS.get(LS_ROOT_KEY));
+    const userData = await (await getUser(userId)).data.user;
+    console.log(userData.user);
+    setUser(userData);
+    const nftData = await (await getNFTs({ pageSize: 15, page: page, userId: userId })).data;
     console.log(nftData);
 
     const nftList = await Promise.all(
@@ -188,7 +192,7 @@ const MyNFT = (props) => {
           <VStack>
             <VStack direction={size.width < 768 ? "row" : "column"}>
               <VStack>
-                {verifiedProfiles.includes(userId) ? (
+                {user.isVerified ? (
                   <VerifiedIcon>
                     <IconImg
                       url={verified}
@@ -217,7 +221,7 @@ const MyNFT = (props) => {
                 </CaptionBold>
                 <BubbleCopied
                   logo={xdcLogo}
-                  address={userId}
+                  address={user.XDCWallets ? user.XDCWallets[0] : ""}
                   icon={copyIcon}
                 ></BubbleCopied>
                 {/* <CaptionBoldShort textcolor={({ theme }) => theme.text}>

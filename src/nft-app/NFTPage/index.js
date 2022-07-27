@@ -1447,7 +1447,7 @@ const NFTDetails = (props) => {
                         : "0.00"}
                     </TitleBold18>
                     <CaptionBoldShort>XDC</CaptionBoldShort>
-                    <CaptionRegular>(000 USD)</CaptionRegular>
+                    <CaptionRegular>{`(${(props.xdc.xdcPrice * Number(nft?.price)).toFixed(2)} USD)`}</CaptionRegular>
                   </HStack>
                 </HStack>
                 <HStack width="100%" height="36px">
@@ -1470,7 +1470,7 @@ const NFTDetails = (props) => {
                           })}
                         </TitleBold18>
                         <CaptionBoldShort>XDC</CaptionBoldShort>
-                        <CaptionRegular>(000 USD)</CaptionRegular>
+                        <CaptionRegular>{`(${(props.xdc.xdcPrice * parseInt(highestOffer)).toFixed(2)} USD)`}</CaptionRegular>
                       </>
                     )}
                   </HStack>
@@ -1699,7 +1699,7 @@ const NFTDetails = (props) => {
               justify="flex-start"
             >
               <HStack width={size.width < 768 ? "690px" : "100%"}>
-                <TableActivityNft activity={eventHistory}></TableActivityNft>
+                <TableActivityNft xdc={props.xdc} activity={eventHistory}></TableActivityNft>
               </HStack>
             </HStack>
           </VStack>
@@ -1736,7 +1736,7 @@ const NFTDetails = (props) => {
                     onClickCreator={() =>
                       NavigateTo(`UserProfile/${item.ownerId}`)
                     }
-                    usdPrice="000"
+                    usdPrice={props.xdc}
                   ></NftContainer>
                 </VStack>
               ))}
