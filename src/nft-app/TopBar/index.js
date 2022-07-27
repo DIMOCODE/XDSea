@@ -270,17 +270,6 @@ function TopBar(props) {
                           ></SwitchButton>
                           {wallet?.connected ? (
                             <UserMenuButton
-                              clickOnUser={() => {
-                                console.log('Wallet Information: ' + LS.get(LS_ROOT_KEY));
-                                NavigateTo(
-                                  `UserProfile/${
-                                    isXdc(wallet?.address)
-                                      ? fromXdc(wallet?.address?.toLowerCase())
-                                      : wallet?.address.toLowerCase()
-                                  }`
-                                )
-                              }
-                              }
                               wallet={wallet}
                             ></UserMenuButton>
                           ) : null}
@@ -593,15 +582,6 @@ function TopBar(props) {
                     <SwitchButton clickOnSwitch={themeToggler}></SwitchButton>
                     {wallet?.connected ? (
                       <UserMenuButton
-                        clickOnUser={() =>
-                          NavigateTo(
-                            `UserProfile/${
-                              isXdc(wallet?.address)
-                                ? fromXdc(wallet?.address?.toLowerCase())
-                                : wallet?.address?.toLowerCase()
-                            }`
-                          )
-                        }
                         wallet={wallet}
                       ></UserMenuButton>
                     ) : null}
@@ -683,7 +663,6 @@ function TopBar(props) {
                       top="54px"
                       left="0px"
                       placeholder="Search for NFTs and Collections"
-                      data={TestData}
                       widthInput={isSearch ? "741px" : "310px"}
                       width="741px"
                       switchBarStatus={handleBarStatus}
@@ -770,15 +749,6 @@ function TopBar(props) {
                     <SwitchButton clickOnSwitch={themeToggler}></SwitchButton>
                     {wallet?.connected ? (
                       <UserMenuButton
-                        clickOnUser={() =>
-                          NavigateTo(
-                            `UserProfile/${
-                              isXdc(wallet?.address)
-                                ? fromXdc(wallet?.address?.toLowerCase())
-                                : wallet?.address.toLowerCase()
-                            }`
-                          )
-                        }
                         wallet={wallet}
                       ></UserMenuButton>
                     ) : null}

@@ -18,7 +18,8 @@ import styled from "styled-components";
 import { useClickAway } from "react-use";
 import useWindowSize from "./useWindowSize";
 
-function SortButtonNFTS() {
+function SortButtonNFTS(props) {
+  const { onChange, params } = props;
   const ref = useRef(null);
   useClickAway(ref, () => {
     setIsActive(false);
@@ -71,12 +72,12 @@ function SortButtonNFTS() {
                   : "Newest"
                 : isSelected === 1
                 ? isTopPrice
-                  ? "Top Price"
-                  : "Low Price"
+                  ? "Highest Price"
+                  : "Lowest Price"
                 : isSelected === 3
                 ? isTopOffer
-                  ? "Top Offers on NFTs"
-                  : "Low Offers on NFTs"
+                  ? "Most Offers"
+                  : "Least Offers"
                 : isSelected === 4
                 ? isAtoZ
                   ? "A to Z"
@@ -129,7 +130,10 @@ function SortButtonNFTS() {
                 width="100%"
                 border="6px"
                 cursor="pointer"
-                onClick={() => setIsOld(true)}
+                onClick={() => {
+                  setIsOld(true);
+                  onChange({...params, page: 1, sortBy: "publication", sortDirection: 1});
+                }}
               >
                 <BodyRegular
                   cursor="pointer"
@@ -157,7 +161,10 @@ function SortButtonNFTS() {
                       : ({ theme }) => theme.blue
                     : null
                 }
-                onClick={() => setIsOld(false)}
+                onClick={() => {
+                  setIsOld(false);
+                  onChange({...params, page: 1, sortBy: "publication", sortDirection: -1});
+                }}
               >
                 <BodyRegular
                   cursor="pointer"
@@ -198,7 +205,10 @@ function SortButtonNFTS() {
                 width="100%"
                 border="6px"
                 cursor="pointer"
-                onClick={() => setIsTopPrice(true)}
+                onClick={() => {
+                  setIsTopPrice(true);
+                  onChange({...params, page: 1, sortBy: "price", sortDirection: -1});
+                }}
               >
                 <BodyRegular
                   cursor="pointer"
@@ -210,7 +220,7 @@ function SortButtonNFTS() {
                       : ({ theme }) => theme.text
                   }
                 >
-                  Top Price
+                  Highest Price
                 </BodyRegular>
               </HStack>
 
@@ -226,7 +236,10 @@ function SortButtonNFTS() {
                       : ({ theme }) => theme.blue
                     : null
                 }
-                onClick={() => setIsTopPrice(false)}
+                onClick={() => {
+                  setIsTopPrice(false);
+                  onChange({...params, page: 1, sortBy: "price", sortDirection: 1});
+                }}
               >
                 <BodyRegular
                   cursor="pointer"
@@ -238,7 +251,7 @@ function SortButtonNFTS() {
                       : ({ theme }) => theme.text
                   }
                 >
-                  Low Price
+                  Lowest Price
                 </BodyRegular>
               </HStack>
             </HStack>
@@ -269,7 +282,10 @@ function SortButtonNFTS() {
                 border="6px"
                 cursor="pointer"
                 height="43px"
-                onClick={() => setIsTopOffer(true)}
+                onClick={() => {
+                  setIsTopOffer(true);
+                  onChange({...params, page: 1, sortBy: "offers", sortDirection: -1});
+                }}
               >
                 <BodyRegular
                   cursor="pointer"
@@ -281,7 +297,7 @@ function SortButtonNFTS() {
                       : ({ theme }) => theme.text
                   }
                 >
-                  Top Offer on NFTS
+                  Most Offers
                 </BodyRegular>
               </HStack>
 
@@ -297,7 +313,10 @@ function SortButtonNFTS() {
                       : ({ theme }) => theme.blue
                     : null
                 }
-                onClick={() => setIsTopOffer(false)}
+                onClick={() => {
+                  setIsTopOffer(false);
+                  onChange({...params, page: 1, sortBy: "offers", sortDirection: 1});
+                }}
                 height="43px"
               >
                 <BodyRegular
@@ -310,7 +329,7 @@ function SortButtonNFTS() {
                       : ({ theme }) => theme.text
                   }
                 >
-                  Low Offer on NFTS
+                  Least Offers
                 </BodyRegular>
               </HStack>
             </VStack>
@@ -339,7 +358,10 @@ function SortButtonNFTS() {
                 width="100%"
                 border="6px"
                 cursor="pointer"
-                onClick={() => setIsAtoZ(true)}
+                onClick={() => {
+                  setIsAtoZ(true);
+                  onChange({...params, page: 1, sortBy: "alphabet", sortDirection: 1});
+                }}
               >
                 <BodyRegular
                   cursor="pointer"
@@ -367,7 +389,10 @@ function SortButtonNFTS() {
                       : ({ theme }) => theme.blue
                     : null
                 }
-                onClick={() => setIsAtoZ(false)}
+                onClick={() => {
+                  setIsAtoZ(false);
+                  onChange({...params, page: 1, sortBy: "alphabet", sortDirection: -1});
+                }}
               >
                 <BodyRegular
                   cursor="pointer"

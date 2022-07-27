@@ -59,7 +59,7 @@ const MyNFT = (props) => {
 
   const getCreatedCollections = async () => {
     setLoadingCollection(true);
-    const collectionData = await (await getCollections({ userId: userId })).data;
+    const collectionData = await (await getCollections({ pageSize: 15, userId: userId })).data;
     console.log(collectionData);
     const collectionList = await Promise.all(
       collectionData.collections.map(async (item) => {

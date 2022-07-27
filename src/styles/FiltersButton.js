@@ -35,7 +35,7 @@ import { FilterNFT } from "./FilterNFT";
 import useWindowSize from "../styles/useWindowSize";
 
 function FiltersButton(props) {
-  const { isNftFilter, onChange, params, top, right, left } = props;
+  const { isNftFilter, onChange, params, top, right, left, isSearchPage } = props;
 
   const size = useWindowSize();
   const [btnAll, setBtnAll] = useState(false);
@@ -46,6 +46,7 @@ function FiltersButton(props) {
   const [btnVerified, setBtnVerified] = useState(false);
   const [minValue, setMinValue] = useState(1000);
   const [maxValue, setMaxValue] = useState(150000);
+  const [activeFilters, setActiveFilters] = useState(0);
 
   const activated = {
     on: {
@@ -109,7 +110,7 @@ function FiltersButton(props) {
           <Spacer></Spacer>
         </HStack>
 
-        {/* {size.width < 728 ? (
+        {activeFilters > 0 && size.width < 728 ? (
           <Bubble>
             <HStack
               background={({ theme }) => theme.blue}
@@ -117,18 +118,21 @@ function FiltersButton(props) {
               height="30px"
               border="6px"
             >
-              <BodyBold textcolor="white">5</BodyBold>
+              <BodyBold textcolor="white">{activeFilters}</BodyBold>
             </HStack>
           </Bubble>
-        ) : (
-          <HStack
-            background={({ theme }) => theme.blue}
-            width="48px"
-            border="6px"
-          >
-            <BodyBold textcolor="white">5</BodyBold>
-          </HStack>
-        )} */}
+        ) : activeFilters > 0 && size.width > 728 
+          ? (
+            <HStack
+              background={({ theme }) => theme.blue}
+              width="48px"
+              border="6px"
+            >
+              <BodyBold textcolor="white">{activeFilters}</BodyBold>
+            </HStack>
+          )
+          : null
+        }
 
         <IconImg
           cursor="pointer"
@@ -136,11 +140,36 @@ function FiltersButton(props) {
           width="21px"
           height="21px"
           whileTap={{ scale: 0.9 }}
-          onClick={() => onChange({
-            page: 1,
-            sortBy: "publication",
-            sortDirection: 1
-          })}
+          onClick={() => {
+            if(isSearchPage) {
+              if(isNftFilter)
+                onChange({
+                  searchBy: params.searchBy,
+                  page: 1
+                });
+              else
+                onChange({
+                  searchTerm: params.searchTerm,
+                  page: 1
+                });
+            }
+            else{
+              if(isNftFilter)
+                onChange({
+                  page: 1,
+                  sortBy: "publication",
+                  sortDirection: -1
+                });
+              else
+                onChange({
+                  page: 1,
+                  sortBy: "volumeTrade",
+                  sortDirection: -1,
+                });
+            }
+            setBtnVerified(false);
+            setActiveFilters(0);
+          }}
         ></IconImg>
       </HStack>
       {isActive && (
@@ -186,11 +215,12 @@ function FiltersButton(props) {
                       setMaxValue(document.getElementsByClassName("FilterPriceSlider")[0]
                       .getElementsByTagName("span")[6].getElementsByTagName("input")[0].value);
                       onChange({...params, page: 1, priceRangeStart: document.getElementsByClassName("FilterPriceSlider")[0]
-                      .getElementsByTagName("span")[2].getElementsByTagName("input")[0].value, priceRangeEnd: document.getElementsByClassName("FilterPriceSlider")[0]
-                      .getElementsByTagName("span")[6].getElementsByTagName("input")[0].value
-                    });
-                    
-                  }}
+                        .getElementsByTagName("span")[2].getElementsByTagName("input")[0].value, priceRangeEnd: document.getElementsByClassName("FilterPriceSlider")[0]
+                        .getElementsByTagName("span")[6].getElementsByTagName("input")[0].value
+                      });
+                      if(!params.priceRangeStart)
+                        setActiveFilters(activeFilters + 1);
+                    }}
                   >
                     <BodyRegular cursor="pointer" textcolor="white">
                       Apply
@@ -305,6 +335,8 @@ function FiltersButton(props) {
                     onClick={() => {
                       onChange({...params, page: 1, saleType1: !btnSale ? "SALE" : "", saleType2: !btnRelist ? "RELIST" : "",
                         saleType3: !btnSold ? "SOLD" : "", saleType4: !btnNFS ? "NOT_SALE" : ""});
+                      if(!params.saleType1 && !params.saleType2 && !params.saleType3 && !params.saleType4)
+                        setActiveFilters(activeFilters + 1);
                     }}
                   >
                     <BodyRegular cursor="pointer" textcolor="white">
@@ -324,13 +356,14 @@ function FiltersButton(props) {
               onClick={() => {
                 setBtnVerified(!btnVerified);
                 onChange({...params, page: 1, verified: !btnVerified});
+                setActiveFilters(btnVerified ? activeFilters - 1 : activeFilters + 1);
               }}
               cursor="pointer"
             >
               <CaptionBoldShort cursor="pointer">Status</CaptionBoldShort>
               <HStack cursor="pointer">
                 <BodyBold cursor="pointer">
-                  {btnVerified ? "Verified" : "Non Verified"}
+                  Verified Only
                 </BodyBold>
                 <Spacer></Spacer>
                 <IconImg

@@ -79,7 +79,7 @@ const Discover = () => {
   const [nftParams, setNftParams] = useState({
     page: 1,
     sortBy: "publication",
-    sortDirection: 1,
+    sortDirection: -1,
   });
   const [totalCollections, setTotalCollections] = useState(0);
   const [totalNFTs, setTotalNFTs] = useState(0);
@@ -697,7 +697,7 @@ const Discover = () => {
                 params = {nftParams}
               ></FiltersButton>
               <Spacer></Spacer>
-              <SortButtonNFTS></SortButtonNFTS>
+              <SortButtonNFTS onChange={handleChangeFilterNFT} params={nftParams}></SortButtonNFTS>
             </HStack>
             <VStack
               background="rgb(0,0,0, 0.06)"
@@ -749,7 +749,7 @@ const Discover = () => {
                                 key={i}
                                 isVerified={item.isVerified}
                                 iconStatus={item.saleType}
-                                hasOffers={item.hasOpenOffer > 0 ? true : false}
+                                hasOffers={item.hasOpenOffer ? true : false}
                                 creatorImage={banner1}
                                 itemImage={item.image}
                                 price={item.price}
