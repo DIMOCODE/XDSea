@@ -287,7 +287,7 @@ function NftContainer(props) {
                   }) || "0"}
                 </TitleBold18>
                 <CaptionRegular textcolor="white" animate={{ opacity: 0.6 }}>
-                  ({usdPrice + " USD"})
+                  ({(usdPrice.xdcPrice * Number(price)).toFixed(2) + " USD"})
                 </CaptionRegular>
                 <Spacer></Spacer>
                 {hasOffers && (

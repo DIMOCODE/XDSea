@@ -45,7 +45,7 @@ import { SearchCollection } from "../../styles/SearchCollection";
 import { FiltersButton } from "../../styles/FiltersButton";
 import { SortButtonNFTS } from "../../styles/SortButtonNFTS";
 
-const CollectionDetails = () => {
+const CollectionDetails = (props) => {
   const history = useHistory();
   const [nfts, setNfts] = useState([]);
   const [loadingState, setLoadingState] = useState("not-loaded");
@@ -607,7 +607,9 @@ const CollectionDetails = () => {
           <HStack responsive="true">
             <SearchCollection placeholder="Search inside the collection"></SearchCollection>
             <HStack>
-              <FiltersButton></FiltersButton>
+              <FiltersButton 
+                isNftFilter={true}
+              ></FiltersButton>
               <Spacer></Spacer>
               <SortButtonNFTS></SortButtonNFTS>
             </HStack>
@@ -669,7 +671,7 @@ const CollectionDetails = () => {
                             NavigateTo(`UserProfile/${item.ownerId}`)
                           }
                           owner={true}
-                          usdPrice="000"
+                          usdPrice={props.xdc}
                         ></NftContainer>
                       </VStack>
                     ))

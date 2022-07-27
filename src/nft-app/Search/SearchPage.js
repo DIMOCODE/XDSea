@@ -36,7 +36,7 @@ import { LayoutGroup } from "framer-motion/dist/framer-motion";
 import { Collection } from "../../styles/Collection";
 import { isSafari } from "../../common/common";
 
-function SearchPage() {
+function SearchPage(props) {
   const size = useWindowSize();
   const history = useHistory();
   const location = useLocation();
@@ -413,7 +413,7 @@ function SearchPage() {
                                     NavigateTo(`UserProfile/${item.creator._id}`)
                                   }
                                   owner={true}
-                                  usdPrice="000"
+                                  usdPrice={props.xdc}
                                 ></NftContainer>
                               </VStack>
                             ))}

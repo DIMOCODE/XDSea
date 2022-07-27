@@ -32,7 +32,7 @@ import { FiltersButton } from "../../styles/FiltersButton";
 import "./customstyles.css";
 import { SortButtonCollections } from "../../styles/SortButtonCollections";
 
-const Discover = () => {
+const Discover = (props) => {
   const history = useHistory();
 
   const [collections, setCollections] = useState([]);
@@ -766,7 +766,7 @@ const Discover = () => {
                                   NavigateTo(`UserProfile/${item.creatorId}`)
                                 }
                                 owner={true}
-                                usdPrice="000"
+                                usdPrice={props.xdc}
                               ></NftContainer>
                             </VStack>
                           ))}
