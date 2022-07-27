@@ -35,7 +35,7 @@ import { FilterNFT } from "./FilterNFT";
 import useWindowSize from "../styles/useWindowSize";
 
 function FiltersButton(props) {
-  const { isNftFilter, onChange, params } = props;
+  const { isNftFilter, onChange, params, top, right, left } = props;
 
   const size = useWindowSize();
   const [btnAll, setBtnAll] = useState(false);
@@ -144,7 +144,7 @@ function FiltersButton(props) {
         ></IconImg>
       </HStack>
       {isActive && (
-        <DropDown>
+        <DropDown top={top} right={right} left={left}>
           <VStack
             background={({ theme }) => theme.backElement}
             border="9px"
@@ -351,10 +351,17 @@ function FiltersButton(props) {
 
 export { FiltersButton };
 
-const DropDown = styled1(motion.div)`
+const DropDown = styled1(motion.div).attrs((props) => ({
+  top: props.top || "60px",
+  left: props.left || "0px",
+  right: props.right || "",
+}))`
   position: absolute;
-  left: 0px;
-  top: 66px;
+  left: ${(props) => props.left};
+  top: ${(props) => props.top} ;
+  right: ${(props) => props.right};
+ 
+
 `;
 
 const Bubble = styled1(motion.div)`

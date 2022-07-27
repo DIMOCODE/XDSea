@@ -1,20 +1,8 @@
-import React, { 
-  useEffect, 
-  useState, 
-  useContext 
-} from "react";
-import { 
-  useHistory, 
-  useParams, 
-} from "react-router-dom";
+import React, { useEffect, useState, useContext } from "react";
+import { useHistory, useParams } from "react-router-dom";
 import { nftaddress } from "../../config";
 import ButtonApp from "../../styles/Buttons";
-import { 
-  HStack, 
-  IconImg, 
-  Spacer, 
-  VStack 
-} from "../../styles/Stacks";
+import { HStack, IconImg, Spacer, VStack } from "../../styles/Stacks";
 import {
   BodyRegular,
   BodyBold,
@@ -51,11 +39,11 @@ import {
   TelegramShareButton,
   WhatsappShareButton,
 } from "react-share";
-import { 
-  getCollection,
-  getCollectionNFTs 
-} from "../../API/Collection";
+import { getCollection, getCollectionNFTs } from "../../API/Collection";
 import { isSafari } from "../../common/common";
+import { SearchCollection } from "../../styles/SearchCollection";
+import { FiltersButton } from "../../styles/FiltersButton";
+import { SortButtonNFTS } from "../../styles/SortButtonNFTS";
 
 const CollectionDetails = () => {
   const history = useHistory();
@@ -87,10 +75,14 @@ const CollectionDetails = () => {
    */
   const getData = async () => {
     try {
-      const collectionData = await (await getCollection(collectionNickName)).data;
+      const collectionData = await (
+        await getCollection(collectionNickName)
+      ).data;
       let collection = {
         _id: collectionData.collection._id,
-        banner: isSafari ? collectionData.collection.banner.v1 : collectionData.collection.banner.v0,
+        banner: isSafari
+          ? collectionData.collection.banner.v1
+          : collectionData.collection.banner.v0,
         creator: collectionData.collection.addressCreator,
         creatorId: collectionData.collection.creator._id,
         isVerified: collectionData.collection.creator.isVerified,
@@ -98,17 +90,21 @@ const CollectionDetails = () => {
         discordUrl: collectionData.collection.discordUrl,
         floorPrice: collectionData.collection.floorPrice,
         instagramUrl: collectionData.collection.instagramUrl,
-        logo: isSafari ? collectionData.collection.logo.v1 : collectionData.collection.logo.v0,
+        logo: isSafari
+          ? collectionData.collection.logo.v1
+          : collectionData.collection.logo.v0,
         name: collectionData.collection.name,
         twitterUrl: collectionData.collection.twitterUrl,
         volumeTrade: collectionData.collection.volumeTrade,
         websiteUrl: collectionData.collection.websiteUrl,
         nftsCount: collectionData.metrics.nftsCount,
-        owners: collectionData.metrics.owners
-      }
-      console.log(collectionData)
-      const collectionNFTData = await (await getCollectionNFTs(collectionData.collection._id, page)).data.nfts;
-      console.log(collectionNFTData)
+        owners: collectionData.metrics.owners,
+      };
+      console.log(collectionData);
+      const collectionNFTData = await (
+        await getCollectionNFTs(collectionData.collection._id, page)
+      ).data.nfts;
+      console.log(collectionNFTData);
       const collectionNFTList = await Promise.all(
         collectionNFTData.map(async (nft) => {
           let collectionNFT = {
@@ -124,8 +120,8 @@ const CollectionDetails = () => {
             ownerId: nft.owner._id,
             tokenId: nft.tokenId,
             saleType: nft.saleType.toLowerCase(),
-            isVerified: nft.creator.isVerified
-          }
+            isVerified: nft.creator.isVerified,
+          };
           return collectionNFT;
         })
       );
@@ -145,27 +141,29 @@ const CollectionDetails = () => {
   };
 
   const fetchMoreNFTs = async () => {
-    const collectionNFTData = await (await getCollectionNFTs(collection._id, page + 1)).data.nfts;
-      const collectionNFTList = await Promise.all(
-        collectionNFTData.map(async (nft) => {
-          let collectionNFT = {
-            collectionName: nft.collectionId.name,
-            creatorLogo: banner1,
-            image: isSafari ? nft.urlFile.v1 : nft.urlFile.v0,
-            name: nft.name,
-            hasOpenOffer: nft.hasOpenOffer,
-            price: nft.price,
-            fileType: nft.fileType,
-            preview: isSafari ? nft.preview.v1 : nft.preview.v0,
-            owner: nft.owner.userName,
-            ownerId: nft.owner._id,
-            tokenId: nft.tokenId,
-            saleType: nft.saleType.toLowerCase(),
-            isVerified: nft.creator.isVerified
-          }
-          return collectionNFT;
-        })
-      );
+    const collectionNFTData = await (
+      await getCollectionNFTs(collection._id, page + 1)
+    ).data.nfts;
+    const collectionNFTList = await Promise.all(
+      collectionNFTData.map(async (nft) => {
+        let collectionNFT = {
+          collectionName: nft.collectionId.name,
+          creatorLogo: banner1,
+          image: isSafari ? nft.urlFile.v1 : nft.urlFile.v0,
+          name: nft.name,
+          hasOpenOffer: nft.hasOpenOffer,
+          price: nft.price,
+          fileType: nft.fileType,
+          preview: isSafari ? nft.preview.v1 : nft.preview.v0,
+          owner: nft.owner.userName,
+          ownerId: nft.owner._id,
+          tokenId: nft.tokenId,
+          saleType: nft.saleType.toLowerCase(),
+          isVerified: nft.creator.isVerified,
+        };
+        return collectionNFT;
+      })
+    );
 
     setPage(page + 1);
     setNfts((prevState) => [...prevState, ...collectionNFTList]);
@@ -181,8 +179,7 @@ const CollectionDetails = () => {
     getData();
   }, []);
 
-  const webLink =
-    `https://www.xdsea.com/collection/${collectionNickName}`;
+  const webLink = `https://www.xdsea.com/collection/${collectionNickName}`;
 
   const [copied, setCopied] = useState(false);
 
@@ -194,7 +191,7 @@ const CollectionDetails = () => {
 
   return (
     <CollectionSection>
-    {/* Banner */}
+      {/* Banner */}
       <BannerAbsolute>
         <IconImg
           url={collection.banner}
@@ -207,7 +204,7 @@ const CollectionDetails = () => {
           exit={{ opacity: 0 }}
         ></IconImg>
       </BannerAbsolute>
-      <HStack>
+      <HStack style={{ zIndex: 1 }}>
         <VStack
           padding={
             size.width < 768 ? "260px 30px 30px 30px" : "260px 30px 30px 30px"
@@ -215,13 +212,12 @@ const CollectionDetails = () => {
           spacing="15px"
           maxwidth="1200px"
           cursor={"pointer"}
+          style={{ zIndex: 1 }}
         >
           {/* Creator Tag */}
           <CreatorAbsolute>
             <HStack
-              onClick={() =>
-                NavigateTo(`UserProfile/${collection.creatorId}`)
-              }
+              onClick={() => NavigateTo(`UserProfile/${collection.creatorId}`)}
               border="30px"
               padding="6px 15px"
               style={{
@@ -606,6 +602,16 @@ const CollectionDetails = () => {
               )}
             </HStack>
           </VStack>
+
+          {/* Filters Search and Sort */}
+          <HStack responsive="true">
+            <SearchCollection placeholder="Search inside the collection"></SearchCollection>
+            <HStack>
+              <FiltersButton></FiltersButton>
+              <Spacer></Spacer>
+              <SortButtonNFTS></SortButtonNFTS>
+            </HStack>
+          </HStack>
         </VStack>
       </HStack>
 

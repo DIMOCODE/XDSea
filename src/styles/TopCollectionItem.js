@@ -9,8 +9,10 @@ import {
 } from "./TextStyles";
 import miniXdcLogo from "../images/miniXdcLogo.png";
 import { useState } from "react";
+import useWindowSize from "../styles/useWindowSize";
 
 function TopCollectionItem(props) {
+  const size = useWindowSize();
   const {
     position,
     floorprice,
@@ -77,7 +79,9 @@ function TopCollectionItem(props) {
           {/* Floor Price and Owners */}
 
           <HStack
-            background={({ theme }) => theme.faded}
+            // background={
+            //   size.width > 414 ? "transparent" : ({ theme }) => theme.faded
+            // }
             spacing="6px"
             border="6px"
             width="100%"
@@ -96,7 +100,9 @@ function TopCollectionItem(props) {
           {/* NFT and Volume */}
 
           <HStack
-            background={({ theme }) => theme.faded}
+            // background={
+            //   size.width > 414 ? "transparent" : ({ theme }) => theme.faded
+            // }
             spacing="6px"
             border="6px"
             width="100%"

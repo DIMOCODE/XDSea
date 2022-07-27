@@ -79,7 +79,7 @@ const Discover = () => {
   const [nftParams, setNftParams] = useState({
     page: 1,
     sortBy: "publication",
-    sortDirection: 1
+    sortDirection: 1,
   });
   const [totalCollections, setTotalCollections] = useState(0);
   const [totalNFTs, setTotalNFTs] = useState(0);
@@ -90,7 +90,9 @@ const Discover = () => {
   const getData = async () => {
     try {
       setLoading(true);
-      const collectionData = await (await getCollections(collectionParams)).data;
+      const collectionData = await (
+        await getCollections(collectionParams)
+      ).data;
       const collectionList = await Promise.all(
         collectionData.collections.map(async (collectionItem) => {
           let collection = {
@@ -99,7 +101,9 @@ const Discover = () => {
             description: collectionItem.description,
             logo: isSafari ? collectionItem.logo.v1 : collectionItem.logo.v0,
             isVerified: collectionItem.creator.isVerified,
-            banner: isSafari ? collectionItem.banner.v1 : collectionItem.banner.v0,
+            banner: isSafari
+              ? collectionItem.banner.v1
+              : collectionItem.banner.v0,
             creator: collectionItem.creator.userName,
             creatorId: collectionItem.creator._id,
             floorPrice: collectionItem.floorPrice,
@@ -270,7 +274,10 @@ const Discover = () => {
 
       setCollections(collectionList);
       setTotalCollections(collectionData.collectionsAmount);
-      setCollectionParams(prevState => ({...prevState, page: prevState.page + 1}));
+      setCollectionParams((prevState) => ({
+        ...prevState,
+        page: prevState.page + 1,
+      }));
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -292,7 +299,9 @@ const Discover = () => {
           description: collectionItem.description,
           logo: isSafari ? collectionItem.logo.v1 : collectionItem.logo.v0,
           isVerified: collectionItem.creator.isVerified,
-          banner: isSafari ? collectionItem.banner.v1 : collectionItem.banner.v0,
+          banner: isSafari
+            ? collectionItem.banner.v1
+            : collectionItem.banner.v0,
           creator: collectionItem.creator.userName,
           creatorId: collectionItem.creator._id,
           floorPrice: collectionItem.floorPrice,
@@ -330,7 +339,7 @@ const Discover = () => {
     console.log(params);
     setLoading(true);
     const collectionData = await (await getCollections(params)).data;
-    console.log(collectionData)
+    console.log(collectionData);
     const collectionList = await Promise.all(
       collectionData.collections.map(async (collectionItem) => {
         let collection = {
@@ -339,7 +348,9 @@ const Discover = () => {
           description: collectionItem.description,
           logo: isSafari ? collectionItem.logo.v1 : collectionItem.logo.v0,
           isVerified: collectionItem.creator.isVerified,
-          banner: isSafari ? collectionItem.banner.v1 : collectionItem.banner.v0,
+          banner: isSafari
+            ? collectionItem.banner.v1
+            : collectionItem.banner.v0,
           creator: collectionItem.creator.userName,
           creatorId: collectionItem.creator._id,
           floorPrice: collectionItem.floorPrice,
@@ -353,7 +364,10 @@ const Discover = () => {
 
     setCollections(collectionList);
     setTotalCollections(collectionData.collectionsAmount);
-    setCollectionParams(prevState => ({...prevState, page: prevState.page + 1}));
+    setCollectionParams((prevState) => ({
+      ...prevState,
+      page: prevState.page + 1,
+    }));
     setLoading(false);
   };
 
@@ -364,7 +378,7 @@ const Discover = () => {
     try {
       setLoading(true);
       const nftData = await (await getNFTs(nftParams)).data;
-      console.log(nftData)
+      console.log(nftData);
       const nftList = await Promise.all(
         nftData.nfts.map(async (nft) => {
           let nftItem = {
@@ -380,15 +394,15 @@ const Discover = () => {
             creatorId: nft.creator._id,
             tokenId: nft.tokenId,
             saleType: nft.saleType.toLowerCase(),
-            isVerified: nft.creator.isVerified
-          }
+            isVerified: nft.creator.isVerified,
+          };
           return nftItem;
         })
       );
 
       setNfts(nftList);
       setTotalNFTs(nftData.nftsAmount);
-      setNftParams(prevState => ({...prevState, page: prevState.page + 1}));
+      setNftParams((prevState) => ({ ...prevState, page: prevState.page + 1 }));
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -398,7 +412,7 @@ const Discover = () => {
   /**
    * Get the nfts data for the next page
    */
-   const fetchMoreNFTs = async () => {
+  const fetchMoreNFTs = async () => {
     const nftData = await (await getNFTs(nftParams)).data.nfts;
     const nftList = await Promise.all(
       nftData.map(async (nft) => {
@@ -416,33 +430,33 @@ const Discover = () => {
           creatorId: nft.creator._id,
           tokenId: nft.tokenId,
           saleType: nft.saleType.toLowerCase(),
-          isVerified: nft.creator.isVerified
-        }
+          isVerified: nft.creator.isVerified,
+        };
         return nftItem;
       })
     );
-    
-    setNftParams(prevState => ({...prevState, page: prevState.page + 1}));
+
+    setNftParams((prevState) => ({ ...prevState, page: prevState.page + 1 }));
     setNfts((prevState) => [...prevState, ...nftList]);
   };
 
   /**
    * Update the state of the component and update the nft data
-   * 
+   *
    * @param {*} params - NFT Search Params
    */
-   const handleChangeFilterNFT = (params) => {
+  const handleChangeFilterNFT = (params) => {
     setNftParams(params);
     updateNFTs(params);
-  }
+  };
 
   /**
    * Update the NFT items
-   * 
+   *
    * @param {*} params - NFT Search Params
    */
   const updateNFTs = async (params) => {
-    console.log(params)
+    console.log(params);
     setLoading(true);
     const nftData = await (await getNFTs(params)).data;
     console.log(nftData)
@@ -462,17 +476,17 @@ const Discover = () => {
           creatorId: nft.creator._id,
           tokenId: nft.tokenId,
           saleType: nft.saleType.toLowerCase(),
-          isVerified: nft.creator.isVerified
-        }
+          isVerified: nft.creator.isVerified,
+        };
         return nftItem;
       })
     );
 
     setNfts(nftList);
     setTotalNFTs(nftData.nftsAmount);
-    setNftParams(prevState => ({...prevState, page: prevState.page + 1}));
+    setNftParams((prevState) => ({ ...prevState, page: prevState.page + 1 }));
     setLoading(false);
-  }
+  };
 
   function NavigateTo(route) {
     setShowMenu(false);
@@ -744,7 +758,9 @@ const Discover = () => {
                                 fileType={item.fileType}
                                 background={({ theme }) => theme.backElement}
                                 onClick={() =>
-                                  NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
+                                  NavigateTo(
+                                    `nft/${nftaddress}/${item.tokenId}`
+                                  )
                                 }
                                 onClickCreator={() =>
                                   NavigateTo(`UserProfile/${item.creatorId}`)
