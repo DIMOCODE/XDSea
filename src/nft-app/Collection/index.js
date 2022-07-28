@@ -1,27 +1,15 @@
-import React, { 
-  useEffect, 
-  useState, 
-  useContext 
-} from "react";
-import { 
-  useHistory, 
-  useParams, 
-  useLocation 
-} from "react-router-dom";
+import React, { useEffect, useState, useContext } from "react";
+import { useHistory, useParams } from "react-router-dom";
 import { nftaddress } from "../../config";
 import ButtonApp from "../../styles/Buttons";
-import { 
-  HStack, 
-  IconImg, 
-  Spacer, 
-  VStack 
-} from "../../styles/Stacks";
+import { HStack, IconImg, Spacer, VStack } from "../../styles/Stacks";
 import {
   BodyRegular,
   BodyBold,
   CaptionBoldShort,
   CaptionBold,
   TitleBold21,
+  TitleBold18
 } from "../../styles/TextStyles";
 import instagram from "../../images/instagramMini.png";
 import twitter from "../../images/twitter.png";
@@ -52,12 +40,14 @@ import {
   TelegramShareButton,
   WhatsappShareButton,
 } from "react-share";
-import { 
-  getCollection,
-  getCollectionNFTs 
-} from "../../API/Collection";
+import { getCollection, getCollectionNFTs } from "../../API/Collection";
+import { isSafari } from "../../common/common";
+import { SearchCollection } from "../../styles/SearchCollection";
+import { FiltersButton } from "../../styles/FiltersButton";
+import { SortButtonNFTS } from "../../styles/SortButtonNFTS";
+import noResult from "../../images/noResult.png";
 
-const CollectionDetails = () => {
+const CollectionDetails = (props) => {
   const history = useHistory();
   const [nfts, setNfts] = useState([]);
   const [loadingState, setLoadingState] = useState("not-loaded");
@@ -87,40 +77,53 @@ const CollectionDetails = () => {
    */
   const getData = async () => {
     try {
-      const collectionData = await (await getCollection(collectionNickName)).data;
+      const collectionData = await (
+        await getCollection(collectionNickName)
+      ).data;
       let collection = {
         _id: collectionData.collection._id,
-        banner: collectionData.collection.banner,
+        banner: isSafari
+          ? collectionData.collection.banner.v1
+          : collectionData.collection.banner.v0,
         creator: collectionData.collection.addressCreator,
+        creatorId: collectionData.collection.creator._id,
         isVerified: collectionData.collection.creator.isVerified,
         description: collectionData.collection.description,
         discordUrl: collectionData.collection.discordUrl,
         floorPrice: collectionData.collection.floorPrice,
         instagramUrl: collectionData.collection.instagramUrl,
-        logo: collectionData.collection.logo,
+        logo: isSafari
+          ? collectionData.collection.logo.v1
+          : collectionData.collection.logo.v0,
         name: collectionData.collection.name,
         twitterUrl: collectionData.collection.twitterUrl,
         volumeTrade: collectionData.collection.volumeTrade,
         websiteUrl: collectionData.collection.websiteUrl,
         nftsCount: collectionData.metrics.nftsCount,
-        owners: collectionData.metrics.owners
-      }
-      const collectionNFTData = await (await getCollectionNFTs(collectionData.collection._id, page)).data.nfts;
-      console.log(collectionNFTData)
+        owners: collectionData.metrics.owners,
+      };
+      console.log(collectionData);
+      const collectionNFTData = await (
+        await getCollectionNFTs(collectionData.collection._id, page)
+      ).data.nfts;
+      console.log(collectionNFTData);
       const collectionNFTList = await Promise.all(
         collectionNFTData.map(async (nft) => {
           let collectionNFT = {
-            // collectionName: nft.collectionName,
+            collectionName: nft.collectionId.name,
             creatorLogo: banner1,
-            image: nft.urlFile,
+            image: isSafari ? nft.urlFile.v1 : nft.urlFile.v0,
             name: nft.name,
+            hasOpenOffer: nft.hasOpenOffer,
             price: nft.price,
             fileType: nft.fileType,
-            preview: nft.preview,
+            preview: isSafari ? nft.preview.v1 : nft.preview.v0,
             owner: nft.owner.userName,
+            ownerId: nft.owner._id,
             tokenId: nft.tokenId,
-            saleType: nft.saleType.toLowerCase()
-          }
+            saleType: nft.saleType.toLowerCase(),
+            isVerified: nft.creator.isVerified,
+          };
           return collectionNFT;
         })
       );
@@ -140,24 +143,29 @@ const CollectionDetails = () => {
   };
 
   const fetchMoreNFTs = async () => {
-    const collectionNFTData = await (await getCollectionNFTs(collection._id, page + 1)).data.nfts;
-      const collectionNFTList = await Promise.all(
-        collectionNFTData.map(async (nft) => {
-          let collectionNFT = {
-            // collectionName: nft.collectionName,
-            creatorLogo: banner1,
-            image: nft.urlFile,
-            name: nft.name,
-            price: nft.price,
-            fileType: nft.fileType,
-            preview: nft.preview,
-            owner: nft.owner.userName,
-            tokenId: nft.tokenId,
-            saleType: nft.saleType.toLowerCase()
-          }
-          return collectionNFT;
-        })
-      );
+    const collectionNFTData = await (
+      await getCollectionNFTs(collection._id, page + 1)
+    ).data.nfts;
+    const collectionNFTList = await Promise.all(
+      collectionNFTData.map(async (nft) => {
+        let collectionNFT = {
+          collectionName: nft.collectionId.name,
+          creatorLogo: banner1,
+          image: isSafari ? nft.urlFile.v1 : nft.urlFile.v0,
+          name: nft.name,
+          hasOpenOffer: nft.hasOpenOffer,
+          price: nft.price,
+          fileType: nft.fileType,
+          preview: isSafari ? nft.preview.v1 : nft.preview.v0,
+          owner: nft.owner.userName,
+          ownerId: nft.owner._id,
+          tokenId: nft.tokenId,
+          saleType: nft.saleType.toLowerCase(),
+          isVerified: nft.creator.isVerified,
+        };
+        return collectionNFT;
+      })
+    );
 
     setPage(page + 1);
     setNfts((prevState) => [...prevState, ...collectionNFTList]);
@@ -173,9 +181,7 @@ const CollectionDetails = () => {
     getData();
   }, []);
 
-  const webLocation = useLocation();
-  const webLink =
-    `https://www.xdsea.com/collection/${collectionNickName}`;
+  const webLink = `https://www.xdsea.com/collection/${collectionNickName}`;
 
   const [copied, setCopied] = useState(false);
 
@@ -187,7 +193,7 @@ const CollectionDetails = () => {
 
   return (
     <CollectionSection>
-    {/* Banner */}
+      {/* Banner */}
       <BannerAbsolute>
         <IconImg
           url={collection.banner}
@@ -200,7 +206,7 @@ const CollectionDetails = () => {
           exit={{ opacity: 0 }}
         ></IconImg>
       </BannerAbsolute>
-      <HStack>
+      <HStack style={{ zIndex: 1 }}>
         <VStack
           padding={
             size.width < 768 ? "260px 30px 30px 30px" : "260px 30px 30px 30px"
@@ -208,13 +214,12 @@ const CollectionDetails = () => {
           spacing="15px"
           maxwidth="1200px"
           cursor={"pointer"}
+          style={{ zIndex: 1 }}
         >
           {/* Creator Tag */}
           <CreatorAbsolute>
             <HStack
-              onClick={() =>
-                NavigateTo(`UserProfile/${collection.creator}`)
-              }
+              onClick={() => NavigateTo(`UserProfile/${collection.creatorId}`)}
               border="30px"
               padding="6px 15px"
               style={{
@@ -387,9 +392,16 @@ const CollectionDetails = () => {
                     ></IconImg>
                     {collection.floorPrice ? (
                       <BodyBold textcolor={({ theme }) => theme.text}>
-                        {collection.floorPrice.toLocaleString(undefined, {
-                          maximumFractionDigits: 2,
-                        }) || "0"}
+                        {collection.floorPrice > 100000
+                          ? (Intl.NumberFormat('en-US', {
+                              notation: "compact",
+                              maximumFractionDigits: 2
+                            }).format(collection.floorPrice))
+                          : (
+                            collection.floorPrice.toLocaleString(undefined, {
+                              maximumFractionDigits: 2,
+                            }) || "0"
+                          )}
                       </BodyBold>
                     ) : (
                       <LoopBars width="54px"></LoopBars>
@@ -459,9 +471,16 @@ const CollectionDetails = () => {
                     ></IconImg>
                     {collection.volumeTrade ? (
                       <BodyBold textcolor={({ theme }) => theme.text}>
-                        {collection.volumeTrade.toLocaleString(undefined, {
-                          maximumFractionDigits: 2,
-                        }) || "0"}
+                        {collection.volumeTrade > 100000
+                          ? (Intl.NumberFormat('en-US', {
+                              notation: "compact",
+                              maximumFractionDigits: 2
+                            }).format(collection.volumeTrade))
+                          : (
+                            collection.volumeTrade.toLocaleString(undefined, {
+                              maximumFractionDigits: 2,
+                            }) || "0"
+                          )}
                       </BodyBold>
                     ) : (
                       <LoopBars width="54px"></LoopBars>
@@ -599,6 +618,18 @@ const CollectionDetails = () => {
               )}
             </HStack>
           </VStack>
+
+          {/* Filters Search and Sort */}
+          <HStack responsive="true">
+            <SearchCollection placeholder="Search inside the collection"></SearchCollection>
+            <HStack>
+              <FiltersButton 
+                isNftFilter={true}
+              ></FiltersButton>
+              <Spacer></Spacer>
+              <SortButtonNFTS></SortButtonNFTS>
+            </HStack>
+          </HStack>
         </VStack>
       </HStack>
 
@@ -630,7 +661,8 @@ const CollectionDetails = () => {
                 spacing="9px"
               >
                 {loadingState === "loaded"
-                  ? nfts.map((item, i) => (
+                  ? nfts.length !== 0
+                    ? nfts.map((item, i) => (
                       <VStack
                         minwidth={size.width < 768 ? "330px" : "290px"}
                         maxwidth={size.width < 768 ? "330px" : "290px"}
@@ -653,13 +685,25 @@ const CollectionDetails = () => {
                             NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
                           }
                           onClickCreator={() =>
-                            NavigateTo(`UserProfile/${item.owner}`)
+                            NavigateTo(`UserProfile/${item.ownerId}`)
                           }
                           owner={true}
-                          usdPrice="000"
+                          usdPrice={props.xdc}
                         ></NftContainer>
                       </VStack>
                     ))
+                    : <VStack
+                      padding="90px"
+                      width="100%"
+                      background={({ theme }) => theme.faded}
+                      style={{ zIndex: "-50" }}
+                      border="6px"
+                    >
+                      <IconImg url={noResult} width="90px" height="90px"></IconImg>
+                      <TitleBold18 animate={{ opacity: 0.6 }}>
+                        Nothing Found
+                      </TitleBold18>
+                    </VStack>
                   : loadingNFTs.map((item) => (
                       <VStack
                         minwidth={size.width < 768 ? "230px" : "280px"}

@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import Xdc3 from "xdc3";
 import { nftaddress, nftmarketlayeraddress } from "../../config";
-import { DEFAULT_PROVIDER, HEADER } from "../../constant";
+import { DEFAULT_PROVIDER, HEADER, LS_ROOT_KEY, LS } from "../../constant";
 import NFT from "../../abis/NFT.json";
 import { AnimatePresence } from "framer-motion/dist/framer-motion";
 import { LoopLogo } from "../../styles/LoopLogo";
@@ -42,328 +42,94 @@ import ReactPlayer from "react-player";
 import InfiniteScroll from "react-infinite-scroll-component";
 import menuContext from "../../context/menuContext";
 import CID from "cids";
+import { getNFTs } from "../../API/NFT";
+import { getCollections } from "../../API/Collection";
+import { isSafari } from "../../common/common";
+import { getUser } from "../../API/User";
 
 const MyNFT = (props) => {
-  const { urlAddress } = useParams();
+  const { userId } = useParams();
   const history = useHistory();
-  const [pageCount, setPageCount] = useState(1);
-  const [collectionGroup, setCollectionGroup] = useState([]);
-  const [initialGroup, setInitialGroup] = useState([]);
-  const [page, setPage] = useState([]);
-  const [setLoading, isSetLoading] = useState(false);
-  const [setLoadingCollection, isSetLoadingCollection] = useState(false);
+  const [collections, setCollections] = useState([]);
+  const [nfts, setNfts] = useState([]);
+  const [totalNfts, setTotalNfts] = useState(0);
+  const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [loadingCollection, setLoadingCollection] = useState(false);
+  const [user, setUser] = useState({});
 
   const getCreatedCollections = async () => {
-    isSetLoadingCollection(true);
-    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
-    const marketContract = new xdc3.eth.Contract(
-      NFTMarketLayer1.abi,
-      nftmarketlayeraddress,
-      xdc3
-    );
-    const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
-    const data = await marketContract.methods
-      .fetchItemsCreated(urlAddress)
-      .call();
-
-    var uniqueCollections = [];
-    await Promise.all(
-      data.map(async (i) => {
-        if (!uniqueCollections.includes(i.collectionName)) {
-          uniqueCollections.push(i.collectionName);
+    setLoadingCollection(true);
+    const collectionData = await (await getCollections({ userId: userId })).data;
+    console.log(collectionData);
+    const collectionList = await Promise.all(
+      collectionData.collections.map(async (item) => {
+        let collection = {
+          logo: isSafari ? item.logo.v1 : item.logo.v0,
+          name: item.name,
+          nftCount: item.totalNfts,
+          nfts: item.nfts
         }
+
+        return collection;
       })
-    );
-
-    var filteredCollections = uniqueCollections.filter((element) => {
-      return !deletedCollections.includes(element);
-    });
-
-    const collectionGroups = [];
-
-    for (var i = 0; i < filteredCollections.length; i++) {
-      const collectionNFTs = await marketContract.methods
-        .getCollectionNFTs(filteredCollections[i])
-        .call();
-
-      var collectionNFTsList = [];
-      await Promise.all(
-        collectionNFTs.slice(0, 5).map(async (j) => {
-          const uri = await nftContract.methods.tokenURI(j.tokenId).call();
-          var metadata = await axios.get(uri);
-          let nft = {
-            tokenId: j.tokenId,
-            image:
-              metadata?.data?.collection?.nft?.image?.split("/")[2] ===
-              "xdsea.infura-ipfs.io"
-                ? `https://${new CID(
-                    metadata?.data?.collection?.nft?.image.split("/")[4]
-                  )
-                    .toV1()
-                    .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
-                : metadata?.data?.collection?.nft?.image,
-            name:
-              j.tokenId === "3567"
-                ? "TAURULIOMPS 1/12"
-                : j.tokenId === "3580"
-                ? "GEMINLIOMP 2/12"
-                : j.tokenId === "3584"
-                ? "LIBRIOMP 2/12"
-                : j.tokenId === "3650"
-                ? "PISCELIOMPS 8/12"
-                : j.tokenId === "3679"
-                ? "LEOIOMP 10/12"
-                : j.tokenId === "3695"
-                ? "SAGITTARIOMPS 11/12"
-                : j.name,
-            logo:
-              metadata?.data?.collection?.logo?.split("/")[2] ===
-              "xdsea.infura-ipfs.io"
-                ? `https://${new CID(
-                    metadata?.data?.collection?.logo.split("/")[4]
-                  )
-                    .toV1()
-                    .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
-                : metadata?.data?.collection?.logo,
-            preview:
-              metadata?.data?.collection?.nft?.preview?.split("/")[2] ===
-              "xdsea.infura-ipfs.io"
-                ? `https://${new CID(
-                    metadata?.data?.collection?.nft?.preview.split("/")[4]
-                  )
-                    .toV1()
-                    .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
-                : metadata?.data?.collection?.nft?.preview,
-            fileType: metadata?.data?.collection?.nft?.fileType,
-          };
-          collectionNFTsList.push(nft);
-        })
-      );
-      let group = {
-        name: filteredCollections[i],
-        nfts: collectionNFTsList,
-        logo: collectionNFTsList[0].logo,
-        items:
-          filteredCollections[i] === "The Lucid Women" ||
-          filteredCollections[i] === "NFTHC" ||
-          filteredCollections[i] === "DØP3 Punks "
-            ? collectionNFTs.length - 1
-            : filteredCollections[i] === "XDSEA MONKEYS ORIGINAL ART"
-            ? collectionNFTs.length - 7
-            : collectionNFTs.length,
-      };
-      collectionGroups.push(group);
-    }
-
-    setCollectionGroup(collectionGroups);
-    isSetLoadingCollection(false);
+    )
+      
+    setCollections(collectionList);
+    setLoadingCollection(false);
   };
 
   const getOwnedNFTs = async () => {
-    isSetLoading(true);
-    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
-    const marketContract = new xdc3.eth.Contract(
-      NFTMarketLayer1.abi,
-      nftmarketlayeraddress,
-      xdc3
-    );
-    const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
-    const data = await marketContract.methods.fetchMyNFTs(urlAddress).call();
-    const reversedData = [...data].sort((nft1, nft2) => {
-      if (parseInt(nft1.tokenId) > parseInt(nft2.tokenId)) return -1;
-      else return 1;
-    });
+    setLoading(true);
+    console.log(LS.get(LS_ROOT_KEY));
+    const userData = await (await getUser(userId)).data.user;
+    console.log(userData.user);
+    setUser(userData);
+    const nftData = await (await getNFTs({ pageSize: 15, page: page, userId: userId })).data;
+    console.log(nftData);
 
-    const nfts = await Promise.all(
-      reversedData.slice(0, 20).map(async (i) => {
-        var uri = await nftContract.methods.tokenURI(i.tokenId).call();
-        var metadata = await axios.get(uri);
+    const nftList = await Promise.all(
+      nftData.nfts.map(async (item) => {
         let nft = {
-          tokenId: i.tokenId,
-          image:
-            metadata?.data?.collection?.nft?.image?.split("/")[2] ===
-            "xdsea.infura-ipfs.io"
-              ? `https://${new CID(
-                  metadata?.data?.collection?.nft?.image.split("/")[4]
-                )
-                  .toV1()
-                  .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
-              : metadata?.data?.collection?.nft?.image,
-          preview:
-            metadata?.data?.collection?.nft?.preview?.split("/")[2] ===
-            "xdsea.infura-ipfs.io"
-              ? `https://${new CID(
-                  metadata?.data?.collection?.nft?.preview.split("/")[4]
-                )
-                  .toV1()
-                  .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
-              : metadata?.data?.collection?.nft?.preview,
-          name:
-            i.tokenId === "3567"
-              ? "TAURULIOMPS 1/12"
-              : i.tokenId === "3580"
-              ? "GEMINLIOMP 2/12"
-              : i.tokenId === "3584"
-              ? "LIBRIOMP 2/12"
-              : i.tokenId === "3650"
-              ? "PISCELIOMPS 8/12"
-              : i.tokenId === "3679"
-              ? "LEOIOMP 10/12"
-              : i.tokenId === "3695"
-              ? "SAGITTARIOMPS 11/12"
-              : metadata?.data?.collection?.nft?.name,
-          logo:
-            metadata?.data?.collection?.logo?.split("/")[2] === "xdsea.infura-ipfs.io"
-              ? `https://${new CID(
-                  metadata?.data?.collection?.logo.split("/")[4]
-                )
-                  .toV1()
-                  .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
-              : metadata?.data?.collection?.logo,
-          fileType: metadata?.data?.collection?.nft?.fileType,
+          tokenId: item.tokenId,
+          image: isSafari ? item.urlFile.v1 : item.urlFile.v0,
+          preview: isSafari ? item.preview.v1 : item.preview.v0,
+          name: item.name,
+          logo: isSafari ? item.collectionId.logo.v1 : item.collectionId.logo.v0,
+          fileType: item.fileType,
         };
+
         return nft;
       })
     );
 
-    var filteredNFTs = nfts.filter((element) => {
-      return !burnedNFTs.includes(element.tokenId);
-    });
-
-    var filteredPage = reversedData.filter((element) => {
-      return !burnedNFTs.includes(element.tokenId);
-    });
-
-    setInitialGroup(filteredNFTs);
-    setPage(filteredPage);
-    setPageCount(1);
-
-    // var uniqueCollections = [];
-    // const uniqueCollectionsData = [];
-    // var showAllGroups = {};
-    // const collectionGroups = {};
-    // const ownedCollections = await Promise.all(
-    //   data.map(async (i) => {
-    //     if (!burnedNFTs.includes(i.tokenId)) {
-    //       if (!uniqueCollections.includes(i.collectionName)) {
-    //         uniqueCollections.push(i.collectionName);
-    //         collectionGroups[i.collectionName] = [];
-    //         showAllGroups[i.collectionName] = false;
-    //       }
-    //       collectionGroups[i.collectionName].push(i.tokenId);
-    //     }
-    //   })
-    // );
-
-    // setOwnedCollections(uniqueCollections);
-
-    // var initialLoad = [];
-    // for(var i = 0; i < uniqueCollections.length; i++) {
-    //     const collectionNFTs = await marketContract.methods
-    //         .getCollectionNFTs(uniqueCollections[i])
-    //         .call();
-    //     const firstFive = await Promise.all(collectionGroups[uniqueCollections[i]].slice(0, 5).map(async i => {
-    //             const uri = await nftContract.methods.tokenURI(i).call();
-    //             var metadata = await axios.get(uri);
-    //            let nft = {
-    //                tokenId: i,
-    //                image: metadata?.data?.collection?.nft?.image,
-    //                preview: metadata?.data?.collection?.nft?.preview,
-    //                name: metadata?.data?.collection?.nft?.name,
-    //                logo: metadata?.data?.collection?.logo,
-    //                fileType: metadata?.data?.collection?.nft?.fileType
-    //             }
-    //             return nft;
-    //     }))
-    //     let group = {
-    //         collection: uniqueCollections[i],
-    //         firstFive: firstFive,
-    //         remaining: collectionGroups[uniqueCollections[i]].slice(5,),
-    //         items:
-    //             uniqueCollections[i] === "The Lucid Women" ||
-    //             uniqueCollections[i] === "NFTHC" ||
-    //             uniqueCollections[i] === "DØP3 Punks "
-    //                 ? collectionNFTs.length - 1
-    //                 : collectionNFTs.length,
-    //         owned: collectionGroups[uniqueCollections[i]].length
-    //     }
-    //     initialLoad.push(group);
-    // }
-    // setInitialGroup(initialLoad);
-    // setOwnedGroup(collectionGroups);
-    // setShowAllCollection(showAllGroups);
-    isSetLoading(false);
+    setNfts(nftList);
+    setTotalNfts(nftData.nftsAmount);
+    setPage(page + 1);
+    setLoading(false);
   };
 
   const fetchMoreNFTs = async () => {
-    await new Promise((r) => setTimeout(r, 3000));
-    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
-    const marketContract = new xdc3.eth.Contract(
-      NFTMarketLayer1.abi,
-      nftmarketlayeraddress,
-      xdc3
-    );
-    const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
-    const data = await marketContract.methods.fetchMyNFTs(urlAddress).call();
+    const nftData = await (await getNFTs({ page: page, userId: userId })).data;
+    console.log(nftData);
 
-    const nfts = await Promise.all(
-      data.slice(pageCount * 20, (pageCount + 1) * 20).map(async (i) => {
-        var uri = await nftContract.methods.tokenURI(i.tokenId).call();
-        var metadata = await axios.get(uri);
+    const nftList = await Promise.all(
+      nftData.nfts.map(async (item) => {
         let nft = {
-          tokenId: i.tokenId,
-          image:
-            metadata?.data?.collection?.nft?.image?.split("/")[2] ===
-            "xdsea.infura-ipfs.io"
-              ? `https://${new CID(
-                  metadata?.data?.collection?.nft?.image.split("/")[4]
-                )
-                  .toV1()
-                  .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
-              : metadata?.data?.collection?.nft?.image,
-          preview:
-            metadata?.data?.collection?.nft?.preview?.split("/")[2] ===
-            "xdsea.infura-ipfs.io"
-              ? `https://${new CID(
-                  metadata?.data?.collection?.nft?.preview.split("/")[4]
-                )
-                  .toV1()
-                  .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
-              : metadata?.data?.collection?.nft?.preview,
-          name:
-            i.tokenId === "3567"
-              ? "TAURULIOMPS 1/12"
-              : i.tokenId === "3580"
-              ? "GEMINLIOMP 2/12"
-              : i.tokenId === "3584"
-              ? "LIBRIOMP 2/12"
-              : i.tokenId === "3650"
-              ? "PISCELIOMPS 8/12"
-              : i.tokenId === "3679"
-              ? "LEOIOMP 10/12"
-              : i.tokenId === "3695"
-              ? "SAGITTARIOMPS 11/12"
-              : metadata?.data?.collection?.nft?.name,
-          logo:
-            metadata?.data?.collection?.logo?.split("/")[2] === "xdsea.infura-ipfs.io"
-              ? `https://${new CID(
-                  metadata?.data?.collection?.logo.split("/")[4]
-                )
-                  .toV1()
-                  .toBaseEncodedString("base32")}.ipfs.infura-ipfs.io`
-              : metadata?.data?.collection?.logo,
-          fileType: metadata?.data?.collection?.nft?.fileType,
+          tokenId: item.tokenId,
+          image: isSafari ? item.urlFile.v1 : item.urlFile.v0,
+          preview: isSafari ? item.preview.v1 : item.preview.v0,
+          name: item.name,
+          logo: isSafari ? item.collectionId.logo.v1 : item.collectionId.logo.v0,
+          fileType: item.fileType,
         };
+
         return nft;
       })
     );
-    // console.log(nfts);
-    var filteredNFTs = nfts.filter((element) => {
-      return !burnedNFTs.includes(element.tokenId);
-    });
 
-    setInitialGroup((prevState) => [...prevState, ...filteredNFTs]);
-    setPageCount(pageCount + 1);
+    setNfts((prevState) => [...prevState, ...nftList]);
+    setPage(page + 1);
   };
 
   const isImage = (fileType) => {
@@ -389,7 +155,7 @@ const MyNFT = (props) => {
     window.scrollTo(0, 0);
     setSubMenu(0);
     getOwnedNFTs();
-  }, [urlAddress]);
+  }, [userId]);
 
   function NavigateTo(route) {
     history.push(`/${route}`);
@@ -401,7 +167,7 @@ const MyNFT = (props) => {
     return str?.length > n ? str.substr(0, n - 1) + "..." : str;
   };
 
-  const [showMenu, setShowMenu] = useContext(menuContext);
+  const [, setShowMenu] = useContext(menuContext);
   const [scrollTop, setScrollTop] = useState();
   const [scrolling, setScrolling] = useState();
 
@@ -417,7 +183,6 @@ const MyNFT = (props) => {
   }, [scrollTop]);
 
   useEffect(() => {
-    // console.log(scrolling);
   }, [scrolling]);
 
   return (
@@ -427,7 +192,7 @@ const MyNFT = (props) => {
           <VStack>
             <VStack direction={size.width < 768 ? "row" : "column"}>
               <VStack>
-                {verifiedProfiles.includes(urlAddress) ? (
+                {user.isVerified ? (
                   <VerifiedIcon>
                     <IconImg
                       url={verified}
@@ -456,7 +221,7 @@ const MyNFT = (props) => {
                 </CaptionBold>
                 <BubbleCopied
                   logo={xdcLogo}
-                  address={urlAddress}
+                  address={user.XDCWallets ? user.XDCWallets[0] : ""}
                   icon={copyIcon}
                 ></BubbleCopied>
                 {/* <CaptionBoldShort textcolor={({ theme }) => theme.text}>
@@ -596,15 +361,15 @@ const MyNFT = (props) => {
                   exit={{ opacity: 0, y: 15 }}
                   id={"scrollableDiv"}
                 >
-                  {setLoading ? (
+                  {loading ? (
                     <VStack padding="120px">
                       <LoopLogo></LoopLogo>
                     </VStack>
-                  ) : initialGroup.length !== 0 ? (
+                  ) : nfts.length !== 0 ? (
                     <InfiniteScroll
-                      dataLength={initialGroup.length}
+                      dataLength={nfts.length}
                       next={fetchMoreNFTs}
-                      hasMore={initialGroup.length < page.length}
+                      hasMore={nfts.length < totalNfts}
                       scrollThreshold={0.6}
                       loader={
                         <HStack
@@ -624,7 +389,7 @@ const MyNFT = (props) => {
                         padding="0 60px"
                         justify="flex-start"
                       >
-                        {initialGroup.map((item, i) => (
+                        {nfts.map((item, i) => (
                           <VStack
                             maxwidth="186px"
                             minwidth="186px"
@@ -638,7 +403,6 @@ const MyNFT = (props) => {
                             }}
                           >
                             <ZStack cursor={"pointer"}>
-                              <CreatorTag>OWNER</CreatorTag>
                               <ZItem
                                 backgroundimage={
                                   isAudio(item.fileType) ? item.preview : null
@@ -689,18 +453,6 @@ const MyNFT = (props) => {
                               </ZItem>
                               <ZItem>
                                 <VStack padding="15px">
-                                  <HStack>
-                                    <Spacer></Spacer>
-                                    <IconImg
-                                      url={banner1}
-                                      width="45px"
-                                      height="45px"
-                                      backsize="cover"
-                                      border="45px"
-                                      bordersize="3px"
-                                      bordercolor="white"
-                                    ></IconImg>
-                                  </HStack>
                                   <Spacer></Spacer>
                                   <TitleBold15
                                     textcolor={appStyle.colors.white}
@@ -741,12 +493,12 @@ const MyNFT = (props) => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 15 }}
                 >
-                  {setLoadingCollection ? (
+                  {loadingCollection ? (
                     <VStack padding="120px">
                       <LoopLogo></LoopLogo>
                     </VStack>
-                  ) : collectionGroup.length ? (
-                    collectionGroup.map((item, i) => (
+                  ) : collections.length ? (
+                    collections.map((item, i) => (
                       <VStack width="100%" padding="30px" spacing="30px">
                         <HStack width="100%">
                           <IconImg
@@ -758,7 +510,7 @@ const MyNFT = (props) => {
                           ></IconImg>
                           <VStack spacing="6px" alignment="flex-start">
                             <TitleBold18>{item.name}</TitleBold18>
-                            <BodyRegular>{item.items} Items</BodyRegular>
+                            <BodyRegular>{item.nftCount} Items</BodyRegular>
                           </VStack>
                         </HStack>
                         <HStack justify="flex-start">
@@ -774,15 +526,14 @@ const MyNFT = (props) => {
                               }}
                             >
                               <ZStack cursor={"pointer"}>
-                                <CreatorTag>CREATOR</CreatorTag>
                                 <ZItem
                                   backgroundimage={
-                                    isAudio(nft.fileType) ? nft.preview : null
+                                    isAudio(nft.fileType) ? isSafari ? nft.preview.v1 : nft.preview.v0 : null
                                   }
                                 >
                                   {isImage(nft.fileType) ? (
                                     <IconImg
-                                      url={nft.image}
+                                      url={isSafari ? nft.urlFile.v1 : nft.urlFile.v0}
                                       width="100%"
                                       height="100%"
                                       backsize="cover"
@@ -796,7 +547,7 @@ const MyNFT = (props) => {
                                       overflow="hidden"
                                     >
                                       <ReactPlayer
-                                        url={nft.image}
+                                        url={isSafari ? nft.urlFile.v1 : nft.urlFile.v0}
                                         playing={true}
                                         muted={true}
                                         loop={false}
@@ -812,7 +563,7 @@ const MyNFT = (props) => {
                                       overflow="hidden"
                                     >
                                       <ReactPlayer
-                                        url={nft.image}
+                                        url={isSafari ? nft.urlFile.v1 : nft.urlFile.v0}
                                         playing={false}
                                         muted={true}
                                         loop={false}
@@ -824,20 +575,7 @@ const MyNFT = (props) => {
                                 </ZItem>
                                 <ZItem>
                                   <VStack padding="15px">
-                                    <HStack>
-                                      <Spacer></Spacer>
-                                      <IconImg
-                                        url={banner1}
-                                        width="45px"
-                                        height="45px"
-                                        backsize="cover"
-                                        border="45px"
-                                        bordersize="3px"
-                                        bordercolor="white"
-                                      ></IconImg>
-                                    </HStack>
                                     <Spacer></Spacer>
-
                                     <TitleBold15
                                       textcolor={appStyle.colors.white}
                                     >
@@ -849,7 +587,7 @@ const MyNFT = (props) => {
                             </VStack>
                           ))}
                         </HStack>
-                        {item.items > 5 ? (
+                        {item.nftCount > 5 ? (
                           <ButtonApp
                             text={"See Collection"}
                             textcolor={appStyle.colors.white}

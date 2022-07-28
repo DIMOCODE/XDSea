@@ -15,7 +15,10 @@ import {
   CaptionRegular,
   TitleBold15,
   TitleBold27,
+  BodyBold,
 } from "../../styles/TextStyles";
+import arrowDown from "../../images/arrowDown.png";
+import addShape from "../../images/addShape.png";
 import { motion } from "framer-motion/dist/framer-motion";
 import { appStyle } from "../../styles/AppStyles";
 import CreationBar from "../../images/DiscoverBar.png";
@@ -51,6 +54,7 @@ function CreateNft(props) {
   const [price, setPrice] = useState(0);
   const [royalty, setRoyalty] = useState(0);
   const [collection, setCollection] = useState("");
+  const [newCollection, setNewCollection] = useState(false);
   const [collectionBanner, setCollectionBanner] = useState({
     preview: "",
     raw: "",
@@ -104,13 +108,19 @@ function CreateNft(props) {
   /**
    * Adding Authentication for pinning new uploads to the IPFS Project
    */
-  const auth = 'Basic ' + Buffer.from(process.env.REACT_APP_PROJECT_ID + ':' + process.env.REACT_APP_PROJECT_SECRET).toString('base64');
+  const auth =
+    "Basic " +
+    Buffer.from(
+      process.env.REACT_APP_PROJECT_ID +
+        ":" +
+        process.env.REACT_APP_PROJECT_SECRET
+    ).toString("base64");
   const client = ipfsHttpClient({
-    host: 'ipfs.infura.io',
+    host: "ipfs.infura.io",
     port: 5001,
-    protocol: 'https',
+    protocol: "https",
     headers: {
-        authorization: auth,
+      authorization: auth,
     },
   });
 
@@ -238,8 +248,9 @@ function CreateNft(props) {
     setRoyalty(0);
     setIsUnlockableContent(false);
     setUnlockableContent("");
-    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER
-        , HEADER));
+    const xdc3 = new Xdc3(
+      new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER)
+    );
     const marketContract = new xdc3.eth.Contract(
       NFTMarketLayer1.abi,
       nftmarketlayeraddress,
@@ -266,8 +277,9 @@ function CreateNft(props) {
   };
 
   const fetchCollection = async () => {
-    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER
-      , HEADER));
+    const xdc3 = new Xdc3(
+      new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER)
+    );
     const marketContract = new xdc3.eth.Contract(
       NFTMarketLayer1.abi,
       nftmarketlayeraddress,
@@ -305,16 +317,17 @@ function CreateNft(props) {
     const collectionName = document
       .getElementsByClassName("collection-name")[0]
       .value.replace(/\s+$/, "");
-    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER
-      , HEADER));
+    const xdc3 = new Xdc3(
+      new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER)
+    );
     const marketContract = new xdc3.eth.Contract(
       NFTMarketLayer1.abi,
       nftmarketlayeraddress,
       xdc3
     );
-    try{
+    try {
       var uniqueCollections = [];
-      if(wallet?.address !== undefined){
+      if (wallet?.address !== undefined) {
         const data = await marketContract.methods
           .fetchItemsCreated(
             isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address
@@ -350,9 +363,8 @@ function CreateNft(props) {
         setCollectionEmpty(false);
       }
       setLoadingIcon(empty);
-      return false;      
-    }
-    catch (e) {
+      return false;
+    } catch (e) {
       console.log(e);
     }
   };
@@ -375,8 +387,7 @@ function CreateNft(props) {
         } else {
           setMintButtonStatus(1);
           const xdc3 = new Xdc3(
-            new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER
-              , HEADER)
+            new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER)
           );
           const marketContract = new xdc3.eth.Contract(
             NFTMarketLayer1.abi,
@@ -521,8 +532,9 @@ function CreateNft(props) {
 
   const updateMarketplace = async (url) => {
     try {
-      const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER
-        , HEADER));
+      const xdc3 = new Xdc3(
+        new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER)
+      );
       const contract = new xdc3.eth.Contract(
         NFT.abi,
         nftaddress,
@@ -627,6 +639,23 @@ function CreateNft(props) {
   useEffect(() => {
     // console.log(scrolling);
   }, [scrolling]);
+
+  // DropDown selector
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedOption, setSelectedOption] = useState(
+    "Select your Collection"
+  );
+
+  const toggling = () => setIsOpen(!isOpen);
+
+  const onOptionClicked = (value) => () => {
+    setSelectedOption(value);
+    setIsOpen(false);
+    setNewCollection(false);
+    console.log(selectedOption);
+  };
+
+  const options = ["My Collection 1", "My Collection 2", "My Collection 3"];
 
   return (
     <CreationSection>
@@ -1046,7 +1075,12 @@ function CreateNft(props) {
             </VStack>
           </HStack>
           <Divider></Divider>
-          <VStack width="100%" alignment="flex-start" padding="0 30px">
+          <VStack
+            width="100%"
+            alignment="flex-start"
+            padding="0 30px"
+            style={{ zIndex: 100 }}
+          >
             <TitleBold15 textcolor={({ theme }) => theme.text}>
               Collection
             </TitleBold15>
@@ -1054,36 +1088,213 @@ function CreateNft(props) {
               If your NFT belongs to any collection, please use the name in the
               collection name field.
             </BodyRegular>
-            {/* <SelectStyled
-              selectClass={"nft-collection"}
-              value={collection}
-              collections={collections}
-              onChange={async (event) => {
-                if (event.target.value === "newCollection-nxfgh-odjfg-hjdeb") {
-                  const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER));
-                  const marketContract = new xdc3.eth.Contract(
-                    NFTMarketLayer1.abi,
-                    nftmarketlayeraddress,
-                    xdc3
-                  );
-                  const tokenCount = await marketContract.methods.tokenCount().call();
-                  setNewCollection(true);
-                  setCollection(`Untitled Collection ${tokenCount}`);
-                  setCollectionExists(false);
-                  setCollectionEmpty(true)
-                  document
-                    .getElementsByClassName("collection-url")[0]
-                    .setAttribute(
-                      "placeholder",
-                      `Untitled Collection ${tokenCount}`.replace(/\s+/g, "%20")
-                    );
-                } else {
-                  setNewCollection(false);
-                  setCollection(event.target.value);
-                }
-                setIsCollectionNotSelected(false);
-              }}
-            ></SelectStyled> */}
+
+            <HStack>
+              <VStack alignment="flex-start" width="100%">
+                <HStack
+                  background={({ theme }) => theme.backElement}
+                  border="6px"
+                  height="49px"
+                  onClick={toggling}
+                  padding="0 15px"
+                >
+                  <BodyRegular>
+                    {selectedOption || "Select your Collection "}
+                  </BodyRegular>
+
+                  <Spacer></Spacer>
+                  <IconImg url={arrowDown} width="15px" height="15px"></IconImg>
+                </HStack>
+
+                {isOpen && (
+                  <DropDownListContainer>
+                    <VStack
+                      background={({ theme }) => theme.backElement}
+                      border="6px"
+                      padding="15px"
+                      width="100%"
+                      spacing="9px"
+                      style={{
+                        boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
+                      }}
+                    >
+                      {options.map((option) => (
+                        <>
+                          <ListItem
+                            height="43px"
+                            border="6px"
+                            onClick={onOptionClicked(option)}
+                            key={Math.random()}
+                          >
+                            {option}
+                          </ListItem>
+                        </>
+                      ))}
+
+                      {newCollection ? (
+                        <VStack width="100%">
+                          <InputStyled
+                            inputId="collection-name-input"
+                            background={({ theme }) => theme.faded}
+                            icon={loadingIcon}
+                            input={collection}
+                            propertyKey={"collection-name"}
+                            placeholder="Name your Collection"
+                            onChange={(event) => {
+                              setCollection(event.target.value);
+                              setCollectionExists(false);
+                              setCollectionValid(false);
+                              setCollectionEmpty(false);
+                              document
+                                .getElementsByClassName("collection-url")[0]
+                                .setAttribute(
+                                  "placeholder",
+                                  event.target.value
+                                    .replace(/\s+/g, "%20")
+                                    .replace(/%20$/, "")
+                                );
+                            }}
+                            onBlur={async () => {
+                              if (collection === "") {
+                                const xdc3 = new Xdc3(
+                                  new Xdc3.providers.HttpProvider(
+                                    DEFAULT_PROVIDER,
+                                    HEADER
+                                  )
+                                );
+                                const marketContract = new xdc3.eth.Contract(
+                                  NFTMarketLayer1.abi,
+                                  nftmarketlayeraddress,
+                                  xdc3
+                                );
+                                const tokenCount = await marketContract.methods
+                                  .tokenCount()
+                                  .call();
+                                setCollection(
+                                  `Untitled Collection ${tokenCount}`
+                                );
+                                setCollectionExists(false);
+                                setCollectionEmpty(true);
+                                document
+                                  .getElementsByClassName("collection-url")[0]
+                                  .setAttribute(
+                                    "placeholder",
+                                    `Untitled Collection ${tokenCount}`.replace(
+                                      /\s+/g,
+                                      "%20"
+                                    )
+                                  );
+                              } else {
+                                checkCollectionExists();
+                              }
+                            }}
+                          ></InputStyled>
+                          {collectionExists ? (
+                            <HStack
+                              background={appStyle.colors.softRed}
+                              padding="6px 15px"
+                              border="6px"
+                            >
+                              <CaptionRegular
+                                textcolor={appStyle.colors.darkRed}
+                              >
+                                Collection name already taken. Please choose a
+                                different name.
+                              </CaptionRegular>
+                            </HStack>
+                          ) : null}
+                          {collectionEmpty ? (
+                            <HStack
+                              background={appStyle.colors.yellow}
+                              padding="6px 15px"
+                              border="6px"
+                            >
+                              <CaptionRegular
+                                textcolor={appStyle.colors.darkYellow}
+                              >
+                                Collection name is empty. Collection will be
+                                assigned an Untitled Collection name.
+                              </CaptionRegular>
+                            </HStack>
+                          ) : null}
+                          {collectionValid ? (
+                            <HStack
+                              background={appStyle.colors.green}
+                              padding="6px 15px"
+                              border="6px"
+                            >
+                              <CaptionRegular
+                                textcolor={appStyle.colors.darkGreen}
+                              >
+                                This collection belongs to you. You can add NFTs
+                                to this collection. You can skip to the minting
+                                step.
+                              </CaptionRegular>
+                            </HStack>
+                          ) : null}
+                          {/* <InputStyled
+                              placeholder="Name your Collection"
+                              background={({ theme }) => theme.faded}
+                            ></InputStyled>
+                            <HStack>
+                             
+                              <HStack
+                                height="41px"
+                                width="100%"
+                                border="9px"
+                                background={({ theme }) => theme.faded}
+                                onClick={() => setNewCollection(false)}
+                                cursor="pointer"
+                                whileTap={{ scale: 0.97 }}
+                              >
+                                <BodyBold cursor="pointer">Cancel</BodyBold>
+                              </HStack>
+
+                             
+                              <HStack
+                                height="41px"
+                                width="100%"
+                                border="9px"
+                                background={({ theme }) => theme.blue}
+                                cursor="pointer"
+                                whileTap={{ scale: 0.97 }}
+                              >
+                                <BodyBold cursor="pointer" textcolor="white">
+                                  Create
+                                </BodyBold>
+                              </HStack>
+                            </HStack> */}
+                        </VStack>
+                      ) : (
+                        <HStack
+                          background={({ theme }) => theme.blue}
+                          height="43px"
+                          padding="0 15px"
+                          border="6px"
+                          whileTap={{ scale: 0.97 }}
+                          onClick={() => setNewCollection(true)}
+                          cursor="pointer"
+                        >
+                          <BodyBold textcolor="white" cursor="pointer">
+                            Create New Collection
+                          </BodyBold>
+                          <IconImg
+                            url={addShape}
+                            width="21px"
+                            height="21px"
+                            cursor="pointer"
+                          ></IconImg>
+                        </HStack>
+                      )}
+                    </VStack>
+                  </DropDownListContainer>
+                )}
+              </VStack>
+
+              {/* Create new collection button  */}
+            </HStack>
+            {/* Dropdown selector for collections name */}
+
             {isCollectionNotSelected ? (
               <HStack
                 background={appStyle.colors.softRed}
@@ -1244,96 +1455,6 @@ function CreateNft(props) {
               </VStack>
               <VStack width="100%" padding="30px">
                 <VStack alignment="flex-start" width="100%">
-                  <TitleBold15>Collection Name</TitleBold15>
-                  <InputStyled
-                    inputId="collection-name-input"
-                    icon={loadingIcon}
-                    input={collection}
-                    propertyKey={"collection-name"}
-                    placeholder="Name your Collection"
-                    onChange={(event) => {
-                      setCollection(event.target.value);
-                      setCollectionExists(false);
-                      setCollectionValid(false);
-                      setCollectionEmpty(false);
-                      document
-                        .getElementsByClassName("collection-url")[0]
-                        .setAttribute(
-                          "placeholder",
-                          event.target.value
-                            .replace(/\s+/g, "%20")
-                            .replace(/%20$/, "")
-                        );
-                    }}
-                    onBlur={async () => {
-                      if (collection === "") {
-                        const xdc3 = new Xdc3(
-                          new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER
-                            , HEADER)
-                        );
-                        const marketContract = new xdc3.eth.Contract(
-                          NFTMarketLayer1.abi,
-                          nftmarketlayeraddress,
-                          xdc3
-                        );
-                        const tokenCount = await marketContract.methods
-                          .tokenCount()
-                          .call();
-                        setCollection(`Untitled Collection ${tokenCount}`);
-                        setCollectionExists(false);
-                        setCollectionEmpty(true);
-                        document
-                          .getElementsByClassName("collection-url")[0]
-                          .setAttribute(
-                            "placeholder",
-                            `Untitled Collection ${tokenCount}`.replace(
-                              /\s+/g,
-                              "%20"
-                            )
-                          );
-                      } else {
-                        checkCollectionExists();
-                      }
-                    }}
-                  ></InputStyled>
-                  {collectionExists ? (
-                    <HStack
-                      background={appStyle.colors.softRed}
-                      padding="6px 15px"
-                      border="6px"
-                    >
-                      <CaptionRegular textcolor={appStyle.colors.darkRed}>
-                        Collection name already taken. Please choose a different
-                        name.
-                      </CaptionRegular>
-                    </HStack>
-                  ) : null}
-                  {collectionEmpty ? (
-                    <HStack
-                      background={appStyle.colors.yellow}
-                      padding="6px 15px"
-                      border="6px"
-                    >
-                      <CaptionRegular textcolor={appStyle.colors.darkYellow}>
-                        Collection name is empty. Collection will be assigned an
-                        Untitled Collection name.
-                      </CaptionRegular>
-                    </HStack>
-                  ) : null}
-                  {collectionValid ? (
-                    <HStack
-                      background={appStyle.colors.green}
-                      padding="6px 15px"
-                      border="6px"
-                    >
-                      <CaptionRegular textcolor={appStyle.colors.darkGreen}>
-                        This collection belongs to you. You can add NFTs to this
-                        collection. You can skip to the minting step.
-                      </CaptionRegular>
-                    </HStack>
-                  ) : null}
-                </VStack>
-                <VStack alignment="flex-start" width="100%">
                   <TitleBold15>Collection URL</TitleBold15>
                   <InputStyledURL
                     inputClass="collection-url"
@@ -1437,4 +1558,36 @@ const FadedBack = styled(motion.div)`
   width: 100%;
   height: 100vh;
   z-index: 100;
+`;
+
+// Dropdown Styles
+
+const DropDownListContainer = styled(motion.div)`
+  position: absolute;
+  top: 52px;
+  width: 100%;
+  z-index: 100;
+`;
+
+// const DropDownList = styled("ul")`
+//   padding: 0;
+//   margin: 0;
+//   padding-left: 1em;
+//   background: #ffffff;
+//   border: 2px solid #e5e5e5;
+//   box-sizing: border-box;
+//   color: #3faffa;
+//   font-size: 1.3rem;
+//   font-weight: 500;
+//   &:first-child {
+//     padding-top: 0.8em;
+//   }
+// `;
+
+const ListItem = styled(HStack)`
+  cursor: pointer;
+
+  &:hover {
+    background: rgb(0, 0, 0, 0.06);
+  }
 `;

@@ -110,16 +110,32 @@ function TableActivityNft(props) {
                 "Offer Withdrawn" ? (
                 <BodyBold></BodyBold>
               ) : (
-                <HStack padding="0 60px">
+                <HStack padding="0" width="130px">
                   <HStack spacing="6px">
                     <IconImg url={xdclogo} width="18px" height="18px"></IconImg>
-                    <VStack spacing="0px">
+                    <VStack spacing="0px" alignment="flex-start">
                       <BodyRegular>
-                        {Number(item.price).toLocaleString(undefined, {
-                          maximumFractionDigits: 2,
-                        })}
+                        {Number(item.price) > 100000
+                          ? (Intl.NumberFormat('en-US', {
+                              notation: "compact",
+                              maximumFractionDigits: 2
+                            }).format(Number(item.price)))
+                          : (
+                            Number(item.price).toLocaleString(undefined, {
+                              maximumFractionDigits: 2,
+                            }) || "0"
+                          )}
                       </BodyRegular>
-                      <CaptionRegular>(000 USD)</CaptionRegular>
+                      <CaptionRegular>{`(${(props.xdc.xdcPrice * Number(item.price)) > 100000
+                                            ? (Intl.NumberFormat('en-US', {
+                                                notation: "compact",
+                                                maximumFractionDigits: 2
+                                              }).format((props.xdc.xdcPrice * Number(item.price))))
+                                            : (
+                                              (props.xdc.xdcPrice * Number(item.price)).toLocaleString(undefined, {
+                                                maximumFractionDigits: 2,
+                                              }) || "0"
+                                            )} USD)`}</CaptionRegular>
                     </VStack>
                   </HStack>
                 </HStack>
@@ -152,7 +168,7 @@ function TableActivityNft(props) {
 
             <HStack background={debugColor} width={widthRow}>
               <Tooltip
-                title={new Date(item.date * 1000).toLocaleDateString("en-US", {
+                title={new Date(item.date).toLocaleDateString("en-US", {
                   day: "2-digit",
                   month: "short",
                   year: "2-digit",
@@ -163,7 +179,7 @@ function TableActivityNft(props) {
               >
                 <BodyRegular>
                   {item.event.props.children[1].props.children !== "Mint"
-                    ? determineAgoTime(new Date(item.date * 1000))
+                    ? determineAgoTime(new Date(item.date))
                     : null}
                 </BodyRegular>
               </Tooltip>

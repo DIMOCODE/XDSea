@@ -8,6 +8,7 @@ import {
   motion,
 } from "framer-motion/dist/framer-motion";
 import { isXdc, fromXdc } from "../../common/common";
+import { LS, LS_ROOT_KEY } from "../../constant";
 
 function UserMenuButton(props) {
   const { 
@@ -42,7 +43,10 @@ function UserMenuButton(props) {
           bordercolor="#99A2AF"
           bordersize="3px"
           whileTap={{ scale: 0.9 }}
-          onClick={() => NavigateTo(`UserProfile/${isXdc(wallet?.address) ? fromXdc(wallet?.addres?.toLowerCase()) : wallet?.address?.toLowerCase()}`)}
+          onClick={async () => {
+            const userId = await LS.get(LS_ROOT_KEY).user._id;
+            NavigateTo(`UserProfile/${userId}`);
+          }}
           cursor={"pointer"}
           // onClick={() => setShowMenu((showMenu) => !showMenu)}
 

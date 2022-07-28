@@ -26,6 +26,8 @@ import { sizeWidth } from "@mui/system";
 import MenuContext from "../context/menuContext";
 import ReactGA from "react-ga";
 import { SearchPage } from "./Search/SearchPage";
+import { createRequest } from "../API";
+import { HTTP_METHODS } from "../constant";
 const TRACKING_ID = "UA-105859386-2"; // OUR_TRACKING_ID
 ReactGA.initialize(TRACKING_ID);
 
@@ -38,6 +40,7 @@ const NFTApp = () => {
   const [isDevMode] = useState(true);
   const size = useWindowSize();
   const [showMenu, setShowMenu] = useState(false);
+  const [xdcPrice, setXdcPrice] = useState(0);
 
   const themeToggler = () => {
     theme === "light" ? setTheme("dark") : setTheme("light");
@@ -47,12 +50,14 @@ const NFTApp = () => {
     setWallet(connectedWallet);
   };
 
-  useEffect(() => {
-    setRandomNumber(Math.floor(Math.random() * 2));
-  }, []);
+  const getXDCPrice = async () => {
+    const price = await (await createRequest(HTTP_METHODS.get, "ping/xdcPrice", null, null)).data;
+    setXdcPrice(price);
+  };
 
   useEffect(() => {
     ReactGA.pageview(window.location.pathname + window.location.search);
+    getXDCPrice(); 
   }, []);
 
   return (
@@ -114,12 +119,12 @@ const NFTApp = () => {
             ></TopBar>
             <ScrollView>
               <Switch>
-                <Route exact path="/" component={Home}></Route>
-                <Route exact path="/discover" component={Discover}></Route>
-                <Route exact path="/SearchPage" component={SearchPage}></Route>
+                <Route exact path="/" render={() => <Home xdc={xdcPrice} />}></Route>
+                <Route exact path="/discover" render={() => <Discover xdc={xdcPrice} />}></Route>
+                <Route exact path="/SearchPage" render={() => <SearchPage xdc={xdcPrice} />}></Route>
                 <Route
                   exact
-                  path="/UserProfile/:urlAddress"
+                  path="/UserProfile/:userId"
                   component={MyNFT}
                 ></Route>
                 <Route
@@ -130,12 +135,12 @@ const NFTApp = () => {
                 <Route
                   exact
                   path="/collection/:collectionNickName"
-                  component={Collection}
+                  render={() => <Collection xdc={xdcPrice}/>}
                 ></Route>
                 <Route
                   exact
                   path="/nft/:nftaddress/:id"
-                  render={() => <NFTPage wallet={wallet} />}
+                  render={() => <NFTPage wallet={wallet} xdc={xdcPrice} />}
                 ></Route>
                 <Route exact path="/HowToStart" component={HowToStart}></Route>
                 <Route path="**" component={Home}></Route>

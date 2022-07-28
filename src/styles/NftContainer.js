@@ -61,15 +61,19 @@ function NftContainer(props) {
   const [isPlaying, setIsPlaying] = useState(false);
   const [nftStatus] = useState(iconStatus);
 
+  const truncate = (str, n) => {
+    return str?.length > n ? str.substr(0, n - 1) + "..." : str;
+  };
+
   return (
     <VStack
       cursor={"pointer"}
       overflow="hidden"
-      border="27px"
+      border="12px"
       background={appStyle.colors.darkgrey10}
       spacing="0"
       width="100%"
-      height="450px"
+      height="390px"
       bordersize="0px"
       bordercolor={appStyle.colors.darkgrey10}
       onHoverStart={() => {
@@ -81,17 +85,17 @@ function NftContainer(props) {
         setIsPlaying((isPlaying) => !isPlaying);
       }}
     >
-      <ZStack overflow="hidden" border="27px">
+      <ZStack overflow="hidden" border="12px">
         <ZItem>
           {fileType.match("image.*") ? (
             <IconImg
               url={itemImage}
               width="100%"
-              height="450px"
+              height="100%"
               backsize="cover"
               animate={isVisible ? "hover" : "initial"}
               variants={scaleImage}
-              border="27px"
+              border="12px"
               cursor={"pointer"}
             ></IconImg>
           ) : (
@@ -268,7 +272,7 @@ function NftContainer(props) {
                   orient={"vertical"}
                   textcolor={appStyle.colors.white}
                 >
-                  {itemNumber}
+                  {truncate(itemNumber, 33)}
                 </TitleBold18>
               </HStack>
               <HStack spacing="3px" alignment="center" cursor={"pointer"}>
@@ -278,12 +282,29 @@ function NftContainer(props) {
                   // animate={isVisible ? "hover" : "initial"}
                   textcolor={appStyle.colors.white}
                 >
-                  {Number(price).toLocaleString(undefined, {
-                    maximumFractionDigits: 2,
-                  }) || "0"}
+                  {Number(price) > 100000
+                    ? Intl.NumberFormat("en-US", {
+                        notation: "compact",
+                        maximumFractionDigits: 2,
+                      }).format(Number(price))
+                    : Number(price).toLocaleString(undefined, {
+                        maximumFractionDigits: 2,
+                      }) || "0"}
                 </TitleBold18>
                 <CaptionRegular textcolor="white" animate={{ opacity: 0.6 }}>
-                  ({usdPrice + " USD"})
+                  (
+                  {(usdPrice?.xdcPrice * Number(price) > 100000
+                    ? Intl.NumberFormat("en-US", {
+                        notation: "compact",
+                        maximumFractionDigits: 2,
+                      }).format(usdPrice?.xdcPrice * Number(price))
+                    : (usdPrice?.xdcPrice * Number(price)).toLocaleString(
+                        undefined,
+                        {
+                          maximumFractionDigits: 2,
+                        }
+                      ) || "0") + " USD"}
+                  )
                 </CaptionRegular>
                 <Spacer></Spacer>
                 {hasOffers && (

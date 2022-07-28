@@ -19,6 +19,7 @@ function TableOffersNft(props) {
     onClickWithdraw,
     withdrawStatus,
     acceptStatus,
+    offerUser,
   } = props;
 
   const widthRow = "100%";
@@ -54,7 +55,7 @@ function TableOffersNft(props) {
             <HStack
               justify="flex-start"
               spacing="6px"
-              onClick={() => NavigateTo(`UserProfile/${offerBy}`)}
+              onClick={() => NavigateTo(`UserProfile/${offerUser}`)}
             >
               <IconImg
                 url={imageBuyer}
@@ -79,7 +80,19 @@ function TableOffersNft(props) {
                 width="18px"
                 height="18px"
               ></IconImg>
-              <BodyBold>{convertPrice(offerAmount)}</BodyBold>
+              <BodyBold>{offerAmount
+                          ? offerAmount > 100000
+                            ? (Intl.NumberFormat('en-US', {
+                                notation: "compact",
+                                maximumFractionDigits: 2
+                              }).format(offerAmount))
+                            : (
+                              offerAmount.toLocaleString(undefined, {
+                                maximumFractionDigits: 2,
+                              }) || "0"
+                            )
+                          : "-"
+                        }</BodyBold>
             </HStack>
           </VStack>
         </HStack>

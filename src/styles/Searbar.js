@@ -1,4 +1,5 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import { InputStyled } from "./InputStyled";
 import {
   VStack,
@@ -29,6 +30,11 @@ import { Icon } from "@mui/material";
 import dummyNFT from "../images/abstract1.jpg";
 import dummyUser from "../images/dummyuser.jpg";
 import dummyUser1 from "../images/dummyuser1.jpg";
+import { getCollections } from "../API/Collection";
+import { getNFTs } from "../API/NFT";
+import loadingIcon from "../images/loadingDots.gif";
+import { isSafari } from "../common/common";
+import { nftaddress } from "../config";
 
 function Searchbar({
   placeholder,
@@ -45,36 +51,70 @@ function Searchbar({
   onClickInput,
   switchBarStatus,
 }) {
-  const [filteredData, setFilteredData] = useState([]);
-  const [result, setResult] = useState("");
+  const history = useHistory();
+  const [filteredCollectionData, setFilteredCollectionData] = useState([]);
+  const [filteredNFTData, setFilteredNFTData] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [showResults, setShowResults] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
   const ref = useRef(null);
+
   useClickAway(ref, () => {
-    setFilteredData([]);
+    setFilteredCollectionData([]);
+    setFilteredNFTData([]);
     switchBarStatus(false);
+    setShowResults(false);
   });
 
-  const handleFilter = (event) => {
-    const searchWord = event.target.value;
-    setResult(searchWord);
-    const newFilter = data.filter((value) => {
-      return value.name.toLowerCase().includes(searchWord.toLowerCase());
-    });
-    if (searchWord == "") {
-      setFilteredData([]);
-      switchBarStatus(false);
-    } else {
-      setFilteredData(newFilter);
-      switchBarStatus(true);
-    }
+  const clearInput = () => {
+    setFilteredCollectionData([]);
+    setFilteredNFTData([]);
+    setSearchTerm("");
+    switchBarStatus(false);
+    setShowResults(false);
   };
 
-  const clearInput = () => {
-    setFilteredData([]);
-    setResult("");
-    switchBarStatus(false);
+  const truncateAddress = (address) => {
+    return address
+      ? address.substring(0, 6) + "..." + address.substring(38)
+      : "undefined";
   };
+
+  function NavigateTo(route) {
+    history.push(`/${route}`);
+    setShowResults(false);
+    switchBarStatus(false);
+  }
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(async () => {
+      if (searchTerm !== "") {
+        const collectionResults = await (
+          await getCollections({ searchTerm: searchTerm })
+        ).data;
+        console.log(collectionResults);
+        const nftResults = await (
+          await getNFTs({ page: 1, searchBy: searchTerm })
+        ).data;
+        console.log(nftResults);
+        setFilteredCollectionData(collectionResults.collections);
+        setFilteredNFTData(nftResults.nfts);
+        setLoading(false);
+        switchBarStatus(true);
+        setShowResults(true);
+      } else {
+        setFilteredCollectionData([]);
+        setFilteredNFTData([]);
+        setLoading(false);
+        switchBarStatus(false);
+        setShowResults(false);
+      }
+    }, 1500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchTerm]);
 
   return (
     <VStack height="42px" minwidth={widthInput || "300px"}>
@@ -82,12 +122,22 @@ function Searchbar({
         type="text"
         placeholder={placeholder}
         background={({ theme }) => theme.faded}
-        icon={search}
-        onChange={handleFilter}
-        input={result}
+        icon={loading ? loadingIcon : search}
+        onChange={(e) => {
+          setSearchTerm(e.target.value);
+          setLoading(true);
+        }}
+        input={searchTerm}
+        onClick={() => {
+          const delayFn = setTimeout(() => {
+            if (searchTerm !== "") setShowResults(true);
+          }, 1500);
+
+          return () => clearTimeout(delayFn);
+        }}
         height="42px"
       ></InputStyled>
-      {filteredData.length != 0 && (
+      {showResults && (
         <SearchResult top={top} left={left} ref={ref}>
           <VStack
             background={({ theme }) => theme.backElement}
@@ -104,7 +154,7 @@ function Searchbar({
 
             <HStack padding="15px 0 " width="100%">
               <BodyRegular>Search Results for</BodyRegular>
-              <BodyBold>"{result}"</BodyBold>
+              <BodyBold>"{searchTerm}"</BodyBold>
 
               <Spacer></Spacer>
 
@@ -131,7 +181,7 @@ function Searchbar({
               padding="15px 0 15px 0"
             >
               {/* Creators */}
-              <VStack alignment="flex-start">
+              {/* <VStack alignment="flex-start">
                 <CaptionBoldShort>Creators</CaptionBoldShort>
 
                 <VStack spacing="9px">
@@ -247,130 +297,150 @@ function Searchbar({
                     ></IconImg>
                   </HStack>
                 </a>
-              </VStack>
+              </VStack> */}
+
               {/* NFTs */}
-              <VStack alignment="flex-start" spacing="9px">
-                <CaptionBoldShort>NFTs</CaptionBoldShort>
+              {filteredNFTData.length !== 0 && (
+                <VStack alignment="flex-start" spacing="9px">
+                  <CaptionBoldShort>NFTs</CaptionBoldShort>
+                  <VStack spacing="12px">
+                    {filteredNFTData.slice(0, 3).map((nft) => (
+                      <HStack
+                        whileHover={{ background: "rgb(0,0,0,0.06" }}
+                        padding="6px"
+                        border="6px"
+                        onClick={() =>
+                          NavigateTo(`nft/${nftaddress}/${nft.tokenId}`)
+                        }
+                      >
+                        <IconImg
+                          url={isSafari ? nft.urlFile.v1 : nft.urlFile.v0}
+                          width="54px"
+                          height="54px"
+                          border="9px"
+                          backsize="cover"
+                          cursor="pointer"
+                        ></IconImg>
+                        <VStack
+                          alignment="flex-start"
+                          spacing="3px"
+                          cursor="pointer"
+                        >
+                          <BodyBold>{nft.name}</BodyBold>
+                          <CaptionRegular>
+                            {nft.collectionId.name}
+                          </CaptionRegular>
+                          <CaptionRegular>
+                            {truncateAddress(nft.owner.userName)}
+                          </CaptionRegular>
+                        </VStack>
+                      </HStack>
+                    ))}
+                  </VStack>
 
-                <VStack spacing="12px">
-                  <HStack
-                    whileHover={{ background: "rgb(0,0,0,0.06" }}
-                    padding="6px"
-                    border="6px"
-                  >
-                    <IconImg
-                      url={dummyNFT}
-                      width="54px"
-                      height="54px"
-                      border="9px"
-                      backsize="cover"
-                      cursor="pointer"
-                    ></IconImg>
-                    <VStack
-                      alignment="flex-start"
-                      spacing="3px"
-                      cursor="pointer"
-                    >
-                      <BodyBold>Luminosity #001</BodyBold>
-                      <CaptionRegular>433s...3ds34</CaptionRegular>
-                      <CaptionRegular>Not For Sale</CaptionRegular>
-                    </VStack>
-                  </HStack>
-
-                  <HStack
-                    whileHover={{ background: "rgb(0,0,0,0.06" }}
-                    padding="6px"
-                    border="6px"
-                  >
-                    <IconImg
-                      url={dummyNFT}
-                      width="54px"
-                      height="54px"
-                      border="9px"
-                      backsize="cover"
-                      cursor="pointer"
-                    ></IconImg>
-                    <VStack
-                      alignment="flex-start"
-                      spacing="3px"
-                      cursor="pointer"
-                    >
-                      <BodyBold>Luminosity #001</BodyBold>
-                      <CaptionRegular>433s...3ds34</CaptionRegular>
-                      <CaptionRegular>Not For Sale</CaptionRegular>
-                    </VStack>
-                  </HStack>
+                  {filteredNFTData.length > 3 && (
+                    <a>
+                      <HStack
+                        spacing="5px"
+                        background={({ theme }) => theme.faded}
+                        padding="5px 15px"
+                        border="9px"
+                        cursor="pointer"
+                        onClick={() =>
+                          NavigateTo(
+                            `SearchPage?searchTerm=${searchTerm}&mode=nft`
+                          )
+                        }
+                      >
+                        <CaptionBoldShort>See all NFTs</CaptionBoldShort>
+                        <IconImg
+                          url={arrowRight}
+                          width="26px"
+                          height="26px"
+                          cursor="pointer"
+                        ></IconImg>
+                      </HStack>
+                    </a>
+                  )}
                 </VStack>
-
-                <a>
-                  <HStack
-                    spacing="5px"
-                    background={({ theme }) => theme.faded}
-                    padding="5px 15px"
-                    border="9px"
-                    cursor="pointer"
-                  >
-                    <CaptionBoldShort>See all NFTs</CaptionBoldShort>
-                    <IconImg
-                      url={arrowRight}
-                      width="26px"
-                      height="26px"
-                      cursor="pointer"
-                    ></IconImg>
-                  </HStack>
-                </a>
-              </VStack>
+              )}
 
               {/* Collections */}
+              {filteredCollectionData.length !== 0 && (
+                <VStack alignment="flex-start" spacing="9px">
+                  <CaptionBoldShort>Collections</CaptionBoldShort>
+                  {filteredCollectionData.slice(0, 2).map((collection) => (
+                    <VStack
+                      alignment="flex-start"
+                      spacing="9px"
+                      width="100%"
+                      whileHover={{ background: "rgb(0,0,0,0.06" }}
+                      padding="6px"
+                      border="6px"
+                      onClick={() =>
+                        NavigateTo(`collection/${collection.nickName}`)
+                      }
+                    >
+                      <IconImg
+                        url={
+                          isSafari ? collection.banner.v1 : collection.banner.v0
+                        }
+                        width="100%"
+                        height="60px"
+                        border="6px"
+                        backsize="cover"
+                        cursor="pointer"
+                      ></IconImg>
+                      <HStack>
+                        <IconImg
+                          url={
+                            isSafari ? collection.logo.v1 : collection.logo.v0
+                          }
+                          width="32px"
+                          height="32px"
+                          border="15px"
+                        ></IconImg>
+                        <VStack
+                          alignment="flex-start"
+                          spacing="3px"
+                          cursor="pointer"
+                          width="100%"
+                        >
+                          <BodyBold>{collection.name}</BodyBold>
+                          <CaptionRegular>
+                            {truncateAddress(collection.creator.userName)}
+                          </CaptionRegular>
+                        </VStack>
+                      </HStack>
+                    </VStack>
+                  ))}
 
-              <VStack alignment="flex-start" spacing="9px">
-                <CaptionBoldShort>Collections</CaptionBoldShort>
-
-                <VStack
-                  alignment="flex-start"
-                  spacing="9px"
-                  width="200px"
-                  whileHover={{ background: "rgb(0,0,0,0.06" }}
-                  padding="6px"
-                  border="6px"
-                >
-                  <IconImg
-                    url={dummyNFT}
-                    width="189px"
-                    height="54px"
-                    border="6px"
-                    backsize="cover"
-                    cursor="pointer"
-                  ></IconImg>
-                  <VStack
-                    alignment="flex-start"
-                    spacing="3px"
-                    cursor="pointer"
-                    width="100%"
-                  >
-                    <BodyBold>Lux Setup</BodyBold>
-                    <CaptionRegular>433s...3ds34</CaptionRegular>
-                  </VStack>
+                  {filteredCollectionData.length > 2 && (
+                    <a>
+                      <HStack
+                        spacing="5px"
+                        background={({ theme }) => theme.faded}
+                        padding="5px 15px"
+                        border="9px"
+                        cursor="pointer"
+                        onClick={() =>
+                          NavigateTo(
+                            `SearchPage?searchTerm=${searchTerm}&mode=collection`
+                          )
+                        }
+                      >
+                        <CaptionBoldShort>See all Collections</CaptionBoldShort>
+                        <IconImg
+                          url={arrowRight}
+                          width="26px"
+                          height="26px"
+                          cursor="pointer"
+                        ></IconImg>
+                      </HStack>
+                    </a>
+                  )}
                 </VStack>
-
-                <a>
-                  <HStack
-                    spacing="5px"
-                    background={({ theme }) => theme.faded}
-                    padding="5px 15px"
-                    border="9px"
-                    cursor="pointer"
-                  >
-                    <CaptionBoldShort>See all Collections</CaptionBoldShort>
-                    <IconImg
-                      url={arrowRight}
-                      width="26px"
-                      height="26px"
-                      cursor="pointer"
-                    ></IconImg>
-                  </HStack>
-                </a>
-              </VStack>
+              )}
             </HStack>
           </VStack>
         </SearchResult>

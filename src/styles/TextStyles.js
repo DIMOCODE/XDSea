@@ -100,6 +100,24 @@ export const TitleBold21 = styled(motion.h2).attrs((props) => ({
   text-align: ${(props) => props.align};
 `;
 
+export const TitleRegular21 = styled(motion.h2).attrs((props) => ({
+  textcolor: props.textcolor || appStyle.colors.white,
+  align: props.align || "left",
+}))`
+  font-style: normal;
+  font-weight: normal;
+  font-size: 21px;
+  color: ${(props) => props.textcolor};
+  display: ${(props) => props.display};
+  -webkit-line-clamp: ${(props) => props.clamp};
+  -webkit-box-orient: ${(props) => props.orient};
+  overflow: ${(props) => props.overflow};
+  white-space: ${(props) => props.whiteSpace};
+  width: ${(props) => props.width};
+  text-overflow: ${(props) => props.textOverflow};
+  text-align: ${(props) => props.align};
+`;
+
 export const TitleBold18 = styled(motion.h3).attrs((props) => ({
   textcolor: props.textcolor || props.theme.text,
 }))`
@@ -232,6 +250,27 @@ export const CaptionBoldShort = styled(motion.p).attrs((props) => ({
   text-align: ${(props) => props.align};
   font-weight: 800;
   font-size: 12px;
+  line-height: 15px;
+  letter-spacing: -0.01em;
+  padding: ${(props) => props.padding};
+  color: ${(props) => props.textcolor};
+  cursor: ${(props) => props.cursor};
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -o-user-select: none;
+  user-select: none;
+`;
+
+export const CaptionSmallRegular = styled(motion.p).attrs((props) => ({
+  textcolor: props.textcolor || props.theme.text,
+  align: props.align || "Left",
+  padding: props.padding || "0px",
+  cursor: props.cursor || "default",
+}))`
+  text-align: ${(props) => props.align};
+  font-weight: 500;
+  font-size: 11px;
   line-height: 15px;
   letter-spacing: -0.01em;
   padding: ${(props) => props.padding};
