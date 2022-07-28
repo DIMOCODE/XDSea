@@ -138,9 +138,16 @@ function TopCollectionItem(props) {
           <HStack spacing="6px">
             <IconImg url={miniXdcLogo} width="18px" height="18px"></IconImg>
             <BodyBold>
-              {volumetraded.toLocaleString(undefined, {
+            {volumetraded > 100000
+              ? (Intl.NumberFormat('en-US', {
+                notation: "compact",
+                maximumFractionDigits: 2
+              }).format(volumetraded))
+            : (
+              volumetraded.toLocaleString(undefined, {
                 maximumFractionDigits: 2,
-              }) || "0"}
+              }) || "0"
+            )}
             </BodyBold>
           </HStack>
         </VStack>

@@ -390,9 +390,16 @@ const CollectionDetails = (props) => {
                     ></IconImg>
                     {collection.floorPrice ? (
                       <BodyBold textcolor={({ theme }) => theme.text}>
-                        {collection.floorPrice.toLocaleString(undefined, {
-                          maximumFractionDigits: 2,
-                        }) || "0"}
+                        {collection.floorPrice > 100000
+                          ? (Intl.NumberFormat('en-US', {
+                              notation: "compact",
+                              maximumFractionDigits: 2
+                            }).format(collection.floorPrice))
+                          : (
+                            collection.floorPrice.toLocaleString(undefined, {
+                              maximumFractionDigits: 2,
+                            }) || "0"
+                          )}
                       </BodyBold>
                     ) : (
                       <LoopBars width="54px"></LoopBars>
@@ -462,9 +469,16 @@ const CollectionDetails = (props) => {
                     ></IconImg>
                     {collection.volumeTrade ? (
                       <BodyBold textcolor={({ theme }) => theme.text}>
-                        {collection.volumeTrade.toLocaleString(undefined, {
-                          maximumFractionDigits: 2,
-                        }) || "0"}
+                        {collection.volumeTrade > 100000
+                          ? (Intl.NumberFormat('en-US', {
+                              notation: "compact",
+                              maximumFractionDigits: 2
+                            }).format(collection.volumeTrade))
+                          : (
+                            collection.volumeTrade.toLocaleString(undefined, {
+                              maximumFractionDigits: 2,
+                            }) || "0"
+                          )}
                       </BodyBold>
                     ) : (
                       <LoopBars width="54px"></LoopBars>

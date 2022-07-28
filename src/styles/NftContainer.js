@@ -282,12 +282,29 @@ function NftContainer(props) {
                   // animate={isVisible ? "hover" : "initial"}
                   textcolor={appStyle.colors.white}
                 >
-                  {Number(price).toLocaleString(undefined, {
-                    maximumFractionDigits: 2,
-                  }) || "0"}
+                  {Number(price) > 100000
+                    ? Intl.NumberFormat("en-US", {
+                        notation: "compact",
+                        maximumFractionDigits: 2,
+                      }).format(Number(price))
+                    : Number(price).toLocaleString(undefined, {
+                        maximumFractionDigits: 2,
+                      }) || "0"}
                 </TitleBold18>
                 <CaptionRegular textcolor="white" animate={{ opacity: 0.6 }}>
-                  ({(usdPrice?.xdcPrice * Number(price)).toFixed(2) + " USD"})
+                  (
+                  {(usdPrice.xdcPrice * Number(price) > 100000
+                    ? Intl.NumberFormat("en-US", {
+                        notation: "compact",
+                        maximumFractionDigits: 2,
+                      }).format(usdPrice.xdcPrice * Number(price))
+                    : (usdPrice.xdcPrice * Number(price)).toLocaleString(
+                        undefined,
+                        {
+                          maximumFractionDigits: 2,
+                        }
+                      ) || "0") + " USD"}
+                  )
                 </CaptionRegular>
                 <Spacer></Spacer>
                 {hasOffers && (

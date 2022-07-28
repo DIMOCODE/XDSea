@@ -115,13 +115,27 @@ function TableActivityNft(props) {
                     <IconImg url={xdclogo} width="18px" height="18px"></IconImg>
                     <VStack spacing="0px" alignment="flex-start">
                       <BodyRegular>
-                        {Number(item.price).toLocaleString(undefined, {
-                          maximumFractionDigits: 2,
-                        })}
+                        {Number(item.price) > 100000
+                          ? (Intl.NumberFormat('en-US', {
+                              notation: "compact",
+                              maximumFractionDigits: 2
+                            }).format(Number(item.price)))
+                          : (
+                            Number(item.price).toLocaleString(undefined, {
+                              maximumFractionDigits: 2,
+                            }) || "0"
+                          )}
                       </BodyRegular>
-                      <CaptionRegular>{`(${(
-                        props.xdc.xdcPrice * Number(item.price)
-                      ).toFixed(2)} USD)`}</CaptionRegular>
+                      <CaptionRegular>{`(${(props.xdc.xdcPrice * Number(item.price)) > 100000
+                                            ? (Intl.NumberFormat('en-US', {
+                                                notation: "compact",
+                                                maximumFractionDigits: 2
+                                              }).format((props.xdc.xdcPrice * Number(item.price))))
+                                            : (
+                                              (props.xdc.xdcPrice * Number(item.price)).toLocaleString(undefined, {
+                                                maximumFractionDigits: 2,
+                                              }) || "0"
+                                            )} USD)`}</CaptionRegular>
                     </VStack>
                   </HStack>
                 </HStack>
