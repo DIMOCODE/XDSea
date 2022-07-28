@@ -270,6 +270,7 @@ function SearchPage(props) {
               <SortButtonCollections
                 onChange={handleChangeFilter}
                 params={collectionParams}
+                isSearchPage={true}
               ></SortButtonCollections>
             </HStack>
 
@@ -370,6 +371,7 @@ function SearchPage(props) {
               <SortButtonNFTS
                 onChange={handleChangeFilterNFT}
                 params={nftParams}
+                isSearchPage={true}
               ></SortButtonNFTS>
             </HStack>
             {loading ? (

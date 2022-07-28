@@ -294,13 +294,13 @@ function NftContainer(props) {
                   )}
                 </TitleBold18>
                 <CaptionRegular textcolor="white" animate={{ opacity: 0.6 }}>
-                  ({(usdPrice.xdcPrice * Number(price) > 100000
+                  ({(usdPrice?.xdcPrice * Number(price) > 100000
                    ? (Intl.NumberFormat('en-US', {
                       notation: "compact",
                       maximumFractionDigits: 2
                     }).format(usdPrice.xdcPrice * Number(price)))
                   : (
-                    (usdPrice.xdcPrice * Number(price)).toLocaleString(undefined, {
+                    (usdPrice?.xdcPrice * Number(price)).toLocaleString(undefined, {
                       maximumFractionDigits: 2,
                     }) || "0"
                   )) + " USD"})

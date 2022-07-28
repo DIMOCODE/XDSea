@@ -19,7 +19,7 @@ import { useClickAway } from "react-use";
 import useWindowSize from "./useWindowSize";
 
 function SortButtonCollections(props) {
-  const {onChange, params} = props;
+  const {onChange, params, isSearchPage} = props;
   const ref = useRef(null);
   useClickAway(ref, () => {
     setIsActive(false);
@@ -27,7 +27,7 @@ function SortButtonCollections(props) {
 
   const size = useWindowSize();
   const [isActive, setIsActive] = useState(false);
-  const [isSelected, setIsSelected] = useState(1);
+  const [isSelected, setIsSelected] = useState(isSearchPage ? 6 : 1);
   const [isOld, setIsOld] = useState(false);
   const [isVolumeTop, setIsVolumeTop] = useState(true);
   const [isTopOwners, setIsTopOwners] = useState(false);
@@ -90,7 +90,10 @@ function SortButtonCollections(props) {
                 ? isAtoZ
                   ? "A to Z"
                   : "Z to A"
-                : null}
+                : isSelected === 6
+                  ? "Most Relevance"
+                  : null
+                }
             </BodyBold>
           )}
 
@@ -106,7 +109,7 @@ function SortButtonCollections(props) {
         </HStack>
       </VStack>
       {isActive && (
-        <DropDown>
+        <DropDown> 
           <VStack
             background={({ theme }) => theme.backElement}
             border="9px"
@@ -114,6 +117,51 @@ function SortButtonCollections(props) {
             width="290px"
             spacing="9px"
           >
+            {/* Relevance */}
+            {isSearchPage
+              ? 
+                <VStack
+                  minheight="49px"
+                  background={({ theme }) => theme.faded}
+                  // background={isSelected === 1 ? "green" : "yellow"}
+                  border="6px"
+                  spacing="6px"
+                  onClick={() => {
+                    setIsSelected(6);
+                  }}
+                  padding="3px"
+                  width="100%"
+                >
+                  {/* Option1  */}
+                  <HStack
+                    background={
+                      isSelected === 6
+                        ? ({ theme }) => theme.blue
+                        : "transparent"
+                    }
+                    width="100%"
+                    border="6px"
+                    cursor="pointer"
+                    height="43px"
+                    onClick={() => {
+                      onChange({...params, page: 1, sortBy: "relevance", sortDirection: 1});
+                    }}
+                  >
+                    <BodyRegular
+                      cursor="pointer"
+                      textcolor={
+                        isSelected === 6
+                          ? "white"
+                          : ({ theme }) => theme.text
+                      }
+                    >
+                      Most Relevance
+                    </BodyRegular>
+                  </HStack>
+                </VStack>
+              : null
+            }
+
             {/* Publication */}
             <HStack
               height="49px"
