@@ -38,7 +38,6 @@ function FiltersButton(props) {
   const { isNftFilter, onChange, params, top, right, left, isSearchPage, switched } = props;
 
   const size = useWindowSize();
-  const [btnAll, setBtnAll] = useState(false);
   const [btnSale, setBtnSale] = useState(false);
   const [btnSold, setBtnSold] = useState(false);
   const [btnRelist, setBtnRelist] = useState(false);
@@ -86,10 +85,6 @@ function FiltersButton(props) {
       filters += 1;
     if(params?.verified)
       filters += 1;
-    setBtnAll((params?.saleType1 === "" ? true : false)
-      || (params?.saleType2 === "" ? true : false) 
-      || (params?.saleType3 === "" ? true : false)
-      || (params?.saleType4 === "" ? true : false));
     setBtnSale(params?.saleType1 === "");
     setBtnSold(params?.saleType3 === "");
     setBtnRelist(params?.saleType2 === "");
@@ -258,34 +253,13 @@ function FiltersButton(props) {
 
                   <HStack width="100%" spacing="15px">
                     <IconImg
-                      url={all}
-                      width="36px"
-                      height="36px"
-                      cursor="pointer"
-                      onTapStart={() => {
-                        setBtnAll(!btnAll);
-                        setBtnSale(!btnAll);
-                        setBtnSold(!btnAll);
-                        setBtnRelist(!btnAll);
-                        setBtnNFS(!btnAll);
-                      }}
-                      variants={activated}
-                      animate={btnAll ? "off" : "on"}
-                    ></IconImg>
-
-                    <IconImg
                       url={sale}
                       width="36px"
                       height="36px"
                       cursor="pointer"
                       onTapStart={() => {
-                        setBtnSale(!btnSale);
-                        if(btnSale && !btnNFS && !btnSold && !btnRelist) {
-                          setBtnAll(false);
-                        }
-                        else if(!btnSale && !btnNFS && !btnSold && !btnRelist) {
-                          setBtnAll(true);
-                        }
+                        if(!btnSold || !btnRelist || !btnNFS)
+                          setBtnSale(!btnSale);
                       }}
                       variants={activated}
                       animate={btnSale ? "off" : "on"}
@@ -297,13 +271,8 @@ function FiltersButton(props) {
                       height="36px"
                       cursor="pointer"
                       onTapStart={() => {
-                        setBtnSold(!btnSold);
-                        if(btnSold && !btnNFS && !btnSale && !btnRelist) {
-                          setBtnAll(false);
-                        }
-                        else if(!btnSold && !btnNFS && !btnSale && !btnRelist) {
-                          setBtnAll(true);
-                        }
+                        if(!btnSale || !btnRelist || !btnNFS)
+                          setBtnSold(!btnSold);
                       }}
                       variants={activated}
                       animate={btnSold ? "off" : "on"}
@@ -315,13 +284,8 @@ function FiltersButton(props) {
                       height="36px"
                       cursor="pointer"
                       onTapStart={() => {
-                        setBtnRelist(!btnRelist);
-                        if(btnRelist && !btnNFS && !btnSale && !btnSold) {
-                          setBtnAll(false);
-                        }
-                        else if(!btnRelist && !btnNFS && !btnSale && !btnSold) {
-                          setBtnAll(true);
-                        }
+                        if(!btnSold || !btnSale || !btnNFS)
+                          setBtnRelist(!btnRelist);
                       }}
                       variants={activated}
                       animate={btnRelist ? "off" : "on"}
@@ -333,13 +297,8 @@ function FiltersButton(props) {
                       height="36px"
                       cursor="pointer"
                       onTapStart={() => {
-                        setBtnNFS(!btnNFS);
-                        if(btnNFS && !btnRelist && !btnSale && !btnSold) {
-                          setBtnAll(false);
-                        }
-                        else if(!btnNFS && !btnRelist && !btnSale && !btnSold) {
-                          setBtnAll(true);
-                        }
+                        if(!btnSold || !btnRelist || !btnSale)
+                          setBtnNFS(!btnNFS);
                       }}
                       variants={activated}
                       animate={btnNFS ? "off" : "on"}
@@ -359,6 +318,10 @@ function FiltersButton(props) {
                         saleType3: !btnSold ? "SOLD" : "", saleType4: !btnNFS ? "NOT_SALE" : ""});
                       if(!params.saleType1 && !params.saleType2 && !params.saleType3 && !params.saleType4)
                         setActiveFilters(activeFilters + 1);
+                      if(activeFilters !== 0) {
+                        if(!btnSale && !btnSold && !btnNFS && !btnRelist)
+                          setActiveFilters(activeFilters - 1);
+                      }
                     }}
                   >
                     <BodyRegular cursor="pointer" textcolor="white">
