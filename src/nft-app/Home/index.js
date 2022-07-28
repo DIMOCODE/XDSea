@@ -510,7 +510,7 @@ const Home = (props) => {
             Top Collections
           </TitleBold27>
         </HStack>
-        <HStack responsive={true}>
+        <HStack responsive={true} padding="0 12px">
           <VStack
             flexwrap={size.width < 1200 ? "nowrap" : "wrap"}
             height={size.width < 1200 ? "auto" : "600px"}
