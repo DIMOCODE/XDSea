@@ -459,7 +459,7 @@ const Discover = (props) => {
     console.log(params);
     setLoading(true);
     const nftData = await (await getNFTs(params)).data;
-    console.log(nftData)
+    console.log(nftData);
     const nftList = await Promise.all(
       nftData.nfts.map(async (nft) => {
         let nftItem = {
@@ -599,13 +599,16 @@ const Discover = (props) => {
               border="9px"
               width="100%"
             >
-              <FiltersButton 
-                onChange={handleChangeFilter} 
-                params={collectionParams} 
+              <FiltersButton
+                onChange={handleChangeFilter}
+                params={collectionParams}
                 isNftFilter={false}
               ></FiltersButton>
               <Spacer></Spacer>
-              <SortButtonCollections onChange={handleChangeFilter} params={collectionParams}></SortButtonCollections>
+              <SortButtonCollections
+                onChange={handleChangeFilter}
+                params={collectionParams}
+              ></SortButtonCollections>
             </HStack>
 
             <InfiniteScroll
@@ -627,32 +630,25 @@ const Discover = (props) => {
             >
               {/* Filter and Sort for Collections  */}
 
-              <VStack spacing="30px">
+              <VStack
+                spacing="30px"
+                padding={size.width < 1200 ? "0 12px" : "0"}
+              >
                 <HStack>
-                  <HStack
-                    spacing="21px"
-                    flexwrap="wrap"
-                    padding="15px 30px"
-                    justify="flex-start"
-                    width={size.width < 768 ? "100%" : "1100px"}
-                  >
+                  <HStack spacing="12px" flexwrap="wrap" justify="flex-start">
                     {loading
                       ? loadingCollections.map((item) => (
                           <VStack
                             key={item.name}
-                            minwidth={size.width < 768 ? "100%" : "326px"}
-                            maxwidth="326px"
-                            height={size.width < 768 ? "440px" : "420px"}
+                            minwidth="326px"
+                            height="440px"
                           >
                             <LoadingNftContainer></LoadingNftContainer>
                           </VStack>
                         ))
                       : collections.map((item) => (
                           <LayoutGroup id="collection" key={item.name}>
-                            <VStack
-                              width="326px"
-                              height={size.width < 768 ? "440px" : "420px"}
-                            >
+                            <VStack width="326px" height="440px">
                               <Collection
                                 key={item.name}
                                 isVerified={item.isVerified}
@@ -691,19 +687,18 @@ const Discover = (props) => {
               padding="6px"
               border="9px"
             >
-              <FiltersButton 
+              <FiltersButton
                 isNftFilter={true}
-                onChange = {handleChangeFilterNFT}
-                params = {nftParams}
+                onChange={handleChangeFilterNFT}
+                params={nftParams}
               ></FiltersButton>
               <Spacer></Spacer>
-              <SortButtonNFTS onChange={handleChangeFilterNFT} params={nftParams}></SortButtonNFTS>
+              <SortButtonNFTS
+                onChange={handleChangeFilterNFT}
+                params={nftParams}
+              ></SortButtonNFTS>
             </HStack>
-            <VStack
-              background="rgb(0,0,0, 0.06)"
-              width="100%"
-              minheight="600px"
-            >
+            <VStack background="transparent" width="100%">
               <InfiniteScroll
                 dataLength={nfts.length}
                 next={fetchMoreNFTs}
@@ -720,21 +715,23 @@ const Discover = (props) => {
                 scrollableTarget="#scrollableDiv"
                 style={{ overflow: "hidden" }}
               >
-                <VStack spacing="30px">
+                <VStack>
                   <HStack>
                     <HStack
-                      spacing="21px"
+                      spacing="12px"
                       flexwrap="wrap"
-                      padding="15px 30px"
                       justify="flex-start"
-                      width={size.width < 768 ? "100%" : "1100px"}
+                      padding={size.width < 1200 ? "0 12px" : "0"}
+                      // width={size.width < 768 ? "100%" : "1100px"}
                     >
                       {loading
                         ? loadingNFTs.map((item) => (
                             <VStack
-                              minwidth={size.width < 768 ? "100%" : "326px"}
-                              maxwidth="326px"
-                              height={size.width < 768 ? "440px" : "420px"}
+                              // minwidth={size.width < 768 ? "100%" : "326px"}
+                              // maxwidth="326px"
+                              // height={size.width < 768 ? "440px" : "420px"}
+                              minwidth="240px"
+                              height="390px"
                               key={item.name}
                             >
                               <LoadingNftContainer></LoadingNftContainer>
@@ -742,8 +739,9 @@ const Discover = (props) => {
                           ))
                         : nfts.map((item, i) => (
                             <VStack
-                              width="326px"
-                              height={size.width < 768 ? "440px" : "420px"}
+                              minwidth="240px"
+                              height="390px"
+                              // height={size.width < 768 ? "440px" : "420px"}
                             >
                               <NftContainer
                                 key={i}

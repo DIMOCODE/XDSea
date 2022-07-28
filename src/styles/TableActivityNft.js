@@ -110,10 +110,10 @@ function TableActivityNft(props) {
                 "Offer Withdrawn" ? (
                 <BodyBold></BodyBold>
               ) : (
-                <HStack padding="0 60px">
+                <HStack padding="0" width="130px">
                   <HStack spacing="6px">
                     <IconImg url={xdclogo} width="18px" height="18px"></IconImg>
-                    <VStack spacing="0px">
+                    <VStack spacing="0px" alignment="flex-start">
                       <BodyRegular>
                         {Number(item.price) > 100000
                           ? (Intl.NumberFormat('en-US', {
