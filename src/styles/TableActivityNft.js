@@ -199,11 +199,10 @@ function TableActivityNft(props) {
                   ></IconImg>
                   <BodyRegular>{item.event}</BodyRegular>
                 </HStack>
-
+                <Spacer></Spacer>
                 <HStack
                   width={widthRow}
                   background={debugColor}
-                  justify="flex-start"
                 >
                   {item.event.props.children[1].props.children === "Transfer" ||
                   item.event.props.children[1].props.children === "Mint" ||
@@ -214,37 +213,40 @@ function TableActivityNft(props) {
                     <BodyBold></BodyBold>
                   ) : (
                     <HStack padding="0" width="130px">
-                      <HStack spacing="6px">
-                        <IconImg url={xdclogo} width="18px" height="18px"></IconImg>
-                        <VStack spacing="0px" alignment="flex-start">
-                          <BodyRegular>
-                            {Number(item.price) > 100000
-                              ? (Intl.NumberFormat('en-US', {
-                                  notation: "compact",
-                                  maximumFractionDigits: 2
-                                }).format(Number(item.price)))
-                              : (
-                                Number(item.price).toLocaleString(undefined, {
-                                  maximumFractionDigits: 2,
-                                }) || "0"
-                              )}
-                          </BodyRegular>
+                      <VStack spacing="6px">
+                        <VStack spacing="0px">
+                          <HStack spacing="6px">
+                            <IconImg url={xdclogo} width="18px" height="18px"></IconImg>
+                            <BodyRegular>
+                              {Number(item.price) > 100000
+                                ? (Intl.NumberFormat('en-US', {
+                                    notation: "compact",
+                                    maximumFractionDigits: 2
+                                  }).format(Number(item.price)))
+                                : (
+                                  Number(item.price).toLocaleString(undefined, {
+                                    maximumFractionDigits: 2,
+                                  }) || "0"
+                                )}
+                            </BodyRegular>
+                          </HStack>
+                          
                           <CaptionRegular>{`(${(props.xdc.xdcPrice * Number(item.price)) > 100000
-                                                ? (Intl.NumberFormat('en-US', {
-                                                    notation: "compact",
-                                                    maximumFractionDigits: 2
-                                                  }).format((props.xdc.xdcPrice * Number(item.price))))
-                                                : (
-                                                  (props.xdc.xdcPrice * Number(item.price)).toLocaleString(undefined, {
-                                                    maximumFractionDigits: 2,
-                                                  }) || "0"
-                                                )} USD)`}</CaptionRegular>
+                            ? (Intl.NumberFormat('en-US', {
+                                notation: "compact",
+                                maximumFractionDigits: 2
+                              }).format((props.xdc.xdcPrice * Number(item.price))))
+                            : (
+                              (props.xdc.xdcPrice * Number(item.price)).toLocaleString(undefined, {
+                                maximumFractionDigits: 2,
+                              }) || "0"
+                            )} USD)`}</CaptionRegular>
                         </VStack>
-                      </HStack>
+                      </VStack>
                     </HStack>
                   )}
                 </HStack>
-
+                <Spacer></Spacer>
                 <HStack spacing="6px" width={widthRow} background={debugColor}>
                   <IconImg
                     url={""}
@@ -256,7 +258,7 @@ function TableActivityNft(props) {
                     <BodyRegular>{truncateAddress(item.from)}</BodyRegular>
                   </Tooltip>
                 </HStack>
-
+                <Spacer></Spacer>
                 <HStack spacing="6px" width={widthRow} background={debugColor}>
                   <IconImg
                     url={""}
@@ -268,7 +270,7 @@ function TableActivityNft(props) {
                     <BodyRegular>{truncateAddress(item.to)}</BodyRegular>
                   </Tooltip>
                 </HStack>
-
+                <Spacer></Spacer>
                 <HStack background={debugColor} width={widthRow}>
                   <Tooltip
                     title={new Date(item.date).toLocaleDateString("en-US", {

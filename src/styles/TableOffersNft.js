@@ -20,6 +20,7 @@ function TableOffersNft(props) {
     withdrawStatus,
     acceptStatus,
     offerUser,
+    usdPrice
   } = props;
 
   const widthRow = "100%";
@@ -49,7 +50,7 @@ function TableOffersNft(props) {
     <>
       <Divider></Divider>
       <HStack width="100%" height={heightRow} spacing="6px">
-        <HStack background={debugColor} width={widthRow}>
+        <HStack background={debugColor} width={widthRow} justify="flex-start">
           <VStack alignment="flex-start" padding="3px 30px" spacing="3px">
             <CaptionRegular>Offer By</CaptionRegular>
             <HStack
@@ -81,22 +82,34 @@ function TableOffersNft(props) {
                 height="18px"
               ></IconImg>
               <BodyBold>{offerAmount
-                          ? offerAmount > 100000
-                            ? (Intl.NumberFormat('en-US', {
-                                notation: "compact",
-                                maximumFractionDigits: 2
-                              }).format(offerAmount))
-                            : (
-                              offerAmount.toLocaleString(undefined, {
-                                maximumFractionDigits: 2,
-                              }) || "0"
-                            )
-                          : "-"
-                        }</BodyBold>
+                ? offerAmount > 100000
+                  ? (Intl.NumberFormat('en-US', {
+                      notation: "compact",
+                      maximumFractionDigits: 2
+                    }).format(offerAmount))
+                  : (
+                    offerAmount.toLocaleString(undefined, {
+                      maximumFractionDigits: 2,
+                    }) || "0"
+                  )
+                : "-"
+              }</BodyBold>
             </HStack>
+            <CaptionRegular>
+            {`(${(props.usdPrice.xdcPrice * offerAmount) > 100000
+              ? (Intl.NumberFormat('en-US', {
+                  notation: "compact",
+                  maximumFractionDigits: 2
+                }).format((props.usdPrice.xdcPrice * offerAmount)))
+              : (
+                (props.usdPrice.xdcPrice * offerAmount).toLocaleString(undefined, {
+                  maximumFractionDigits: 2,
+                }) || "0"
+              )} USD)`}
+            </CaptionRegular>
           </VStack>
         </HStack>
-        <HStack background={debugColor} width={widthRow} padding="3px 30px">
+        <HStack background={debugColor} width={widthRow} justify={"flex-end"} padding={"0 30px 0 0"}>
           <Spacer></Spacer>
           {isWithdrawn ? (
             <ButtonApp
