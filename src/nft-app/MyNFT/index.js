@@ -82,29 +82,34 @@ const MyNFT = (props) => {
   const getOwnedNFTs = async () => {
     setLoading(true);
     console.log(LS.get(LS_ROOT_KEY));
-    const userData = await (await getUser(userId)).data.user;
-    console.log(userData.user);
-    setUser(userData);
-    const nftData = await (await getNFTs({ pageSize: 15, page: page, userId: userId })).data;
-    console.log(nftData);
+    const requestData = await Promise.all([1, 2].map(async (i) => {
+      if(i === 1) {
+        let userData = await (await getUser(userId)).data.user;
+        setUser(userData);
+        return userData;
+      }
+      else {
+        let nftData = await (await getNFTs({ pageSize: 15, page: page, userId: userId })).data;
+        const nftList = await Promise.all(
+          nftData.nfts.map(async (item) => {
+            let nft = {
+              tokenId: item.tokenId,
+              image: isSafari ? item.urlFile.v1 : item.urlFile.v0,
+              preview: isSafari ? item.preview.v1 : item.preview.v0,
+              name: item.name,
+              logo: isSafari ? item.collectionId.logo.v1 : item.collectionId.logo.v0,
+              fileType: item.fileType,
+            };
+            
+            return nft;
+          })
+        );
+        setNfts(nftList);
+        setTotalNfts(nftData.nftsAmount);
+        return nftData;
+      }
+    }));
 
-    const nftList = await Promise.all(
-      nftData.nfts.map(async (item) => {
-        let nft = {
-          tokenId: item.tokenId,
-          image: isSafari ? item.urlFile.v1 : item.urlFile.v0,
-          preview: isSafari ? item.preview.v1 : item.preview.v0,
-          name: item.name,
-          logo: isSafari ? item.collectionId.logo.v1 : item.collectionId.logo.v0,
-          fileType: item.fileType,
-        };
-
-        return nft;
-      })
-    );
-
-    setNfts(nftList);
-    setTotalNfts(nftData.nftsAmount);
     setPage(page + 1);
     setLoading(false);
   };

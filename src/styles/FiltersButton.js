@@ -80,23 +80,23 @@ function FiltersButton(props) {
 
   useEffect(() => {
     var filters = 0;
-    if(params.saleType1 || params.saleType2 || params.saleType3 || params.saleType4)
+    if(params?.saleType1 || params?.saleType2 || params?.saleType3 || params?.saleType4)
       filters += 1;
-    if(params.priceRangeStart)
+    if(params?.priceRangeStart)
       filters += 1;
-    if(params.verified)
+    if(params?.verified)
       filters += 1;
-    setBtnAll((params.saleType1 === "" ? true : false)
-      || (params.saleType2 === "" ? true : false) 
-      || (params.saleType3 === "" ? true : false)
-      || (params.saleType4 === "" ? true : false));
-    setBtnSale(params.saleType1 === "");
-    setBtnSold(params.saleType3 === "");
-    setBtnRelist(params.saleType2 === "");
-    setBtnNFS(params.saleType4 === "");
-    setBtnVerified(params.verified);
-    setMinValue(params.priceRangeStart ? params.priceRangeStart : 1000);
-    setMaxValue(params.priceRangeEnd ? params.priceRangeEnd : 150000);
+    setBtnAll((params?.saleType1 === "" ? true : false)
+      || (params?.saleType2 === "" ? true : false) 
+      || (params?.saleType3 === "" ? true : false)
+      || (params?.saleType4 === "" ? true : false));
+    setBtnSale(params?.saleType1 === "");
+    setBtnSold(params?.saleType3 === "");
+    setBtnRelist(params?.saleType2 === "");
+    setBtnNFS(params?.saleType4 === "");
+    setBtnVerified(params?.verified);
+    setMinValue(params?.priceRangeStart ? params.priceRangeStart : 1000);
+    setMaxValue(params?.priceRangeEnd ? params.priceRangeEnd : 150000);
     setActiveFilters(filters);
   }, [switched]);
 

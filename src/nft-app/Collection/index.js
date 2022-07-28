@@ -469,7 +469,7 @@ const CollectionDetails = (props) => {
                       width="18px"
                       height="18px"
                     ></IconImg>
-                    {collection.volumeTrade ? (
+                    {collection.volumeTrade !== undefined ? (
                       <BodyBold textcolor={({ theme }) => theme.text}>
                         {collection.volumeTrade > 100000
                           ? (Intl.NumberFormat('en-US', {
@@ -483,7 +483,7 @@ const CollectionDetails = (props) => {
                           )}
                       </BodyBold>
                     ) : (
-                      <LoopBars width="54px"></LoopBars>
+                      <LoopBars width="54px">{console.log(collection.volumeTrade)}</LoopBars>
                     )}
                   </HStack>
                   <CaptionBoldShort

@@ -428,141 +428,150 @@ const NFTDetails = (props) => {
         royalty: nftData.nft.royalty,
         unlockableContent: nftData.nft.unlockableContent,
       };
+      const requestData = await Promise.all([1, 2, 3].map(async (i) => {
+        if(i == 1) {
+          const collectionList = await Promise.all(
+            nftData.relatedNfts.map(async (nft) => {
+              let item = {
+                collectionName: nft.collectionId.name,
+                creatorLogo: banner1,
+                image: isSafari ? nft.urlFile.v1 : nft.urlFile.v0,
+                name: nft.name,
+                hasOpenOffer: nft.hasOpenOffer,
+                price: nft.price,
+                fileType: nft.fileType,
+                preview: isSafari ? nft.preview.v1 : nft.preview.v0,
+                owner: nft.owner.userName,
+                ownerId: nft.owner._id,
+                tokenId: nft.tokenId,
+                saleType: nft.saleType.toLowerCase(),
+                isVerified: nft.creator.isVerified,
+              };
+              return item;
+            })
+          );
 
-      const collectionList = await Promise.all(
-        nftData.relatedNfts.map(async (nft) => {
-          let item = {
-            collectionName: nft.collectionId.name,
-            creatorLogo: banner1,
-            image: isSafari ? nft.urlFile.v1 : nft.urlFile.v0,
-            name: nft.name,
-            hasOpenOffer: nft.hasOpenOffer,
-            price: nft.price,
-            fileType: nft.fileType,
-            preview: isSafari ? nft.preview.v1 : nft.preview.v0,
-            owner: nft.owner.userName,
-            ownerId: nft.owner._id,
-            tokenId: nft.tokenId,
-            saleType: nft.saleType.toLowerCase(),
-            isVerified: nft.creator.isVerified,
-          };
-          return item;
-        })
-      );
+          setNFT(currentItem);
+          setMoreFromCollectionNfts(collectionList);
 
-      const offerData = await (await getNFTOffers(currentItem._id)).data.offers;
-      console.log(offerData);
-      var highestOffer = 0;
-      const offerList = await Promise.all(
-        offerData.map(async (offer) => {
-          if (highestOffer < offer.price) highestOffer = offer.price;
-          let offerItem = {
-            _id: offer._id,
-            from: offer.fromAddress,
-            isAccepted: offer.isAccepted,
-            isWithdrawn: offer.isWithdraw,
-            price: offer.price,
-            to: offer.toAddress,
-            userId: offer.userId._id,
-          };
+          return nftData;
+        }
+        else if(i === 2) {
+          const offerData = await (await getNFTOffers(currentItem._id)).data.offers;
+          console.log(offerData);
+          var highestOffer = 0;
+          const offerList = await Promise.all(
+            offerData.map(async (offer) => {
+              if (highestOffer < offer.price) highestOffer = offer.price;
+              let offerItem = {
+                _id: offer._id,
+                from: offer.fromAddress,
+                isAccepted: offer.isAccepted,
+                isWithdrawn: offer.isWithdraw,
+                price: offer.price,
+                to: offer.toAddress,
+                userId: offer.userId._id,
+              };
 
-          return offerItem;
-        })
-      );
+              return offerItem;
+            })
+          );
 
-      const eventData = await (await getNFTEvents(currentItem._id)).data.events;
-      console.log(eventData);
-      const eventList = await Promise.all(
-        eventData.map(async (item, i) => {
-          let event = {
-            _id: item._id,
-            id: i + 1,
-            event:
-              item.eventTypeId.eventCode === "MINTED" ? (
-                <HStack>
-                  <IconImg url={mint} width="26px" height="26px"></IconImg>
-                  <CaptionBoldShort>Mint</CaptionBoldShort>
-                </HStack>
-              ) : item.eventTypeId.eventCode === "LISTED" ? (
-                <HStack>
-                  <IconImg url={list} width="26px" height="26px"></IconImg>
-                  <CaptionBoldShort>List</CaptionBoldShort>
-                </HStack>
-              ) : item.eventTypeId.eventCode === "WITHDRAWN" ? (
-                <HStack>
-                  <IconImg
-                    url={withdrawList}
-                    width="26px"
-                    height="26px"
-                  ></IconImg>
-                  <CaptionBoldShort>Withdraw Listing</CaptionBoldShort>
-                </HStack>
-              ) : item.eventTypeId.eventCode === "SALE" ? (
-                <HStack>
-                  <IconImg url={sale} width="26px" height="26px"></IconImg>
-                  <CaptionBoldShort>Sale</CaptionBoldShort>
-                </HStack>
-              ) : item.eventTypeId.eventCode === "TRANSFER" ? (
-                <HStack>
-                  <IconImg
-                    url={transferIcon}
-                    width="26px"
-                    height="26px"
-                  ></IconImg>
-                  <CaptionBoldShort>Transfer</CaptionBoldShort>
-                </HStack>
-              ) : item.eventTypeId.eventCode === "EDIT" ? (
-                <HStack>
-                  <IconImg
-                    url={editListingIcon}
-                    width="26px"
-                    height="26px"
-                  ></IconImg>
-                  <CaptionBoldShort>Edit Listing</CaptionBoldShort>
-                </HStack>
-              ) : item.eventTypeId.eventCode === "OFFER_RECEIVED" ? (
-                <HStack>
-                  <IconImg
-                    url={offerPlacedIcon}
-                    width="26px"
-                    height="26px"
-                  ></IconImg>
-                  <CaptionBoldShort>Offer Placed</CaptionBoldShort>
-                </HStack>
-              ) : item.eventTypeId.eventCode === "OFFER_WITHDRAWN" ? (
-                <HStack>
-                  <IconImg
-                    url={offerRejectedIcon}
-                    width="26px"
-                    height="26px"
-                  ></IconImg>
-                  <CaptionBoldShort>Offer Withdrawn</CaptionBoldShort>
-                </HStack>
-              ) : (
-                <HStack>
-                  <IconImg
-                    url={offerAcceptedIcon}
-                    width="26px"
-                    height="26px"
-                  ></IconImg>
-                  <CaptionBoldShort>Offer Accepted</CaptionBoldShort>
-                </HStack>
-              ),
-            price: item.price,
-            from: item.fromAddress,
-            to: item.toAddress,
-            date: item.timestamp,
-          };
-          return event;
-        })
-      );
+          setOffers(offerList);
+          setAcceptOfferButtonStatus(new Array(offerList.length).fill(0));
+          setWithdrawOfferButtonStatus(new Array(offerList.length).fill(0));
+        }
+        else {
+          const eventData = await (await getNFTEvents(currentItem._id)).data.events;
+          console.log(eventData);
+          const eventList = await Promise.all(
+            eventData.map(async (item, i) => {
+              let event = {
+                _id: item._id,
+                id: i + 1,
+                event:
+                  item.eventTypeId.eventCode === "MINTED" ? (
+                    <HStack>
+                      <IconImg url={mint} width="26px" height="26px"></IconImg>
+                      <CaptionBoldShort>Mint</CaptionBoldShort>
+                    </HStack>
+                  ) : item.eventTypeId.eventCode === "LISTED" ? (
+                    <HStack>
+                      <IconImg url={list} width="26px" height="26px"></IconImg>
+                      <CaptionBoldShort>List</CaptionBoldShort>
+                    </HStack>
+                  ) : item.eventTypeId.eventCode === "WITHDRAWN" ? (
+                    <HStack>
+                      <IconImg
+                        url={withdrawList}
+                        width="26px"
+                        height="26px"
+                      ></IconImg>
+                      <CaptionBoldShort>Withdraw Listing</CaptionBoldShort>
+                    </HStack>
+                  ) : item.eventTypeId.eventCode === "SALE" ? (
+                    <HStack>
+                      <IconImg url={sale} width="26px" height="26px"></IconImg>
+                      <CaptionBoldShort>Sale</CaptionBoldShort>
+                    </HStack>
+                  ) : item.eventTypeId.eventCode === "TRANSFER" ? (
+                    <HStack>
+                      <IconImg
+                        url={transferIcon}
+                        width="26px"
+                        height="26px"
+                      ></IconImg>
+                      <CaptionBoldShort>Transfer</CaptionBoldShort>
+                    </HStack>
+                  ) : item.eventTypeId.eventCode === "EDIT" ? (
+                    <HStack>
+                      <IconImg
+                        url={editListingIcon}
+                        width="26px"
+                        height="26px"
+                      ></IconImg>
+                      <CaptionBoldShort>Edit Listing</CaptionBoldShort>
+                    </HStack>
+                  ) : item.eventTypeId.eventCode === "OFFER_RECEIVED" ? (
+                    <HStack>
+                      <IconImg
+                        url={offerPlacedIcon}
+                        width="26px"
+                        height="26px"
+                      ></IconImg>
+                      <CaptionBoldShort>Offer Placed</CaptionBoldShort>
+                    </HStack>
+                  ) : item.eventTypeId.eventCode === "OFFER_WITHDRAWN" ? (
+                    <HStack>
+                      <IconImg
+                        url={offerRejectedIcon}
+                        width="26px"
+                        height="26px"
+                      ></IconImg>
+                      <CaptionBoldShort>Offer Withdrawn</CaptionBoldShort>
+                    </HStack>
+                  ) : (
+                    <HStack>
+                      <IconImg
+                        url={offerAcceptedIcon}
+                        width="26px"
+                        height="26px"
+                      ></IconImg>
+                      <CaptionBoldShort>Offer Accepted</CaptionBoldShort>
+                    </HStack>
+                  ),
+                price: item.price,
+                from: item.fromAddress,
+                to: item.toAddress,
+                date: item.timestamp,
+              };
+              return event;
+            })
+          );
 
-      setNFT(currentItem);
-      setMoreFromCollectionNfts(collectionList);
-      setOffers(offerList);
-      setAcceptOfferButtonStatus(new Array(offers.length).fill(0));
-      setWithdrawOfferButtonStatus(new Array(offers.length).fill(0));
-      setEventHistory(eventList);
+          setEventHistory(eventList);
+        }
+      }))
     } catch (error) {
       console.log(error);
     }
