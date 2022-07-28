@@ -69,11 +69,11 @@ function NftContainer(props) {
     <VStack
       cursor={"pointer"}
       overflow="hidden"
-      border="27px"
+      border="12px"
       background={appStyle.colors.darkgrey10}
       spacing="0"
       width="100%"
-      height="450px"
+      height="390px"
       bordersize="0px"
       bordercolor={appStyle.colors.darkgrey10}
       onHoverStart={() => {
@@ -85,17 +85,17 @@ function NftContainer(props) {
         setIsPlaying((isPlaying) => !isPlaying);
       }}
     >
-      <ZStack overflow="hidden" border="27px">
+      <ZStack overflow="hidden" border="12px">
         <ZItem>
           {fileType.match("image.*") ? (
             <IconImg
               url={itemImage}
               width="100%"
-              height="450px"
+              height="100%"
               backsize="cover"
               animate={isVisible ? "hover" : "initial"}
               variants={scaleImage}
-              border="27px"
+              border="12px"
               cursor={"pointer"}
             ></IconImg>
           ) : (

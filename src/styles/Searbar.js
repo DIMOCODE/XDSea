@@ -90,18 +90,21 @@ function Searchbar({
 
   useEffect(() => {
     const delayDebounceFn = setTimeout(async () => {
-      if(searchTerm !== "") {
-        const collectionResults = await (await getCollections({ searchTerm: searchTerm })).data;
+      if (searchTerm !== "") {
+        const collectionResults = await (
+          await getCollections({ searchTerm: searchTerm })
+        ).data;
         console.log(collectionResults);
-        const nftResults = await (await getNFTs({ page: 1, searchBy: searchTerm })).data;
+        const nftResults = await (
+          await getNFTs({ page: 1, searchBy: searchTerm })
+        ).data;
         console.log(nftResults);
         setFilteredCollectionData(collectionResults.collections);
         setFilteredNFTData(nftResults.nfts);
         setLoading(false);
         switchBarStatus(true);
         setShowResults(true);
-      }
-      else{
+      } else {
         setFilteredCollectionData([]);
         setFilteredNFTData([]);
         setLoading(false);
@@ -127,8 +130,7 @@ function Searchbar({
         input={searchTerm}
         onClick={() => {
           const delayFn = setTimeout(() => {
-            if(searchTerm !== "")
-              setShowResults(true);
+            if (searchTerm !== "") setShowResults(true);
           }, 1500);
 
           return () => clearTimeout(delayFn);
@@ -307,7 +309,9 @@ function Searchbar({
                         whileHover={{ background: "rgb(0,0,0,0.06" }}
                         padding="6px"
                         border="6px"
-                        onClick={() => NavigateTo(`nft/${nftaddress}/${nft.tokenId}`)}
+                        onClick={() =>
+                          NavigateTo(`nft/${nftaddress}/${nft.tokenId}`)
+                        }
                       >
                         <IconImg
                           url={isSafari ? nft.urlFile.v1 : nft.urlFile.v0}
@@ -323,8 +327,12 @@ function Searchbar({
                           cursor="pointer"
                         >
                           <BodyBold>{nft.name}</BodyBold>
-                          <CaptionRegular>{nft.collectionId.name}</CaptionRegular>
-                          <CaptionRegular>{truncateAddress(nft.owner.userName)}</CaptionRegular>
+                          <CaptionRegular>
+                            {nft.collectionId.name}
+                          </CaptionRegular>
+                          <CaptionRegular>
+                            {truncateAddress(nft.owner.userName)}
+                          </CaptionRegular>
                         </VStack>
                       </HStack>
                     ))}
@@ -338,7 +346,11 @@ function Searchbar({
                         padding="5px 15px"
                         border="9px"
                         cursor="pointer"
-                        onClick={() => NavigateTo(`SearchPage?searchTerm=${searchTerm}&mode=nft`)}
+                        onClick={() =>
+                          NavigateTo(
+                            `SearchPage?searchTerm=${searchTerm}&mode=nft`
+                          )
+                        }
                       >
                         <CaptionBoldShort>See all NFTs</CaptionBoldShort>
                         <IconImg
@@ -361,23 +373,29 @@ function Searchbar({
                     <VStack
                       alignment="flex-start"
                       spacing="9px"
-                      width="200px"
+                      width="100%"
                       whileHover={{ background: "rgb(0,0,0,0.06" }}
                       padding="6px"
                       border="6px"
-                      onClick={() => NavigateTo(`collection/${collection.nickName}`)}
+                      onClick={() =>
+                        NavigateTo(`collection/${collection.nickName}`)
+                      }
                     >
                       <IconImg
-                        url={isSafari ? collection.banner.v1 : collection.banner.v0}
-                        width="189px"
-                        height="54px"
+                        url={
+                          isSafari ? collection.banner.v1 : collection.banner.v0
+                        }
+                        width="100%"
+                        height="60px"
                         border="6px"
                         backsize="cover"
                         cursor="pointer"
                       ></IconImg>
                       <HStack>
                         <IconImg
-                          url={isSafari ? collection.logo.v1 : collection.logo.v0}
+                          url={
+                            isSafari ? collection.logo.v1 : collection.logo.v0
+                          }
                           width="32px"
                           height="32px"
                           border="15px"
@@ -389,7 +407,9 @@ function Searchbar({
                           width="100%"
                         >
                           <BodyBold>{collection.name}</BodyBold>
-                          <CaptionRegular>{truncateAddress(collection.creator.userName)}</CaptionRegular>
+                          <CaptionRegular>
+                            {truncateAddress(collection.creator.userName)}
+                          </CaptionRegular>
                         </VStack>
                       </HStack>
                     </VStack>
@@ -403,7 +423,11 @@ function Searchbar({
                         padding="5px 15px"
                         border="9px"
                         cursor="pointer"
-                        onClick={() => NavigateTo(`SearchPage?searchTerm=${searchTerm}&mode=collection`)}
+                        onClick={() =>
+                          NavigateTo(
+                            `SearchPage?searchTerm=${searchTerm}&mode=collection`
+                          )
+                        }
                       >
                         <CaptionBoldShort>See all Collections</CaptionBoldShort>
                         <IconImg

@@ -77,7 +77,9 @@ const Home = (props) => {
           let featuredNFT = {
             collectionName: nft.nftId.collectionId.name,
             collectionNickName: nft.nftId.collectionId.nickName,
-            collectionLogo: isSafari ? nft.nftId.collectionId.logo.v1 : nft.nftId.collectionId.logo.v0,
+            collectionLogo: isSafari
+              ? nft.nftId.collectionId.logo.v1
+              : nft.nftId.collectionId.logo.v0,
             image: isSafari ? nft.nftId.urlFile.v1 : nft.nftId.urlFile.v0,
             name: nft.nftId.name,
             fileType: nft.nftId.fileType,
@@ -85,8 +87,8 @@ const Home = (props) => {
             creator: nft.nftId.creator.userName,
             creatorId: nft.nftId.creator._id,
             tokenId: nft.nftId.tokenId,
-            isVerified: nft.nftId.creator.isVerified
-          }
+            isVerified: nft.nftId.creator.isVerified,
+          };
           return featuredNFT;
         })
       );
@@ -123,8 +125,8 @@ const Home = (props) => {
             creatorId: nft.nftId.creator._id,
             tokenId: nft.nftId.tokenId,
             saleType: nft.nftId.saleType.toLowerCase(),
-            isVerified: nft.nftId.creator.isVerified
-          }
+            isVerified: nft.nftId.creator.isVerified,
+          };
           return trendingNFT;
         })
       );
@@ -495,9 +497,9 @@ const Home = (props) => {
 
       {/* Top Collections Section */}
       <VStack
-        height={size.width < 1200 ? "auto" : "700px"}
+        height={size.width < 1200 ? "auto" : "740px"}
         width="100%"
-        spacing="9px"
+        spacing="30px"
         padding="60px 0"
         marginTop="60px"
         id="spotlightCollections"
@@ -511,7 +513,7 @@ const Home = (props) => {
         <HStack responsive={true}>
           <VStack
             flexwrap={size.width < 1200 ? "nowrap" : "wrap"}
-            height={size.width < 1200 ? "auto" : "630px"}
+            height={size.width < 1200 ? "auto" : "600px"}
             spacing="15px"
             padding={size.width > 728 ? "0 150px" : 0}
           >
@@ -588,34 +590,34 @@ const Home = (props) => {
                   ></NftContainer>
                 </VStack>
               ))
-              : size.width > 692
-              ? trendingNFTs.slice(0, 4).map((item, i) => (
-                  <VStack
-                    minwidth={size.width < 768 ? "300px" : "280px"}
-                    height="450px"
-                    key={i}
-                  >
-                    <NftContainer
-                      isVerified={item.isVerified}
-                      iconStatus={item.saleType}
-                      hasOffers={item.hasOpenOffer ? true : false}
-                      fileType={item.fileType}
-                      creatorImage={item.creatorLogo}
-                      itemImage={item.image}
-                      price={item.price}
-                      collectionName={item.collectionName}
-                      itemNumber={item.name}
-                      background={({ theme }) => theme.backElement}
-                      onClick={() =>
-                        NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
-                      }
-                      onClickCreator={() =>
-                        NavigateTo(`UserProfile/${item.creatorId}`)
-                      }
-                    ></NftContainer>
-                  </VStack>
-                ))
-              : trendingNFTs.slice(0, 3).map((item, i) => (
+            : size.width > 692
+            ? trendingNFTs.slice(0, 4).map((item, i) => (
+                <VStack
+                  minwidth={size.width < 768 ? "300px" : "280px"}
+                  height="450px"
+                  key={i}
+                >
+                  <NftContainer
+                    isVerified={item.isVerified}
+                    iconStatus={item.saleType}
+                    hasOffers={item.hasOpenOffer ? true : false}
+                    fileType={item.fileType}
+                    creatorImage={item.creatorLogo}
+                    itemImage={item.image}
+                    price={item.price}
+                    collectionName={item.collectionName}
+                    itemNumber={item.name}
+                    background={({ theme }) => theme.backElement}
+                    onClick={() =>
+                      NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
+                    }
+                    onClickCreator={() =>
+                      NavigateTo(`UserProfile/${item.creatorId}`)
+                    }
+                  ></NftContainer>
+                </VStack>
+              ))
+            : trendingNFTs.slice(0, 3).map((item, i) => (
                 <VStack
                   minwidth={size.width < 768 ? "300px" : "280px"}
                   height="450px"

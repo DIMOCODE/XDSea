@@ -103,7 +103,7 @@ function Collection(props) {
             backsize="cover"
             animate={isVisible ? "initial" : "hover"}
             variants={scaleImage}
-            border="0px"
+            border="15px"
             overflow="hidden"
           ></IconImg>
         </ZItem>
@@ -115,6 +115,7 @@ function Collection(props) {
               // animate={isVisible ? "hover" : "initial"}
               variants={background}
               cursor={"pointer"}
+              border="12px"
             >
               <VStack
                 cursor={"pointer"}
