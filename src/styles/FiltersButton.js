@@ -355,7 +355,10 @@ function FiltersButton(props) {
               spacing="9px"
               onClick={() => {
                 setBtnVerified(!btnVerified);
-                onChange({...params, page: 1, verified: !btnVerified});
+                if(!btnVerified)
+                  onChange({...params, page: 1, verified: !btnVerified});
+                else
+                  onChange({...params, page: 1, verified: ""});
                 setActiveFilters(btnVerified ? activeFilters - 1 : activeFilters + 1);
               }}
               cursor="pointer"
