@@ -32,7 +32,7 @@ function TopCollectionItem(props) {
 
   const [isVisible, setIsVisible] = useState(false);
 
-  const [hasCup, setHasCup] = useState(0);
+  const [hasCup, setHasCup] = useState(1);
 
   const creator = {
     initial: {
@@ -85,15 +85,15 @@ function TopCollectionItem(props) {
         <Spacer></Spacer>
 
         {hasCup === 1 && (
-          <IconImg url={miniXdcLogo} with="21px" height="21px"></IconImg>
+          <IconImg url={firstPlace} width="21px" height="21px"></IconImg>
         )}
 
         {hasCup === 2 && (
-          <IconImg url={secondPlace} with="21px" height="21px"></IconImg>
+          <IconImg url={secondPlace} width="21px" height="21px"></IconImg>
         )}
 
         {hasCup === 3 && (
-          <IconImg url={thirdPlace} with="21px" height="21px"></IconImg>
+          <IconImg url={thirdPlace} width="21px" height="21px"></IconImg>
         )}
       </HStack>
       <Divider></Divider>
