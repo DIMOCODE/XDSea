@@ -1441,13 +1441,29 @@ const NFTDetails = (props) => {
 
                     <TitleBold18>
                       {nft?.price
-                        ? Number(nft?.price).toLocaleString(undefined, {
-                            maximumFractionDigits: 2,
-                          })
+                        ? nft.price > 100000
+                            ? (Intl.NumberFormat('en-US', {
+                                notation: "compact",
+                                maximumFractionDigits: 2
+                              }).format(nft.price))
+                            : (
+                              nft.price.toLocaleString(undefined, {
+                                maximumFractionDigits: 2,
+                              }) || "0"
+                            )
                         : "0.00"}
                     </TitleBold18>
                     <CaptionBoldShort>XDC</CaptionBoldShort>
-                    <CaptionRegular>{`(${(props.xdc.xdcPrice * Number(nft?.price)).toFixed(2)} USD)`}</CaptionRegular>
+                    <CaptionRegular>{`(${(props.xdc.xdcPrice * Number(nft?.price)) > 100000
+                                      ? (Intl.NumberFormat('en-US', {
+                                          notation: "compact",
+                                          maximumFractionDigits: 2
+                                        }).format((props.xdc.xdcPrice * Number(nft?.price))))
+                                      : (
+                                        (props.xdc.xdcPrice * Number(nft?.price)).toLocaleString(undefined, {
+                                          maximumFractionDigits: 2,
+                                        }) || "0"
+                                      )} USD)`}</CaptionRegular>
                   </HStack>
                 </HStack>
                 <HStack width="100%" height="36px">
