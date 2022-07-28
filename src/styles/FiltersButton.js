@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useRef } from "react";
 import { HStack, IconImg, VStack, Spacer, Divider } from "./Stacks";
 import {
@@ -35,7 +35,7 @@ import { FilterNFT } from "./FilterNFT";
 import useWindowSize from "../styles/useWindowSize";
 
 function FiltersButton(props) {
-  const { isNftFilter, onChange, params, top, right, left, isSearchPage } = props;
+  const { isNftFilter, onChange, params, top, right, left, isSearchPage, switched } = props;
 
   const size = useWindowSize();
   const [btnAll, setBtnAll] = useState(false);
@@ -77,6 +77,28 @@ function FiltersButton(props) {
   }));
 
   const [isActive, setIsActive] = useState(false);
+
+  useEffect(() => {
+    var filters = 0;
+    if(params.saleType1 || params.saleType2 || params.saleType3 || params.saleType4)
+      filters += 1;
+    if(params.priceRangeStart)
+      filters += 1;
+    if(params.verified)
+      filters += 1;
+    setBtnAll((params.saleType1 === "" ? true : false)
+      || (params.saleType2 === "" ? true : false) 
+      || (params.saleType3 === "" ? true : false)
+      || (params.saleType4 === "" ? true : false));
+    setBtnSale(params.saleType1 === "");
+    setBtnSold(params.saleType3 === "");
+    setBtnRelist(params.saleType2 === "");
+    setBtnNFS(params.saleType4 === "");
+    setBtnVerified(params.verified);
+    setMinValue(params.priceRangeStart ? params.priceRangeStart : 1000);
+    setMaxValue(params.priceRangeEnd ? params.priceRangeEnd : 150000);
+    setActiveFilters(filters);
+  }, [switched]);
 
   return (
     <VStack ref={ref} maxwidth={size.width < 728 ? "90px" : "210px"}>

@@ -8,8 +8,8 @@ import {
   AnimatePresence,
   motion,
 } from "framer-motion/dist/framer-motion";
-import { HStack, Spacer, VStack, ZItem, ZStack } from "../../styles/Stacks";
-import { CaptionBoldShort, TitleBold27 } from "../../styles/TextStyles";
+import { HStack, Spacer, VStack, ZItem, ZStack, IconImg } from "../../styles/Stacks";
+import { CaptionBoldShort, TitleBold27, TitleBold18 } from "../../styles/TextStyles";
 import { appStyle } from "../../styles/AppStyles";
 import useWindowSize from "../../styles/useWindowSize";
 import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
@@ -22,7 +22,7 @@ import banner1 from "../../images/Banner1.jpg";
 import { nftaddress } from "../../config";
 import { NftContainer } from "../../styles/NftContainer";
 import { isSafari } from "../../common/common";
-
+import noResult from "../../images/noResult.png";
 import { untitledCollections, verifiedProfiles } from "../../blacklist";
 import CID from "cids";
 import { SortButtonNFTS } from "../../styles/SortButtonNFTS";
@@ -603,6 +603,7 @@ const Discover = (props) => {
                 onChange={handleChangeFilter}
                 params={collectionParams}
                 isNftFilter={false}
+                switched={isSelected}
               ></FiltersButton>
               <Spacer></Spacer>
               <SortButtonCollections
@@ -646,7 +647,8 @@ const Discover = (props) => {
                             <LoadingNftContainer></LoadingNftContainer>
                           </VStack>
                         ))
-                      : collections.map((item) => (
+                      : collections.length !== 0
+                        ? collections.map((item) => (
                           <LayoutGroup id="collection" key={item.name}>
                             <VStack width="326px" height="440px">
                               <Collection
@@ -672,7 +674,19 @@ const Discover = (props) => {
                               ></Collection>
                             </VStack>
                           </LayoutGroup>
-                        ))}
+                        ))
+                        : <VStack
+                          padding="90px"
+                          width="100%"
+                          background={({ theme }) => theme.faded}
+                          style={{ zIndex: "-50" }}
+                          border="6px"
+                        >
+                          <IconImg url={noResult} width="90px" height="90px"></IconImg>
+                          <TitleBold18 animate={{ opacity: 0.6 }}>
+                            Nothing Found
+                          </TitleBold18>
+                        </VStack>}
                   </HStack>
                 </HStack>
               </VStack>
@@ -691,6 +705,7 @@ const Discover = (props) => {
                 isNftFilter={true}
                 onChange={handleChangeFilterNFT}
                 params={nftParams}
+                switched={isSelected}
               ></FiltersButton>
               <Spacer></Spacer>
               <SortButtonNFTS
@@ -737,7 +752,8 @@ const Discover = (props) => {
                               <LoadingNftContainer></LoadingNftContainer>
                             </VStack>
                           ))
-                        : nfts.map((item, i) => (
+                        : nfts.length !== 0
+                          ? nfts.map((item, i) => (
                             <VStack
                               minwidth="240px"
                               height="390px"
@@ -767,7 +783,19 @@ const Discover = (props) => {
                                 usdPrice={props.xdc}
                               ></NftContainer>
                             </VStack>
-                          ))}
+                          ))
+                          : <VStack
+                            padding="90px"
+                            width="100%"
+                            background={({ theme }) => theme.faded}
+                            style={{ zIndex: "-50" }}
+                            border="6px"
+                          >
+                            <IconImg url={noResult} width="90px" height="90px"></IconImg>
+                            <TitleBold18 animate={{ opacity: 0.6 }}>
+                              Nothing Found
+                            </TitleBold18>
+                          </VStack>}
                     </HStack>
                   </HStack>
                 </VStack>

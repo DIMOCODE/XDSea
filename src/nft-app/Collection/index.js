@@ -9,6 +9,7 @@ import {
   CaptionBoldShort,
   CaptionBold,
   TitleBold21,
+  TitleBold18
 } from "../../styles/TextStyles";
 import instagram from "../../images/instagramMini.png";
 import twitter from "../../images/twitter.png";
@@ -44,6 +45,7 @@ import { isSafari } from "../../common/common";
 import { SearchCollection } from "../../styles/SearchCollection";
 import { FiltersButton } from "../../styles/FiltersButton";
 import { SortButtonNFTS } from "../../styles/SortButtonNFTS";
+import noResult from "../../images/noResult.png";
 
 const CollectionDetails = (props) => {
   const history = useHistory();
@@ -659,7 +661,8 @@ const CollectionDetails = (props) => {
                 spacing="9px"
               >
                 {loadingState === "loaded"
-                  ? nfts.map((item, i) => (
+                  ? nfts.length !== 0
+                    ? nfts.map((item, i) => (
                       <VStack
                         minwidth={size.width < 768 ? "330px" : "290px"}
                         maxwidth={size.width < 768 ? "330px" : "290px"}
@@ -689,6 +692,18 @@ const CollectionDetails = (props) => {
                         ></NftContainer>
                       </VStack>
                     ))
+                    : <VStack
+                      padding="90px"
+                      width="100%"
+                      background={({ theme }) => theme.faded}
+                      style={{ zIndex: "-50" }}
+                      border="6px"
+                    >
+                      <IconImg url={noResult} width="90px" height="90px"></IconImg>
+                      <TitleBold18 animate={{ opacity: 0.6 }}>
+                        Nothing Found
+                      </TitleBold18>
+                    </VStack>
                   : loadingNFTs.map((item) => (
                       <VStack
                         minwidth={size.width < 768 ? "230px" : "280px"}

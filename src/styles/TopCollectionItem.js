@@ -32,7 +32,7 @@ function TopCollectionItem(props) {
 
   const [isVisible, setIsVisible] = useState(false);
 
-  const [hasCup, setHasCup] = useState(1);
+  const [hasCup, setHasCup] = useState(position);
 
   const creator = {
     initial: {

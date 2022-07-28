@@ -11,3 +11,4 @@ export const untitledCollections = ["Who launches in beta!","ROSES","Untitled Co
 export const propertiesFixFor4125 = ["311,100 xBIBLx", "589,000 xBIBLx", "177,600 xBIBLx"];
 export const nameFixes = ["3567", "TAURULIOMPS 1/12", "3580", "GEMINLIOMP 2/12","3584", "LIBRIOMP 2/12", "3650", "PISCELIOMPS 8/12", "3679", "LEOIOMP 10/12", "3695", "SAGITTARIOMPS 11/12"];
 export const descriptionFixes = ["DØP3 Punks ", "A multichain NFT project minting collections on every major blockchain!\n\nWhere DØP3 Art Meets Web3"];
+export const offerDeletions = ["5", "2689"];
