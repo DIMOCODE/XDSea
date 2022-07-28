@@ -42,6 +42,8 @@ function Searchbar({
   width,
   widthInput,
   isPhone,
+  onClickInput,
+  switchBarStatus,
 }) {
   const [filteredData, setFilteredData] = useState([]);
   const [result, setResult] = useState("");
@@ -50,6 +52,7 @@ function Searchbar({
   const ref = useRef(null);
   useClickAway(ref, () => {
     setFilteredData([]);
+    switchBarStatus(false);
   });
 
   const handleFilter = (event) => {
@@ -60,18 +63,21 @@ function Searchbar({
     });
     if (searchWord == "") {
       setFilteredData([]);
+      switchBarStatus(false);
     } else {
       setFilteredData(newFilter);
+      switchBarStatus(true);
     }
   };
 
   const clearInput = () => {
     setFilteredData([]);
     setResult("");
+    switchBarStatus(false);
   };
 
   return (
-    <VStack height="41px" minwidth={widthInput || "300px"}>
+    <VStack height="42px" minwidth={widthInput || "300px"}>
       <InputStyled
         type="text"
         placeholder={placeholder}
@@ -85,15 +91,18 @@ function Searchbar({
         <SearchResult top={top} left={left} ref={ref}>
           <VStack
             background={({ theme }) => theme.backElement}
-            padding="15px"
+            padding="6px 15px 0 15px"
             border="12px"
             style={{
               boxShadow: "0px 15px 15px rgba(0, 0, 0, 0.15)",
             }}
+            spacing="0px"
+            // background="pink"
+            width={width}
           >
             {/* Title Results */}
 
-            <HStack>
+            <HStack padding="15px 0 " width="100%">
               <BodyRegular>Search Results for</BodyRegular>
               <BodyBold>"{result}"</BodyBold>
 
@@ -116,8 +125,10 @@ function Searchbar({
             <HStack
               responsive="true"
               alignment="flex-start"
-              overflowy="scroll"
-              height={isPhone ? "560px" : "auto"}
+              overflowy="auto"
+              height={isPhone ? "590px" : "auto"}
+              justify={isPhone ? "flex-start" : "center"}
+              padding="15px 0 15px 0"
             >
               {/* Creators */}
               <VStack alignment="flex-start">
@@ -126,10 +137,9 @@ function Searchbar({
                 <VStack spacing="9px">
                   {filteredData.slice(0, 5).map((value, key) => {
                     return (
-                      <HStack width={width}>
+                      <HStack>
                         {value.isVerified ? (
                           <HStack
-                            width="100%"
                             whileHover={{ background: "rgb(0,0,0,0.06" }}
                             padding="6px"
                             border="6px"
@@ -244,7 +254,6 @@ function Searchbar({
 
                 <VStack spacing="12px">
                   <HStack
-                    width={width}
                     whileHover={{ background: "rgb(0,0,0,0.06" }}
                     padding="6px"
                     border="6px"
@@ -269,7 +278,6 @@ function Searchbar({
                   </HStack>
 
                   <HStack
-                    width={width}
                     whileHover={{ background: "rgb(0,0,0,0.06" }}
                     padding="6px"
                     border="6px"
@@ -378,6 +386,9 @@ const SearchResult = styled(motion.div)`
   top: ${(props) => props.top};
   left: ${(props) => props.left};
   z-index: 100;
+  width: 100vw;
+
+  box-sizing: border-box;
 `;
 
 const Mask = styled(motion.div)`
