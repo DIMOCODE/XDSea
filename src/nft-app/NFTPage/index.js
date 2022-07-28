@@ -419,8 +419,10 @@ const NFTDetails = (props) => {
         tokenId: id,
         itemId: nftData.nft.itemId,
         creator: nftData.nft.creator.userName,
+        creatorProfile: nftData.nft.creator.urlProfile,
         creatorId: nftData.nft.creator._id,
         owner: nftData.nft.owner.userName,
+        ownerProfile: nftData.nft.owner.urlProfile,
         ownerId: nftData.nft.owner._id,
         collectionName: nftData.nft.collectionId.name,
         collectionLogo: isSafari
@@ -444,7 +446,7 @@ const NFTDetails = (props) => {
             nftData.relatedNfts.map(async (nft) => {
               let item = {
                 collectionName: nft.collectionId.name,
-                creatorLogo: banner1,
+                creatorLogo: nft.creator.urlProfile,
                 image: isSafari ? nft.urlFile.v1 : nft.urlFile.v0,
                 name: nft.name,
                 hasOpenOffer: nft.hasOpenOffer,
@@ -475,6 +477,7 @@ const NFTDetails = (props) => {
               if (highestOffer < offer.price) highestOffer = offer.price;
               let offerItem = {
                 _id: offer._id,
+                userProfile: offer.userId.urlProfile,
                 from: offer.fromAddress,
                 isAccepted: offer.isAccepted,
                 isWithdrawn: offer.isWithdraw,
@@ -1108,7 +1111,7 @@ const NFTDetails = (props) => {
                   onClick={() => NavigateTo(`UserProfile/${nft?.ownerId}`)}
                 >
                   <IconImg
-                    url={banner1}
+                    url={nft?.ownerProfile}
                     width="18px"
                     height="18px"
                     backsize="cover"
@@ -1304,7 +1307,7 @@ const NFTDetails = (props) => {
                     onClick={() => NavigateTo(`UserProfile/${nft?.creatorId}`)}
                   >
                     <IconImg
-                      url={nft?.collectionLogo}
+                      url={nft?.creatorProfile}
                       width="26px"
                       height="26px"
                       border="30px"
@@ -1733,20 +1736,18 @@ const NFTDetails = (props) => {
                       <>
                         <TableOffersNft
                           key={i}
-                          imageBuyer={banner1}
+                          imageBuyer={item.userProfile}
                           offerBy={item.from}
                           offerUser={item.userId}
                           wallet={wallet}
                           owner={item.to}
-                          offerAmount={item.price.toLocaleString(undefined, {
-                            maximumFractionDigits: 2,
-                          })}
+                          offerAmount={item.price}
                           isWithdrawn={item.isWithdrawn}
                           withdrawStatus={withdrawOfferButtonStatus[i]}
                           onClickWithdraw={() => withdrawOffer(i)}
                           acceptStatus={acceptOfferButtonStatus[i]}
                           onClickAccept={() => acceptOffer(i)}
-                          usdPrice={props.xdc}
+                          xdc={props.xdc}
                         ></TableOffersNft>
                         {i !== offers.length - 1 ? <Divider></Divider> : null}
                       </>

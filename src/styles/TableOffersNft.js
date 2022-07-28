@@ -20,7 +20,7 @@ function TableOffersNft(props) {
     withdrawStatus,
     acceptStatus,
     offerUser,
-    usdPrice
+    xdc
   } = props;
 
   const widthRow = "100%";
@@ -96,13 +96,13 @@ function TableOffersNft(props) {
               }</BodyBold>
             </HStack>
             <CaptionRegular>
-            {`(${(props.usdPrice.xdcPrice * offerAmount) > 100000
+            {`(${(Number(xdc.xdcPrice) * Number(offerAmount)) > 100000
               ? (Intl.NumberFormat('en-US', {
                   notation: "compact",
                   maximumFractionDigits: 2
-                }).format((props.usdPrice.xdcPrice * offerAmount)))
+                }).format((Number(xdc.xdcPrice) * Number(offerAmount))))
               : (
-                (props.usdPrice.xdcPrice * offerAmount).toLocaleString(undefined, {
+                (Number(xdc.xdcPrice) * Number(offerAmount)).toLocaleString(undefined, {
                   maximumFractionDigits: 2,
                 }) || "0"
               )} USD)`}

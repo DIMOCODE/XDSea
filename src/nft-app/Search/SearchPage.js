@@ -403,10 +403,10 @@ function SearchPage(props) {
                         <VStack minwidth="240px" height="390px">
                           <NftContainer
                             key={i}
-                            isVerified={item.creator.isVerified}
+                            isVerified={item.owner.isVerified}
                             iconStatus={item.saleType}
                             hasOffers={item.hasOpenOffer ? true : false}
-                            creatorImage={banner1}
+                            creatorImage={item.owner.urlProfile}
                             itemImage={
                               isSafari ? item.urlFile.v1 : item.urlFile.v0
                             }

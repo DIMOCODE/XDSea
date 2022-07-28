@@ -384,7 +384,7 @@ const Discover = (props) => {
           let nftItem = {
             collectionName: nft.collectionId.name,
             collectionNickName: nft.collectionId.nickName,
-            creatorLogo: banner1,
+            creatorLogo: nft.owner.urlProfile,
             image: isSafari ? nft.urlFile.v1 : nft.urlFile.v0,
             name: nft.name,
             price: nft.price,
@@ -419,7 +419,7 @@ const Discover = (props) => {
         let nftItem = {
           collectionName: nft.collectionId.name,
           collectionNickName: nft.collectionId.nickName,
-          creatorLogo: banner1,
+          creatorLogo: nft.owner.urlProfile,
           image: isSafari ? nft.urlFile.v1 : nft.urlFile.v0,
           name: nft.name,
           hasOpenOffer: nft.hasOpenOffer,
@@ -465,7 +465,7 @@ const Discover = (props) => {
         let nftItem = {
           collectionName: nft.collectionId.name,
           collectionNickName: nft.collectionId.nickName,
-          creatorLogo: banner1,
+          creatorLogo: nft.owner.urlProfile,
           image: isSafari ? nft.urlFile.v1 : nft.urlFile.v0,
           name: nft.name,
           hasOpenOffer: nft.hasOpenOffer,
@@ -764,7 +764,7 @@ const Discover = (props) => {
                                 isVerified={item.isVerified}
                                 iconStatus={item.saleType}
                                 hasOffers={item.hasOpenOffer ? true : false}
-                                creatorImage={banner1}
+                                creatorImage={item.creatorLogo}
                                 itemImage={item.image}
                                 price={item.price}
                                 collectionName={item.collectionName}

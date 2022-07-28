@@ -114,7 +114,7 @@ const Home = (props) => {
           let trendingNFT = {
             collectionName: nft.nftId.collectionId.name,
             collectionNickName: nft.nftId.collectionId.nickName,
-            creatorLogo: banner1,
+            creatorLogo: nft.nftId.creator.urlProfile,
             image: isSafari ? nft.nftId.urlFile.v1 : nft.nftId.urlFile.v0,
             name: nft.nftId.name,
             hasOpenOffer: nft.nftId.hasOpenOffer,

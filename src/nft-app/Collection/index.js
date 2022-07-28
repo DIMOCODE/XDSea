@@ -111,7 +111,7 @@ const CollectionDetails = (props) => {
         collectionNFTData.map(async (nft) => {
           let collectionNFT = {
             collectionName: nft.collectionId.name,
-            creatorLogo: banner1,
+            creatorLogo: nft.owner.urlProfile,
             image: isSafari ? nft.urlFile.v1 : nft.urlFile.v0,
             name: nft.name,
             hasOpenOffer: nft.hasOpenOffer,
@@ -122,7 +122,7 @@ const CollectionDetails = (props) => {
             ownerId: nft.owner._id,
             tokenId: nft.tokenId,
             saleType: nft.saleType.toLowerCase(),
-            isVerified: nft.creator.isVerified,
+            isVerified: nft.owner.isVerified,
           };
           return collectionNFT;
         })
@@ -150,7 +150,7 @@ const CollectionDetails = (props) => {
       collectionNFTData.map(async (nft) => {
         let collectionNFT = {
           collectionName: nft.collectionId.name,
-          creatorLogo: banner1,
+          creatorLogo: nft.owner.urlProfile,
           image: isSafari ? nft.urlFile.v1 : nft.urlFile.v0,
           name: nft.name,
           hasOpenOffer: nft.hasOpenOffer,
@@ -161,7 +161,7 @@ const CollectionDetails = (props) => {
           ownerId: nft.owner._id,
           tokenId: nft.tokenId,
           saleType: nft.saleType.toLowerCase(),
-          isVerified: nft.creator.isVerified,
+          isVerified: nft.owner.isVerified,
         };
         return collectionNFT;
       })
@@ -671,10 +671,10 @@ const CollectionDetails = (props) => {
                       >
                         <NftContainer
                           key={i}
-                          // isVerified={verifiedProfiles.includes(item.owner)}
+                          isVerified={item.isVerified}
                           iconStatus={item.saleType}
                           hasOffers={item.offerCount > 0 ? true : false}
-                          creatorImage={banner1}
+                          creatorImage={item.creatorLogo}
                           itemImage={item.image}
                           price={item.price}
                           collectionName={item.collectionName}

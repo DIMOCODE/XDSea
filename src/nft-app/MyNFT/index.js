@@ -86,6 +86,7 @@ const MyNFT = (props) => {
       if(i === 1) {
         let userData = await (await getUser(userId)).data.user;
         setUser(userData);
+        console.log(userData)
         return userData;
       }
       else {
@@ -207,7 +208,7 @@ const MyNFT = (props) => {
                   </VerifiedIcon>
                 ) : null}
                 <IconImg
-                  url={banner1}
+                  url={user.urlProfile}
                   width={size.width < 768 ? "120px" : "150px"}
                   height={size.width < 768 ? "120px" : "150px"}
                   border="90px"
