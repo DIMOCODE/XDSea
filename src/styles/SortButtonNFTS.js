@@ -284,7 +284,7 @@ function SortButtonNFTS(props) {
                 height="43px"
                 onClick={() => {
                   setIsTopOffer(true);
-                  onChange({...params, page: 1, sortBy: "offers", sortDirection: -1});
+                  onChange({...params, page: 1, sortBy: "offersAmount", sortDirection: -1});
                 }}
               >
                 <BodyRegular
@@ -315,7 +315,7 @@ function SortButtonNFTS(props) {
                 }
                 onClick={() => {
                   setIsTopOffer(false);
-                  onChange({...params, page: 1, sortBy: "offers", sortDirection: 1});
+                  onChange({...params, page: 1, sortBy: "offersAmount", sortDirection: 1});
                 }}
                 height="43px"
               >
@@ -360,7 +360,7 @@ function SortButtonNFTS(props) {
                 cursor="pointer"
                 onClick={() => {
                   setIsAtoZ(true);
-                  onChange({...params, page: 1, sortBy: "alphabet", sortDirection: 1});
+                  onChange({...params, page: 1, sortBy: "alphabetical", sortDirection: 1});
                 }}
               >
                 <BodyRegular
@@ -391,7 +391,7 @@ function SortButtonNFTS(props) {
                 }
                 onClick={() => {
                   setIsAtoZ(false);
-                  onChange({...params, page: 1, sortBy: "alphabet", sortDirection: -1});
+                  onChange({...params, page: 1, sortBy: "alphabetical", sortDirection: -1});
                 }}
               >
                 <BodyRegular

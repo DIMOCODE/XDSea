@@ -739,7 +739,7 @@ function TopBar(props) {
                             wallet={wallet}
                             onClickMetamask={() => setShowMetamask(true)}
                             isMetamask={isMetamask}
-                            hasAlert={true}
+                            hasAlert={showError > 0}
                             clickAlert={() => setShowInfo(true)}
                           ></WalletButton>
                         </ZItem>

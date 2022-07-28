@@ -518,7 +518,7 @@ function SortButtonCollections(props) {
                 cursor="pointer"
                 onClick={() => {
                   setIsAtoZ(true);
-                  onChange({...params, page: 1, sortBy: "alphabet", sortDirection: 1});
+                  onChange({...params, page: 1, sortBy: "alphabetical", sortDirection: 1});
                 }}
               >
                 <BodyRegular
@@ -549,7 +549,7 @@ function SortButtonCollections(props) {
                 }
                 onClick={() => {
                   setIsAtoZ(false);
-                  onChange({...params, page: 1, sortBy: "alphabet", sortDirection: -1});
+                  onChange({...params, page: 1, sortBy: "alphabetical", sortDirection: -1});
                 }}
               >
                 <BodyRegular
