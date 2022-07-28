@@ -35,7 +35,7 @@ import { FilterNFT } from "./FilterNFT";
 import useWindowSize from "../styles/useWindowSize";
 
 function FiltersButton(props) {
-  const { isNftFilter, onChange, params, top, right, left, isSearchPage, switched } = props;
+  const { isNftFilter, onChange, params, top, right, left, isSearchPage, switched, maxPrice } = props;
 
   const size = useWindowSize();
   const [btnSale, setBtnSale] = useState(false);

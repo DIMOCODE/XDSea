@@ -144,6 +144,8 @@ const NFTDetails = (props) => {
     useState(false);
   const [processingAccepting, setIsProcessingAccepting] = useState(false);
   const [actions, setActions] = useState(0);
+  const [loadingOffers, setLoadingOffers] = useState(false);
+  const [loadingEvents, setLoadingEvents] = useState(false);
   const size = useWindowSize();
   const variants = {
     selected: { opacity: 1 },
@@ -169,6 +171,12 @@ const NFTDetails = (props) => {
       },
     },
   };
+  const [loadingOffersArray] = useState([
+    { id: 1, name: "Offer 1" },
+    { id: 2, name: "Offer 2" },
+    { id: 3, name: "Offer 3" },
+    { id: 4, name: "Offer 4" }
+  ]);
 
   const { id, nftaddress } = useParams();
 
@@ -401,6 +409,8 @@ const NFTDetails = (props) => {
 
   const getData = async () => {
     try {
+      setLoadingOffers(true);
+      setLoadingEvents(true);
       const nftData = await (await getNFT(id)).data;
       console.log(nftData);
       let currentItem = {
@@ -480,6 +490,7 @@ const NFTDetails = (props) => {
           setOffers(offerList);
           setAcceptOfferButtonStatus(new Array(offerList.length).fill(0));
           setWithdrawOfferButtonStatus(new Array(offerList.length).fill(0));
+          setLoadingOffers(false);
         }
         else {
           const eventData = await (await getNFTEvents(currentItem._id)).data.events;
@@ -570,6 +581,7 @@ const NFTDetails = (props) => {
           );
 
           setEventHistory(eventList);
+          setLoadingEvents(false);
         }
       }))
     } catch (error) {
@@ -1647,7 +1659,9 @@ const NFTDetails = (props) => {
                     </HStack>
                   </HStack>
                   <HStack width="100%">
-                    <BodyBold>AMOUNT </BodyBold>
+                    <HStack padding="0 30px">
+                      <BodyBold>AMOUNT</BodyBold>
+                    </HStack>
                   </HStack>
                   <HStack width="100%" justify="flex-end">
                     <HStack padding="0 30px">
@@ -1655,48 +1669,107 @@ const NFTDetails = (props) => {
                     </HStack>
                   </HStack>
                 </HStack>
-                {offers.length ? (
-                  offers?.map((item, i) => (
+                {loadingOffers
+                  ? loadingOffersArray.map((i) => (
                     <>
-                      <TableOffersNft
-                        key={i}
-                        imageBuyer={banner1}
-                        offerBy={item.from}
-                        offerUser={item.userId}
-                        wallet={wallet}
-                        owner={item.to}
-                        offerAmount={item.price.toLocaleString(undefined, {
-                          maximumFractionDigits: 2,
-                        })}
-                        isWithdrawn={item.isWithdrawn}
-                        withdrawStatus={withdrawOfferButtonStatus[i]}
-                        onClickWithdraw={() => withdrawOffer(i)}
-                        acceptStatus={acceptOfferButtonStatus[i]}
-                        onClickAccept={() => acceptOffer(i)}
-                      ></TableOffersNft>
-                      {i !== offers.length - 1 ? <Divider></Divider> : null}
+                      <Divider></Divider>
+                      <HStack width="100%" height={"69px"} spacing="6px">
+                        <HStack background={"transparent"} width={"100%"}>
+                          <VStack alignment="flex-start" padding="3px 30px" spacing="3px">
+                            <TitleLoading
+                              key="Offerer"
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              exit={{ opacity: 0 }}
+                              transition={{
+                                repeat: Infinity,
+                                repeatType: "reverse",
+                                duration: 0.6,
+                                delay: 0.6,
+                              }}
+                            ></TitleLoading>
+                          </VStack>
+                        </HStack>
+                        <HStack background={"transparent"} width={"100%"}>
+                          <VStack spacing="3px">
+                            <HStack spacing="6px">
+                              <TitleLoading
+                                key="Amount"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{
+                                  repeat: Infinity,
+                                  repeatType: "reverse",
+                                  duration: 0.6,
+                                  delay: 0.6,
+                                }}
+                              ></TitleLoading>
+                            </HStack>
+                          </VStack>
+                        </HStack>
+                        <HStack background={"transparent"} width={"100%"}>
+                          <Spacer></Spacer>
+                          <HStack padding={"0 30px"}>
+                            <TitleLoading
+                              key="Status"
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              exit={{ opacity: 0 }}
+                              transition={{
+                                repeat: Infinity,
+                                repeatType: "reverse",
+                                duration: 0.6,
+                                delay: 0.6,
+                              }}
+                            ></TitleLoading>
+                          </HStack>
+                        </HStack>
+                      </HStack>
                     </>
                   ))
-                ) : (
-                  <VStack width="100%">
-                    <Divider></Divider>
-                    <HStack width="100%" spacing="6px" height="51px">
-                      <HStack width="100%" justify="flex-start">
-                        <HStack padding="0 30px">
+                  : offers.length ? (
+                    offers?.map((item, i) => (
+                      <>
+                        <TableOffersNft
+                          key={i}
+                          imageBuyer={banner1}
+                          offerBy={item.from}
+                          offerUser={item.userId}
+                          wallet={wallet}
+                          owner={item.to}
+                          offerAmount={item.price.toLocaleString(undefined, {
+                            maximumFractionDigits: 2,
+                          })}
+                          isWithdrawn={item.isWithdrawn}
+                          withdrawStatus={withdrawOfferButtonStatus[i]}
+                          onClickWithdraw={() => withdrawOffer(i)}
+                          acceptStatus={acceptOfferButtonStatus[i]}
+                          onClickAccept={() => acceptOffer(i)}
+                        ></TableOffersNft>
+                        {i !== offers.length - 1 ? <Divider></Divider> : null}
+                      </>
+                    ))
+                  ) : (
+                    <VStack width="100%">
+                      <Divider></Divider>
+                      <HStack width="100%" spacing="6px" height="51px">
+                        <HStack width="100%" justify="flex-start">
+                          <HStack padding="0 30px">
+                            <BodyRegular>---</BodyRegular>
+                          </HStack>
+                        </HStack>
+                        <HStack width="100%">
                           <BodyRegular>---</BodyRegular>
                         </HStack>
-                      </HStack>
-                      <HStack width="100%">
-                        <BodyRegular>---</BodyRegular>
-                      </HStack>
-                      <HStack width="100%" justify="flex-end">
-                        <HStack padding="0 30px">
-                          <BodyRegular>---</BodyRegular>
+                        <HStack width="100%" justify="flex-end">
+                          <HStack padding="0 30px">
+                            <BodyRegular>---</BodyRegular>
+                          </HStack>
                         </HStack>
                       </HStack>
-                    </HStack>
-                  </VStack>
-                )}
+                    </VStack>
+                  )}
               </VStack>
             </HStack>
           </VStack>
@@ -1712,6 +1785,7 @@ const NFTDetails = (props) => {
                 <TableActivityNft
                   xdc={props.xdc}
                   activity={eventHistory}
+                  loading={loadingEvents}
                 ></TableActivityNft>
               </HStack>
             </HStack>
@@ -1783,4 +1857,11 @@ const NFTPage = styled(motion.div)`
 const ContentNftPage = styled(motion.div)`
   max-width: 1200px;
   margin: 0 auto;
+`;
+
+const TitleLoading = styled(motion.div)`
+  width: 150px;
+  height: 26px;
+  border-radius: 6px;
+  background: rgba(153, 162, 175, 0.21);
 `;
