@@ -35,7 +35,17 @@ import { FilterNFT } from "./FilterNFT";
 import useWindowSize from "../styles/useWindowSize";
 
 function FiltersButton(props) {
-  const { isNftFilter, onChange, params, top, right, left, isSearchPage, switched, maxPrice } = props;
+  const {
+    isNftFilter,
+    onChange,
+    params,
+    top,
+    right,
+    left,
+    isSearchPage,
+    switched,
+    maxPrice,
+  } = props;
 
   const size = useWindowSize();
   const [btnSale, setBtnSale] = useState(false);
@@ -79,12 +89,15 @@ function FiltersButton(props) {
 
   useEffect(() => {
     var filters = 0;
-    if(params?.saleType1 || params?.saleType2 || params?.saleType3 || params?.saleType4)
+    if (
+      params?.saleType1 ||
+      params?.saleType2 ||
+      params?.saleType3 ||
+      params?.saleType4
+    )
       filters += 1;
-    if(params?.priceRangeStart)
-      filters += 1;
-    if(params?.verified)
-      filters += 1;
+    if (params?.priceRangeStart) filters += 1;
+    if (params?.verified) filters += 1;
     setBtnSale(params?.saleType1 === "");
     setBtnSold(params?.saleType3 === "");
     setBtnRelist(params?.saleType2 === "");
@@ -138,18 +151,15 @@ function FiltersButton(props) {
               <BodyBold textcolor="white">{activeFilters}</BodyBold>
             </HStack>
           </Bubble>
-        ) : activeFilters > 0 && size.width > 728 
-          ? (
-            <HStack
-              background={({ theme }) => theme.blue}
-              width="48px"
-              border="6px"
-            >
-              <BodyBold textcolor="white">{activeFilters}</BodyBold>
-            </HStack>
-          )
-          : null
-        }
+        ) : activeFilters > 0 && size.width > 728 ? (
+          <HStack
+            background={({ theme }) => theme.blue}
+            width="48px"
+            border="6px"
+          >
+            <BodyBold textcolor="white">{activeFilters}</BodyBold>
+          </HStack>
+        ) : null}
 
         <IconImg
           cursor="pointer"
@@ -158,24 +168,23 @@ function FiltersButton(props) {
           height="21px"
           whileTap={{ scale: 0.9 }}
           onClick={() => {
-            if(isSearchPage) {
-              if(isNftFilter)
+            if (isSearchPage) {
+              if (isNftFilter)
                 onChange({
                   searchBy: params.searchBy,
-                  page: 1
+                  page: 1,
                 });
               else
                 onChange({
                   searchTerm: params.searchTerm,
-                  page: 1
+                  page: 1,
                 });
-            }
-            else{
-              if(isNftFilter)
+            } else {
+              if (isNftFilter)
                 onChange({
                   page: 1,
                   sortBy: "publication",
-                  sortDirection: -1
+                  sortDirection: -1,
                 });
               else
                 onChange({
@@ -203,7 +212,9 @@ function FiltersButton(props) {
                 {/*Slider*/}
 
                 <VStack width="100%" alignment="flex-start" spacing="15px">
-                  <CaptionBoldShort cursor="pointer">Price Range</CaptionBoldShort>
+                  <CaptionBoldShort cursor="pointer">
+                    Price Range
+                  </CaptionBoldShort>
 
                   <HStack
                     background="transparent"
@@ -213,6 +224,7 @@ function FiltersButton(props) {
                     <CustomSlider
                       min={1}
                       max={3000000}
+                      step={300000}
                       defaultValue={[minValue, maxValue]}
                       valueLabelDisplay="on"
                       className="FilterPriceSlider"
@@ -227,15 +239,31 @@ function FiltersButton(props) {
                     cursor="pointer"
                     whileTap={{ scale: 0.96 }}
                     onClick={() => {
-                      setMinValue(document.getElementsByClassName("FilterPriceSlider")[0]
-                        .getElementsByTagName("span")[2].getElementsByTagName("input")[0].value);
-                      setMaxValue(document.getElementsByClassName("FilterPriceSlider")[0]
-                      .getElementsByTagName("span")[6].getElementsByTagName("input")[0].value);
-                      onChange({...params, page: 1, priceRangeStart: document.getElementsByClassName("FilterPriceSlider")[0]
-                        .getElementsByTagName("span")[2].getElementsByTagName("input")[0].value, priceRangeEnd: document.getElementsByClassName("FilterPriceSlider")[0]
-                        .getElementsByTagName("span")[6].getElementsByTagName("input")[0].value
+                      setMinValue(
+                        document
+                          .getElementsByClassName("FilterPriceSlider")[0]
+                          .getElementsByTagName("span")[2]
+                          .getElementsByTagName("input")[0].value
+                      );
+                      setMaxValue(
+                        document
+                          .getElementsByClassName("FilterPriceSlider")[0]
+                          .getElementsByTagName("span")[6]
+                          .getElementsByTagName("input")[0].value
+                      );
+                      onChange({
+                        ...params,
+                        page: 1,
+                        priceRangeStart: document
+                          .getElementsByClassName("FilterPriceSlider")[0]
+                          .getElementsByTagName("span")[2]
+                          .getElementsByTagName("input")[0].value,
+                        priceRangeEnd: document
+                          .getElementsByClassName("FilterPriceSlider")[0]
+                          .getElementsByTagName("span")[6]
+                          .getElementsByTagName("input")[0].value,
                       });
-                      if(!params.priceRangeStart)
+                      if (!params.priceRangeStart)
                         setActiveFilters(activeFilters + 1);
                     }}
                   >
@@ -258,7 +286,7 @@ function FiltersButton(props) {
                       height="36px"
                       cursor="pointer"
                       onTapStart={() => {
-                        if(!btnSold || !btnRelist || !btnNFS)
+                        if (!btnSold || !btnRelist || !btnNFS)
                           setBtnSale(!btnSale);
                       }}
                       variants={activated}
@@ -271,7 +299,7 @@ function FiltersButton(props) {
                       height="36px"
                       cursor="pointer"
                       onTapStart={() => {
-                        if(!btnSale || !btnRelist || !btnNFS)
+                        if (!btnSale || !btnRelist || !btnNFS)
                           setBtnSold(!btnSold);
                       }}
                       variants={activated}
@@ -284,7 +312,7 @@ function FiltersButton(props) {
                       height="36px"
                       cursor="pointer"
                       onTapStart={() => {
-                        if(!btnSold || !btnSale || !btnNFS)
+                        if (!btnSold || !btnSale || !btnNFS)
                           setBtnRelist(!btnRelist);
                       }}
                       variants={activated}
@@ -297,7 +325,7 @@ function FiltersButton(props) {
                       height="36px"
                       cursor="pointer"
                       onTapStart={() => {
-                        if(!btnSold || !btnRelist || !btnSale)
+                        if (!btnSold || !btnRelist || !btnSale)
                           setBtnNFS(!btnNFS);
                       }}
                       variants={activated}
@@ -314,12 +342,23 @@ function FiltersButton(props) {
                     cursor="pointer"
                     whileTap={{ scale: 0.96 }}
                     onClick={() => {
-                      onChange({...params, page: 1, saleType1: !btnSale ? "SALE" : "", saleType2: !btnRelist ? "RELIST" : "",
-                        saleType3: !btnSold ? "SOLD" : "", saleType4: !btnNFS ? "NOT_SALE" : ""});
-                      if(!params.saleType1 && !params.saleType2 && !params.saleType3 && !params.saleType4)
+                      onChange({
+                        ...params,
+                        page: 1,
+                        saleType1: !btnSale ? "SALE" : "",
+                        saleType2: !btnRelist ? "RELIST" : "",
+                        saleType3: !btnSold ? "SOLD" : "",
+                        saleType4: !btnNFS ? "NOT_SALE" : "",
+                      });
+                      if (
+                        !params.saleType1 &&
+                        !params.saleType2 &&
+                        !params.saleType3 &&
+                        !params.saleType4
+                      )
                         setActiveFilters(activeFilters + 1);
-                      if(activeFilters !== 0) {
-                        if(!btnSale && !btnSold && !btnNFS && !btnRelist)
+                      if (activeFilters !== 0) {
+                        if (!btnSale && !btnSold && !btnNFS && !btnRelist)
                           setActiveFilters(activeFilters - 1);
                       }
                     }}
@@ -340,19 +379,18 @@ function FiltersButton(props) {
               spacing="9px"
               onClick={() => {
                 setBtnVerified(!btnVerified);
-                if(!btnVerified)
-                  onChange({...params, page: 1, verified: !btnVerified});
-                else
-                  onChange({...params, page: 1, verified: ""});
-                setActiveFilters(btnVerified ? activeFilters - 1 : activeFilters + 1);
+                if (!btnVerified)
+                  onChange({ ...params, page: 1, verified: !btnVerified });
+                else onChange({ ...params, page: 1, verified: "" });
+                setActiveFilters(
+                  btnVerified ? activeFilters - 1 : activeFilters + 1
+                );
               }}
               cursor="pointer"
             >
               <CaptionBoldShort cursor="pointer">Status</CaptionBoldShort>
               <HStack cursor="pointer">
-                <BodyBold cursor="pointer">
-                  Verified Only
-                </BodyBold>
+                <BodyBold cursor="pointer">Verified Only</BodyBold>
                 <Spacer></Spacer>
                 <IconImg
                   cursor="pointer"

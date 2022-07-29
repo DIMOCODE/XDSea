@@ -32,6 +32,8 @@ import {
   CaptionBold,
   TitleBold15,
   TitleBold18,
+  CaptionBoldShort,
+  CaptionSmallRegular,
 } from "../../styles/TextStyles";
 import xdcLogo from "../../images/miniXdcLogo.png";
 import useWindowSize from "../../styles/useWindowSize";
@@ -60,7 +62,9 @@ const MyNFT = (props) => {
 
   const getCreatedCollections = async () => {
     setLoadingCollection(true);
-    const collectionData = await (await getCollections({ userId: userId })).data;
+    const collectionData = await (
+      await getCollections({ userId: userId })
+    ).data;
     console.log(collectionData);
     const collectionList = await Promise.all(
       collectionData.collections.map(async (item) => {
@@ -68,13 +72,13 @@ const MyNFT = (props) => {
           logo: isSafari ? item.logo.v1 : item.logo.v0,
           name: item.name,
           nftCount: item.totalNfts,
-          nfts: item.nfts
-        }
+          nfts: item.nfts,
+        };
 
         return collection;
       })
-    )
-      
+    );
+
     setCollections(collectionList);
     setLoadingCollection(false);
   };
@@ -82,34 +86,39 @@ const MyNFT = (props) => {
   const getOwnedNFTs = async () => {
     setLoading(true);
     console.log(LS.get(LS_ROOT_KEY));
-    const requestData = await Promise.all([1, 2].map(async (i) => {
-      if(i === 1) {
-        let userData = await (await getUser(userId)).data.user;
-        setUser(userData);
-        console.log(userData)
-        return userData;
-      }
-      else {
-        let nftData = await (await getNFTs({ pageSize: 15, page: page, userId: userId })).data;
-        const nftList = await Promise.all(
-          nftData.nfts.map(async (item) => {
-            let nft = {
-              tokenId: item.tokenId,
-              image: isSafari ? item.urlFile.v1 : item.urlFile.v0,
-              preview: isSafari ? item.preview.v1 : item.preview.v0,
-              name: item.name,
-              logo: isSafari ? item.collectionId.logo.v1 : item.collectionId.logo.v0,
-              fileType: item.fileType,
-            };
-            
-            return nft;
-          })
-        );
-        setNfts(nftList);
-        setTotalNfts(nftData.nftsAmount);
-        return nftData;
-      }
-    }));
+    const requestData = await Promise.all(
+      [1, 2].map(async (i) => {
+        if (i === 1) {
+          let userData = await (await getUser(userId)).data.user;
+          setUser(userData);
+          console.log(userData);
+          return userData;
+        } else {
+          let nftData = await (
+            await getNFTs({ pageSize: 15, page: page, userId: userId })
+          ).data;
+          const nftList = await Promise.all(
+            nftData.nfts.map(async (item) => {
+              let nft = {
+                tokenId: item.tokenId,
+                image: isSafari ? item.urlFile.v1 : item.urlFile.v0,
+                preview: isSafari ? item.preview.v1 : item.preview.v0,
+                name: item.name,
+                logo: isSafari
+                  ? item.collectionId.logo.v1
+                  : item.collectionId.logo.v0,
+                fileType: item.fileType,
+              };
+
+              return nft;
+            })
+          );
+          setNfts(nftList);
+          setTotalNfts(nftData.nftsAmount);
+          return nftData;
+        }
+      })
+    );
 
     setPage(page + 1);
     setLoading(false);
@@ -126,7 +135,9 @@ const MyNFT = (props) => {
           image: isSafari ? item.urlFile.v1 : item.urlFile.v0,
           preview: isSafari ? item.preview.v1 : item.preview.v0,
           name: item.name,
-          logo: isSafari ? item.collectionId.logo.v1 : item.collectionId.logo.v0,
+          logo: isSafari
+            ? item.collectionId.logo.v1
+            : item.collectionId.logo.v0,
           fileType: item.fileType,
         };
 
@@ -188,8 +199,7 @@ const MyNFT = (props) => {
     return () => window.removeEventListener("scroll", onScroll);
   }, [scrollTop]);
 
-  useEffect(() => {
-  }, [scrolling]);
+  useEffect(() => {}, [scrolling]);
 
   return (
     <UserSection>
@@ -409,6 +419,23 @@ const MyNFT = (props) => {
                             }}
                           >
                             <ZStack cursor={"pointer"}>
+                              <BubbleOffers>
+                                <HStack
+                                  background="red"
+                                  width="26px"
+                                  height="26px"
+                                  border="300px"
+                                  padding="0 6px"
+                                  spacing="6px"
+                                >
+                                  {/* <CaptionSmallRegular textcolor="white">
+                                    Offer
+                                  </CaptionSmallRegular> */}
+                                  <CaptionBoldShort textcolor="white">
+                                    1
+                                  </CaptionBoldShort>
+                                </HStack>
+                              </BubbleOffers>
                               <ZItem
                                 backgroundimage={
                                   isAudio(item.fileType) ? item.preview : null
@@ -534,12 +561,20 @@ const MyNFT = (props) => {
                               <ZStack cursor={"pointer"}>
                                 <ZItem
                                   backgroundimage={
-                                    isAudio(nft.fileType) ? isSafari ? nft.preview.v1 : nft.preview.v0 : null
+                                    isAudio(nft.fileType)
+                                      ? isSafari
+                                        ? nft.preview.v1
+                                        : nft.preview.v0
+                                      : null
                                   }
                                 >
                                   {isImage(nft.fileType) ? (
                                     <IconImg
-                                      url={isSafari ? nft.urlFile.v1 : nft.urlFile.v0}
+                                      url={
+                                        isSafari
+                                          ? nft.urlFile.v1
+                                          : nft.urlFile.v0
+                                      }
                                       width="100%"
                                       height="100%"
                                       backsize="cover"
@@ -553,7 +588,11 @@ const MyNFT = (props) => {
                                       overflow="hidden"
                                     >
                                       <ReactPlayer
-                                        url={isSafari ? nft.urlFile.v1 : nft.urlFile.v0}
+                                        url={
+                                          isSafari
+                                            ? nft.urlFile.v1
+                                            : nft.urlFile.v0
+                                        }
                                         playing={true}
                                         muted={true}
                                         loop={false}
@@ -569,7 +608,11 @@ const MyNFT = (props) => {
                                       overflow="hidden"
                                     >
                                       <ReactPlayer
-                                        url={isSafari ? nft.urlFile.v1 : nft.urlFile.v0}
+                                        url={
+                                          isSafari
+                                            ? nft.urlFile.v1
+                                            : nft.urlFile.v0
+                                        }
                                         playing={false}
                                         muted={true}
                                         loop={false}
@@ -766,4 +809,11 @@ const VerifiedIcon = styled(motion.div)`
   bottom: 0px;
   right: 6px;
   z-index: 10;
+`;
+
+const BubbleOffers = styled(motion.div)`
+  top: 12px;
+  right: 12px;
+  position: absolute;
+  z-index: 100;
 `;

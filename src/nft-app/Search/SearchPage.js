@@ -35,6 +35,7 @@ import { nftaddress } from "../../config";
 import { LayoutGroup } from "framer-motion/dist/framer-motion";
 import { Collection } from "../../styles/Collection";
 import { isSafari } from "../../common/common";
+import { StickySectionHeader } from "@mayank1513/sticky-section-header";
 
 function SearchPage(props) {
   const size = useWindowSize();
@@ -251,14 +252,14 @@ function SearchPage(props) {
       </HStack>
 
       <ContentSearch id="scrollableDiv">
-        {isSelected ? (
-          <VStack style={{ zIndex: "20" }} spacing="30px">
+        <StickySectionHeader top="90">
+          {isSelected ? (
             <HStack
-              style={{ zIndex: 1 }}
               background="rgb(0,0,0, 0.06)"
               padding="6px"
               border="9px"
               width="100%"
+              blur="39px"
             >
               <FiltersButton
                 onChange={handleChangeFilter}
@@ -273,7 +274,31 @@ function SearchPage(props) {
                 isSearchPage={true}
               ></SortButtonCollections>
             </HStack>
+          ) : (
+            <HStack
+              style={{ zIndex: 1 }}
+              background="rgb(0,0,0, 0.06)"
+              padding="6px"
+              border="9px"
+            >
+              <FiltersButton
+                isNftFilter={true}
+                onChange={handleChangeFilterNFT}
+                params={nftParams}
+                isSearchPage={true}
+              ></FiltersButton>
+              <Spacer></Spacer>
+              <SortButtonNFTS
+                onChange={handleChangeFilterNFT}
+                params={nftParams}
+                isSearchPage={true}
+              ></SortButtonNFTS>
+            </HStack>
+          )}
+        </StickySectionHeader>
 
+        {isSelected ? (
+          <VStack style={{ zIndex: "20" }} spacing="30px" padding="30px 0">
             {loading ? (
               <LoopLogo></LoopLogo>
             ) : collectionData.length !== 0 ? (
@@ -353,29 +378,11 @@ function SearchPage(props) {
             )}
           </VStack>
         ) : (
-          <VStack spacing="30px">
-            {/* Filter and Sort for NFTs  */}
-            <HStack
-              style={{ zIndex: 1 }}
-              background="rgb(0,0,0, 0.06)"
-              padding="6px"
-              border="9px"
-            >
-              <FiltersButton
-                isNftFilter={true}
-                onChange={handleChangeFilterNFT}
-                params={nftParams}
-                isSearchPage={true}
-              ></FiltersButton>
-              <Spacer></Spacer>
-              <SortButtonNFTS
-                onChange={handleChangeFilterNFT}
-                params={nftParams}
-                isSearchPage={true}
-              ></SortButtonNFTS>
-            </HStack>
+          <VStack spacing="30px" padding="30px 0">
             {loading ? (
-              <LoopLogo></LoopLogo>
+              <HStack height="360px">
+                <LoopLogo></LoopLogo>
+              </HStack>
             ) : nftData.length !== 0 ? (
               <InfiniteScroll
                 dataLength={nftData.length}
@@ -385,7 +392,7 @@ function SearchPage(props) {
                   <HStack
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
-                    height="190px"
+                    minheight="360px"
                   >
                     <LoopLogo></LoopLogo>
                   </HStack>
