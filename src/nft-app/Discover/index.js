@@ -710,9 +710,9 @@ const Discover = (props) => {
                       ))
                     ) : (
                       <VStack
-                        padding="90px"
-                        width="100%"
-                        background={({ theme }) => theme.faded}
+                        padding="0px"
+                        width="360px"
+                        height="360px"
                         style={{ zIndex: "-50" }}
                         border="6px"
                       >
@@ -757,6 +757,7 @@ const Discover = (props) => {
                       flexwrap="wrap"
                       justify="flex-start"
                       padding={size.width < 1200 ? "0 12px" : "0"}
+                      width="100%"
                       // width={size.width < 768 ? "100%" : "1100px"}
                     >
                       {loading ? (
@@ -804,9 +805,9 @@ const Discover = (props) => {
                         ))
                       ) : (
                         <VStack
-                          padding="90px"
-                          width="100%"
-                          background={({ theme }) => theme.faded}
+                          width="360px"
+                          height="360px"
+                          // background={({ theme }) => theme.faded}
                           style={{ zIndex: "-50" }}
                           border="6px"
                         >

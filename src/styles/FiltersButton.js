@@ -17,6 +17,7 @@ import {
 } from "framer-motion/dist/framer-motion";
 
 import verifiedBlue from "../images/verifiedBlue.png";
+import xdcLogo from "../images/miniXdcLogo.png";
 import nonVerified from "../images/nonVerified.png";
 import filter from "../images/filter.png";
 import all from "../images/all.png";
@@ -33,6 +34,7 @@ import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 import { FilterNFT } from "./FilterNFT";
 import useWindowSize from "../styles/useWindowSize";
+import { InputStyled } from "./InputStyled";
 
 function FiltersButton(props) {
   const {
@@ -216,11 +218,22 @@ function FiltersButton(props) {
                     Price Range
                   </CaptionBoldShort>
 
-                  <HStack
-                    background="transparent"
-                    height="60px"
-                    alignment="flex-end"
-                  >
+                  <HStack>
+                    <InputStyled
+                      icon={xdcLogo}
+                      type="number"
+                      placeholder={minValue}
+                      background={({ theme }) => theme.faded}
+                    ></InputStyled>
+                    <InputStyled
+                      icon={xdcLogo}
+                      type="number"
+                      placeholder={maxValue}
+                      background={({ theme }) => theme.faded}
+                    ></InputStyled>
+                  </HStack>
+
+                  <HStack height="60px" alignment="flex-end">
                     <CustomSlider
                       min={1}
                       max={3000000}
@@ -231,45 +244,61 @@ function FiltersButton(props) {
                     />
                   </HStack>
 
-                  <HStack
-                    background={({ theme }) => theme.blue}
-                    width="100%"
-                    border="6px"
-                    height="43px"
-                    cursor="pointer"
-                    whileTap={{ scale: 0.96 }}
-                    onClick={() => {
-                      setMinValue(
-                        document
-                          .getElementsByClassName("FilterPriceSlider")[0]
-                          .getElementsByTagName("span")[2]
-                          .getElementsByTagName("input")[0].value
-                      );
-                      setMaxValue(
-                        document
-                          .getElementsByClassName("FilterPriceSlider")[0]
-                          .getElementsByTagName("span")[6]
-                          .getElementsByTagName("input")[0].value
-                      );
-                      onChange({
-                        ...params,
-                        page: 1,
-                        priceRangeStart: document
-                          .getElementsByClassName("FilterPriceSlider")[0]
-                          .getElementsByTagName("span")[2]
-                          .getElementsByTagName("input")[0].value,
-                        priceRangeEnd: document
-                          .getElementsByClassName("FilterPriceSlider")[0]
-                          .getElementsByTagName("span")[6]
-                          .getElementsByTagName("input")[0].value,
-                      });
-                      if (!params.priceRangeStart)
-                        setActiveFilters(activeFilters + 1);
-                    }}
-                  >
-                    <BodyRegular cursor="pointer" textcolor="white">
-                      Apply
-                    </BodyRegular>
+                  {/* Buttons Filters */}
+                  <HStack>
+                    {/* Remove Button  */}
+                    <HStack
+                      background={({ theme }) => theme.faded}
+                      width="100%"
+                      border="6px"
+                      height="43px"
+                      cursor="pointer"
+                      whileTap={{ scale: 0.96 }}
+                    >
+                      <BodyRegular cursor="pointer">Remove</BodyRegular>
+                    </HStack>
+
+                    {/* Apply Button  */}
+                    <HStack
+                      background={({ theme }) => theme.blue}
+                      width="100%"
+                      border="6px"
+                      height="43px"
+                      cursor="pointer"
+                      whileTap={{ scale: 0.96 }}
+                      onClick={() => {
+                        setMinValue(
+                          document
+                            .getElementsByClassName("FilterPriceSlider")[0]
+                            .getElementsByTagName("span")[2]
+                            .getElementsByTagName("input")[0].value
+                        );
+                        setMaxValue(
+                          document
+                            .getElementsByClassName("FilterPriceSlider")[0]
+                            .getElementsByTagName("span")[6]
+                            .getElementsByTagName("input")[0].value
+                        );
+                        onChange({
+                          ...params,
+                          page: 1,
+                          priceRangeStart: document
+                            .getElementsByClassName("FilterPriceSlider")[0]
+                            .getElementsByTagName("span")[2]
+                            .getElementsByTagName("input")[0].value,
+                          priceRangeEnd: document
+                            .getElementsByClassName("FilterPriceSlider")[0]
+                            .getElementsByTagName("span")[6]
+                            .getElementsByTagName("input")[0].value,
+                        });
+                        if (!params.priceRangeStart)
+                          setActiveFilters(activeFilters + 1);
+                      }}
+                    >
+                      <BodyRegular cursor="pointer" textcolor="white">
+                        Apply
+                      </BodyRegular>
+                    </HStack>
                   </HStack>
                 </VStack>
                 <Divider></Divider>
@@ -333,39 +362,52 @@ function FiltersButton(props) {
                     ></IconImg>
                   </HStack>
 
-                  {/* ApplyChanges  */}
-                  <HStack
-                    background={({ theme }) => theme.blue}
-                    width="100%"
-                    border="6px"
-                    height="43px"
-                    cursor="pointer"
-                    whileTap={{ scale: 0.96 }}
-                    onClick={() => {
-                      onChange({
-                        ...params,
-                        page: 1,
-                        saleType1: !btnSale ? "SALE" : "",
-                        saleType2: !btnRelist ? "RELIST" : "",
-                        saleType3: !btnSold ? "SOLD" : "",
-                        saleType4: !btnNFS ? "NOT_SALE" : "",
-                      });
-                      if (
-                        !params.saleType1 &&
-                        !params.saleType2 &&
-                        !params.saleType3 &&
-                        !params.saleType4
-                      )
-                        setActiveFilters(activeFilters + 1);
-                      if (activeFilters !== 0) {
-                        if (!btnSale && !btnSold && !btnNFS && !btnRelist)
-                          setActiveFilters(activeFilters - 1);
-                      }
-                    }}
-                  >
-                    <BodyRegular cursor="pointer" textcolor="white">
-                      Apply
-                    </BodyRegular>
+                  <HStack>
+                    {/* Remove Button  */}
+                    <HStack
+                      background={({ theme }) => theme.faded}
+                      width="100%"
+                      border="6px"
+                      height="43px"
+                      cursor="pointer"
+                      whileTap={{ scale: 0.96 }}
+                    >
+                      <BodyRegular cursor="pointer">Remove</BodyRegular>
+                    </HStack>
+                    {/* ApplyChanges  */}
+                    <HStack
+                      background={({ theme }) => theme.blue}
+                      width="100%"
+                      border="6px"
+                      height="43px"
+                      cursor="pointer"
+                      whileTap={{ scale: 0.96 }}
+                      onClick={() => {
+                        onChange({
+                          ...params,
+                          page: 1,
+                          saleType1: !btnSale ? "SALE" : "",
+                          saleType2: !btnRelist ? "RELIST" : "",
+                          saleType3: !btnSold ? "SOLD" : "",
+                          saleType4: !btnNFS ? "NOT_SALE" : "",
+                        });
+                        if (
+                          !params.saleType1 &&
+                          !params.saleType2 &&
+                          !params.saleType3 &&
+                          !params.saleType4
+                        )
+                          setActiveFilters(activeFilters + 1);
+                        if (activeFilters !== 0) {
+                          if (!btnSale && !btnSold && !btnNFS && !btnRelist)
+                            setActiveFilters(activeFilters - 1);
+                        }
+                      }}
+                    >
+                      <BodyRegular cursor="pointer" textcolor="white">
+                        Apply
+                      </BodyRegular>
+                    </HStack>
                   </HStack>
                 </VStack>
                 <Divider></Divider>

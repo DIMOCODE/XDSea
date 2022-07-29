@@ -365,7 +365,6 @@ function SearchPage(props) {
                 <VStack
                   padding="90px"
                   width="100%"
-                  background={({ theme }) => theme.faded}
                   style={{ zIndex: "-50" }}
                   border="6px"
                 >
@@ -443,7 +442,6 @@ function SearchPage(props) {
                 <VStack
                   padding="90px"
                   width="100%"
-                  background={({ theme }) => theme.faded}
                   style={{ zIndex: "-50" }}
                   border="6px"
                 >

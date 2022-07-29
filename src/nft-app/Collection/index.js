@@ -9,7 +9,7 @@ import {
   CaptionBoldShort,
   CaptionBold,
   TitleBold21,
-  TitleBold18
+  TitleBold18,
 } from "../../styles/TextStyles";
 import instagram from "../../images/instagramMini.png";
 import twitter from "../../images/twitter.png";
@@ -46,6 +46,7 @@ import { SearchCollection } from "../../styles/SearchCollection";
 import { FiltersButton } from "../../styles/FiltersButton";
 import { SortButtonNFTS } from "../../styles/SortButtonNFTS";
 import noResult from "../../images/noResult.png";
+import { StickySectionHeader } from "@mayank1513/sticky-section-header";
 
 const CollectionDetails = (props) => {
   const history = useHistory();
@@ -393,15 +394,13 @@ const CollectionDetails = (props) => {
                     {collection.floorPrice ? (
                       <BodyBold textcolor={({ theme }) => theme.text}>
                         {collection.floorPrice > 100000
-                          ? (Intl.NumberFormat('en-US', {
+                          ? Intl.NumberFormat("en-US", {
                               notation: "compact",
-                              maximumFractionDigits: 2
-                            }).format(collection.floorPrice))
-                          : (
-                            collection.floorPrice.toLocaleString(undefined, {
                               maximumFractionDigits: 2,
-                            }) || "0"
-                          )}
+                            }).format(collection.floorPrice)
+                          : collection.floorPrice.toLocaleString(undefined, {
+                              maximumFractionDigits: 2,
+                            }) || "0"}
                       </BodyBold>
                     ) : (
                       <LoopBars width="54px"></LoopBars>
@@ -472,18 +471,18 @@ const CollectionDetails = (props) => {
                     {collection.volumeTrade !== undefined ? (
                       <BodyBold textcolor={({ theme }) => theme.text}>
                         {collection.volumeTrade > 100000
-                          ? (Intl.NumberFormat('en-US', {
+                          ? Intl.NumberFormat("en-US", {
                               notation: "compact",
-                              maximumFractionDigits: 2
-                            }).format(collection.volumeTrade))
-                          : (
-                            collection.volumeTrade.toLocaleString(undefined, {
                               maximumFractionDigits: 2,
-                            }) || "0"
-                          )}
+                            }).format(collection.volumeTrade)
+                          : collection.volumeTrade.toLocaleString(undefined, {
+                              maximumFractionDigits: 2,
+                            }) || "0"}
                       </BodyBold>
                     ) : (
-                      <LoopBars width="54px">{console.log(collection.volumeTrade)}</LoopBars>
+                      <LoopBars width="54px">
+                        {console.log(collection.volumeTrade)}
+                      </LoopBars>
                     )}
                   </HStack>
                   <CaptionBoldShort
@@ -618,23 +617,23 @@ const CollectionDetails = (props) => {
               )}
             </HStack>
           </VStack>
-
-          {/* Filters Search and Sort */}
-          <HStack responsive="true">
-            <SearchCollection placeholder="Search inside the collection"></SearchCollection>
-            <HStack>
-              <FiltersButton 
-                isNftFilter={true}
-              ></FiltersButton>
-              <Spacer></Spacer>
-              <SortButtonNFTS></SortButtonNFTS>
-            </HStack>
-          </HStack>
         </VStack>
       </HStack>
 
       {/* Collection NFTs */}
       <CollectionContent id="scrollableDiv">
+        <StickySectionHeader top="90">
+          {/* Filters Search and Sort */}
+          <HStack responsive="true">
+            <SearchCollection placeholder="Search inside the collection"></SearchCollection>
+            <HStack>
+              <FiltersButton isNftFilter={true}></FiltersButton>
+              <Spacer></Spacer>
+              <SortButtonNFTS></SortButtonNFTS>
+            </HStack>
+          </HStack>
+        </StickySectionHeader>
+
         <InfiniteScroll
           dataLength={nfts.length}
           next={fetchMoreNFTs}
@@ -651,7 +650,7 @@ const CollectionDetails = (props) => {
           scrollableTarget="#scrollableDiv"
           style={{ overflow: "hidden" }}
         >
-          <VStack>
+          <VStack padding="30px 0">
             <HStack>
               <HStack
                 flexwrap="wrap"
@@ -660,9 +659,9 @@ const CollectionDetails = (props) => {
                 width={size.width < 1191 ? "900px" : "1191px"}
                 spacing="9px"
               >
-                {loadingState === "loaded"
-                  ? nfts.length !== 0
-                    ? nfts.map((item, i) => (
+                {loadingState === "loaded" ? (
+                  nfts.length !== 0 ? (
+                    nfts.map((item, i) => (
                       <VStack
                         minwidth={size.width < 768 ? "330px" : "290px"}
                         maxwidth={size.width < 768 ? "330px" : "290px"}
@@ -692,27 +691,35 @@ const CollectionDetails = (props) => {
                         ></NftContainer>
                       </VStack>
                     ))
-                    : <VStack
+                  ) : (
+                    <VStack
                       padding="90px"
                       width="100%"
                       background={({ theme }) => theme.faded}
                       style={{ zIndex: "-50" }}
                       border="6px"
                     >
-                      <IconImg url={noResult} width="90px" height="90px"></IconImg>
+                      <IconImg
+                        url={noResult}
+                        width="90px"
+                        height="90px"
+                      ></IconImg>
                       <TitleBold18 animate={{ opacity: 0.6 }}>
                         Nothing Found
                       </TitleBold18>
                     </VStack>
-                  : loadingNFTs.map((item) => (
-                      <VStack
-                        minwidth={size.width < 768 ? "230px" : "280px"}
-                        height="450px"
-                        key={item.id}
-                      >
-                        <LoadingNftContainer></LoadingNftContainer>
-                      </VStack>
-                    ))}
+                  )
+                ) : (
+                  loadingNFTs.map((item) => (
+                    <VStack
+                      minwidth={size.width < 768 ? "230px" : "280px"}
+                      height="450px"
+                      key={item.id}
+                    >
+                      <LoadingNftContainer></LoadingNftContainer>
+                    </VStack>
+                  ))
+                )}
               </HStack>
             </HStack>
           </VStack>

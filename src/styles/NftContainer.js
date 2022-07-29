@@ -251,14 +251,25 @@ function NftContainer(props) {
               cursor={"pointer"}
             >
               <Spacer></Spacer>
-              <CaptionBoldShort
-                variants={fadeText}
-                animate={isVisible ? "hover" : "initial"}
-                textcolor={appStyle.colors.white}
-                cursor={"pointer"}
-              >
-                {collectionName}
-              </CaptionBoldShort>
+
+              <HStack spacing="6px">
+                <CaptionBoldShort
+                  variants={fadeText}
+                  animate={isVisible ? "hover" : "initial"}
+                  textcolor={appStyle.colors.white}
+                  cursor={"pointer"}
+                >
+                  {collectionName}
+                </CaptionBoldShort>
+                <IconImg
+                  url={verifiedBlue}
+                  width="15px"
+                  height="15px"
+                  border="120px"
+                ></IconImg>
+                <Spacer></Spacer>
+              </HStack>
+
               <HStack
                 padding="6px 0"
                 height="auto"
@@ -306,6 +317,7 @@ function NftContainer(props) {
                       ) || "0") + " USD"}
                   )
                 </CaptionRegular>
+
                 <Spacer></Spacer>
                 {hasOffers && (
                   <HStack
