@@ -70,7 +70,7 @@ function Collection(props) {
   const background = {
     initial: {
       background:
-        "linear-gradient(359.63deg, rgba(2, 2, 2, 0.74) 5.27%, rgba(2, 2, 2, 0.602581) 20.13%, rgba(2, 2, 2, 0) 40.93%)",
+        "linear-gradient(359.63deg, rgba(2, 2, 2, 0.74) 10.27%, rgba(2, 2, 2, 0.602581) 25.13%, rgba(2, 2, 2, 0) 50.93%)",
     },
     hover: {
       transition: {

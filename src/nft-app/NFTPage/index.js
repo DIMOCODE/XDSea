@@ -146,6 +146,7 @@ const NFTDetails = (props) => {
   const [actions, setActions] = useState(0);
   const [loadingOffers, setLoadingOffers] = useState(false);
   const [loadingEvents, setLoadingEvents] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const size = useWindowSize();
   const variants = {
     selected: { opacity: 1 },
@@ -176,6 +177,12 @@ const NFTDetails = (props) => {
     { id: 2, name: "Offer 2" },
     { id: 3, name: "Offer 3" },
     { id: 4, name: "Offer 4" }
+  ]);
+  const [loadingNFTs] = useState([
+    { id: 1, name: "NFT 1" },
+    { id: 2, name: "NFT 2" },
+    { id: 3, name: "NFT 3" },
+    { id: 4, name: "NFT 4" },
   ]);
 
   const { id, nftaddress } = useParams();
@@ -411,6 +418,7 @@ const NFTDetails = (props) => {
     try {
       setLoadingOffers(true);
       setLoadingEvents(true);
+      setLoadingMore(true);
       const nftData = await (await getNFT(id)).data;
       console.log(nftData);
       let currentItem = {
@@ -467,7 +475,7 @@ const NFTDetails = (props) => {
 
           setNFT(currentItem);
           setMoreFromCollectionNfts(collectionList);
-
+          setLoadingMore(false);
           return nftData;
         }
         else if(i === 2) {
@@ -1792,7 +1800,19 @@ const NFTDetails = (props) => {
               padding="0 15px"
               height={size.width < 768 ? "1800px" : "auto"}
             >
-              {moreFromCollectionNfts.map((item, i) => (
+              {loadingMore
+              ? (
+                loadingNFTs.map((item) => (
+                  <VStack
+                    minwidth="240px"
+                    height="390px"
+                    key={item.name}
+                  >
+                    <LoadingNftContainer></LoadingNftContainer>
+                  </VStack>
+                ))
+              )
+              : moreFromCollectionNfts.map((item, i) => (
                 <VStack width="100%" height="450px" key={i}>
                   <NftContainer
                     isVerified={item.isVerified}
