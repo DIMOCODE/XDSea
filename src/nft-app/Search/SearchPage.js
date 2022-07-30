@@ -36,13 +36,14 @@ import { LayoutGroup } from "framer-motion/dist/framer-motion";
 import { Collection } from "../../styles/Collection";
 import { isSafari } from "../../common/common";
 import { StickySectionHeader } from "@mayank1513/sticky-section-header";
+import { SearchCollection } from "../../styles/SearchCollection";
 
 function SearchPage(props) {
   const size = useWindowSize();
   const history = useHistory();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-  const searchTerm = searchParams.get("searchTerm");
+  const [searchTerm, setSearchTerm] = useState(searchParams.get("searchTerm"));
   const [isSelected, setIsSelected] = useState(
     searchParams.get("mode") === "nft" ? false : true
   );
@@ -59,10 +60,11 @@ function SearchPage(props) {
     page: 1,
     searchBy: searchTerm,
   });
+  const [newResults, setNewResults] = useState(true);
 
-  const getCollectionData = async () => {
+  const getCollectionData = async (params) => {
     const collectionResults = await (
-      await getCollections(collectionParams)
+      await getCollections(params)
     ).data;
     setCollectionData(collectionResults.collections);
     setTotalCollections(collectionResults.collectionsAmount);
@@ -70,7 +72,8 @@ function SearchPage(props) {
     setLoading(false);
     setCollectionParams((prevState) => ({
       ...prevState,
-      page: prevState.page + 1,
+      page: params.page + 1,
+      searchTerm: params.searchTerm
     }));
   };
 
@@ -107,19 +110,22 @@ function SearchPage(props) {
     setLoading(false);
   };
 
-  const getNFTData = async () => {
-    const nftResults = await (await getNFTs(nftParams)).data;
+  const getNFTData = async (params) => {
+    console.log(params)
+    const nftResults = await (await getNFTs(params)).data;
     setNftData(nftResults.nfts);
     setTotalNFTs(nftResults.nftsAmount);
     console.log(nftResults);
     setLoading(false);
-    setNftParams((prevState) => ({ ...prevState, page: prevState.page + 1 }));
+    setNftParams((prevState) => ({ ...prevState, page: params.page + 1, searchBy: params.searchBy }));
   };
 
   const fetchMoreNFTs = async () => {
+    console.log(nftParams)
     const nftResults = await (await getNFTs(nftParams)).data;
     setNftData([...nftData, ...nftResults.nfts]);
     setNftParams((prevState) => ({ ...prevState, page: prevState.page + 1 }));
+    console.log(nftResults.nfts)
   };
 
   /**
@@ -146,12 +152,22 @@ function SearchPage(props) {
   }
 
   useEffect(async () => {
+    setLoading(true);
     if (isSelected) {
-      getCollectionData();
+      console.log(location)
+      var newurl = location.pathname + `?searchTerm=${searchTerm}&mode=collection`;
+      window.history.replaceState({path:newurl},'',newurl);
+      getCollectionData({ page: 1, searchTerm: searchTerm});
+      setNftParams({page: 1, searchBy: searchTerm});
     } else {
-      getNFTData();
+      console.log(location)
+      var newurl = location.pathname + `?searchTerm=${searchTerm}&mode=nft`;
+      window.history.replaceState({path:newurl},'',newurl);
+      getNFTData({ page: 1, searchBy: searchTerm});
+      setCollectionParams({ page: 1, searchTerm: searchTerm });
     }
-  }, []);
+    setNewResults(true);
+  }, [searchTerm]);
 
   return (
     <SearchSection id="scrollableDiv">
@@ -210,10 +226,14 @@ function SearchPage(props) {
                   <HStack
                     width="96px"
                     onClick={async () => {
-                      if (collectionData.length == 0) {
+                      if (newResults) {
                         setLoading(true);
-                        getCollectionData();
+                        getCollectionData(collectionParams);
                       }
+                      setNewResults(false);
+                      console.log(location)
+                      var newurl = location.pathname + `?${searchTerm}&mode=collection`;
+                      window.history.replaceState({path:newurl},'',newurl);
                       setIsSelected(true);
                     }}
                     cursor="pointer"
@@ -230,10 +250,14 @@ function SearchPage(props) {
                     width="96px"
                     cursor="pointer"
                     onClick={async () => {
-                      if (nftData.length == 0) {
+                      if (newResults) {
                         setLoading(true);
-                        getNFTData();
+                        getNFTData(nftParams);
                       }
+                      setNewResults(false);
+                      console.log(location)
+                      var newurl = location.pathname + `?${searchTerm}&mode=nft`;
+                      window.history.replaceState({path:newurl},'',newurl);
                       setIsSelected(false);
                     }}
                   >
@@ -267,7 +291,14 @@ function SearchPage(props) {
                 isNftFilter={false}
                 isSearchPage={true}
               ></FiltersButton>
-              <Spacer></Spacer>
+              <SearchCollection inputId = {"searchPageCollection"} placeholder={searchTerm} onClickIcon = {(searchWord) => {
+                  setSearchTerm(searchWord);
+                }} 
+                onKeyPress={(e) => {
+                  if(e.key === 'Enter') {
+                    setSearchTerm(e.target.value);
+                  }
+                }}></SearchCollection>
               <SortButtonCollections
                 onChange={handleChangeFilter}
                 params={collectionParams}
@@ -287,7 +318,14 @@ function SearchPage(props) {
                 params={nftParams}
                 isSearchPage={true}
               ></FiltersButton>
-              <Spacer></Spacer>
+              <SearchCollection inputId = {"searchPageNFT"} placeholder={searchTerm} onClickIcon = {(searchWord) => {
+                  setSearchTerm(searchWord);
+                }} 
+                onKeyPress={(e) => {
+                  if(e.key === 'Enter') {
+                    setSearchTerm(e.target.value);
+                  }
+                }}></SearchCollection>
               <SortButtonNFTS
                 onChange={handleChangeFilterNFT}
                 params={nftParams}
@@ -429,6 +467,7 @@ function SearchPage(props) {
                             }
                             owner={true}
                             usdPrice={props.xdc}
+                            collectionVerified={item.creator.isVerified}
                           ></NftContainer>
                         </VStack>
                       ))}

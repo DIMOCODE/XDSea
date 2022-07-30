@@ -58,6 +58,7 @@ function FiltersButton(props) {
   const [minValue, setMinValue] = useState(1000);
   const [maxValue, setMaxValue] = useState(150000);
   const [activeFilters, setActiveFilters] = useState(0);
+  const [activeSaleType, setActiveSaleType] = useState(false);
 
   const activated = {
     on: {
@@ -91,15 +92,17 @@ function FiltersButton(props) {
 
   useEffect(() => {
     var filters = 0;
-    if (
-      params?.saleType1 ||
-      params?.saleType2 ||
-      params?.saleType3 ||
-      params?.saleType4
-    )
+    if ( activeSaleType && (
+      (params?.saleType1 !== "" && params?.saleType1) || 
+      (params?.saleType2 !== "" && params?.saleType2) ||
+      (params?.saleType3 !== "" && params?.saleType3) ||
+      (params?.saleType4 !== "" && params?.saleType4)
+    )) {
       filters += 1;
+    }
     if (params?.priceRangeStart) filters += 1;
     if (params?.verified) filters += 1;
+    console.log(params)
     setBtnSale(params?.saleType1 === "");
     setBtnSold(params?.saleType3 === "");
     setBtnRelist(params?.saleType2 === "");
@@ -223,12 +226,18 @@ function FiltersButton(props) {
                       icon={xdcLogo}
                       type="number"
                       placeholder={minValue}
+                      value={minValue}
+                      inputId="MinFilterPrice"
+                      onChange={(e) => setMinValue(e.target.value)}
                       background={({ theme }) => theme.faded}
                     ></InputStyled>
                     <InputStyled
                       icon={xdcLogo}
                       type="number"
                       placeholder={maxValue}
+                      value={maxValue}
+                      onChange={(e) => setMaxValue(e.target.value)}
+                      inputId="MaxFilterPrice"
                       background={({ theme }) => theme.faded}
                     ></InputStyled>
                   </HStack>
@@ -237,7 +246,7 @@ function FiltersButton(props) {
                     <CustomSlider
                       min={1}
                       max={3000000}
-                      step={300000}
+                      // step={300000}
                       defaultValue={[minValue, maxValue]}
                       valueLabelDisplay="on"
                       className="FilterPriceSlider"
@@ -254,6 +263,20 @@ function FiltersButton(props) {
                       height="43px"
                       cursor="pointer"
                       whileTap={{ scale: 0.96 }}
+                      onClick={() => {
+                        setMinValue(1000);
+                        document.getElementById("MinFilterPrice").value = "";
+                        setMaxValue(150000);
+                        document.getElementById("MaxFilterPrice").value = "";
+                        onChange({
+                          ...params,
+                          page: 1,
+                          priceRangeStart: "",
+                          priceRangeEnd: "",
+                        });
+                        if(activeFilters !== 0);
+                          setActiveFilters(activeFilters - 1);
+                      }}
                     >
                       <BodyRegular cursor="pointer">Remove</BodyRegular>
                     </HStack>
@@ -267,6 +290,9 @@ function FiltersButton(props) {
                       cursor="pointer"
                       whileTap={{ scale: 0.96 }}
                       onClick={() => {
+                        if(maxValue < minValue)
+                          setMaxValue(minValue);
+                          setMinValue(maxValue)
                         setMinValue(
                           document
                             .getElementsByClassName("FilterPriceSlider")[0]
@@ -279,6 +305,8 @@ function FiltersButton(props) {
                             .getElementsByTagName("span")[6]
                             .getElementsByTagName("input")[0].value
                         );
+                        document.getElementById("MinFilterPrice").value = "";
+                        document.getElementById("MaxFilterPrice").value = "";
                         onChange({
                           ...params,
                           page: 1,
@@ -371,6 +399,23 @@ function FiltersButton(props) {
                       height="43px"
                       cursor="pointer"
                       whileTap={{ scale: 0.96 }}
+                      onClick={() => {
+                        onChange({
+                          ...params,
+                          page: 1,
+                          saleType1: "",
+                          saleType2: "",
+                          saleType3: "",
+                          saleType4: ""
+                        });
+                        setBtnSold(false);
+                        setBtnSale(false);
+                        setBtnNFS(false);
+                        setBtnRelist(false);
+                        setActiveSaleType(false);
+                        if (activeFilters !== 0)
+                          setActiveFilters(activeFilters - 1);
+                      }}
                     >
                       <BodyRegular cursor="pointer">Remove</BodyRegular>
                     </HStack>
@@ -391,16 +436,20 @@ function FiltersButton(props) {
                           saleType3: !btnSold ? "SOLD" : "",
                           saleType4: !btnNFS ? "NOT_SALE" : "",
                         });
-                        if (
-                          !params.saleType1 &&
-                          !params.saleType2 &&
-                          !params.saleType3 &&
-                          !params.saleType4
-                        )
+                        if ( !activeSaleType && (
+                          btnSale ||
+                          btnSold ||
+                          btnNFS ||
+                          btnRelist
+                        )) {
                           setActiveFilters(activeFilters + 1);
+                          setActiveSaleType(true);
+                        }
                         if (activeFilters !== 0) {
-                          if (!btnSale && !btnSold && !btnNFS && !btnRelist)
+                          if (!btnSale && !btnSold && !btnNFS && !btnRelist) {
                             setActiveFilters(activeFilters - 1);
+                            setActiveSaleType(false);
+                          }
                         }
                       }}
                     >

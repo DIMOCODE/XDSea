@@ -124,6 +124,7 @@ const CollectionDetails = (props) => {
             tokenId: nft.tokenId,
             saleType: nft.saleType.toLowerCase(),
             isVerified: nft.owner.isVerified,
+            collectionVerified: nft.creator.isVerified
           };
           return collectionNFT;
         })
@@ -163,6 +164,7 @@ const CollectionDetails = (props) => {
           tokenId: nft.tokenId,
           saleType: nft.saleType.toLowerCase(),
           isVerified: nft.owner.isVerified,
+          collectionVerified: nft.creator.isVerified
         };
         return collectionNFT;
       })
@@ -688,6 +690,7 @@ const CollectionDetails = (props) => {
                           }
                           owner={true}
                           usdPrice={props.xdc}
+                          collectionVerified={item.collectionVerified}
                         ></NftContainer>
                       </VStack>
                     ))

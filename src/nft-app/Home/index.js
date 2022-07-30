@@ -114,7 +114,7 @@ const Home = (props) => {
           let trendingNFT = {
             collectionName: nft.nftId.collectionId.name,
             collectionNickName: nft.nftId.collectionId.nickName,
-            creatorLogo: nft.nftId.creator.urlProfile,
+            creatorLogo: nft.nftId.owner.urlProfile,
             image: isSafari ? nft.nftId.urlFile.v1 : nft.nftId.urlFile.v0,
             name: nft.nftId.name,
             hasOpenOffer: nft.nftId.hasOpenOffer,
@@ -122,10 +122,11 @@ const Home = (props) => {
             fileType: nft.nftId.fileType,
             preview: isSafari ? nft.nftId.preview.v1 : nft.nftId.preview.v0,
             creator: nft.nftId.creator.userName,
-            creatorId: nft.nftId.creator._id,
+            ownerId: nft.nftId.owner._id,
             tokenId: nft.nftId.tokenId,
             saleType: nft.nftId.saleType.toLowerCase(),
-            isVerified: nft.nftId.creator.isVerified,
+            isVerified: nft.nftId.owner.isVerified,
+            collectionVerified: nft.nftId.creator.isVerified
           };
           return trendingNFT;
         })
@@ -584,9 +585,11 @@ const Home = (props) => {
                       NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
                     }
                     onClickCreator={() =>
-                      NavigateTo(`UserProfile/${item.creatorId}`)
+                      NavigateTo(`UserProfile/${item.ownerId}`)
                     }
+                    owner={true}
                     usdPrice={props.xdc}
+                    collectionVerified={item.collectionVerified}
                   ></NftContainer>
                 </VStack>
               ))
@@ -612,8 +615,11 @@ const Home = (props) => {
                       NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
                     }
                     onClickCreator={() =>
-                      NavigateTo(`UserProfile/${item.creatorId}`)
+                      NavigateTo(`UserProfile/${item.ownerId}`)
                     }
+                    owner={true}
+                    usdPrice={props.xdc}
+                    collectionVerified={item.collectionVerified}
                   ></NftContainer>
                 </VStack>
               ))
@@ -638,8 +644,11 @@ const Home = (props) => {
                       NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
                     }
                     onClickCreator={() =>
-                      NavigateTo(`UserProfile/${item.creatorId}`)
+                      NavigateTo(`UserProfile/${item.ownerId}`)
                     }
+                    usdPrice={props.xdc}
+                    owner={true}
+                    collectionVerified={item.collectionVerified}
                   ></NftContainer>
                 </VStack>
               ))}

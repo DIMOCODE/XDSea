@@ -281,10 +281,28 @@ function Collection(props) {
                                   height="18px"
                                 ></IconImg>
                                 <BodyBold textcolor={appStyle.colors.white}>
-                                  {floorprice || "0"}
+                                  {floorprice > 100000
+                                    ? (Intl.NumberFormat('en-US', {
+                                        notation: "compact",
+                                        maximumFractionDigits: 2
+                                      }).format(floorprice))
+                                    : (
+                                      floorprice.toLocaleString(undefined, {
+                                        maximumFractionDigits: 2,
+                                      }) || "0"
+                                    )}
                                 </BodyBold>
                                 <CaptionRegular textcolor="white">
-                                  (000 USD)
+                                  ({(props.xdc.xdcPrice * floorprice) > 100000
+                                    ? (Intl.NumberFormat('en-US', {
+                                        notation: "compact",
+                                        maximumFractionDigits: 2
+                                      }).format(props.xdc.xdcPrice * floorprice))
+                                    : (
+                                      (props.xdc.xdcPrice * floorprice).toLocaleString(undefined, {
+                                        maximumFractionDigits: 2,
+                                      }) || "0"
+                                    )} USD)
                                 </CaptionRegular>
                               </HStack>{" "}
                               <CaptionRegular textcolor={appStyle.colors.white}>
@@ -346,13 +364,28 @@ function Collection(props) {
                                   height="18px"
                                 ></IconImg>
                                 <BodyBold textcolor={appStyle.colors.white}>
-                                  {Number(volumetraded) || "0"}
+                                  {volumetraded > 100000
+                                    ? (Intl.NumberFormat('en-US', {
+                                        notation: "compact",
+                                        maximumFractionDigits: 2
+                                      }).format(volumetraded))
+                                    : (
+                                      volumetraded.toLocaleString(undefined, {
+                                        maximumFractionDigits: 2,
+                                      }) || "0"
+                                    )}
                                 </BodyBold>
-                                <CaptionRegular
-                                  animate={{ opacity: 0.6 }}
-                                  textcolor="white"
-                                >
-                                  (000 USD)
+                                <CaptionRegular textcolor="white">
+                                  ({(props.xdc.xdcPrice * volumetraded) > 100000
+                                    ? (Intl.NumberFormat('en-US', {
+                                        notation: "compact",
+                                        maximumFractionDigits: 2
+                                      }).format(props.xdc.xdcPrice * volumetraded))
+                                    : (
+                                      (props.xdc.xdcPrice * volumetraded).toLocaleString(undefined, {
+                                        maximumFractionDigits: 2,
+                                      }) || "0"
+                                    )} USD)
                                 </CaptionRegular>
                               </HStack>
                               <CaptionRegular
@@ -364,7 +397,7 @@ function Collection(props) {
                             </VStack>
                           )}
 
-                          {!sortDate && (
+                          {sortDate && (
                             <VStack
                               border="9px"
                               padding="12px 0"

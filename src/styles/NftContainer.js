@@ -30,6 +30,7 @@ function NftContainer(props) {
     hasOffers,
     isVerified,
     usdPrice,
+    collectionVerified
   } = props;
 
   const scaleImage = {
@@ -261,12 +262,17 @@ function NftContainer(props) {
                 >
                   {collectionName}
                 </CaptionBoldShort>
-                <IconImg
-                  url={verifiedBlue}
-                  width="15px"
-                  height="15px"
-                  border="120px"
-                ></IconImg>
+                {collectionVerified
+                  ? (
+                    <IconImg
+                      url={verifiedBlue}
+                      width="15px"
+                      height="15px"
+                      border="120px"
+                    ></IconImg>
+                  )
+                  : null
+                }
                 <Spacer></Spacer>
               </HStack>
 

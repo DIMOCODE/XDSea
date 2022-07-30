@@ -439,6 +439,7 @@ const NFTDetails = (props) => {
         preview: isSafari ? nftData.nft.preview.v1 : nftData.nft.preview.v0,
         royalty: nftData.nft.royalty,
         unlockableContent: nftData.nft.unlockableContent,
+        collectionNickName: nftData.nft.collectionId.nickName
       };
       const requestData = await Promise.all([1, 2, 3].map(async (i) => {
         if(i == 1) {
@@ -446,7 +447,7 @@ const NFTDetails = (props) => {
             nftData.relatedNfts.map(async (nft) => {
               let item = {
                 collectionName: nft.collectionId.name,
-                creatorLogo: nft.creator.urlProfile,
+                creatorLogo: nft.owner.urlProfile,
                 image: isSafari ? nft.urlFile.v1 : nft.urlFile.v0,
                 name: nft.name,
                 hasOpenOffer: nft.hasOpenOffer,
@@ -457,7 +458,8 @@ const NFTDetails = (props) => {
                 ownerId: nft.owner._id,
                 tokenId: nft.tokenId,
                 saleType: nft.saleType.toLowerCase(),
-                isVerified: nft.creator.isVerified,
+                isVerified: nft.owner.isVerified,
+                collectionVerified: nft.creator.isVerified
               };
               return item;
             })
@@ -623,24 +625,14 @@ const NFTDetails = (props) => {
     window.scrollTo(0, 0);
     setWallet(props?.wallet);
     getData();
-    getApproval();
-  }, []);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    setWallet(props?.wallet);
-    getData();
-  }, [id]);
+    if(!approved)
+      getApproval();
+  }, [id, actions]);
 
   useEffect(() => {
     setWallet(props?.wallet);
     getApproval();
   }, [props?.wallet]);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    getData();
-  }, [actions]);
 
   const webLink = `https://www.xdsea.com/${nftaddress}/${id}`;
 
@@ -795,7 +787,7 @@ const NFTDetails = (props) => {
                       textcolor={({ theme }) => theme.walletText}
                       cursor="pointer"
                       onClick={() =>
-                        NavigateTo(`collection/${nft?.collectionName}`)
+                        NavigateTo(`collection/${nft?.collectionNickName}`)
                       }
                       btnStatus={0}
                     ></ButtonApp>
@@ -1822,6 +1814,8 @@ const NFTDetails = (props) => {
                       NavigateTo(`UserProfile/${item.ownerId}`)
                     }
                     usdPrice={props.xdc}
+                    owner={true}
+                    collectionVerified={item.collectionVerified}
                   ></NftContainer>
                 </VStack>
               ))}

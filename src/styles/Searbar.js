@@ -62,8 +62,6 @@ function Searchbar({
   const ref = useRef(null);
 
   useClickAway(ref, () => {
-    setFilteredCollectionData([]);
-    setFilteredNFTData([]);
     switchBarStatus(false);
     setShowResults(false);
   });
@@ -91,19 +89,26 @@ function Searchbar({
   useEffect(() => {
     const delayDebounceFn = setTimeout(async () => {
       if (searchTerm !== "") {
-        const collectionResults = await (
-          await getCollections({ searchTerm: searchTerm })
-        ).data;
-        console.log(collectionResults);
-        const nftResults = await (
-          await getNFTs({ page: 1, searchBy: searchTerm })
-        ).data;
-        console.log(nftResults);
-        setFilteredCollectionData(collectionResults.collections);
-        setFilteredNFTData(nftResults.nfts);
-        setLoading(false);
-        switchBarStatus(true);
-        setShowResults(true);
+        const requestData = await Promise.all([1, 2].map(async (i) => {
+          if(i === 1) {
+            const collectionResults = await (
+              await getCollections({ searchTerm: searchTerm })
+            ).data;
+            console.log(collectionResults);
+            setFilteredCollectionData(collectionResults.collections);
+          }
+          else{
+            const nftResults = await (
+              await getNFTs({ page: 1, searchBy: searchTerm })
+            ).data;
+            console.log(nftResults);
+            setFilteredNFTData(nftResults.nfts);
+          }
+
+          setLoading(false);
+          switchBarStatus(true);
+          setShowResults(true);
+        }));
       } else {
         setFilteredCollectionData([]);
         setFilteredNFTData([]);
@@ -134,6 +139,13 @@ function Searchbar({
           }, 1500);
 
           return () => clearTimeout(delayFn);
+        }}
+        onKeyPress={(event) => {
+          if(event.key === 'Enter') {
+            NavigateTo(
+              `SearchPage?searchTerm=${searchTerm}&mode=nft`
+            );
+          }
         }}
         height="42px"
       ></InputStyled>

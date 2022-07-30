@@ -403,10 +403,11 @@ const Discover = (props) => {
             fileType: nft.fileType,
             preview: isSafari ? nft.preview.v1 : nft.preview.v0,
             creator: nft.creator.userName,
-            creatorId: nft.creator._id,
+            ownerId: nft.owner._id,
             tokenId: nft.tokenId,
             saleType: nft.saleType.toLowerCase(),
-            isVerified: nft.creator.isVerified,
+            isVerified: nft.owner.isVerified,
+            collectionVerified: nft.creator.isVerified
           };
           return nftItem;
         })
@@ -439,10 +440,11 @@ const Discover = (props) => {
           fileType: nft.fileType,
           preview: isSafari ? nft.preview.v1 : nft.preview.v0,
           creator: nft.creator.userName,
-          creatorId: nft.creator._id,
+          ownerId: nft.owner._id,
           tokenId: nft.tokenId,
           saleType: nft.saleType.toLowerCase(),
-          isVerified: nft.creator.isVerified,
+          isVerified: nft.owner.isVerified,
+          collectionVerified: nft.creator.isVerified
         };
         return nftItem;
       })
@@ -485,10 +487,11 @@ const Discover = (props) => {
           fileType: nft.fileType,
           preview: isSafari ? nft.preview.v1 : nft.preview.v0,
           creator: nft.creator.userName,
-          creatorId: nft.creator._id,
+          ownerId: nft.owner._id,
           tokenId: nft.tokenId,
           saleType: nft.saleType.toLowerCase(),
-          isVerified: nft.creator.isVerified,
+          isVerified: nft.owner.isVerified,
+          collectionVerified: nft.creator.isVerified
         };
         return nftItem;
       })
@@ -598,7 +601,7 @@ const Discover = (props) => {
       </HStack>
 
       <ContentDiscover id="scrollableDiv">
-        <StickySectionHeader top="90">
+        {/* <StickySectionHeader top="90"> */}
           {isSelected ? (
             <HStack
               background="rgb(0,0,0, 0.06)"
@@ -625,6 +628,7 @@ const Discover = (props) => {
               background="rgb(0,0,0, 0.06)"
               padding="6px"
               border="9px"
+              style={{ zIndex: 10000 }}
               blur="30px"
             >
               <FiltersButton
@@ -640,7 +644,7 @@ const Discover = (props) => {
               ></SortButtonNFTS>
             </HStack>
           )}
-        </StickySectionHeader>
+        {/* </StickySectionHeader> */}
 
         {isSelected ? (
           <VStack padding="30px 0">
@@ -704,6 +708,11 @@ const Discover = (props) => {
                               onClickCreator={() =>
                                 NavigateTo(`UserProfile/${item.creatorId}`)
                               }
+                              sortFloor = {collectionParams.sortBy === "floorPrice"}
+                              sortOwners = {collectionParams.sortBy === "owners"}
+                              sortNFTs = {collectionParams.sortBy === "nfts"}
+                              sortVolume = {collectionParams.sortBy === "volumeTrade"}
+                              xdc = {props.xdc}
                             ></Collection>
                           </VStack>
                         </LayoutGroup>
@@ -796,10 +805,11 @@ const Discover = (props) => {
                                 NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
                               }
                               onClickCreator={() =>
-                                NavigateTo(`UserProfile/${item.creatorId}`)
+                                NavigateTo(`UserProfile/${item.ownerId}`)
                               }
                               owner={true}
                               usdPrice={props.xdc}
+                              collectionVerified={item.collectionVerified}
                             ></NftContainer>
                           </VStack>
                         ))

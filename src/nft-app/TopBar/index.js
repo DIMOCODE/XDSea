@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
 
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { XdcConnect, Disconnect } from "xdc-connect";
 import {
@@ -58,6 +58,7 @@ function TopBar(props) {
   const [showMenu, setShowMenu] = useContext(menuContext);
   const [showMetamask, setShowMetamask] = useState(false);
   const [isMetamask, setIsMetamask] = useState(false);
+  const location = useLocation();
   const menucolor = ({ theme }) => theme.menu;
   const [showError, setShowError] = useState(0);
   const [showInfo, setShowInfo] = useState(false);
@@ -656,18 +657,21 @@ function TopBar(props) {
                         )}
                       </VStack>
                     </HStack>
+                    {console.log(location)}
                     <Spacer></Spacer>
                     {/* Search  */}
-
-                    <Searchbar
-                      top="54px"
-                      left="0px"
-                      placeholder="Search for NFTs and Collections"
-                      widthInput={isSearch ? "741px" : "310px"}
-                      width="741px"
-                      switchBarStatus={handleBarStatus}
-                    ></Searchbar>
-
+                    {location.pathname === "/SearchPage"
+                      ? null
+                      : <Searchbar
+                        top="54px"
+                        left="0px"
+                        placeholder="Search for NFTs and Collections"
+                        widthInput={isSearch ? "741px" : "310px"}
+                        width="741px"
+                        switchBarStatus={handleBarStatus}
+                      ></Searchbar>
+                    }
+                    
                     {console.log(isSearch)}
                     <AnimatePresence>
                       {!isSearch && (

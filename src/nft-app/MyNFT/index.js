@@ -73,6 +73,7 @@ const MyNFT = (props) => {
           name: item.name,
           nftCount: item.totalNfts,
           nfts: item.nfts,
+          nickName: item.nickName
         };
 
         return collection;
@@ -86,6 +87,7 @@ const MyNFT = (props) => {
   const getOwnedNFTs = async () => {
     setLoading(true);
     console.log(LS.get(LS_ROOT_KEY));
+    
     const requestData = await Promise.all(
       [1, 2].map(async (i) => {
         if (i === 1) {
@@ -108,11 +110,13 @@ const MyNFT = (props) => {
                   ? item.collectionId.logo.v1
                   : item.collectionId.logo.v0,
                 fileType: item.fileType,
+                hasOpenOffer: item.hasOpenOffer
               };
 
               return nft;
             })
           );
+          console.log(nftData);
           setNfts(nftList);
           setTotalNfts(nftData.nftsAmount);
           return nftData;
@@ -125,7 +129,7 @@ const MyNFT = (props) => {
   };
 
   const fetchMoreNFTs = async () => {
-    const nftData = await (await getNFTs({ page: page, userId: userId })).data;
+    const nftData = await (await getNFTs({ pageSize: 15, page: page, userId: userId })).data;
     console.log(nftData);
 
     const nftList = await Promise.all(
@@ -162,11 +166,6 @@ const MyNFT = (props) => {
   };
 
   const [subMenu, setSubMenu] = useState(0);
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-    getOwnedNFTs();
-  }, []);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -419,9 +418,10 @@ const MyNFT = (props) => {
                             }}
                           >
                             <ZStack cursor={"pointer"}>
+                              {item.hasOpenOffer ? 
                               <BubbleOffers>
                                 <HStack
-                                  background="red"
+                                  background="linear-gradient(180deg, #FF5A5A 0%, rgba(255, 90, 90, 0.88) 100%)"
                                   width="26px"
                                   height="26px"
                                   border="300px"
@@ -432,10 +432,11 @@ const MyNFT = (props) => {
                                     Offer
                                   </CaptionSmallRegular> */}
                                   <CaptionBoldShort textcolor="white">
-                                    1
+                                    !
                                   </CaptionBoldShort>
                                 </HStack>
                               </BubbleOffers>
+                              : null}
                               <ZItem
                                 backgroundimage={
                                   isAudio(item.fileType) ? item.preview : null
@@ -642,7 +643,7 @@ const MyNFT = (props) => {
                             textcolor={appStyle.colors.white}
                             border="30px"
                             onClick={() =>
-                              NavigateTo(`collection/${item.name}`)
+                              NavigateTo(`collection/${item.nickName}`)
                             }
                             btnStatus={0}
                           ></ButtonApp>
