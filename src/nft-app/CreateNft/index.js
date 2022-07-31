@@ -262,8 +262,8 @@ function CreateNft(props) {
         setCollectionExists(true);
       }
       setLoadingIcon(empty);
-      return true;
       setCollectionNickName(collectionNickName);
+      return true;
     }
     catch(err) {
       setCollectionExists(false);
