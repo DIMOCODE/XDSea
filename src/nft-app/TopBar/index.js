@@ -888,7 +888,7 @@ function TopBar(props) {
                   background="rgb(0,0,0,0.3)"
                   padding="15px"
                   border="15px"
-                  maxheight="560px"
+                  maxheight="640px"
                   maxwidth="390px"
                   alignment="flex-start"
                 >

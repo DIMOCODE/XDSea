@@ -154,13 +154,13 @@ function CreateNft(props) {
     return filteredProperties;
   }
 
-  const fetchCollections = async () => {
+  const fetchCollections = async (userData) => {
     setLoadingIconSelector(loading);
     try{
       setIsCollectionNotSelected(false);
-      if(user.user._id !== undefined) {
+      if(userData.user._id !== undefined) {
         const collectionData = await (
-          await getCollections({ userId: user.user._id })
+          await getCollections({ userId: userData.user._id })
         ).data;
         console.log(collectionData.collections);
         setCollections(collectionData.collections);
@@ -177,9 +177,9 @@ function CreateNft(props) {
   };
 
   const toggleCollectionSelector = async () => {
-    await getUser();
+    const userData = await getUser();
     if(!isOpenSelector && collections.length == 0)
-      await fetchCollections();
+      await fetchCollections(userData);
     setIsOpenSelector(!isOpenSelector);
   };
 
@@ -560,6 +560,19 @@ function CreateNft(props) {
       }
       else{
         const collectionId = await (await getCollection(collectionNickName)).data.collection._id;
+        console.log(collectionId, 
+          tokenId, 
+          isXdc(wallet?.address)
+            ? fromXdc(wallet?.address)
+            : wallet?.address, 
+          price, 
+          royalty, 
+          name, 
+          description, 
+          assetURL, 
+          nft.fileType,
+          previewURL, 
+          properties)
         const nftCreation = await (await createNFT(
           collectionId, 
           tokenId, 
