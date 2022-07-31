@@ -150,11 +150,14 @@ function TopBar(props) {
 
   const connectXDCPay = async () => {
     if (window.ethereum) {
-      try{
-        if(window.ethereum.publicConfigStore._state.networkVersion === "50" 
-          || window.ethereum.publicConfigStore._state.networkVersion === "51" 
-          && window.ethereum.publicConfigStore._state.selectedAddress){
-          const address = window.ethereum.publicConfigStore._state.selectedAddress;
+      try {
+        if (
+          window.ethereum.publicConfigStore._state.networkVersion === "50" ||
+          (window.ethereum.publicConfigStore._state.networkVersion === "51" &&
+            window.ethereum.publicConfigStore._state.selectedAddress)
+        ) {
+          const address =
+            window.ethereum.publicConfigStore._state.selectedAddress;
           setWallet({
             connected: true,
             address: address,
@@ -168,12 +171,10 @@ function TopBar(props) {
           setShowMetamask(false);
           setShowError(0);
         }
-      }
-      catch (err) {
+      } catch (err) {
         setShowError(2);
       }
-    }
-    else {
+    } else {
       setShowError(1);
     }
   };
@@ -869,7 +870,7 @@ function TopBar(props) {
                   background="rgb(0,0,0,0.3)"
                   padding="15px"
                   border="15px"
-                  maxheight="500px"
+                  maxheight="560px"
                   maxwidth="390px"
                   alignment="flex-start"
                 >
