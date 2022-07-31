@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useContext, useRef } from "react";
-
+import Xdc3 from "xdc3";
+import { DEFAULT_PROVIDER, HEADER } from "../../constant";
 import { useHistory, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import { XdcConnect, Disconnect } from "xdc-connect";
@@ -58,6 +59,7 @@ function TopBar(props) {
   const [showMenu, setShowMenu] = useContext(menuContext);
   const [showMetamask, setShowMetamask] = useState(false);
   const [isMetamask, setIsMetamask] = useState(false);
+  const [isDcent, setIsDcent] = useState(false);
   const location = useLocation();
   const menucolor = ({ theme }) => theme.menu;
   const [showError, setShowError] = useState(0);
@@ -141,6 +143,79 @@ function TopBar(props) {
     }
   };
 
+  const connectXDCPay = async () => {
+    if (window.ethereum) {
+      try{
+        if(window.ethereum.publicConfigStore._state.networkVersion === "50" 
+          || window.ethereum.publicConfigStore._state.networkVersion === "51" 
+          && window.ethereum.publicConfigStore._state.selectedAddress){
+          const address = window.ethereum.publicConfigStore._state.selectedAddress;
+          setWallet({
+            connected: true,
+            address: address,
+          });
+          onWalletChange({
+            connected: true,
+            address: address,
+          });
+          const { data } = await anonymousLogin(address);
+          LS.set(LS_ROOT_KEY, data);
+          setShowMetamask(false);
+          setShowError(0);
+        }
+      }
+      catch (err) {
+        setShowError(2);
+      }
+    }
+    else {
+      setShowError(1);
+    }
+  };
+
+  const connectDcent = async () => {
+    if (window.ethereum) {
+      try {
+        if (window.ethereum.chainId === "0x32") {
+          const res = await window.ethereum.request({
+            method: "eth_requestAccounts",
+          });
+          setWallet({
+            connected: true,
+            address: res[0],
+          });
+          onWalletChange({
+            connected: true,
+            address: res[0],
+          });
+          const { data } = await anonymousLogin(res[0]);
+          LS.set(LS_ROOT_KEY, data);
+          window.ethereum.on("accountsChanged", (accounts) => {
+            setWallet({
+              connected: false,
+              address: accounts[0],
+            });
+            onWalletChange({
+              connected: false,
+              address: accounts[0],
+            });
+            logout();
+          });
+          setIsDcent(true);
+          setShowError(0);
+        } else if (window.ethereum.chainId === undefined) {
+          setShowError(3);
+        } else {
+          setShowError(4);
+        }
+      } catch (err) {
+        setShowError(2);
+      }
+    } else {
+      setShowError("Connect to network");
+    }
+  };
+
   const disconnectMetamask = async () => {
     const res = await window.ethereum.request({
       method: "eth_requestAccounts",
@@ -155,6 +230,22 @@ function TopBar(props) {
     });
     logout();
     setIsMetamask(false);
+  };
+
+  const disconnectDcent = async () => {
+    const res = await window.ethereum.request({
+      method: "eth_requestAccounts",
+    });
+    setWallet({
+      connected: false,
+      address: res[0],
+    });
+    onWalletChange({
+      connected: false,
+      address: res[0],
+    });
+    logout();
+    setIsDcent(false);
   };
 
   const [searchPhone, setSearchPhone] = useState(false);
@@ -260,7 +351,7 @@ function TopBar(props) {
                             onClickMetamask={() => setShowMetamask(true)}
                             isMetamask={isMetamask}
                             isMobile={true}
-                            hasAlert={true}
+                            hasAlert={showError > 0}
                             clickAlert={() => setShowInfo(true)}
                           ></WalletButton>
                         </VStack>
@@ -573,7 +664,7 @@ function TopBar(props) {
                             wallet={wallet}
                             onClickMetamask={() => setShowMetamask(true)}
                             isMetamask={isMetamask}
-                            hasAlert={true}
+                            hasAlert={showError > 0}
                             clickAlert={() => setShowInfo(true)}
                           ></WalletButton>
                         </ZItem>
@@ -1022,7 +1113,7 @@ function TopBar(props) {
                     minheight="39px"
                     border="9px"
                     cursor="pointer"
-                    onClick={connectMetamask}
+                    onClick={connectXDCPay}
                   >
                     <BodyBold cursor="pointer" textcolor="white">
                       Connect Metamask

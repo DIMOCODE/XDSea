@@ -1,5 +1,6 @@
-import { createRequest } from "./index"
+import { createRequest, createSignedRequest } from "./index"
 import { HTTP_METHODS } from "../constant";
+import { nftmarketlayeraddress } from "../config";
 
 export const getNFTs = ({searchBy, page, pageSize, userId, sortBy, sortDirection, verified, saleType1, saleType2, saleType3, saleType4, priceRangeStart, priceRangeEnd}) => {
   var params = `?${searchBy !== undefined ? `searchBy=${searchBy}&` : ""}` + 
@@ -25,3 +26,76 @@ export const getNFTOffers = (id) => {
 export const getNFTEvents = (id) => {
   return createRequest(HTTP_METHODS.get, `event/?nftId=${id}`, null, null);
 };
+
+export const createNFT = (collectionId, tokenId, addressCreator, price, royalty, name, description, urlFile, fileType,
+  preview, properties) => {
+  const body = {
+    collectionId,
+    tokenId,
+    addressCreator,
+    marketAddress: nftmarketlayeraddress,
+    price,
+    isListed: false,
+    royalty,
+    name,
+    description,
+    urlFile,
+    fileType,
+    preview,
+    properties,
+    blockchainOrigin: "XDC",
+    isHidden:false
+  };
+  return createSignedRequest(HTTP_METHODS.post, "nft", null, body);
+};
+
+export const listNFTRequest = (price, nftId) => {
+  const body = {
+    price
+  };
+  return createSignedRequest(HTTP_METHODS.post, `nft/list/${nftId}`, null, body);
+};
+
+export const transferNFTRequest = (myAddress, toAddress, nftId) => {
+  const body = {
+    myAddress,
+    toAddress
+  };
+  return createSignedRequest(HTTP_METHODS.post, `nft/transfer/${nftId}`, null, body);
+};
+
+export const withdrawListingNFTRequest = (nftId) => {
+  return createSignedRequest(HTTP_METHODS.delete, `nft/list/${nftId}`, null, null);
+};
+
+export const editListingNFTRequest = (price, nftId) => {
+  const body = {
+    price
+  };
+  return createSignedRequest(HTTP_METHODS.put, `nft/list/${nftId}`, null, body);
+};
+
+export const buyNFTRequest = (myAddress, fee, nftId) => {
+  const body = {
+    myAddress,
+    fee
+  };
+  return createSignedRequest(HTTP_METHODS.post, `nft/buy/${nftId}`, null, body);
+};
+
+export const placeOfferRequest = (price, fromAddress, tokenId) => {
+  const body = {
+    price,
+    fromAddress,
+    tokenId
+  };
+  return createSignedRequest(HTTP_METHODS.post, `offer`, null, body);
+};
+
+export const withdrawOfferRequest = (offerId) => {
+  return createSignedRequest(HTTP_METHODS.put, `offer/${offerId}/withdraw`, null, null);
+};
+
+export const acceptOfferRequest = (offerId) => {
+  return createSignedRequest(HTTP_METHODS.post, `offer/${offerId}/accept`, null, null);
+}

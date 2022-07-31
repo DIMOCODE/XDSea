@@ -95,7 +95,7 @@ import {
   WhatsappShareButton,
   InstapaperShareButton,
 } from "react-share";
-import { getNFT, getNFTEvents, getNFTOffers } from "../../API/NFT";
+import { acceptOfferRequest, buyNFTRequest, editListingNFTRequest, getNFT, getNFTEvents, getNFTOffers, listNFTRequest, placeOfferRequest, transferNFTRequest, withdrawListingNFTRequest, withdrawOfferRequest } from "../../API/NFT";
 
 const NFTDetails = (props) => {
   const webLocation = useLocation();
@@ -198,6 +198,8 @@ const NFTDetails = (props) => {
     }
     if (success) {
       setBuyButtonStatus(3);
+      const buyData = await (await buyNFTRequest(wallet?.address, 4000, nft._id));
+      console.log(buyData);
       setPurchased(true);
     } else {
       setBuyButtonStatus(4);
@@ -227,6 +229,8 @@ const NFTDetails = (props) => {
     }
     if (success) {
       setOfferButtonStatus(3);
+      const offerData = await (await placeOfferRequest(offerPrice, wallet.address, nft._id)).data;
+      console.log(offerData);
     } else {
       setOfferButtonStatus(4);
     }
@@ -248,6 +252,8 @@ const NFTDetails = (props) => {
     }
     if (success) {
       setWithdrawButtonStatus(3);
+      const withdrawListData = await (await withdrawListingNFTRequest(nft._id)).data;
+      console.log(withdrawListData);
     } else {
       setWithdrawButtonStatus(4);
     }
@@ -277,6 +283,8 @@ const NFTDetails = (props) => {
     }
     if (success) {
       setEditButtonStatus(3);
+      const editListData = await (await editListingNFTRequest(editPrice, nft._id)).data;
+      console.log(editListData);
     } else {
       setEditButtonStatus(4);
     }
@@ -306,6 +314,8 @@ const NFTDetails = (props) => {
     }
     if (success) {
       setListButtonStatus(3);
+      const listData = await (await listNFTRequest(listPrice, nft._id)).data;
+      console.log(listData);
     } else {
       setListButtonStatus(4);
     }
@@ -330,6 +340,8 @@ const NFTDetails = (props) => {
     }
     if (success) {
       setTransferButtonStatus(3);
+      const transferData = await (await transferNFTRequest(wallet?.address, transferAddress, nft._id)).data;
+      console.log(transferData);
     } else {
       setTransferButtonStatus(4);
     }
@@ -340,7 +352,7 @@ const NFTDetails = (props) => {
     }, 3500);
   };
 
-  const withdrawOffer = async (i) => {
+  const withdrawOffer = async (i, id) => {
     setIsProcessingWithdrawingOffer(true);
     setWithdrawOfferButtonStatus((prevState) => {
       prevState[i] = 1;
@@ -355,6 +367,8 @@ const NFTDetails = (props) => {
         prevState[i] = 3;
         return [...prevState];
       });
+      const withdrawOfferData = await (await withdrawOfferRequest(id)).data;
+      console.log(withdrawOfferData);
     } else {
       setWithdrawOfferButtonStatus((prevState) => {
         prevState[i] = 4;
@@ -371,7 +385,7 @@ const NFTDetails = (props) => {
     }, 3500);
   };
 
-  const acceptOffer = async (i) => {
+  const acceptOffer = async (i, id) => {
     setIsProcessingAccepting(true);
     setAcceptOfferButtonStatus((prevState) => {
       prevState[i] = 1;
@@ -386,6 +400,8 @@ const NFTDetails = (props) => {
         prevState[i] = 3;
         return [...prevState];
       });
+      const acceptOfferData = await (await acceptOfferRequest(id)).data;
+      console.log(acceptOfferData);
     } else {
       setAcceptOfferButtonStatus((prevState) => {
         prevState[i] = 4;
@@ -1551,7 +1567,7 @@ const NFTDetails = (props) => {
                       </>
                     ) : (
                       <>
-                        {nft.inBlacklist ? null : (
+                        {nft?.inBlacklist ? null : (
                           <ButtonApp
                             btnStatus={offerButtonStatus}
                             func={"Offer"}
@@ -1584,7 +1600,7 @@ const NFTDetails = (props) => {
                         ></ButtonApp>
                       </>
                     )
-                  ) : nft.inBlacklist ? null : nft?.owner.toLowerCase() ===
+                  ) : nft?.inBlacklist ? null : nft?.owner.toLowerCase() ===
                     (isXdc(wallet?.address)
                       ? fromXdc(wallet?.address.toLowerCase())
                       : wallet?.address.toLowerCase()) ? (
@@ -1744,9 +1760,9 @@ const NFTDetails = (props) => {
                           offerAmount={item.price}
                           isWithdrawn={item.isWithdrawn}
                           withdrawStatus={withdrawOfferButtonStatus[i]}
-                          onClickWithdraw={() => withdrawOffer(i)}
+                          onClickWithdraw={() => withdrawOffer(i, item._id)}
                           acceptStatus={acceptOfferButtonStatus[i]}
-                          onClickAccept={() => acceptOffer(i)}
+                          onClickAccept={() => acceptOffer(i, item._id)}
                           xdc={props.xdc}
                         ></TableOffersNft>
                         {i !== offers.length - 1 ? <Divider></Divider> : null}
