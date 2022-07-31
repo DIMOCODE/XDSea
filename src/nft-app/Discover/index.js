@@ -407,7 +407,7 @@ const Discover = (props) => {
             tokenId: nft.tokenId,
             saleType: nft.saleType.toLowerCase(),
             isVerified: nft.owner.isVerified,
-            collectionVerified: nft.creator.isVerified
+            collectionVerified: nft.creator.isVerified,
           };
           return nftItem;
         })
@@ -444,7 +444,7 @@ const Discover = (props) => {
           tokenId: nft.tokenId,
           saleType: nft.saleType.toLowerCase(),
           isVerified: nft.owner.isVerified,
-          collectionVerified: nft.creator.isVerified
+          collectionVerified: nft.creator.isVerified,
         };
         return nftItem;
       })
@@ -491,7 +491,7 @@ const Discover = (props) => {
           tokenId: nft.tokenId,
           saleType: nft.saleType.toLowerCase(),
           isVerified: nft.owner.isVerified,
-          collectionVerified: nft.creator.isVerified
+          collectionVerified: nft.creator.isVerified,
         };
         return nftItem;
       })
@@ -601,7 +601,7 @@ const Discover = (props) => {
       </HStack>
 
       <ContentDiscover id="scrollableDiv">
-        {/* <StickySectionHeader top="90"> */}
+        <StickySectionHeader top="90">
           {isSelected ? (
             <HStack
               background="rgb(0,0,0, 0.06)"
@@ -644,7 +644,7 @@ const Discover = (props) => {
               ></SortButtonNFTS>
             </HStack>
           )}
-        {/* </StickySectionHeader> */}
+        </StickySectionHeader>
 
         {isSelected ? (
           <VStack padding="30px 0">
@@ -708,11 +708,15 @@ const Discover = (props) => {
                               onClickCreator={() =>
                                 NavigateTo(`UserProfile/${item.creatorId}`)
                               }
-                              sortFloor = {collectionParams.sortBy === "floorPrice"}
-                              sortOwners = {collectionParams.sortBy === "owners"}
-                              sortNFTs = {collectionParams.sortBy === "nfts"}
-                              sortVolume = {collectionParams.sortBy === "volumeTrade"}
-                              xdc = {props.xdc}
+                              sortFloor={
+                                collectionParams.sortBy === "floorPrice"
+                              }
+                              sortOwners={collectionParams.sortBy === "owners"}
+                              sortNFTs={collectionParams.sortBy === "nfts"}
+                              sortVolume={
+                                collectionParams.sortBy === "volumeTrade"
+                              }
+                              xdc={props.xdc}
                             ></Collection>
                           </VStack>
                         </LayoutGroup>

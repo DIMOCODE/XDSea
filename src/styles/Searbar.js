@@ -89,26 +89,27 @@ function Searchbar({
   useEffect(() => {
     const delayDebounceFn = setTimeout(async () => {
       if (searchTerm !== "") {
-        const requestData = await Promise.all([1, 2].map(async (i) => {
-          if(i === 1) {
-            const collectionResults = await (
-              await getCollections({ searchTerm: searchTerm })
-            ).data;
-            console.log(collectionResults);
-            setFilteredCollectionData(collectionResults.collections);
-          }
-          else{
-            const nftResults = await (
-              await getNFTs({ page: 1, searchBy: searchTerm })
-            ).data;
-            console.log(nftResults);
-            setFilteredNFTData(nftResults.nfts);
-          }
+        const requestData = await Promise.all(
+          [1, 2].map(async (i) => {
+            if (i === 1) {
+              const collectionResults = await (
+                await getCollections({ searchTerm: searchTerm })
+              ).data;
+              console.log(collectionResults);
+              setFilteredCollectionData(collectionResults.collections);
+            } else {
+              const nftResults = await (
+                await getNFTs({ page: 1, searchBy: searchTerm })
+              ).data;
+              console.log(nftResults);
+              setFilteredNFTData(nftResults.nfts);
+            }
 
-          setLoading(false);
-          switchBarStatus(true);
-          setShowResults(true);
-        }));
+            setLoading(false);
+            switchBarStatus(true);
+            setShowResults(true);
+          })
+        );
       } else {
         setFilteredCollectionData([]);
         setFilteredNFTData([]);
@@ -141,10 +142,8 @@ function Searchbar({
           return () => clearTimeout(delayFn);
         }}
         onKeyPress={(event) => {
-          if(event.key === 'Enter') {
-            NavigateTo(
-              `SearchPage?searchTerm=${searchTerm}&mode=nft`
-            );
+          if (event.key === "Enter") {
+            NavigateTo(`SearchPage?searchTerm=${searchTerm}&mode=nft`);
           }
         }}
         height="42px"
@@ -411,6 +410,7 @@ function Searchbar({
                           width="32px"
                           height="32px"
                           border="15px"
+                          backsize="cover"
                         ></IconImg>
                         <VStack
                           alignment="flex-start"

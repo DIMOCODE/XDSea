@@ -21,6 +21,8 @@ export const VStack = styled(motion.div).attrs((props) => ({
   width: props.width || "auto",
   height: props.height || "100%",
   overflow: props.overflow || "visible",
+  overflowx: props.overflowx || "visible",
+  overflowy: props.overflowy || "visible",
   border: props.border || "0",
   bordersize: props.bordersize || "0",
   bordercolor: props.bordercolor || "rgba(255, 255, 255, 0)",
@@ -51,6 +53,8 @@ export const VStack = styled(motion.div).attrs((props) => ({
   width: ${(props) => props.width};
   border-radius: ${(props) => props.border};
   overflow: ${(props) => props.overflow};
+  overflow-x: ${(props) => props.overflowx};
+  overflow-y: ${(props) => props.overflowy};
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   border-style: solid;
@@ -66,6 +70,19 @@ export const VStack = styled(motion.div).attrs((props) => ({
   }
   margin-top: ${(props) => props.marginTop};
   cursor: ${(props) => props.cursor};
+  *::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: #5c6976;
+    border-radius: 20px;
+  }
 `;
 
 // HStack organize elements in Horizontal

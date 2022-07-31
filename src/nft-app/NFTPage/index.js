@@ -176,7 +176,7 @@ const NFTDetails = (props) => {
     { id: 1, name: "Offer 1" },
     { id: 2, name: "Offer 2" },
     { id: 3, name: "Offer 3" },
-    { id: 4, name: "Offer 4" }
+    { id: 4, name: "Offer 4" },
   ]);
   const [loadingNFTs] = useState([
     { id: 1, name: "NFT 1" },
@@ -447,156 +447,172 @@ const NFTDetails = (props) => {
         preview: isSafari ? nftData.nft.preview.v1 : nftData.nft.preview.v0,
         royalty: nftData.nft.royalty,
         unlockableContent: nftData.nft.unlockableContent,
-        collectionNickName: nftData.nft.collectionId.nickName
+        collectionNickName: nftData.nft.collectionId.nickName,
       };
-      const requestData = await Promise.all([1, 2, 3].map(async (i) => {
-        if(i == 1) {
-          const collectionList = await Promise.all(
-            nftData.relatedNfts.map(async (nft) => {
-              let item = {
-                collectionName: nft.collectionId.name,
-                creatorLogo: nft.owner.urlProfile,
-                image: isSafari ? nft.urlFile.v1 : nft.urlFile.v0,
-                name: nft.name,
-                hasOpenOffer: nft.hasOpenOffer,
-                price: nft.price,
-                fileType: nft.fileType,
-                preview: isSafari ? nft.preview.v1 : nft.preview.v0,
-                owner: nft.owner.userName,
-                ownerId: nft.owner._id,
-                tokenId: nft.tokenId,
-                saleType: nft.saleType.toLowerCase(),
-                isVerified: nft.owner.isVerified,
-                collectionVerified: nft.creator.isVerified
-              };
-              return item;
-            })
-          );
+      const requestData = await Promise.all(
+        [1, 2, 3].map(async (i) => {
+          if (i == 1) {
+            const collectionList = await Promise.all(
+              nftData.relatedNfts.map(async (nft) => {
+                let item = {
+                  collectionName: nft.collectionId.name,
+                  creatorLogo: nft.owner.urlProfile,
+                  image: isSafari ? nft.urlFile.v1 : nft.urlFile.v0,
+                  name: nft.name,
+                  hasOpenOffer: nft.hasOpenOffer,
+                  price: nft.price,
+                  fileType: nft.fileType,
+                  preview: isSafari ? nft.preview.v1 : nft.preview.v0,
+                  owner: nft.owner.userName,
+                  ownerId: nft.owner._id,
+                  tokenId: nft.tokenId,
+                  saleType: nft.saleType.toLowerCase(),
+                  isVerified: nft.owner.isVerified,
+                  collectionVerified: nft.creator.isVerified,
+                };
+                return item;
+              })
+            );
 
-          setNFT(currentItem);
-          setMoreFromCollectionNfts(collectionList);
-          setLoadingMore(false);
-          return nftData;
-        }
-        else if(i === 2) {
-          const offerData = await (await getNFTOffers(currentItem._id)).data.offers;
-          console.log(offerData);
-          var highestOffer = 0;
-          const offerList = await Promise.all(
-            offerData.map(async (offer) => {
-              if (highestOffer < offer.price) highestOffer = offer.price;
-              let offerItem = {
-                _id: offer._id,
-                userProfile: offer.userId.urlProfile,
-                from: offer.fromAddress,
-                isAccepted: offer.isAccepted,
-                isWithdrawn: offer.isWithdraw,
-                price: offer.price,
-                to: offer.toAddress,
-                userId: offer.userId._id,
-              };
+            setNFT(currentItem);
+            setMoreFromCollectionNfts(collectionList);
+            setLoadingMore(false);
+            return nftData;
+          } else if (i === 2) {
+            const offerData = await (
+              await getNFTOffers(currentItem._id)
+            ).data.offers;
+            console.log(offerData);
+            var highestOffer = 0;
+            const offerList = await Promise.all(
+              offerData.map(async (offer) => {
+                if (highestOffer < offer.price) highestOffer = offer.price;
+                let offerItem = {
+                  _id: offer._id,
+                  userProfile: offer.userId.urlProfile,
+                  from: offer.fromAddress,
+                  isAccepted: offer.isAccepted,
+                  isWithdrawn: offer.isWithdraw,
+                  price: offer.price,
+                  to: offer.toAddress,
+                  userId: offer.userId._id,
+                };
 
-              return offerItem;
-            })
-          );
+                return offerItem;
+              })
+            );
 
-          setOffers(offerList);
-          setAcceptOfferButtonStatus(new Array(offerList.length).fill(0));
-          setWithdrawOfferButtonStatus(new Array(offerList.length).fill(0));
-          setLoadingOffers(false);
-        }
-        else {
-          const eventData = await (await getNFTEvents(currentItem._id)).data.events;
-          console.log(eventData);
-          const eventList = await Promise.all(
-            eventData.map(async (item, i) => {
-              let event = {
-                _id: item._id,
-                id: i + 1,
-                event:
-                  item.eventTypeId.eventCode === "MINTED" ? (
-                    <HStack>
-                      <IconImg url={mint} width="26px" height="26px"></IconImg>
-                      <CaptionBoldShort>Mint</CaptionBoldShort>
-                    </HStack>
-                  ) : item.eventTypeId.eventCode === "LISTED" ? (
-                    <HStack>
-                      <IconImg url={list} width="26px" height="26px"></IconImg>
-                      <CaptionBoldShort>List</CaptionBoldShort>
-                    </HStack>
-                  ) : item.eventTypeId.eventCode === "WITHDRAWN" ? (
-                    <HStack>
-                      <IconImg
-                        url={withdrawList}
-                        width="26px"
-                        height="26px"
-                      ></IconImg>
-                      <CaptionBoldShort>Withdraw Listing</CaptionBoldShort>
-                    </HStack>
-                  ) : item.eventTypeId.eventCode === "SALE" ? (
-                    <HStack>
-                      <IconImg url={sale} width="26px" height="26px"></IconImg>
-                      <CaptionBoldShort>Sale</CaptionBoldShort>
-                    </HStack>
-                  ) : item.eventTypeId.eventCode === "TRANSFER" ? (
-                    <HStack>
-                      <IconImg
-                        url={transferIcon}
-                        width="26px"
-                        height="26px"
-                      ></IconImg>
-                      <CaptionBoldShort>Transfer</CaptionBoldShort>
-                    </HStack>
-                  ) : item.eventTypeId.eventCode === "EDIT" ? (
-                    <HStack>
-                      <IconImg
-                        url={editListingIcon}
-                        width="26px"
-                        height="26px"
-                      ></IconImg>
-                      <CaptionBoldShort>Edit Listing</CaptionBoldShort>
-                    </HStack>
-                  ) : item.eventTypeId.eventCode === "OFFER_RECEIVED" ? (
-                    <HStack>
-                      <IconImg
-                        url={offerPlacedIcon}
-                        width="26px"
-                        height="26px"
-                      ></IconImg>
-                      <CaptionBoldShort>Offer Placed</CaptionBoldShort>
-                    </HStack>
-                  ) : item.eventTypeId.eventCode === "OFFER_WITHDRAWN" ? (
-                    <HStack>
-                      <IconImg
-                        url={offerRejectedIcon}
-                        width="26px"
-                        height="26px"
-                      ></IconImg>
-                      <CaptionBoldShort>Offer Withdrawn</CaptionBoldShort>
-                    </HStack>
-                  ) : (
-                    <HStack>
-                      <IconImg
-                        url={offerAcceptedIcon}
-                        width="26px"
-                        height="26px"
-                      ></IconImg>
-                      <CaptionBoldShort>Offer Accepted</CaptionBoldShort>
-                    </HStack>
-                  ),
-                price: item.price,
-                from: item.fromAddress,
-                to: item.toAddress,
-                date: item.timestamp,
-              };
-              return event;
-            })
-          );
+            setOffers(offerList);
+            setAcceptOfferButtonStatus(new Array(offerList.length).fill(0));
+            setWithdrawOfferButtonStatus(new Array(offerList.length).fill(0));
+            setLoadingOffers(false);
+          } else {
+            const eventData = await (
+              await getNFTEvents(currentItem._id)
+            ).data.events;
+            console.log(eventData);
+            const eventList = await Promise.all(
+              eventData.map(async (item, i) => {
+                let event = {
+                  _id: item._id,
+                  id: i + 1,
+                  event:
+                    item.eventTypeId.eventCode === "MINTED" ? (
+                      <HStack>
+                        <IconImg
+                          url={mint}
+                          width="26px"
+                          height="26px"
+                        ></IconImg>
+                        <CaptionBoldShort>Mint</CaptionBoldShort>
+                      </HStack>
+                    ) : item.eventTypeId.eventCode === "LISTED" ? (
+                      <HStack>
+                        <IconImg
+                          url={list}
+                          width="26px"
+                          height="26px"
+                        ></IconImg>
+                        <CaptionBoldShort>List</CaptionBoldShort>
+                      </HStack>
+                    ) : item.eventTypeId.eventCode === "WITHDRAWN" ? (
+                      <HStack>
+                        <IconImg
+                          url={withdrawList}
+                          width="26px"
+                          height="26px"
+                        ></IconImg>
+                        <CaptionBoldShort>Withdraw Listing</CaptionBoldShort>
+                      </HStack>
+                    ) : item.eventTypeId.eventCode === "SALE" ? (
+                      <HStack>
+                        <IconImg
+                          url={sale}
+                          width="26px"
+                          height="26px"
+                        ></IconImg>
+                        <CaptionBoldShort>Sale</CaptionBoldShort>
+                      </HStack>
+                    ) : item.eventTypeId.eventCode === "TRANSFER" ? (
+                      <HStack>
+                        <IconImg
+                          url={transferIcon}
+                          width="26px"
+                          height="26px"
+                        ></IconImg>
+                        <CaptionBoldShort>Transfer</CaptionBoldShort>
+                      </HStack>
+                    ) : item.eventTypeId.eventCode === "EDIT" ? (
+                      <HStack>
+                        <IconImg
+                          url={editListingIcon}
+                          width="26px"
+                          height="26px"
+                        ></IconImg>
+                        <CaptionBoldShort>Edit Listing</CaptionBoldShort>
+                      </HStack>
+                    ) : item.eventTypeId.eventCode === "OFFER_RECEIVED" ? (
+                      <HStack>
+                        <IconImg
+                          url={offerPlacedIcon}
+                          width="26px"
+                          height="26px"
+                        ></IconImg>
+                        <CaptionBoldShort>Offer Placed</CaptionBoldShort>
+                      </HStack>
+                    ) : item.eventTypeId.eventCode === "OFFER_WITHDRAWN" ? (
+                      <HStack>
+                        <IconImg
+                          url={offerRejectedIcon}
+                          width="26px"
+                          height="26px"
+                        ></IconImg>
+                        <CaptionBoldShort>Offer Withdrawn</CaptionBoldShort>
+                      </HStack>
+                    ) : (
+                      <HStack>
+                        <IconImg
+                          url={offerAcceptedIcon}
+                          width="26px"
+                          height="26px"
+                        ></IconImg>
+                        <CaptionBoldShort>Offer Accepted</CaptionBoldShort>
+                      </HStack>
+                    ),
+                  price: item.price,
+                  from: item.fromAddress,
+                  to: item.toAddress,
+                  date: item.timestamp,
+                };
+                return event;
+              })
+            );
 
-          setEventHistory(eventList);
-          setLoadingEvents(false);
-        }
-      }))
+            setEventHistory(eventList);
+            setLoadingEvents(false);
+          }
+        })
+      );
     } catch (error) {
       console.log(error);
     }
@@ -633,8 +649,7 @@ const NFTDetails = (props) => {
     window.scrollTo(0, 0);
     setWallet(props?.wallet);
     getData();
-    if(!approved)
-      getApproval();
+    if (!approved) getApproval();
   }, [id, actions]);
 
   useEffect(() => {
@@ -1451,28 +1466,28 @@ const NFTDetails = (props) => {
                     <TitleBold18>
                       {nft?.price
                         ? nft.price > 100000
-                            ? (Intl.NumberFormat('en-US', {
-                                notation: "compact",
-                                maximumFractionDigits: 2
-                              }).format(nft.price))
-                            : (
-                              nft.price.toLocaleString(undefined, {
-                                maximumFractionDigits: 2,
-                              }) || "0"
-                            )
+                          ? Intl.NumberFormat("en-US", {
+                              notation: "compact",
+                              maximumFractionDigits: 2,
+                            }).format(nft.price)
+                          : nft.price.toLocaleString(undefined, {
+                              maximumFractionDigits: 2,
+                            }) || "0"
                         : "0.00"}
                     </TitleBold18>
                     <CaptionBoldShort>XDC</CaptionBoldShort>
-                    <CaptionRegular>{`(${(props.xdc.xdcPrice * Number(nft?.price)) > 100000
-                                      ? (Intl.NumberFormat('en-US', {
-                                          notation: "compact",
-                                          maximumFractionDigits: 2
-                                        }).format((props.xdc.xdcPrice * Number(nft?.price))))
-                                      : (
-                                        (props.xdc.xdcPrice * Number(nft?.price)).toLocaleString(undefined, {
-                                          maximumFractionDigits: 2,
-                                        }) || "0"
-                                      )} USD)`}</CaptionRegular>
+                    <CaptionRegular>{`(${
+                      props.xdc.xdcPrice * Number(nft?.price) > 100000
+                        ? Intl.NumberFormat("en-US", {
+                            notation: "compact",
+                            maximumFractionDigits: 2,
+                          }).format(props.xdc.xdcPrice * Number(nft?.price))
+                        : (
+                            props.xdc.xdcPrice * Number(nft?.price)
+                          ).toLocaleString(undefined, {
+                            maximumFractionDigits: 2,
+                          }) || "0"
+                    } USD)`}</CaptionRegular>
                   </HStack>
                 </HStack>
                 <HStack width="100%" height="36px">
@@ -1672,13 +1687,17 @@ const NFTDetails = (props) => {
                     </HStack>
                   </HStack>
                 </HStack>
-                {loadingOffers
-                  ? loadingOffersArray.map((i) => (
+                {loadingOffers ? (
+                  loadingOffersArray.map((i) => (
                     <>
                       <Divider></Divider>
                       <HStack width="100%" height={"69px"} spacing="6px">
                         <HStack background={"transparent"} width={"100%"}>
-                          <VStack alignment="flex-start" padding="3px 30px" spacing="3px">
+                          <VStack
+                            alignment="flex-start"
+                            padding="3px 30px"
+                            spacing="3px"
+                          >
                             <TitleLoading
                               key="Offerer"
                               initial={{ opacity: 0 }}
@@ -1731,66 +1750,113 @@ const NFTDetails = (props) => {
                       </HStack>
                     </>
                   ))
-                  : offers.length ? (
-                    offers?.map((item, i) => (
-                      <>
-                        <TableOffersNft
-                          key={i}
-                          imageBuyer={item.userProfile}
-                          offerBy={item.from}
-                          offerUser={item.userId}
-                          wallet={wallet}
-                          owner={item.to}
-                          offerAmount={item.price}
-                          isWithdrawn={item.isWithdrawn}
-                          withdrawStatus={withdrawOfferButtonStatus[i]}
-                          onClickWithdraw={() => withdrawOffer(i)}
-                          acceptStatus={acceptOfferButtonStatus[i]}
-                          onClickAccept={() => acceptOffer(i)}
-                          xdc={props.xdc}
-                        ></TableOffersNft>
-                        {i !== offers.length - 1 ? <Divider></Divider> : null}
-                      </>
-                    ))
-                  ) : (
-                    <VStack width="100%">
-                      <Divider></Divider>
-                      <HStack width="100%" spacing="6px" height="51px">
-                        <HStack width="100%" justify="flex-start">
-                          <HStack padding="0 30px">
-                            <BodyRegular>---</BodyRegular>
-                          </HStack>
-                        </HStack>
-                        <HStack width="100%">
+                ) : offers.length ? (
+                  offers?.map((item, i) => (
+                    <>
+                      <TableOffersNft
+                        key={i}
+                        imageBuyer={item.userProfile}
+                        offerBy={item.from}
+                        offerUser={item.userId}
+                        wallet={wallet}
+                        owner={item.to}
+                        offerAmount={item.price}
+                        isWithdrawn={item.isWithdrawn}
+                        withdrawStatus={withdrawOfferButtonStatus[i]}
+                        onClickWithdraw={() => withdrawOffer(i)}
+                        acceptStatus={acceptOfferButtonStatus[i]}
+                        onClickAccept={() => acceptOffer(i)}
+                        xdc={props.xdc}
+                      ></TableOffersNft>
+                      {i !== offers.length - 1 ? <Divider></Divider> : null}
+                    </>
+                  ))
+                ) : (
+                  <VStack width="100%">
+                    <Divider></Divider>
+                    <HStack width="100%" spacing="6px" height="51px">
+                      <HStack width="100%" justify="flex-start">
+                        <HStack padding="0 30px">
                           <BodyRegular>---</BodyRegular>
                         </HStack>
-                        <HStack width="100%" justify="flex-end">
-                          <HStack padding="0 30px">
-                            <BodyRegular>---</BodyRegular>
-                          </HStack>
+                      </HStack>
+                      <HStack width="100%">
+                        <BodyRegular>---</BodyRegular>
+                      </HStack>
+                      <HStack width="100%" justify="flex-end">
+                        <HStack padding="0 30px">
+                          <BodyRegular>---</BodyRegular>
                         </HStack>
                       </HStack>
-                    </VStack>
-                  )}
+                    </HStack>
+                  </VStack>
+                )}
               </VStack>
             </HStack>
           </VStack>
           <VStack width="100%" padding="15px 12px">
             <TitleBold27>Activity</TitleBold27>
-            <HStack
+            {/* <VStack
               width="100%"
               overflowx={size.width < 768 ? "scroll" : "visible"}
-              overflowy={size.width < 768 ? "hidden" : "visible"}
+              overflowy="auto"
               justify="flex-start"
+              height="300px"
+              background={({ theme }) => theme.backElement}
+              border="12px"
+            > */}
+            <VStack
+              maxwidth={size.width < 768 ? "360px" : "100%"}
+              overflowy="scroll"
+              alignment="flex-start"
             >
-              <HStack width={size.width < 768 ? "690px" : "100%"}>
-                <TableActivityNft
-                  xdc={props.xdc}
-                  activity={eventHistory}
-                  loading={loadingEvents}
-                ></TableActivityNft>
-              </HStack>
-            </HStack>
+              <VStack
+                background={({ theme }) => theme.backElement}
+                width={size.width < 768 ? "790px" : "100%"}
+                spacing="0px"
+                border="9px"
+              >
+                {/* Table Header */}
+                <HStack height={"50px"}>
+                  <Spacer></Spacer>
+                  <HStack width={"264px"}>
+                    <BodyBold>EVENT</BodyBold>
+                  </HStack>
+                  <Spacer></Spacer>
+                  <HStack width={"264px"}>
+                    <BodyBold>PRICE</BodyBold>
+                  </HStack>
+                  <Spacer></Spacer>
+                  <HStack width={"264px"}>
+                    <BodyBold>FROM</BodyBold>
+                  </HStack>
+                  <Spacer></Spacer>
+                  <HStack width={"264px"}>
+                    <BodyBold>TO</BodyBold>
+                  </HStack>
+                  <Spacer></Spacer>
+                  <HStack width={"264px"}>
+                    <BodyBold>DATE</BodyBold>
+                  </HStack>
+                  <Spacer></Spacer>
+                </HStack>
+
+                {/* inside content */}
+                <VStack
+                  maxheight="390px"
+                  justify="flex-start"
+                  spacing="0"
+                  overflowy="auto"
+                  width="100%"
+                >
+                  <TableActivityNft
+                    xdc={props.xdc}
+                    activity={eventHistory}
+                    loading={loadingEvents}
+                  ></TableActivityNft>
+                </VStack>
+              </VStack>
+            </VStack>
           </VStack>
           <VStack width="100%" alignment="flex">
             <TitleBold27 align="center">More from this Collection</TitleBold27>
@@ -1801,44 +1867,38 @@ const NFTDetails = (props) => {
               height={size.width < 768 ? "1800px" : "auto"}
             >
               {loadingMore
-              ? (
-                loadingNFTs.map((item) => (
-                  <VStack
-                    minwidth="240px"
-                    height="390px"
-                    key={item.name}
-                  >
-                    <LoadingNftContainer></LoadingNftContainer>
-                  </VStack>
-                ))
-              )
-              : moreFromCollectionNfts.map((item, i) => (
-                <VStack width="100%" height="450px" key={i}>
-                  <NftContainer
-                    isVerified={item.isVerified}
-                    iconStatus={item.saleType}
-                    hasOffers={item.hasOpenOffer ? true : false}
-                    key={item.name}
-                    fileType={item.fileType}
-                    creatorImage={item.creatorLogo}
-                    itemImage={item.image}
-                    price={item.price}
-                    collectionName={item.collectionName}
-                    itemNumber={item.name}
-                    background={({ theme }) => theme.backElement}
-                    onClick={() => {
-                      setNFT(null);
-                      NavigateTo(`nft/${nftaddress}/${item.tokenId}`);
-                    }}
-                    onClickCreator={() =>
-                      NavigateTo(`UserProfile/${item.ownerId}`)
-                    }
-                    usdPrice={props.xdc}
-                    owner={true}
-                    collectionVerified={item.collectionVerified}
-                  ></NftContainer>
-                </VStack>
-              ))}
+                ? loadingNFTs.map((item) => (
+                    <VStack minwidth="240px" height="390px" key={item.name}>
+                      <LoadingNftContainer></LoadingNftContainer>
+                    </VStack>
+                  ))
+                : moreFromCollectionNfts.map((item, i) => (
+                    <VStack width="100%" height="450px" key={i}>
+                      <NftContainer
+                        isVerified={item.isVerified}
+                        iconStatus={item.saleType}
+                        hasOffers={item.hasOpenOffer ? true : false}
+                        key={item.name}
+                        fileType={item.fileType}
+                        creatorImage={item.creatorLogo}
+                        itemImage={item.image}
+                        price={item.price}
+                        collectionName={item.collectionName}
+                        itemNumber={item.name}
+                        background={({ theme }) => theme.backElement}
+                        onClick={() => {
+                          setNFT(null);
+                          NavigateTo(`nft/${nftaddress}/${item.tokenId}`);
+                        }}
+                        onClickCreator={() =>
+                          NavigateTo(`UserProfile/${item.ownerId}`)
+                        }
+                        usdPrice={props.xdc}
+                        owner={true}
+                        collectionVerified={item.collectionVerified}
+                      ></NftContainer>
+                    </VStack>
+                  ))}
             </HStack>
           </VStack>
         </VStack>
