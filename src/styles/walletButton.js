@@ -7,6 +7,8 @@ import copyIcon from "../images/copyIcon.png";
 import checkIcon from "../images/checkOkIcon.png";
 import infoIcon from "../images/infoIcon.png";
 import disconnect from "../images/disconnect.png";
+import dcentLogo from "../images/dcent.png";
+import walletIcon from "../images/wallet.png";
 import styled from "styled-components";
 import {
   BodyBold,
@@ -301,14 +303,8 @@ function WalletButton(props) {
                   animate="hover"
                   exit="initial"
                 >
-                  <CaptionRegular
-                    animate={{ opacity: 0.3 }}
-                    textcolor={({ theme }) => theme.walletText}
-                  >
-                    Connect
-                  </CaptionRegular>
                   <CaptionBoldShort textcolor={({ theme }) => theme.walletText}>
-                    Wallet
+                    Connect Wallet
                   </CaptionBoldShort>
                 </motion.div>
               )}
@@ -319,13 +315,14 @@ function WalletButton(props) {
                 <a>
                   <IconImg
                     cursor={"pointer"}
-                    url={XDClogo}
+                    url={walletIcon}
                     width="26px"
                     height="26px"
+                    onClick={clickAlert}
                   ></IconImg>
                 </a>
 
-                <a>
+                {/* <a>
                   <IconImg
                     cursor={"pointer"}
                     url={Metamask}
@@ -333,8 +330,9 @@ function WalletButton(props) {
                     height="30px"
                     onClick={onClickMetamask}
                   ></IconImg>
-                </a>
-                <a>
+                </a> */}
+
+                {/* <a>
                   <VStack>
                     <IconImg
                       cursor={"pointer"}
@@ -357,7 +355,7 @@ function WalletButton(props) {
                       ></AlertStatus>
                     )}
                   </VStack>
-                </a>
+                </a> */}
               </HStack>
             ) : isMetamask ? (
               <HStack alignment={isMobile ? "flex-start" : "center"}>
@@ -370,12 +368,23 @@ function WalletButton(props) {
                   ></IconImg>
                 </a>
               </HStack>
-            ) : (
+            ) : isDcent ? (
               <HStack alignment={isMobile ? "flex-start" : "center"}>
                 <a>
                   <IconImg
                     cursor={"pointer"}
                     url={XDClogo}
+                    width="26px"
+                    height="26px"
+                  ></IconImg>
+                </a>
+              </HStack>
+            ) : (
+              <HStack alignment={isMobile ? "flex-start" : "center"}>
+                <a>
+                  <IconImg
+                    cursor={"pointer"}
+                    url={dcentLogo}
                     width="26px"
                     height="26px"
                   ></IconImg>

@@ -57,6 +57,8 @@ function NewFeatured(props) {
   return (
     <VStack
       overflow="hidden"
+      overflowx="hidden"
+      overflowy="hidden"
       border="9px"
       spacing="0"
       width="100%"

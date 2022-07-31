@@ -16,10 +16,12 @@ import {
   BodyBold,
   CaptionRegular,
   TitleBold21,
+  TitleBold27,
   BodyRegular,
   CaptionBoldShort,
   CaptionBold,
   TitleBold18,
+  TitleRegular27,
 } from "../../styles/TextStyles";
 import XDSealogo from "../../images/LogoXDSEA.png";
 import { WalletButton } from "../../styles/walletButton";
@@ -42,6 +44,7 @@ import gif from "../../images/gifConnect.gif";
 import search from "../../images/searchIcon.png";
 import XDClogo from "../../images/xdcpayLogo.png";
 import Metamask from "../../images/metamaskIcon.png";
+import dcentWallet from "../../images/dcent.png";
 import { findAllByDisplayValue } from "@testing-library/react";
 import { useClickAway } from "react-use";
 import { InputStyled } from "../../styles/InputStyled";
@@ -49,6 +52,7 @@ import { Searchbar } from "../../styles/Searbar";
 import TestData from "../../styles/Data.json";
 import { anonymousLogin, logout } from "../../API/access";
 import { LS, LS_ROOT_KEY } from "../../constant";
+import { Divider, Icon } from "@mui/material";
 
 function TopBar(props) {
   const { device, themeToggler, devMode, onWalletChange } = props;
@@ -64,6 +68,7 @@ function TopBar(props) {
   const [showInfo, setShowInfo] = useState(false);
   const [isSearch, setIsSearch] = useState(false);
   const [clickedOutside, setClickedOutside] = useState(false);
+  const [walletOptions, setWalletOptions] = useState(true);
 
   const ref = useRef(null);
 
@@ -270,9 +275,7 @@ function TopBar(props) {
                             clickOnSwitch={themeToggler}
                           ></SwitchButton>
                           {wallet?.connected ? (
-                            <UserMenuButton
-                              wallet={wallet}
-                            ></UserMenuButton>
+                            <UserMenuButton wallet={wallet}></UserMenuButton>
                           ) : null}
 
                           <a href="https://www.instagram.com/xdsea.nft/">
@@ -582,9 +585,7 @@ function TopBar(props) {
 
                     <SwitchButton clickOnSwitch={themeToggler}></SwitchButton>
                     {wallet?.connected ? (
-                      <UserMenuButton
-                        wallet={wallet}
-                      ></UserMenuButton>
+                      <UserMenuButton wallet={wallet}></UserMenuButton>
                     ) : null}
 
                     {console.log(showMenu)}
@@ -660,9 +661,8 @@ function TopBar(props) {
                     {console.log(location)}
                     <Spacer></Spacer>
                     {/* Search  */}
-                    {location.pathname === "/SearchPage"
-                      ? null
-                      : <Searchbar
+                    {location.pathname === "/SearchPage" ? null : (
+                      <Searchbar
                         top="54px"
                         left="0px"
                         placeholder="Search for NFTs and Collections"
@@ -670,8 +670,8 @@ function TopBar(props) {
                         width="741px"
                         switchBarStatus={handleBarStatus}
                       ></Searchbar>
-                    }
-                    
+                    )}
+
                     {console.log(isSearch)}
                     <AnimatePresence>
                       {!isSearch && (
@@ -752,9 +752,7 @@ function TopBar(props) {
 
                     <SwitchButton clickOnSwitch={themeToggler}></SwitchButton>
                     {wallet?.connected ? (
-                      <UserMenuButton
-                        wallet={wallet}
-                      ></UserMenuButton>
+                      <UserMenuButton wallet={wallet}></UserMenuButton>
                     ) : null}
                   </HStack>
                 </>
@@ -772,140 +770,390 @@ function TopBar(props) {
             exit={{ opacity: 0 }}
             transition={{ type: "spring", damping: 10 }}
           >
-            <VStack width="100%" height="100%" border="15px">
-              <VStack
-                self="none"
-                background={({ theme }) => theme.walletButton}
-                padding="15px"
-                border="15px"
-                maxheight="400px"
-                maxwidth="390px"
-              >
-                <HStack>
+            <VStack width="100%" height="100%" border="15px" blur="60px">
+              {walletOptions ? (
+                <VStack
+                  self="none"
+                  // background={({ theme }) => theme.walletButton}
+                  background="rgb(0,0,0,0.3)"
+                  padding="15px"
+                  border="15px"
+                  maxheight="500px"
+                  maxwidth="390px"
+                  alignment="flex-start"
+                >
+                  <HStack>
+                    <TitleBold27 textcolor="white">Connect Wallet</TitleBold27>
+                    <Spacer></Spacer>
+                    <IconImg
+                      url={closeIcon}
+                      width="21px"
+                      height="21px"
+                      onClick={() => setShowInfo(false)}
+                    ></IconImg>
+                  </HStack>
+                  <BodyRegular align="center" textcolor="white">
+                    Please select a wallet provider
+                  </BodyRegular>
+
+                  <Divider></Divider>
+
+                  <VStack spacing="9px" width="100%">
+                    {/* XDC pay  */}
+                    <HStack
+                      cursor="pointer"
+                      background="rgb(0,0,0,0.3)"
+                      padding="9px"
+                      border="6px"
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <IconImg
+                        cursor="pointer"
+                        url={XDClogo}
+                        width="30px"
+                        height="30px"
+                      ></IconImg>
+                      <BodyRegular cursor="pointer" textcolor="white">
+                        XDC Pay
+                      </BodyRegular>
+                    </HStack>
+                    {/* Metamask   */}
+                    <HStack
+                      cursor="pointer"
+                      background="rgb(0,0,0,0.3)"
+                      padding="9px"
+                      border="6px"
+                      whileTap={{ scale: 0.98 }}
+                      onClick={() => {
+                        setShowMetamask(true);
+                        setWalletOptions(false);
+                      }}
+                    >
+                      <IconImg
+                        cursor="pointer"
+                        url={Metamask}
+                        width="30px"
+                        height="30px"
+                      ></IconImg>
+                      <BodyRegular cursor="pointer" textcolor="white">
+                        Metamask
+                      </BodyRegular>
+                    </HStack>
+                    {/* Dcent Wallet  */}
+                    <HStack
+                      cursor="pointer"
+                      background="rgb(0,0,0,0.3)"
+                      padding="9px"
+                      border="6px"
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <IconImg
+                        cursor="pointer"
+                        url={dcentWallet}
+                        width="30px"
+                        height="30px"
+                      ></IconImg>
+                      <BodyRegular cursor="pointer" textcolor="white">
+                        Dcent Wallet
+                      </BodyRegular>
+                    </HStack>
+                  </VStack>
+
+                  <CaptionRegular align="flex-start" textcolor="white">
+                    In order to only use XDCPay, please uninstall or disable
+                    Metamask from your browser
+                  </CaptionRegular>
+
+                  <CaptionRegular align="flex-start" textcolor="white">
+                    In order to only use Metamask, please configure Metamask to
+                    connect to the XDC network
+                  </CaptionRegular>
+
                   <Spacer></Spacer>
-                  <IconImg
-                    url={closeIcon}
-                    width="21px"
-                    height="21px"
-                    onClick={() => setShowInfo(false)}
-                  ></IconImg>
-                </HStack>
-
-                <CaptionBold textcolor={({ theme }) => theme.walletText}>
-                  XDCPAY WALLET USERS
-                </CaptionBold>
-
-                <BodyRegular
-                  align="center"
-                  textcolor={({ theme }) => theme.walletText}
-                >
-                  In order to only use XDCPay, please uninstall or disable
-                  Metamask from your browser
-                </BodyRegular>
-                <Spacer></Spacer>
-
-                <CaptionBold textcolor={({ theme }) => theme.walletText}>
-                  METAMASK WALLET USERS
-                </CaptionBold>
-
-                <BodyRegular
-                  align="center"
-                  textcolor={({ theme }) => theme.walletText}
-                >
-                  In order to only use Metamask, please configure Metamask to
-                  connect to the XDC network
-                </BodyRegular>
-                <Spacer></Spacer>
-
-                <CaptionBold textcolor={({ theme }) => theme.walletText}>
-                  RECENT ALERTS
-                </CaptionBold>
-                {showError === 0 && (
-                  <HStack
-                    border="9px"
-                    padding="18px"
-                    background={appStyle.colors.darkgrey30}
-                    cursor="pointer"
-                  >
-                    <BodyRegular
-                      align="center"
-                      textcolor={({ theme }) => theme.walletText}
+                  <CaptionBold textcolor="white">RECENT ALERTS</CaptionBold>
+                  {showError === 0 && (
+                    <HStack
+                      border="9px"
+                      padding="18px"
+                      background={appStyle.colors.darkgrey30}
+                      cursor="pointer"
                     >
-                      No recent alerts
-                    </BodyRegular>
-                  </HStack>
-                )}
-                {showError === 2 && (
-                  <HStack
-                    border="9px"
-                    padding="18px"
-                    background={appStyle.colors.softRed}
-                    cursor="pointer"
-                  >
-                    <BodyRegular
-                      align="center"
-                      textcolor={appStyle.colors.darkRed}
+                      <BodyRegular align="center" textcolor="white">
+                        No recent alerts
+                      </BodyRegular>
+                    </HStack>
+                  )}
+                  {showError === 2 && (
+                    <HStack
+                      border="9px"
+                      padding="18px"
+                      background={appStyle.colors.softRed}
+                      cursor="pointer"
                     >
-                      Connection Error. Check your wallet connection and try
-                      again.
-                    </BodyRegular>
-                  </HStack>
-                )}
-                {showError === 1 && (
-                  <HStack
-                    border="9px"
-                    background={appStyle.colors.yellow}
-                    cursor="pointer"
-                    padding="18px"
-                  >
-                    <BodyRegular
-                      align="center"
-                      textcolor={appStyle.colors.darkYellow}
+                      <BodyRegular
+                        align="center"
+                        textcolor={appStyle.colors.darkRed}
+                      >
+                        Connection Error. Check your wallet connection and try
+                        again.
+                      </BodyRegular>
+                    </HStack>
+                  )}
+                  {showError === 1 && (
+                    <HStack
+                      border="9px"
+                      background={appStyle.colors.yellow}
+                      cursor="pointer"
+                      padding="18px"
                     >
-                      Metamask is not detected. Install the official wallet to
-                      connect with our marketplace
-                    </BodyRegular>
-                  </HStack>
-                )}
-                {showError === 3 && (
-                  <HStack
-                    border="9px"
-                    background={appStyle.colors.yellow}
-                    cursor="pointer"
-                    padding="18px"
-                  >
-                    <BodyRegular
-                      align="center"
-                      textcolor={appStyle.colors.darkYellow}
+                      <BodyRegular
+                        align="center"
+                        textcolor={appStyle.colors.darkYellow}
+                      >
+                        Metamask is not detected. Install the official wallet to
+                        connect with our marketplace
+                      </BodyRegular>
+                    </HStack>
+                  )}
+                  {showError === 3 && (
+                    <HStack
+                      border="9px"
+                      background={appStyle.colors.yellow}
+                      cursor="pointer"
+                      padding="18px"
                     >
-                      It appears you are trying to connect using XDCPay. Connect
-                      to XDCPay using the XDC icon button.
-                    </BodyRegular>
-                  </HStack>
-                )}
-                {showError === 4 && (
-                  <HStack
-                    border="9px"
-                    padding="18px"
-                    background={appStyle.colors.softRed}
-                    cursor="pointer"
-                  >
-                    <BodyRegular
-                      align="center"
-                      textcolor={appStyle.colors.darkRed}
+                      <BodyRegular
+                        align="center"
+                        textcolor={appStyle.colors.darkYellow}
+                      >
+                        It appears you are trying to connect using XDCPay.
+                        Connect to XDCPay using the XDC icon button.
+                      </BodyRegular>
+                    </HStack>
+                  )}
+                  {showError === 4 && (
+                    <HStack
+                      border="9px"
+                      padding="18px"
+                      background={appStyle.colors.softRed}
+                      cursor="pointer"
                     >
-                      Metamask is not connected to the right network. Change the
-                      Metamask network to the configured XDC network.
-                    </BodyRegular>
+                      <BodyRegular
+                        align="center"
+                        textcolor={appStyle.colors.darkRed}
+                      >
+                        Metamask is not connected to the right network. Change
+                        the Metamask network to the configured XDC network.
+                      </BodyRegular>
+                    </HStack>
+                  )}
+                </VStack>
+              ) : null}
+
+              {showMetamask ? (
+                <VStack width="100%" height="100%" border="15px">
+                  <HStack
+                    self="none"
+                    background={({ theme }) => theme.walletButton}
+                    width={deviceSize === "phone" ? "100%" : "560px"}
+                    padding="15px"
+                    border="15px"
+                    responsive={true}
+                  >
+                    {deviceSize === "phone" ? null : (
+                      <IconImg
+                        url={gif}
+                        width="280px"
+                        height="420px"
+                        backsize="cover"
+                        border="9px"
+                      ></IconImg>
+                    )}
+
+                    <VStack height="420px">
+                      <HStack>
+                        <Spacer></Spacer>
+                        <IconImg
+                          url={closeIcon}
+                          width="21px"
+                          height="21px"
+                          onClick={() => {
+                            setShowMetamask(false);
+                            setWalletOptions(true);
+                          }}
+                        ></IconImg>
+                      </HStack>
+                      <VStack alignment="flex-start">
+                        <HStack spacing="9px">
+                          <IconImg
+                            url={Metamask}
+                            width="49px"
+                            height="49px"
+                            backsize="cover"
+                            border="9px"
+                          ></IconImg>
+                          <TitleBold18
+                            textcolor={({ theme }) => theme.walletText}
+                          >
+                            Add XinFin Network to Metamask
+                          </TitleBold18>
+                        </HStack>
+                        <Spacer></Spacer>
+
+                        <HStack justify="flex-start">
+                          <CaptionRegular
+                            textcolor={({ theme }) => theme.walletText}
+                          >
+                            Network Name:
+                          </CaptionRegular>
+                          <BodyRegular
+                            textcolor={({ theme }) => theme.walletText}
+                          >
+                            Xinfin Mainnet
+                          </BodyRegular>
+                        </HStack>
+
+                        <HStack justify="flex-start">
+                          <CaptionRegular
+                            textcolor={({ theme }) => theme.walletText}
+                          >
+                            URL:
+                          </CaptionRegular>
+                          <BodyRegular
+                            textcolor={({ theme }) => theme.walletText}
+                          >
+                            https://erpc.xinfin.network
+                          </BodyRegular>
+                        </HStack>
+
+                        <HStack justify="flex-start">
+                          <CaptionRegular
+                            textcolor={({ theme }) => theme.walletText}
+                          >
+                            Chain ID:
+                          </CaptionRegular>
+                          <BodyRegular
+                            textcolor={({ theme }) => theme.walletText}
+                          >
+                            50
+                          </BodyRegular>
+                        </HStack>
+
+                        <HStack justify="flex-start">
+                          <CaptionRegular
+                            textcolor={({ theme }) => theme.walletText}
+                          >
+                            Currency Symbol:
+                          </CaptionRegular>
+                          <BodyRegular
+                            textcolor={({ theme }) => theme.walletText}
+                          >
+                            XDC
+                          </BodyRegular>
+                        </HStack>
+
+                        <VStack alignment="flex-start" spacing="3px">
+                          <CaptionRegular
+                            textcolor={({ theme }) => theme.walletText}
+                          >
+                            Block Explorer URL:
+                          </CaptionRegular>
+                          <BodyRegular
+                            textcolor={({ theme }) => theme.walletText}
+                          >
+                            https://explorer.xinfin.network
+                          </BodyRegular>
+                        </VStack>
+                      </VStack>
+
+                      <Spacer></Spacer>
+                      <HStack
+                        whileHover={{ opacity: 0.8 }}
+                        whileTap={{ scale: 0.98 }}
+                        background="blue"
+                        minheight="39px"
+                        border="9px"
+                        cursor="pointer"
+                        onClick={connectMetamask}
+                      >
+                        <BodyBold cursor="pointer" textcolor="white">
+                          Connect Metamask
+                        </BodyBold>
+                      </HStack>
+
+                      {showError === 0 && null}
+                      {showError === 1 && (
+                        <HStack
+                          whileHover={{ opacity: 0.8 }}
+                          whileTap={{ scale: 0.98 }}
+                          minheight="39px"
+                          border="9px"
+                          bordersize="1px"
+                          bordercolor={appStyle.colors.yellow}
+                          background={appStyle.colors.yellow}
+                          cursor="pointer"
+                        >
+                          <BodyBold textcolor={appStyle.colors.darkYellow}>
+                            Install Metamask
+                          </BodyBold>
+                        </HStack>
+                      )}
+                      {showError === 2 && (
+                        <HStack
+                          whileHover={{ opacity: 0.8 }}
+                          whileTap={{ scale: 0.98 }}
+                          minheight="39px"
+                          border="9px"
+                          bordersize="1px"
+                          background={appStyle.colors.softRed}
+                          cursor="pointer"
+                        >
+                          <BodyBold textcolor={appStyle.colors.darkRed}>
+                            Connection Error
+                          </BodyBold>
+                        </HStack>
+                      )}
+                      {showError === 3 && (
+                        <HStack
+                          whileHover={{ opacity: 0.8 }}
+                          whileTap={{ scale: 0.98 }}
+                          minheight="39px"
+                          border="9px"
+                          bordersize="1px"
+                          bordercolor={appStyle.colors.yellow}
+                          background={appStyle.colors.yellow}
+                          cursor="pointer"
+                        >
+                          <BodyBold textcolor={appStyle.colors.darkYellow}>
+                            Use XDCPay Button
+                          </BodyBold>
+                        </HStack>
+                      )}
+                      {showError === 4 && (
+                        <HStack
+                          whileHover={{ opacity: 0.8 }}
+                          whileTap={{ scale: 0.98 }}
+                          minheight="39px"
+                          border="9px"
+                          bordersize="1px"
+                          background={appStyle.colors.softRed}
+                          cursor="pointer"
+                        >
+                          <BodyBold textcolor={appStyle.colors.darkRed}>
+                            Connect to XDC Mainnet
+                          </BodyBold>
+                        </HStack>
+                      )}
+                    </VStack>
                   </HStack>
-                )}
-              </VStack>
+                </VStack>
+              ) : null}
             </VStack>
           </MetamaskSteps>
         </AnimatePresence>
       ) : null}
 
-      {showMetamask ? (
+      {/* {showMetamask ? (
         <AnimatePresence>
           <MetamaskSteps
             key="metamaskModal"
@@ -1097,7 +1345,7 @@ function TopBar(props) {
             </VStack>
           </MetamaskSteps>
         </AnimatePresence>
-      ) : null}
+      ) : null} */}
     </ContentBar>
   );
 }
@@ -1136,7 +1384,7 @@ const Connect = styled(motion.div)`
 const MetamaskSteps = styled(motion.div)`
   position: absolute;
   top: 0px;
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(0, 0, 0, 0.3);
   width: 100vw;
   height: 100vh;
 

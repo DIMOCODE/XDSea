@@ -33,6 +33,7 @@ export const VStack = styled(motion.div).attrs((props) => ({
   marginTop: props.marginTop || "0px",
   flex: props.flex || "1",
   cursor: props.cursor || "default",
+  blur: props.blur || "0px",
 }))`
   display: flex;
   flex: ${(props) => props.flex};
@@ -70,6 +71,10 @@ export const VStack = styled(motion.div).attrs((props) => ({
   }
   margin-top: ${(props) => props.marginTop};
   cursor: ${(props) => props.cursor};
+
+  -webkit-backdrop-filter: blur(${(props) => props.blur});
+  backdrop-filter: blur(${(props) => props.blur});
+
   *::-webkit-scrollbar {
     width: 4px;
     height: 4px;
