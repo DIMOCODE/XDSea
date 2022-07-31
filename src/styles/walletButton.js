@@ -32,6 +32,7 @@ function WalletButton(props) {
     isMobile,
     hasAlert,
     clickAlert,
+    isDcent,
   } = props;
 
   const [isVisible, setIsVisible] = useState(false);

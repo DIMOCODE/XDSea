@@ -51,13 +51,15 @@ const NFTApp = () => {
   };
 
   const getXDCPrice = async () => {
-    const price = await (await createRequest(HTTP_METHODS.get, "ping/xdcPrice", null, null)).data;
+    const price = await (
+      await createRequest(HTTP_METHODS.get, "ping/xdcPrice", null, null)
+    ).data;
     setXdcPrice(price);
   };
 
   useEffect(() => {
     ReactGA.pageview(window.location.pathname + window.location.search);
-    getXDCPrice(); 
+    getXDCPrice();
   }, []);
 
   return (
@@ -114,14 +116,26 @@ const NFTApp = () => {
                   : "phone"
               }
               onWalletChange={handleWallet}
-              devMode={isDevMode}
+              devMode={!isDevMode}
               themeToggler={themeToggler}
             ></TopBar>
             <ScrollView>
               <Switch>
-                <Route exact path="/" render={() => <Home xdc={xdcPrice} />}></Route>
-                <Route exact path="/discover" render={() => <Discover xdc={xdcPrice} />}></Route>
-                <Route exact path="/SearchPage" render={() => <SearchPage xdc={xdcPrice} />}></Route>
+                <Route
+                  exact
+                  path="/"
+                  render={() => <Home xdc={xdcPrice} />}
+                ></Route>
+                <Route
+                  exact
+                  path="/discover"
+                  render={() => <Discover xdc={xdcPrice} />}
+                ></Route>
+                <Route
+                  exact
+                  path="/SearchPage"
+                  render={() => <SearchPage xdc={xdcPrice} />}
+                ></Route>
                 <Route
                   exact
                   path="/UserProfile/:userId"
@@ -135,7 +149,7 @@ const NFTApp = () => {
                 <Route
                   exact
                   path="/collection/:collectionNickName"
-                  render={() => <Collection xdc={xdcPrice}/>}
+                  render={() => <Collection xdc={xdcPrice} />}
                 ></Route>
                 <Route
                   exact
