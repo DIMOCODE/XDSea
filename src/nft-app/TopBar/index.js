@@ -64,6 +64,7 @@ function TopBar(props) {
   const [showMetamask, setShowMetamask] = useState(false);
   const [isMetamask, setIsMetamask] = useState(false);
   const [isDcent, setIsDcent] = useState(false);
+  const [isXdcPay, setIsXdcPay] = useState(false);
   const location = useLocation();
   const menucolor = ({ theme }) => theme.menu;
   const [showError, setShowError] = useState(0);
@@ -235,6 +236,19 @@ function TopBar(props) {
     });
     logout();
     setIsMetamask(false);
+  };
+
+  const disconnectXdcPay = async () => {
+    setWallet({
+      connected: false,
+      address: wallet.address,
+    });
+    onWalletChange({
+      connected: false,
+      address: wallet.address,
+    });
+    logout();
+    setIsXdcPay(false);
   };
 
   const disconnectDcent = async () => {
@@ -815,7 +829,7 @@ function TopBar(props) {
                     <VStack maxwidth="180px">
                       <ZStack>
                         <ZItem>
-                          <Connect>
+                          {/* <Connect>
                             <XdcConnect
                               btnName={" "}
                               btnClass={`walletConnect ${
@@ -825,15 +839,19 @@ function TopBar(props) {
                               onAddressChange={handleOnWalletChange}
                               onDisconnect={handleOnWalletChange}
                             />
-                          </Connect>
+                          </Connect> */}
                           <WalletButton
                             logout={
-                              isMetamask ? disconnectMetamask : Disconnect
+                              isMetamask ? disconnectMetamask
+                                : isXdcPay ? disconnectXdcPay
+                                  : disconnectDcent
                             }
                             status={wallet?.connected}
                             wallet={wallet}
                             onClickMetamask={() => setShowMetamask(true)}
                             isMetamask={isMetamask}
+                            isDcent={isDcent}
+                            isXdcPay={isXdcPay}
                             hasAlert={showError > 0}
                             clickAlert={() => setShowInfo(true)}
                           ></WalletButton>
@@ -897,6 +915,11 @@ function TopBar(props) {
                       padding="9px"
                       border="6px"
                       whileTap={{ scale: 0.98 }}
+                      onClick={() => {
+                        connectXDCPay(); 
+                        setIsXdcPay(true);                       
+                        setShowInfo(false);
+                      }}
                     >
                       <IconImg
                         cursor="pointer"
@@ -937,6 +960,11 @@ function TopBar(props) {
                       padding="9px"
                       border="6px"
                       whileTap={{ scale: 0.98 }}
+                      onClick={()=> {
+                        connectDcent(); 
+                        setIsDcent(true);                       
+                        setShowInfo(false);
+                      }}
                     >
                       <IconImg
                         cursor="pointer"
@@ -958,6 +986,11 @@ function TopBar(props) {
                   <CaptionRegular align="flex-start" textcolor="white">
                     In order to only use Metamask, please configure Metamask to
                     connect to the XDC network
+                  </CaptionRegular>
+
+                  <CaptionRegular align="flex-start" textcolor="white">
+                    In order to only use D'Cent, please connect to the XDC network on
+                    your D'Cent mobile app browser
                   </CaptionRegular>
 
                   <Spacer></Spacer>

@@ -29,6 +29,7 @@ function WalletButton(props) {
     logout,
     onClickMetamask,
     isMetamask,
+    isXdcPay,
     isMobile,
     hasAlert,
     clickAlert,
@@ -369,7 +370,7 @@ function WalletButton(props) {
                   ></IconImg>
                 </a>
               </HStack>
-            ) : isDcent ? (
+            ) : isXdcPay ? (
               <HStack alignment={isMobile ? "flex-start" : "center"}>
                 <a>
                   <IconImg
