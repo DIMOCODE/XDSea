@@ -396,7 +396,7 @@ function CreateNft(props) {
     else return "";
   };
 
-  const checkRoyalty = function () {
+  const checkRoyalty = async () => {
     if (royalty === 0) {
       setRoyaltyAlert(true);
     } else {
@@ -428,9 +428,6 @@ function CreateNft(props) {
             const filteredProperties = await removeBlankProperties();
             console.log(filteredProperties)
             setProperties(filteredProperties);
-            if(collection === "") {
-              setCollection(collectionName);
-            }
             const nftUrl = await addToIPFS();
             const previewUrl = await addToIPFSPreview();
             // await addToIPFSCollectionBanner();
@@ -449,12 +446,12 @@ function CreateNft(props) {
                     : wallet?.address,
                   image: nftUrl,
                   fileType: nft.fileType,
-                  preview: previewURL,
+                  preview: previewUrl,
                 });
                 console.log(uploadData);
                 const added = await client.add(uploadData);
                 const url = `https://xdsea.infura-ipfs.io/ipfs/${added.path}`;
-                updateMarketplace(url);
+                updateMarketplace(url, nftUrl, filteredProperties);
               } catch (error) {
                 console.log(error);
                 setMintButtonStatus(4);
@@ -470,8 +467,9 @@ function CreateNft(props) {
     }
   };
 
-  const updateMarketplace = async (url) => {
+  const updateMarketplace = async (url, nftUrl, filteredProperties) => {
     try {
+      console.log("Update " + assetURL);
       const xdc3 = new Xdc3(
         new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER)
       );
@@ -514,7 +512,7 @@ function CreateNft(props) {
           royalty,
           1,
           name,
-          collection
+          collection !== "" ? collection : collectionName
         )
         .encodeABI();
       const tx2 = {
@@ -531,7 +529,7 @@ function CreateNft(props) {
       setMintButtonStatus(3);
       if(newCollection && !collectionExists) {
         const collectionCreation = await (await createCollection(
-          collection, 
+          collectionName, 
           isXdc(wallet?.address)
             ? fromXdc(wallet?.address)
             : wallet?.address, 
@@ -552,10 +550,10 @@ function CreateNft(props) {
           royalty, 
           name, 
           description, 
-          assetURL, 
+          nftUrl, 
           nft.fileType,
           previewURL, 
-          properties
+          filteredProperties
         )).data.nft;
       }
       else{
@@ -583,10 +581,10 @@ function CreateNft(props) {
           royalty, 
           name, 
           description, 
-          assetURL, 
+          nftUrl, 
           nft.fileType,
           previewURL, 
-          properties
+          filteredProperties
         )).data.nft;
       }
         
