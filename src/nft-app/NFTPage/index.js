@@ -1766,7 +1766,7 @@ const NFTDetails = (props) => {
                       </HStack>
                     </>
                   ))
-                  : offers.length ? (
+                  ) : offers.length ? (
                     offers?.map((item, i) => (
                       <>
                         <TableOffersNft
@@ -1799,11 +1799,7 @@ const NFTDetails = (props) => {
                         <HStack width="100%">
                           <BodyRegular>---</BodyRegular>
                         </HStack>
-                      </HStack>
-                      <HStack width="100%">
-                        <BodyRegular>---</BodyRegular>
-                      </HStack>
-                      <HStack width="100%" justify="flex-end">
+                        <HStack width="100%" justify="flex-end">
                         <HStack padding="0 30px">
                           <BodyRegular>---</BodyRegular>
                         </HStack>
