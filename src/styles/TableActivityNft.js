@@ -274,9 +274,7 @@ function TableActivityNft(props) {
                       })}
                     >
                       <BodyRegular>
-                        {item.event.props.children[1].props.children !== "Mint"
-                          ? determineAgoTime(new Date(item.date))
-                          : null}
+                        {determineAgoTime(new Date(item.date))}
                       </BodyRegular>
                     </Tooltip>
                   </HStack>
