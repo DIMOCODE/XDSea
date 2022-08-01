@@ -518,7 +518,7 @@ const NFTDetails = (props) => {
               })
             );
 
-            setOffers(offerList);
+            setOffers(offerList.reverse());
             setAcceptOfferButtonStatus(new Array(offerList.length).fill(0));
             setWithdrawOfferButtonStatus(new Array(offerList.length).fill(0));
             setLoadingOffers(false);

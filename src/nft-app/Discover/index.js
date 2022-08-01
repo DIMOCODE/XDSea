@@ -95,6 +95,7 @@ const Discover = (props) => {
   });
   const [totalCollections, setTotalCollections] = useState(0);
   const [totalNFTs, setTotalNFTs] = useState(0);
+  const [maxPrice, setMaxPrice] = useState(0);
 
   /**
    * Get the collections data for the first page
@@ -348,10 +349,8 @@ const Discover = (props) => {
    * @param {*} params - Collection Search Params
    */
   const updateCollections = async (params) => {
-    console.log(params);
     setLoading(true);
     const collectionData = await (await getCollections(params)).data;
-    console.log(collectionData);
     const collectionList = await Promise.all(
       collectionData.collections.map(async (collectionItem) => {
         let collection = {
@@ -390,7 +389,7 @@ const Discover = (props) => {
     try {
       setLoading(true);
       const nftData = await (await getNFTs(nftParams)).data;
-      console.log(nftData);
+      setMaxPrice(nftData.higherPrice);
       const nftList = await Promise.all(
         nftData.nfts.map(async (nft) => {
           let nftItem = {
@@ -470,10 +469,9 @@ const Discover = (props) => {
    * @param {*} params - NFT Search Params
    */
   const updateNFTs = async (params) => {
-    console.log(params);
     setLoading(true);
     const nftData = await (await getNFTs(params)).data;
-    console.log(nftData);
+    setMaxPrice(nftData.higherPrice);
     const nftList = await Promise.all(
       nftData.nfts.map(async (nft) => {
         let nftItem = {
@@ -513,18 +511,18 @@ const Discover = (props) => {
     getData();
   }, []);
 
-  useEffect(() => {
-    const onScroll = (e) => {
-      setScrollTop(e.target.documentElement.scrollTop);
-      setScrolling(e.target.documentElement.scrollTop > scrollTop);
-      setShowMenu(false);
-    };
-    window.addEventListener("scroll", onScroll);
+  // useEffect(() => {
+  //   const onScroll = (e) => {
+  //     setScrollTop(e.target.documentElement.scrollTop);
+  //     setScrolling(e.target.documentElement.scrollTop > scrollTop);
+  //     setShowMenu(false);
+  //   };
+  //   window.addEventListener("scroll", onScroll);
 
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [scrollTop]);
+  //   return () => window.removeEventListener("scroll", onScroll);
+  // }, [scrollTop]);
 
-  useEffect(() => {}, [scrolling]);
+  // useEffect(() => {}, [scrolling]);
 
   return (
     <DiscoverSection id="scrollableDiv">
@@ -636,6 +634,7 @@ const Discover = (props) => {
                 onChange={handleChangeFilterNFT}
                 params={nftParams}
                 switched={isSelected}
+                maxPrice={maxPrice}
               ></FiltersButton>
               <Spacer></Spacer>
               <SortButtonNFTS
@@ -681,7 +680,7 @@ const Discover = (props) => {
                     {loading ? (
                       loadingCollections.map((item) => (
                         <VStack key={item.name} minwidth="326px" height="440px">
-                          <LoadingNftContainer></LoadingNftContainer>
+                          {/* <LoadingNftContainer></LoadingNftContainer> */}
                         </VStack>
                       ))
                     ) : collections.length !== 0 ? (

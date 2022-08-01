@@ -95,13 +95,11 @@ function Searchbar({
               const collectionResults = await (
                 await getCollections({ searchTerm: searchTerm })
               ).data;
-              console.log(collectionResults);
               setFilteredCollectionData(collectionResults.collections);
             } else {
               const nftResults = await (
                 await getNFTs({ page: 1, searchBy: searchTerm })
               ).data;
-              console.log(nftResults);
               setFilteredNFTData(nftResults.nfts);
             }
 

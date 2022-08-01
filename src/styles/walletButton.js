@@ -97,7 +97,7 @@ function WalletButton(props) {
         >
           <HStack
             height={isMobile ? "auto" : "49px"}
-            width={status ? "auto" : "180px"}
+            width={status ? "auto" : "150px"}
             background={({ theme }) => theme.walletButton}
             border="9px"
             spacing="9px"

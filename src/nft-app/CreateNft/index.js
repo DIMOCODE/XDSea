@@ -103,6 +103,7 @@ function CreateNft(props) {
   const [collectionExists, setCollectionExists] = useState(false);
   const [collectionEmpty, setCollectionEmpty] = useState(false);
   const [collectionValid, setCollectionValid] = useState(false);
+  const [collectionAllowed, setCollectionAllowed] = useState(false);
   const [loadingIconSelector, setLoadingIconSelector] = useState(arrowDown);
   const [uploadBannerStatus, setUploadBannerStatus] = useState(false);
   const [uploadLogoStatus, setUploadLogoStatus] = useState(false);
@@ -260,14 +261,19 @@ function CreateNft(props) {
       }
       else {
         setCollectionExists(true);
+        setCollectionValid(false);
+        setCollectionAllowed(false);
+        setCollectionEmpty(false);
       }
       setLoadingIcon(empty);
       setCollectionNickName(collectionNickName);
       return true;
     }
     catch(err) {
+      setCollectionAllowed(true);
       setCollectionExists(false);
       setCollectionEmpty(false);
+      setCollectionValid(false);
       setLoadingIcon(empty);
       return false;
     }
@@ -325,6 +331,7 @@ function CreateNft(props) {
     setCollectionEmpty(false);
     setCollectionExists(false);
     setCollectionValid(false);
+    setCollectionAllowed(false);
     setIsCollectionNotSelected(false);
     setCollection("");
     setCollectionName("");
@@ -614,20 +621,6 @@ function CreateNft(props) {
     await getUser();
   }, [props?.wallet]);
 
-  useEffect(() => {
-    const onScroll = (e) => {
-      setScrollTop(e.target.documentElement.scrollTop);
-      setScrolling(e.target.documentElement.scrollTop > scrollTop);
-      setShowMenu(false);
-    };
-    window.addEventListener("scroll", onScroll);
-
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [scrollTop]);
-
-  useEffect(() => {
-  }, [scrolling]);
-  
   return (
     <CreationSection>
       {isWalletDisconnected && (
@@ -1343,6 +1336,7 @@ function CreateNft(props) {
                           setCollectionExists(false);
                           setCollectionValid(false);
                           setCollectionEmpty(false);
+                          setCollectionAllowed(false);
                           document
                             .getElementsByClassName("collection-url")[0]
                             .setAttribute(
@@ -1357,6 +1351,8 @@ function CreateNft(props) {
                             getCollectionName();
                             setCollectionExists(false);
                             setCollectionEmpty(true);
+                            setCollectionAllowed(false);
+                            setCollectionValid(false);
                             setLoadingIcon(empty);
                           } else {
                             checkCollectionExists(collectionName.replace(/\s+/g, "-"));
@@ -1403,6 +1399,19 @@ function CreateNft(props) {
                             This collection belongs to you. You can add NFTs
                             to this collection. You can choose the collection from the
                             selector above, or skip to the minting step.
+                          </CaptionRegular>
+                        </HStack>
+                      ) : null}
+                      {collectionAllowed ? (
+                        <HStack
+                          background={appStyle.colors.green}
+                          padding="6px 15px"
+                          border="6px"
+                        >
+                          <CaptionRegular
+                            textcolor={appStyle.colors.darkGreen}
+                          >
+                            This collection name is available.
                           </CaptionRegular>
                         </HStack>
                       ) : null}
