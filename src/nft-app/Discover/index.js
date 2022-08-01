@@ -832,7 +832,7 @@ const Discover = (props) => {
                             width="90px"
                             height="90px"
                           ></IconImg>
-                          <BodyBold>Oops... no results found</BodyBold>
+                          <BodyBold>Oops... nothing found</BodyBold>
                           <BodyRegular animate={{ opacity: 0.6 }}>
                             Try searching again
                           </BodyRegular>

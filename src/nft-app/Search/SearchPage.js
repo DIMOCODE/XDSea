@@ -429,7 +429,7 @@ function SearchPage(props) {
                   border="6px"
                 >
                   <IconImg url={noResult} width="90px" height="90px"></IconImg>
-                  <BodyBold>Oops... No results here</BodyBold>
+                  <BodyBold>Oops... nothing here</BodyBold>
                   <BodyRegular animate={{ opacity: 0.6 }}>
                     Try searching again
                   </BodyRegular>
@@ -509,7 +509,7 @@ function SearchPage(props) {
                   spacing="9px"
                 >
                   <IconImg url={noResult} width="90px" height="90px"></IconImg>
-                  <BodyBold>Oops... no results found</BodyBold>
+                  <BodyBold>Oops... nothing found</BodyBold>
                   <BodyRegular animate={{ opacity: 0.6 }}>
                     Try searching again
                   </BodyRegular>
