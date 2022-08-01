@@ -44,4 +44,11 @@ export const createCollection = (name, addressCreator, description, logo, banner
       isHidden: false
     };
     return createSignedRequest(HTTP_METHODS.post, "collection", null, body);
+};
+
+export const checkCollectionExistsRequest = (name) => {
+  const params = {
+    name
+  };
+  return createRequest(HTTP_METHODS.get, "collection/exist", params, null);
 }

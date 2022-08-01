@@ -51,6 +51,7 @@ import { useHistory } from "react-router-dom";
 import menuContext from "../../context/menuContext";
 import { createRequest } from "../../API";
 import {
+  checkCollectionExistsRequest,
   createCollection,
   getCollection,
   getCollections,
@@ -136,6 +137,7 @@ function CreateNft(props) {
   const [scrollTop, setScrollTop] = useState();
   const [scrolling, setScrolling] = useState();
   const [collectionNickName, setCollectionNickName] = useState("");
+  const [collectionAllowed, setCollectionAllowed] = useState(false);
 
   /**
    * Adding Authentication for pinning new uploads to the IPFS Project
@@ -265,20 +267,29 @@ function CreateNft(props) {
   const checkCollectionExists = async (collectionName) => {
     setLoadingIcon(loading);
     const collectionData = await (
-      await checkCollectionExists(collectionName)
+      await checkCollectionExistsRequest(collectionName)
     ).data;
-    try {
-      if (collectionData.collection.creator._id === user) {
+    console.log(collectionData, user)
+    if(collectionData.alreadyExist) {
+      if (collectionData.collection.creator._id === user.user._id) {
         setCollectionExists(false);
         setCollectionValid(true);
+        setCollectionAllowed(false);
+        setCollectionEmpty(false);
       } else {
         setCollectionExists(true);
+        setCollectionValid(false);
+        setCollectionAllowed(false);
+        setCollectionEmpty(false);
       }
       setLoadingIcon(empty);
       setCollectionNickName(collectionNickName);
       return true;
-    } catch (err) {
+    }
+    else {
+      setCollectionAllowed(true);
       setCollectionExists(false);
+      setCollectionValid(false);
       setCollectionEmpty(false);
       setLoadingIcon(empty);
       return false;
@@ -337,6 +348,7 @@ function CreateNft(props) {
     setCollectionEmpty(false);
     setCollectionExists(false);
     setCollectionValid(false);
+    setCollectionAllowed(false);
     setIsCollectionNotSelected(false);
     setCollection("");
     setCollectionName("");
@@ -1360,6 +1372,7 @@ function CreateNft(props) {
                           setCollectionExists(false);
                           setCollectionValid(false);
                           setCollectionEmpty(false);
+                          setCollectionAllowed(false);
                           document
                             .getElementsByClassName("collection-url")[0]
                             .setAttribute(
@@ -1373,10 +1386,12 @@ function CreateNft(props) {
                             getCollectionName();
                             setCollectionExists(false);
                             setCollectionEmpty(true);
+                            setCollectionAllowed(false);
+                            setCollectionValid(false);
                             setLoadingIcon(empty);
                           } else {
                             checkCollectionExists(
-                              collectionName.replace(/\s+/g, "-")
+                              collectionName
                             );
                           }
                         }}
@@ -1417,6 +1432,19 @@ function CreateNft(props) {
                             This collection belongs to you. You can add NFTs to
                             this collection. You can choose the collection from
                             the selector above, or skip to the minting step.
+                          </CaptionRegular>
+                        </HStack>
+                      ) : null}
+                      {collectionAllowed ? (
+                        <HStack
+                          background={appStyle.colors.green}
+                          padding="6px 15px"
+                          border="6px"
+                        >
+                          <CaptionRegular
+                            textcolor={appStyle.colors.darkGreen}
+                          >
+                            This collection name is available.
                           </CaptionRegular>
                         </HStack>
                       ) : null}
