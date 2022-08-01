@@ -448,7 +448,7 @@ function TopBar(props) {
                   ) : (
                     <HStack
                       width="100%"
-                      padding="0 26px"
+                      padding="0 12px"
                       style={{ position: "relative" }}
                     >
                       <HStack onClick={() => NavigateTo("")} cursor={"pointer"}>
@@ -689,7 +689,6 @@ function TopBar(props) {
                             onClickMetamask={() => setShowMetamask(true)}
                             isMetamask={isMetamask}
                             isDcent={isDcent}
-                            isMobile={true}
                             isXdcPay={isXdcPay}
                             hasAlert={showError > 0}
                             clickAlert={() => setShowInfo(true)}
@@ -852,9 +851,11 @@ function TopBar(props) {
                           </Connect> */}
                           <WalletButton
                             logout={
-                              isMetamask ? disconnectMetamask
-                                : isXdcPay ? disconnectXdcPay
-                                  : disconnectDcent
+                              isMetamask
+                                ? disconnectMetamask
+                                : isXdcPay
+                                ? disconnectXdcPay
+                                : disconnectDcent
                             }
                             status={wallet?.connected}
                             wallet={wallet}
@@ -889,7 +890,7 @@ function TopBar(props) {
             exit={{ opacity: 0 }}
             transition={{ type: "spring", damping: 10 }}
           >
-            <VStack width="100%" height="100%" border="15px" blur="60px">
+            <VStack width="100%" height="100%" blur="60px">
               {walletOptions ? (
                 <VStack
                   self="none"
@@ -926,8 +927,8 @@ function TopBar(props) {
                       border="6px"
                       whileTap={{ scale: 0.98 }}
                       onClick={() => {
-                        connectXDCPay(); 
-                        setIsXdcPay(true);                       
+                        connectXDCPay();
+                        setIsXdcPay(true);
                         setShowInfo(false);
                       }}
                     >
@@ -970,9 +971,9 @@ function TopBar(props) {
                       padding="9px"
                       border="6px"
                       whileTap={{ scale: 0.98 }}
-                      onClick={()=> {
-                        connectDcent(); 
-                        setIsDcent(true);                       
+                      onClick={() => {
+                        connectDcent();
+                        setIsDcent(true);
                         setShowInfo(false);
                       }}
                     >
@@ -999,8 +1000,8 @@ function TopBar(props) {
                   </CaptionRegular>
 
                   <CaptionRegular align="flex-start" textcolor="white">
-                    In order to only use D'Cent, please connect to the XDC network on
-                    your D'Cent mobile app browser
+                    In order to only use D'Cent, please connect to the XDC
+                    network on your D'Cent mobile app browser
                   </CaptionRegular>
 
                   <Spacer></Spacer>

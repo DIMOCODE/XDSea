@@ -20,6 +20,7 @@ import {
   CaptionBoldShort,
   TitleBold27,
   TitleBold18,
+  CaptionRegular,
 } from "../../styles/TextStyles";
 import { appStyle } from "../../styles/AppStyles";
 import useWindowSize from "../../styles/useWindowSize";
@@ -658,17 +659,12 @@ const Discover = (props) => {
         </StickySectionHeader>
 
         {isSelected ? (
-          <VStack padding="30px 0">
-            {/* <FilterCollections
-              params={collectionParams}
-              onChange={handleChangeFilter}
-            ></FilterCollections> */}
-
+          <VStack padding="30px 12px">
             <InfiniteScroll
               dataLength={collections.length}
               next={fetchMoreCollections}
               hasMore={collections.length < totalCollections}
-              scrollThreshold={0.8}
+              scrollThreshold={0.6}
               loader={
                 <HStack
                   initial={{ opacity: 0 }}
@@ -679,80 +675,72 @@ const Discover = (props) => {
                 </HStack>
               }
               scrollableTarget="#scrollableDiv"
-              style={{ overflow: "hidden" }}
+              style={{ overflow: "show" }}
             >
-              {/* Filter and Sort for Collections  */}
-
-              <VStack
-                spacing="30px"
-                padding={size.width < 1200 ? "0 12px" : "0"}
-              >
-                <HStack>
-                  <HStack spacing="12px" flexwrap="wrap" justify="flex-start">
-                    {loading ? (
-                      loadingCollections.map((item) => (
-                        <VStack key={item.name} minwidth="326px" height="440px">
-                          {/* <LoadingNftContainer></LoadingNftContainer> */}
-                        </VStack>
-                      ))
-                    ) : collections.length !== 0 ? (
-                      collections.map((item) => (
-                        <LayoutGroup id="collection" key={item.name}>
-                          <VStack width="326px" height="440px">
-                            <Collection
-                              key={item.name}
-                              isVerified={item.isVerified}
-                              keyContent={item.name}
-                              keyID={item.creator}
-                              collectionImage={item.banner}
-                              creatorLogo={item.logo}
-                              collectionName={item.name}
-                              collectionDescription={item.description}
-                              creatorName={item.creator}
-                              onClickCollection={() =>
-                                NavigateTo(`collection/${item.nickName}`)
-                              }
-                              floorprice={item.floorPrice}
-                              owners={item.owners}
-                              nfts={item.nfts}
-                              volumetraded={item.tradeVolume}
-                              onClickCreator={() =>
-                                NavigateTo(`UserProfile/${item.creatorId}`)
-                              }
-                              sortFloor={
-                                collectionParams.sortBy === "floorPrice"
-                              }
-                              sortOwners={collectionParams.sortBy === "owners"}
-                              sortNFTs={collectionParams.sortBy === "nfts"}
-                              sortVolume={
-                                collectionParams.sortBy === "volumeTrade"
-                              }
-                              xdc={props.xdc}
-                            ></Collection>
-                          </VStack>
-                        </LayoutGroup>
-                      ))
-                    ) : (
+              <HStack spacing="12px" flexwrap="wrap" justify="flex-start">
+                {loading ? (
+                  loadingCollections.map((item) => (
+                    <VStack key={item.name} minwidth="326px" height="440px">
+                      <LoadingNftContainer></LoadingNftContainer>
+                    </VStack>
+                  ))
+                ) : collections.length !== 0 ? (
+                  collections.map((item) => (
+                    <LayoutGroup id="collection" key={item.name}>
                       <VStack
-                        padding="0px"
-                        width="360px"
-                        height="360px"
-                        style={{ zIndex: "-50" }}
-                        border="6px"
+                        width="326px"
+                        height="440px"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
                       >
-                        <IconImg
-                          url={noResult}
-                          width="90px"
-                          height="90px"
-                        ></IconImg>
-                        <TitleBold18 animate={{ opacity: 0.6 }}>
-                          Nothing Found
-                        </TitleBold18>
+                        <Collection
+                          key={item.name}
+                          isVerified={item.isVerified}
+                          keyContent={item.name}
+                          keyID={item.creator}
+                          collectionImage={item.banner}
+                          creatorLogo={item.logo}
+                          collectionName={item.name}
+                          collectionDescription={item.description}
+                          creatorName={item.creator}
+                          onClickCollection={() =>
+                            NavigateTo(`collection/${item.nickName}`)
+                          }
+                          floorprice={item.floorPrice}
+                          owners={item.owners}
+                          nfts={item.nfts}
+                          volumetraded={item.tradeVolume}
+                          onClickCreator={() =>
+                            NavigateTo(`UserProfile/${item.creatorId}`)
+                          }
+                          sortFloor={collectionParams.sortBy === "floorPrice"}
+                          sortOwners={collectionParams.sortBy === "owners"}
+                          sortNFTs={collectionParams.sortBy === "nfts"}
+                          sortVolume={collectionParams.sortBy === "volumeTrade"}
+                          xdc={props.xdc}
+                        ></Collection>
                       </VStack>
-                    )}
-                  </HStack>
-                </HStack>
-              </VStack>
+                    </LayoutGroup>
+                  ))
+                ) : (
+                  <VStack
+                    padding="0px"
+                    width="360px"
+                    height="360px"
+                    style={{ zIndex: "-50" }}
+                    border="6px"
+                  >
+                    <IconImg
+                      url={noResult}
+                      width="90px"
+                      height="90px"
+                    ></IconImg>
+                    <TitleBold18 animate={{ opacity: 0.6 }}>
+                      Nothing Found
+                    </TitleBold18>
+                  </VStack>
+                )}
+              </HStack>
             </InfiniteScroll>
           </VStack>
         ) : (

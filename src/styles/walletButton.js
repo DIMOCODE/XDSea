@@ -93,17 +93,18 @@ function WalletButton(props) {
           onTap={() => setIsVisible(true)}
           onHoverEnd={() => setIsVisible(false)}
           cursor={"pointer"}
+          spacing="12px"
           padding={isMobile ? "0 30px" : "0"}
         >
           <HStack
             height={isMobile ? "auto" : "49px"}
-            width={status ? "auto" : "150px"}
+            width={status ? "auto" : "180px"}
             background={({ theme }) => theme.walletButton}
             border="9px"
             spacing="9px"
             cursor="pointer"
             alignment="flex-start"
-            padding="6px 9px"
+            padding={isMobile ? "12px 9px" : "6px 9px"}
           >
             <VStack minwidth="0" spacing="0px" alignment="flex-start">
               {status ? (
@@ -305,9 +306,9 @@ function WalletButton(props) {
                   animate="hover"
                   exit="initial"
                 >
-                  <CaptionBoldShort textcolor={({ theme }) => theme.walletText}>
+                  <BodyBold textcolor={({ theme }) => theme.walletText}>
                     Connect Wallet
-                  </CaptionBoldShort>
+                  </BodyBold>
                 </motion.div>
               )}
             </VStack>

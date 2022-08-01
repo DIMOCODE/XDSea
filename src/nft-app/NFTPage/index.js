@@ -95,7 +95,19 @@ import {
   WhatsappShareButton,
   InstapaperShareButton,
 } from "react-share";
-import { acceptOfferRequest, buyNFTRequest, editListingNFTRequest, getNFT, getNFTEvents, getNFTOffers, listNFTRequest, placeOfferRequest, transferNFTRequest, withdrawListingNFTRequest, withdrawOfferRequest } from "../../API/NFT";
+import {
+  acceptOfferRequest,
+  buyNFTRequest,
+  editListingNFTRequest,
+  getNFT,
+  getNFTEvents,
+  getNFTOffers,
+  listNFTRequest,
+  placeOfferRequest,
+  transferNFTRequest,
+  withdrawListingNFTRequest,
+  withdrawOfferRequest,
+} from "../../API/NFT";
 
 const NFTDetails = (props) => {
   const webLocation = useLocation();
@@ -198,7 +210,11 @@ const NFTDetails = (props) => {
     }
     if (success) {
       setBuyButtonStatus(3);
-      const buyData = await (await buyNFTRequest(wallet?.address, nft.price, nft._id));
+      const buyData = await await buyNFTRequest(
+        wallet?.address,
+        nft.price,
+        nft._id
+      );
       console.log(buyData);
       setPurchased(true);
     } else {
@@ -229,7 +245,9 @@ const NFTDetails = (props) => {
     }
     if (success) {
       setOfferButtonStatus(3);
-      const offerData = await (await placeOfferRequest(offerPrice, wallet.address, nft._id)).data;
+      const offerData = await (
+        await placeOfferRequest(offerPrice, wallet.address, nft._id)
+      ).data;
       console.log(offerData);
     } else {
       setOfferButtonStatus(4);
@@ -252,7 +270,9 @@ const NFTDetails = (props) => {
     }
     if (success) {
       setWithdrawButtonStatus(3);
-      const withdrawListData = await (await withdrawListingNFTRequest(nft._id)).data;
+      const withdrawListData = await (
+        await withdrawListingNFTRequest(nft._id)
+      ).data;
       console.log(withdrawListData);
     } else {
       setWithdrawButtonStatus(4);
@@ -283,7 +303,9 @@ const NFTDetails = (props) => {
     }
     if (success) {
       setEditButtonStatus(3);
-      const editListData = await (await editListingNFTRequest(editPrice, nft._id)).data;
+      const editListData = await (
+        await editListingNFTRequest(editPrice, nft._id)
+      ).data;
       console.log(editListData);
     } else {
       setEditButtonStatus(4);
@@ -336,11 +358,18 @@ const NFTDetails = (props) => {
     setTransferring(false);
     var success = false;
     if (!nft.inBlacklist) {
-      success = await TransferNFT(approved, nft, transferAddress, wallet.address);
+      success = await TransferNFT(
+        approved,
+        nft,
+        transferAddress,
+        wallet.address
+      );
     }
     if (success) {
       setTransferButtonStatus(3);
-      const transferData = await (await transferNFTRequest(wallet?.address, transferAddress, nft._id)).data;
+      const transferData = await (
+        await transferNFTRequest(wallet?.address, transferAddress, nft._id)
+      ).data;
       console.log(transferData);
     } else {
       setTransferButtonStatus(4);
@@ -360,7 +389,12 @@ const NFTDetails = (props) => {
     });
     var success = false;
     if (!nft.inBlacklist) {
-      success = await WithdrawOffer(approved, nft.tokenId, i + 1, wallet.address);
+      success = await WithdrawOffer(
+        approved,
+        nft.tokenId,
+        i + 1,
+        wallet.address
+      );
     }
     if (success) {
       setWithdrawOfferButtonStatus((prevState) => {
@@ -518,7 +552,7 @@ const NFTDetails = (props) => {
               })
             );
 
-            setOffers(offerList.reverse());
+            setOffers(offerList);
             setAcceptOfferButtonStatus(new Array(offerList.length).fill(0));
             setWithdrawOfferButtonStatus(new Array(offerList.length).fill(0));
             setLoadingOffers(false);
@@ -807,7 +841,9 @@ const NFTDetails = (props) => {
           isPurchaised={true}
           PurchaisedNftName={nft?.name}
           ListedImage={nft?.image}
-          confirmBtnPurchaise={() => NavigateTo(`UserProfile/${LS.get(LS_ROOT_KEY).user._id}`)}
+          confirmBtnPurchaise={() =>
+            NavigateTo(`UserProfile/${LS.get(LS_ROOT_KEY).user._id}`)
+          }
         ></TxModal>
       ) : null}
       <ContentNftPage>
@@ -1306,7 +1342,7 @@ const NFTDetails = (props) => {
                             <Spacer></Spacer>
                             <HStack spacing="6px">
                               <IconImg
-                                url={xinfinLogo}
+                                url={xdclogo}
                                 width="18px"
                                 height="18px"
                               ></IconImg>
@@ -1767,40 +1803,40 @@ const NFTDetails = (props) => {
                       </HStack>
                     </>
                   ))
-                  ) : offers.length ? (
-                    offers?.map((item, i) => (
-                      <>
-                        <TableOffersNft
-                          key={i}
-                          imageBuyer={item.userProfile}
-                          offerBy={item.from}
-                          offerUser={item.userId}
-                          wallet={wallet}
-                          owner={item.to}
-                          offerAmount={item.price}
-                          isWithdrawn={item.isWithdrawn}
-                          withdrawStatus={withdrawOfferButtonStatus[i]}
-                          onClickWithdraw={() => withdrawOffer(i, item._id)}
-                          acceptStatus={acceptOfferButtonStatus[i]}
-                          onClickAccept={() => acceptOffer(i, item._id)}
-                          xdc={props.xdc}
-                        ></TableOffersNft>
-                        {i !== offers.length - 1 ? <Divider></Divider> : null}
-                      </>
-                    ))
-                  ) : (
-                    <VStack width="100%">
-                      <Divider></Divider>
-                      <HStack width="100%" spacing="6px" height="51px">
-                        <HStack width="100%" justify="flex-start">
-                          <HStack padding="0 30px">
-                            <BodyRegular>---</BodyRegular>
-                          </HStack>
-                        </HStack>
-                        <HStack width="100%">
+                ) : offers.length ? (
+                  offers?.map((item, i) => (
+                    <>
+                      <TableOffersNft
+                        key={i}
+                        imageBuyer={item.userProfile}
+                        offerBy={item.from}
+                        offerUser={item.userId}
+                        wallet={wallet}
+                        owner={item.to}
+                        offerAmount={item.price}
+                        isWithdrawn={item.isWithdrawn}
+                        withdrawStatus={withdrawOfferButtonStatus[i]}
+                        onClickWithdraw={() => withdrawOffer(i, item._id)}
+                        acceptStatus={acceptOfferButtonStatus[i]}
+                        onClickAccept={() => acceptOffer(i, item._id)}
+                        xdc={props.xdc}
+                      ></TableOffersNft>
+                      {i !== offers.length - 1 ? <Divider></Divider> : null}
+                    </>
+                  ))
+                ) : (
+                  <VStack width="100%">
+                    <Divider></Divider>
+                    <HStack width="100%" spacing="6px" height="51px">
+                      <HStack width="100%" justify="flex-start">
+                        <HStack padding="0 30px">
                           <BodyRegular>---</BodyRegular>
                         </HStack>
-                        <HStack width="100%" justify="flex-end">
+                      </HStack>
+                      <HStack width="100%">
+                        <BodyRegular>---</BodyRegular>
+                      </HStack>
+                      <HStack width="100%" justify="flex-end">
                         <HStack padding="0 30px">
                           <BodyRegular>---</BodyRegular>
                         </HStack>

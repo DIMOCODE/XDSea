@@ -37,7 +37,7 @@ function InputStyled(props) {
 
   const handleClick = () => {
     onClickIcon(document.getElementById(inputId).value);
-  }
+  };
 
   return (
     <ZStack>
@@ -100,7 +100,7 @@ const Input = styled.input.attrs((props) => ({
   background: props.background || props.theme.backElement,
   padding: props.padding || "0px 36px 0px 12px",
   textalign: props.textalign || "left",
-  fontsize: props.fontsize || "15px",
+  fontsize: props.fontsize || "16px",
   texttransform: props.texttransform || "none",
   height: props.height || "39px",
 }))`

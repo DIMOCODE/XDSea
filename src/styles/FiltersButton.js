@@ -245,7 +245,7 @@ function FiltersButton(props) {
                   <HStack height="60px" alignment="flex-end">
                     <CustomSlider
                       min={1}
-                      max={maxPrice}
+                      max={3000000}
                       // step={300000}
                       defaultValue={[minValue, maxValue]}
                       valueLabelDisplay="on"

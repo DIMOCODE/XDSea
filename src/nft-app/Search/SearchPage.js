@@ -63,16 +63,14 @@ function SearchPage(props) {
   const [maxPrice, setMaxPrice] = useState(0);
 
   const getCollectionData = async (params) => {
-    const collectionResults = await (
-      await getCollections(params)
-    ).data;
+    const collectionResults = await (await getCollections(params)).data;
     setCollectionData(collectionResults.collections);
     setTotalCollections(collectionResults.collectionsAmount);
     setLoading(false);
     setCollectionParams((prevState) => ({
       ...prevState,
       page: params.page + 1,
-      searchTerm: params.searchTerm
+      searchTerm: params.searchTerm,
     }));
   };
 
@@ -115,7 +113,11 @@ function SearchPage(props) {
     setNftData(nftResults.nfts);
     setTotalNFTs(nftResults.nftsAmount);
     setLoading(false);
-    setNftParams((prevState) => ({ ...prevState, page: params.page + 1, searchBy: params.searchBy }));
+    setNftParams((prevState) => ({
+      ...prevState,
+      page: params.page + 1,
+      searchBy: params.searchBy,
+    }));
   };
 
   const fetchMoreNFTs = async () => {
@@ -151,14 +153,15 @@ function SearchPage(props) {
   useEffect(async () => {
     setLoading(true);
     if (isSelected) {
-      var newurl = location.pathname + `?searchTerm=${searchTerm}&mode=collection`;
-      window.history.replaceState({path:newurl},'',newurl);
-      getCollectionData({ page: 1, searchTerm: searchTerm});
-      setNftParams({page: 1, searchBy: searchTerm});
+      var newurl =
+        location.pathname + `?searchTerm=${searchTerm}&mode=collection`;
+      window.history.replaceState({ path: newurl }, "", newurl);
+      getCollectionData({ page: 1, searchTerm: searchTerm });
+      setNftParams({ page: 1, searchBy: searchTerm });
     } else {
       var newurl = location.pathname + `?searchTerm=${searchTerm}&mode=nft`;
-      window.history.replaceState({path:newurl},'',newurl);
-      getNFTData({ page: 1, searchBy: searchTerm});
+      window.history.replaceState({ path: newurl }, "", newurl);
+      getNFTData({ page: 1, searchBy: searchTerm });
       setCollectionParams({ page: 1, searchTerm: searchTerm });
     }
     setNewResults(true);
@@ -226,8 +229,9 @@ function SearchPage(props) {
                         getCollectionData(collectionParams);
                       }
                       setNewResults(false);
-                      var newurl = location.pathname + `?${searchTerm}&mode=collection`;
-                      window.history.replaceState({path:newurl},'',newurl);
+                      var newurl =
+                        location.pathname + `?${searchTerm}&mode=collection`;
+                      window.history.replaceState({ path: newurl }, "", newurl);
                       setIsSelected(true);
                     }}
                     cursor="pointer"
@@ -249,8 +253,9 @@ function SearchPage(props) {
                         getNFTData(nftParams);
                       }
                       setNewResults(false);
-                      var newurl = location.pathname + `?${searchTerm}&mode=nft`;
-                      window.history.replaceState({path:newurl},'',newurl);
+                      var newurl =
+                        location.pathname + `?${searchTerm}&mode=nft`;
+                      window.history.replaceState({ path: newurl }, "", newurl);
                       setIsSelected(false);
                     }}
                   >
@@ -285,14 +290,18 @@ function SearchPage(props) {
                 isSearchPage={true}
                 switched={isSelected}
               ></FiltersButton>
-              <SearchCollection inputId = {"searchPageCollection"} placeholder={searchTerm} onClickIcon = {(searchWord) => {
+              <SearchCollection
+                inputId={"searchPageCollection"}
+                placeholder={searchTerm}
+                onClickIcon={(searchWord) => {
                   setSearchTerm(searchWord);
-                }} 
+                }}
                 onKeyPress={(e) => {
-                  if(e.key === 'Enter') {
+                  if (e.key === "Enter") {
                     setSearchTerm(e.target.value);
                   }
-                }}></SearchCollection>
+                }}
+              ></SearchCollection>
               <SortButtonCollections
                 onChange={handleChangeFilter}
                 params={collectionParams}
@@ -314,14 +323,18 @@ function SearchPage(props) {
                 isSearchPage={true}
                 maxPrice={maxPrice}
               ></FiltersButton>
-              <SearchCollection inputId = {"searchPageNFT"} placeholder={searchTerm} onClickIcon = {(searchWord) => {
+              <SearchCollection
+                inputId={"searchPageNFT"}
+                placeholder={searchTerm}
+                onClickIcon={(searchWord) => {
                   setSearchTerm(searchWord);
-                }} 
+                }}
                 onKeyPress={(e) => {
-                  if(e.key === 'Enter') {
+                  if (e.key === "Enter") {
                     setSearchTerm(e.target.value);
                   }
-                }}></SearchCollection>
+                }}
+              ></SearchCollection>
               <SortButtonNFTS
                 onChange={handleChangeFilterNFT}
                 params={nftParams}
@@ -332,9 +345,11 @@ function SearchPage(props) {
         </StickySectionHeader>
 
         {isSelected ? (
-          <VStack style={{ zIndex: "20" }} spacing="30px" padding="30px 0">
+          <VStack style={{ zIndex: "20" }} spacing="30px" padding="30px 12px">
             {loading ? (
-              <LoopLogo></LoopLogo>
+              <VStack minheight="300px">
+                <LoopLogo></LoopLogo>
+              </VStack>
             ) : collectionData.length !== 0 ? (
               <InfiniteScroll
                 dataLength={collectionData.length}
@@ -420,7 +435,7 @@ function SearchPage(props) {
             )}
           </VStack>
         ) : (
-          <VStack spacing="30px" padding="30px 0">
+          <VStack spacing="30px" padding="30px 12px">
             {loading ? (
               <HStack height="360px">
                 <LoopLogo></LoopLogo>

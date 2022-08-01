@@ -70,6 +70,7 @@ const Home = (props) => {
     try {
       setLoading(true);
       const homeData = (await getHomeData()).data;
+      console.log(homeData);
 
       const featuredNFTList = await Promise.all(
         homeData.featuredNfts.map(async (nft) => {
@@ -156,18 +157,18 @@ const Home = (props) => {
     getData();
   }, []);
 
-  // useEffect(() => {
-  //   const onScroll = (e) => {
-  //     setScrollTop(e.target.documentElement.scrollTop);
-  //     setScrolling(e.target.documentElement.scrollTop > scrollTop);
-  //     setShowMenu(false);
-  //   };
-  //   window.addEventListener("scroll", onScroll);
+  useEffect(() => {
+    const onScroll = (e) => {
+      setScrollTop(e.target.documentElement.scrollTop);
+      setScrolling(e.target.documentElement.scrollTop > scrollTop);
+      setShowMenu(false);
+    };
+    window.addEventListener("scroll", onScroll);
 
-  //   return () => window.removeEventListener("scroll", onScroll);
-  // }, [scrollTop]);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [scrollTop]);
 
-  // useEffect(() => {}, [scrolling]);
+  useEffect(() => {}, [scrolling]);
 
   return (
     <Content>
