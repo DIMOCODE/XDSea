@@ -652,7 +652,7 @@ const Discover = (props) => {
               dataLength={collections.length}
               next={fetchMoreCollections}
               hasMore={collections.length < totalCollections}
-              scrollThreshold={0.8}
+              scrollThreshold={0.6}
               loader={
                 <HStack
                   initial={{ opacity: 0 }}
@@ -669,7 +669,7 @@ const Discover = (props) => {
                 {loading ? (
                   loadingCollections.map((item) => (
                     <VStack key={item.name} minwidth="326px" height="440px">
-                      {/* <LoadingNftContainer></LoadingNftContainer> */}
+                      <LoadingNftContainer></LoadingNftContainer>
                     </VStack>
                   ))
                 ) : collections.length !== 0 ? (
