@@ -466,7 +466,7 @@ function TopBar(props) {
                           <BodyBold textcolor={({ theme }) => theme.text}>
                             XDSea
                           </BodyBold>
-                          {!devMode ? (
+                          {devMode ? (
                             <BodyBold textcolor={({ theme }) => theme.blue}>
                               βeta v1.6.3
                             </BodyBold>
@@ -633,7 +633,7 @@ function TopBar(props) {
                         <BodyBold textcolor={({ theme }) => theme.text}>
                           XDSea
                         </BodyBold>
-                        {!devMode ? (
+                        {devMode ? (
                           <BodyBold textcolor={({ theme }) => theme.blue}>
                             βeta v1.6.3
                           </BodyBold>
@@ -754,7 +754,7 @@ function TopBar(props) {
                         <BodyBold textcolor={({ theme }) => theme.text}>
                           XDSea
                         </BodyBold>
-                        {!devMode ? (
+                        {devMode ? (
                           <BodyBold textcolor={({ theme }) => theme.blue}>
                             βeta v1.6.3
                           </BodyBold>

@@ -121,6 +121,7 @@ const CollectionDetails = (props) => {
           searchBy: searchBy,
         })
       ).data;
+      console.log(collectionNFTData)
       const collectionNFTList = await Promise.all(
         collectionNFTData.nfts.map(async (nft) => {
           let collectionNFT = {
@@ -198,6 +199,7 @@ const CollectionDetails = (props) => {
   }
 
   const handleChangeFilterNFT = (params) => {
+    setLoadingState("not-loaded")
     setParams(params);
     updateNFTs(params);
   };
