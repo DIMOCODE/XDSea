@@ -106,7 +106,7 @@ function Footer(props) {
               </VStack>
             </HStack>
             <VStack
-              background={appStyle.colors.darkgrey10}
+              background={appStyle.colors.darkgrey30}
               padding="6px 6px"
               border="6px"
             >
@@ -126,7 +126,7 @@ export { Footer };
 const FooterSection = styled(motion.div)`
   padding: 90px 0;
   width: 100%;
-  background: ${appStyle.colors.darkBlue};
+  background: ${({ theme }) => theme.walletButton};
 `;
 
 const FooterContent = styled(motion.div)`
