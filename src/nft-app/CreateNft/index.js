@@ -542,7 +542,7 @@ function CreateNft(props) {
             collectionName,
             isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address,
             collectionDescription,
-            logoURL,
+            logoUrl,
             bannerUrl,
             twitterLink,
             instagramLink,
