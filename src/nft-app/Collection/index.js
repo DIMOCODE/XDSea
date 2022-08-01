@@ -780,9 +780,10 @@ const CollectionDetails = (props) => {
                   border="6px"
                 >
                   <IconImg url={noResult} width="90px" height="90px"></IconImg>
-                  <TitleBold18 animate={{ opacity: 0.6 }}>
-                    Nothing Found
-                  </TitleBold18>
+                  <BodyBold>Oops... no results found</BodyBold>
+                  <BodyRegular animate={{ opacity: 0.6 }}>
+                    Try searching again
+                  </BodyRegular>
                 </VStack>
               )
             ) : (

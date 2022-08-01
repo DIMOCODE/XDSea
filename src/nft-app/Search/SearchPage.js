@@ -10,6 +10,8 @@ import {
   IconImg,
 } from "../../styles/Stacks";
 import {
+  BodyBold,
+  BodyRegular,
   CaptionBoldShort,
   TitleBold18,
   TitleBold27,
@@ -427,9 +429,10 @@ function SearchPage(props) {
                   border="6px"
                 >
                   <IconImg url={noResult} width="90px" height="90px"></IconImg>
-                  <TitleBold18 animate={{ opacity: 0.6 }}>
-                    Nothing Found
-                  </TitleBold18>
+                  <BodyBold>Oops... No results here</BodyBold>
+                  <BodyRegular animate={{ opacity: 0.6 }}>
+                    Try searching again
+                  </BodyRegular>
                 </VStack>
               </>
             )}
@@ -503,11 +506,13 @@ function SearchPage(props) {
                   width="100%"
                   style={{ zIndex: "-50" }}
                   border="6px"
+                  spacing="9px"
                 >
                   <IconImg url={noResult} width="90px" height="90px"></IconImg>
-                  <TitleBold18 animate={{ opacity: 0.6 }}>
-                    Nothing Found
-                  </TitleBold18>
+                  <BodyBold>Oops... no results found</BodyBold>
+                  <BodyRegular animate={{ opacity: 0.6 }}>
+                    Try searching again
+                  </BodyRegular>
                 </VStack>
               </>
             )}

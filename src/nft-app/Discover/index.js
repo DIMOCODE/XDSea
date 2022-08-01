@@ -31,7 +31,11 @@ import menuContext from "../../context/menuContext";
 import { getCollections } from "../../API/Collection";
 import { getNFTs } from "../../API/NFT";
 import banner1 from "../../images/Banner1.jpg";
-import { nftaddress, nftmarketaddress, nftmarketlayeraddress } from "../../config";
+import {
+  nftaddress,
+  nftmarketaddress,
+  nftmarketlayeraddress,
+} from "../../config";
 import { NftContainer } from "../../styles/NftContainer";
 import { isSafari } from "../../common/common";
 import noResult from "../../images/noResult.png";
@@ -247,56 +251,55 @@ const Discover = (props) => {
       //   );
       //   const meta = {}
       //   for(var i = 1; i < 1539; i++) {
-          // const uri = await nftContract.methods.tokenURI(i).call()
-          // var metadata = await axios.get(uri)
-          // meta[i] = metadata.data;
-            // var item = await marketContract.methods.idToMarketItem(i).call();
-            // var mintEvent = await marketContract.methods.eventHistory(i, 1).call();
-            // meta[i] = mintEvent;
-            // let nft = {
-            //   tokenId: item.tokenId,
-            //   itemId: item.itemId,
-            //   owner: item.owner,
-            //   creator: item.creator,
-            //   price: item.price,
-            //   isListed: item.isListed,
-            //   royalty: item.royalty,
-            //   eventCount: item.eventCount,
-            //   offerCount: item.offerCount,
-            //   name: item.name,
-            //   collectionName: item.collectionName
-            // }
-            // var item = await marketContract.methods.getTokenEventHistory(i).call();
-            // var events = []
-            // for(var j = 0; j < item.length; j++) {
-            //   let event = {
-            //     eventType: item[j].eventType,
-            //     from: item[j].from,
-            //     to: item[j].to,
-            //     price: item[j].price,
-            //     timestamp: item[j].timestamp
-            //   }
-            //   events.push(event)
-            // }
-            // var item = await marketContract.methods.getTokenOfferList(i).call();
-            // var offers = []
-            // for(var j = 0; j < item.length; j++) {
-            //   let offer = {
-            //     price: item[j].price,
-            //     from: item[j].from,
-            //     to: item[j].to,
-            //     isWithdrawn: item[j].isWithdrawn,
-            //     isAccepted: item[j].isAccepted
-            //   }
-            //   offers.push(offer)
-            // }
-            // if(offers.length !== 0)
-            //   meta[i] = offers;
-            // await new Promise((r) => setTimeout(r, 500));
-        //     console.log(i)
-        // }
-        // console.log(JSON.stringify(meta))
-  
+      // const uri = await nftContract.methods.tokenURI(i).call()
+      // var metadata = await axios.get(uri)
+      // meta[i] = metadata.data;
+      // var item = await marketContract.methods.idToMarketItem(i).call();
+      // var mintEvent = await marketContract.methods.eventHistory(i, 1).call();
+      // meta[i] = mintEvent;
+      // let nft = {
+      //   tokenId: item.tokenId,
+      //   itemId: item.itemId,
+      //   owner: item.owner,
+      //   creator: item.creator,
+      //   price: item.price,
+      //   isListed: item.isListed,
+      //   royalty: item.royalty,
+      //   eventCount: item.eventCount,
+      //   offerCount: item.offerCount,
+      //   name: item.name,
+      //   collectionName: item.collectionName
+      // }
+      // var item = await marketContract.methods.getTokenEventHistory(i).call();
+      // var events = []
+      // for(var j = 0; j < item.length; j++) {
+      //   let event = {
+      //     eventType: item[j].eventType,
+      //     from: item[j].from,
+      //     to: item[j].to,
+      //     price: item[j].price,
+      //     timestamp: item[j].timestamp
+      //   }
+      //   events.push(event)
+      // }
+      // var item = await marketContract.methods.getTokenOfferList(i).call();
+      // var offers = []
+      // for(var j = 0; j < item.length; j++) {
+      //   let offer = {
+      //     price: item[j].price,
+      //     from: item[j].from,
+      //     to: item[j].to,
+      //     isWithdrawn: item[j].isWithdrawn,
+      //     isAccepted: item[j].isAccepted
+      //   }
+      //   offers.push(offer)
+      // }
+      // if(offers.length !== 0)
+      //   meta[i] = offers;
+      // await new Promise((r) => setTimeout(r, 500));
+      //     console.log(i)
+      // }
+      // console.log(JSON.stringify(meta))
 
       setCollections(collectionList);
       setTotalCollections(collectionData.collectionsAmount);
@@ -829,9 +832,10 @@ const Discover = (props) => {
                             width="90px"
                             height="90px"
                           ></IconImg>
-                          <TitleBold18 animate={{ opacity: 0.6 }}>
-                            Nothing Found
-                          </TitleBold18>
+                          <BodyBold>Oops... no results found</BodyBold>
+                          <BodyRegular animate={{ opacity: 0.6 }}>
+                            Try searching again
+                          </BodyRegular>
                         </VStack>
                       )}
                     </HStack>
