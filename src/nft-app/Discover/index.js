@@ -21,6 +21,8 @@ import {
   TitleBold27,
   TitleBold18,
   CaptionRegular,
+  BodyBold,
+  BodyRegular,
 } from "../../styles/TextStyles";
 import { appStyle } from "../../styles/AppStyles";
 import useWindowSize from "../../styles/useWindowSize";
