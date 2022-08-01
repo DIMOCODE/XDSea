@@ -351,7 +351,7 @@ function TopBar(props) {
                         </VStack>
 
                         <VStack style={{ zIndex: -100 }}>
-                          <Connect>
+                          {/* <Connect>
                             <XdcConnect
                               btnName={" "}
                               btnClass={`walletConnectPhone ${
@@ -361,15 +361,12 @@ function TopBar(props) {
                               onAddressChange={handleOnWalletChange}
                               onDisconnect={handleOnWalletChange}
                             />
-                          </Connect>
-
+                          </Connect> */}
                           <WalletButton
                             logout={
-                              isMetamask
-                                ? disconnectMetamask
-                                : isXdcPay
-                                ? disconnectXdcPay
-                                : disconnectDcent
+                              isMetamask ? disconnectMetamask
+                                : isXdcPay ? disconnectXdcPay
+                                  : disconnectDcent
                             }
                             status={wallet?.connected}
                             wallet={wallet}
@@ -670,8 +667,8 @@ function TopBar(props) {
                     <VStack maxwidth="180px">
                       <ZStack>
                         <ZItem>
-                          <Connect>
-                            <XdcConnect
+                          {/* <Connect> */}
+                            {/* <XdcConnect
                               btnName={" "}
                               btnClass={`walletConnectTablet ${
                                 wallet?.connected ? "hide" : ""
@@ -680,15 +677,12 @@ function TopBar(props) {
                               onAddressChange={handleOnWalletChange}
                               onDisconnect={handleOnWalletChange}
                             />
-                          </Connect>
-
+                          </Connect> */}
                           <WalletButton
                             logout={
-                              isMetamask
-                                ? disconnectMetamask
-                                : isXdcPay
-                                ? disconnectXdcPay
-                                : disconnectDcent
+                              isMetamask ? disconnectMetamask
+                                : isXdcPay ? disconnectXdcPay
+                                  : disconnectDcent
                             }
                             status={wallet?.connected}
                             wallet={wallet}
@@ -1215,7 +1209,10 @@ function TopBar(props) {
                         minheight="39px"
                         border="9px"
                         cursor="pointer"
-                        onClick={connectMetamask}
+                        onClick={() => {
+                          connectMetamask();
+                          setShowInfo(false);
+                        }}
                       >
                         <BodyBold cursor="pointer" textcolor="white">
                           Connect Metamask
