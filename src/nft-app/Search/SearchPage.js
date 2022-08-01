@@ -431,7 +431,7 @@ function SearchPage(props) {
                   <IconImg url={noResult} width="90px" height="90px"></IconImg>
                   <BodyBold>Oops... nothing here</BodyBold>
                   <BodyRegular animate={{ opacity: 0.6 }}>
-                    Try searching again
+                    Try again
                   </BodyRegular>
                 </VStack>
               </>
@@ -511,7 +511,7 @@ function SearchPage(props) {
                   <IconImg url={noResult} width="90px" height="90px"></IconImg>
                   <BodyBold>Oops... nothing found</BodyBold>
                   <BodyRegular animate={{ opacity: 0.6 }}>
-                    Try searching again
+                    Try again
                   </BodyRegular>
                 </VStack>
               </>

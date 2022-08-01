@@ -834,7 +834,7 @@ const Discover = (props) => {
                           ></IconImg>
                           <BodyBold>Oops... nothing found</BodyBold>
                           <BodyRegular animate={{ opacity: 0.6 }}>
-                            Try searching again
+                            Try again
                           </BodyRegular>
                         </VStack>
                       )}

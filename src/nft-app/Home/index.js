@@ -126,7 +126,7 @@ const Home = (props) => {
             tokenId: nft.nftId.tokenId,
             saleType: nft.nftId.saleType.toLowerCase(),
             isVerified: nft.nftId.owner.isVerified,
-            collectionVerified: nft.nftId.creator.isVerified
+            collectionVerified: nft.nftId.creator.isVerified,
           };
           return trendingNFT;
         })
@@ -661,6 +661,7 @@ const Home = (props) => {
           onClick={() => NavigateTo(`discover`)}
           cursor="pointer"
           btnStatus={0}
+          background={({ theme }) => theme.blue}
         ></ButtonApp>
       </VStack>
     </Content>
