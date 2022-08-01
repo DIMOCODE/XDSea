@@ -362,14 +362,21 @@ function TopBar(props) {
                               onDisconnect={handleOnWalletChange}
                             />
                           </Connect>
+
                           <WalletButton
                             logout={
-                              isMetamask ? disconnectMetamask : Disconnect
+                              isMetamask
+                                ? disconnectMetamask
+                                : isXdcPay
+                                ? disconnectXdcPay
+                                : disconnectDcent
                             }
                             status={wallet?.connected}
                             wallet={wallet}
                             onClickMetamask={() => setShowMetamask(true)}
                             isMetamask={isMetamask}
+                            isDcent={isDcent}
+                            isXdcPay={isXdcPay}
                             isMobile={true}
                             hasAlert={showError > 0}
                             clickAlert={() => setShowInfo(true)}
@@ -674,14 +681,21 @@ function TopBar(props) {
                               onDisconnect={handleOnWalletChange}
                             />
                           </Connect>
+
                           <WalletButton
                             logout={
-                              isMetamask ? disconnectMetamask : Disconnect
+                              isMetamask
+                                ? disconnectMetamask
+                                : isXdcPay
+                                ? disconnectXdcPay
+                                : disconnectDcent
                             }
                             status={wallet?.connected}
                             wallet={wallet}
                             onClickMetamask={() => setShowMetamask(true)}
                             isMetamask={isMetamask}
+                            isDcent={isDcent}
+                            isXdcPay={isXdcPay}
                             hasAlert={showError > 0}
                             clickAlert={() => setShowInfo(true)}
                           ></WalletButton>
@@ -882,7 +896,7 @@ function TopBar(props) {
             exit={{ opacity: 0 }}
             transition={{ type: "spring", damping: 10 }}
           >
-            <VStack width="100%" height="100%" border="15px" blur="60px">
+            <VStack width="100%" height="100%" blur="60px">
               {walletOptions ? (
                 <VStack
                   self="none"
