@@ -49,6 +49,7 @@ function UploadMultimedia(props) {
             whileTap={{ scale: 0.96 }}
             spacing="0px"
             cursor="pointer"
+            overflow="hidden"
           >
             <IconImg
               url={multimediaIcon}
@@ -103,8 +104,10 @@ function UploadMultimedia(props) {
           height={height}
           border={border}
           background={({ theme }) => theme.backElement}
-          overflow="hidden"
           cursor="pointer"
+          overflow="hidden"
+          overflowx="hidden"
+          overflowy="hidden"
         >
           <ZStack>
             <ZItem>
@@ -113,7 +116,7 @@ function UploadMultimedia(props) {
                 playing={true}
                 muted={true}
                 loop={true}
-                width="180%"
+                width="100%"
                 height="100%"
               />
             </ZItem>
@@ -176,13 +179,15 @@ function UploadMultimedia(props) {
                         url={audioCover}
                         width="60px"
                         height="60px"
+                        style={{ cursor: "pointer" }}
                       ></IconImg>
-                      <TitleBold15 align="center">
+                      <TitleBold15 style={{ cursor: "pointer" }} align="center">
                         Upload a Cover Audio
                       </TitleBold15>
                       <BodyRegular
                         align="center"
                         textcolor={({ theme }) => theme.text}
+                        style={{ cursor: "pointer" }}
                       >
                         Compatible: jpg, png, gif
                       </BodyRegular>
