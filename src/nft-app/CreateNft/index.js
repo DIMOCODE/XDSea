@@ -440,8 +440,6 @@ function CreateNft(props) {
             setProperties(filteredProperties);
             const nftUrl = await addToIPFS();
             const previewUrl = await addToIPFSPreview();
-            // await addToIPFSCollectionBanner();
-            // await addToIPFSCollectionLogo();
 
             setMintButtonStatus(1);
             if (user?.user?._id && wallet?.address) {
@@ -536,15 +534,16 @@ function CreateNft(props) {
       gasLimit = await xdc3.eth.estimateGas(tx2);
       tx2["gas"] = gasLimit;
       transaction = await SendTransaction(tx2);
-      setMintButtonStatus(3);
+      const bannerUrl = await addToIPFSCollectionBanner();
+      const logoUrl = await addToIPFSCollectionLogo();
       if (newCollection && !collectionExists) {
         const collectionCreation = await (
           await createCollection(
             collectionName,
             isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address,
             collectionDescription,
-            collectionLogoURL,
-            collectionBannerURL,
+            logoURL,
+            bannerUrl,
             twitterLink,
             instagramLink,
             discordLink,
@@ -599,7 +598,7 @@ function CreateNft(props) {
           )
         ).data.nft;
       }
-
+      setMintButtonStatus(3);
       setMinted(true);
     } catch (error) {
       console.log(error);
