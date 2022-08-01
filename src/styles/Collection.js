@@ -272,7 +272,8 @@ function Collection(props) {
                               border="9px"
                               padding="12px 0"
                               width="100%"
-                              background={appStyle.colors.white30}
+                              background={appStyle.colors.darkgrey30}
+                              blur="26px"
                             >
                               <HStack spacing="6px">
                                 <IconImg
@@ -317,7 +318,8 @@ function Collection(props) {
                               border="9px"
                               padding="12px 0"
                               spacing="9px"
-                              background={appStyle.colors.white30}
+                              background={appStyle.colors.darkgrey30}
+                              blur="26px"
                             >
                               <HStack>
                                 <CaptionRegular
@@ -337,7 +339,8 @@ function Collection(props) {
                             <HStack
                               border="9px"
                               padding="12px 0"
-                              background={appStyle.colors.white30}
+                              background={appStyle.colors.darkgrey30}
+                              blur="26px"
                               spacing="9px"
                               width="100%"
                             >
@@ -354,7 +357,8 @@ function Collection(props) {
                             <VStack
                               border="9px"
                               padding="12px 0"
-                              background={appStyle.colors.white30}
+                              background={appStyle.colors.darkgrey30}
+                              blur="26px"
                               spacing="6px"
                             >
                               <HStack spacing="6px">

@@ -72,8 +72,8 @@ export const VStack = styled(motion.div).attrs((props) => ({
   margin-top: ${(props) => props.marginTop};
   cursor: ${(props) => props.cursor};
 
-  -webkit-backdrop-filter: blur(${(props) => props.blur});
-  backdrop-filter: blur(${(props) => props.blur});
+  -webkit-backdrop-filter: blur(${(props) => props.blur}) !important;
+  backdrop-filter: blur(${(props) => props.blur}) !important;
 
   *::-webkit-scrollbar {
     width: 4px;
