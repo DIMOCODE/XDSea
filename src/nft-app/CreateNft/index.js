@@ -263,12 +263,12 @@ function CreateNft(props) {
     setLoadingIcon(empty);
   };
 
-  const checkCollectionExists = async (collectionNickName) => {
+  const checkCollectionExists = async (collectionName) => {
     setLoadingIcon(loading);
+    const collectionData = await (
+      await checkCollectionExists(collectionName)
+    ).data;
     try {
-      const collectionData = await (
-        await getCollection(collectionNickName)
-      ).data;
       if (collectionData.collection.creator._id === user) {
         setCollectionExists(false);
         setCollectionValid(true);

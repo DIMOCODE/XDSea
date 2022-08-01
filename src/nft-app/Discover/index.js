@@ -30,7 +30,7 @@ import menuContext from "../../context/menuContext";
 import { getCollections } from "../../API/Collection";
 import { getNFTs } from "../../API/NFT";
 import banner1 from "../../images/Banner1.jpg";
-import { nftaddress } from "../../config";
+import { nftaddress, nftmarketaddress, nftmarketlayeraddress } from "../../config";
 import { NftContainer } from "../../styles/NftContainer";
 import { isSafari } from "../../common/common";
 import noResult from "../../images/noResult.png";
@@ -43,6 +43,12 @@ import { FiltersButton } from "../../styles/FiltersButton";
 import "./customstyles.css";
 import { SortButtonCollections } from "../../styles/SortButtonCollections";
 import { StickySectionHeader } from "@mayank1513/sticky-section-header";
+import Xdc3 from "xdc3";
+import NFT from "../../abis/NFT.json";
+import NFTMarket from "../../abis/NFTMarket.json";
+import axios from "axios";
+import { DEFAULT_PROVIDER, HEADER } from "../../constant";
+import NFTMarketLayer1 from "../../abis/NFTMarketLayer1.json";
 
 const Discover = (props) => {
   const history = useHistory();
@@ -231,14 +237,21 @@ const Discover = (props) => {
       }
 
       // Export Contract data for migration to DB function
-      {
-        /*
-        // const meta = {}
-        // for(var i = 2001; i < 3893; i++) {
-        //   const uri = await nftContract.methods.tokenURI(i).call()
+      // const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
+      // const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
+      // const marketContract = new xdc3.eth.Contract(
+      //     NFTMarket.abi,
+      //     nftmarketaddress,
+      //     xdc3
+      //   );
+      //   const meta = {}
+      //   for(var i = 1; i < 1539; i++) {
+          // const uri = await nftContract.methods.tokenURI(i).call()
           // var metadata = await axios.get(uri)
           // meta[i] = metadata.data;
             // var item = await marketContract.methods.idToMarketItem(i).call();
+            // var mintEvent = await marketContract.methods.eventHistory(i, 1).call();
+            // meta[i] = mintEvent;
             // let nft = {
             //   tokenId: item.tokenId,
             //   itemId: item.itemId,
@@ -277,13 +290,12 @@ const Discover = (props) => {
             //   offers.push(offer)
             // }
             // if(offers.length !== 0)
-              // meta[i] = nft;
+            //   meta[i] = offers;
             // await new Promise((r) => setTimeout(r, 500));
         //     console.log(i)
         // }
         // console.log(JSON.stringify(meta))
-      */
-      }
+  
 
       setCollections(collectionList);
       setTotalCollections(collectionData.collectionsAmount);
