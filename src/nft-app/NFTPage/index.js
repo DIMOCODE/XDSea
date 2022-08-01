@@ -1924,7 +1924,7 @@ const NFTDetails = (props) => {
                 ))
               ) : moreFromCollectionNfts.length !== 0 ? (
                 moreFromCollectionNfts.map((item, i) => (
-                  <VStack minwidth="100%" height="450px" key={i}>
+                  <VStack minwidth="260px" height="450px" key={i}>
                     <NftContainer
                       isVerified={item.isVerified}
                       iconStatus={item.saleType}
