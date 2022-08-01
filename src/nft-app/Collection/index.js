@@ -72,15 +72,23 @@ const CollectionDetails = (props) => {
 
   const { collectionNickName } = useParams();
   const [, setShowMenu] = useContext(menuContext);
+  const [maxPrice, setMaxPrice] = useState(0);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [params, setParams] = useState({
+    page: 1,
+    searchBy: searchTerm,
+  });
+  
 
   /**
    * Get collection NFT data for the first page
    */
-  const getData = async () => {
+  const getData = async (searchBy) => {
     try {
       const collectionData = await (
         await getCollection(collectionNickName)
       ).data;
+      setParams({...params, collectionId: collectionData.collection._id, searchBy: searchBy });
       let collection = {
         _id: collectionData.collection._id,
         banner: isSafari
@@ -103,13 +111,11 @@ const CollectionDetails = (props) => {
         nftsCount: collectionData.metrics.nftsCount,
         owners: collectionData.metrics.owners,
       };
-      console.log(collectionData);
       const collectionNFTData = await (
-        await getCollectionNFTs(collectionData.collection._id, page)
-      ).data.nfts;
-      console.log(collectionNFTData);
+        await getCollectionNFTs({...params, collectionId: collectionData.collection._id, searchBy: searchBy })
+      ).data;
       const collectionNFTList = await Promise.all(
-        collectionNFTData.map(async (nft) => {
+        collectionNFTData.nfts.map(async (nft) => {
           let collectionNFT = {
             collectionName: nft.collectionId.name,
             creatorLogo: nft.owner.urlProfile,
@@ -129,7 +135,8 @@ const CollectionDetails = (props) => {
           return collectionNFT;
         })
       );
-
+      setMaxPrice(collectionNFTData.higherPrice)
+      setParams({collectionId: collectionData.collection._id, searchBy: searchBy, page: params.page + 1});
       setLoadingState("loaded");
       setNfts(collectionNFTList);
       setCollection(collection);
@@ -146,7 +153,7 @@ const CollectionDetails = (props) => {
 
   const fetchMoreNFTs = async () => {
     const collectionNFTData = await (
-      await getCollectionNFTs(collection._id, page + 1)
+      await getCollectionNFTs({params})
     ).data.nfts;
     const collectionNFTList = await Promise.all(
       collectionNFTData.map(async (nft) => {
@@ -170,7 +177,7 @@ const CollectionDetails = (props) => {
       })
     );
 
-    setPage(page + 1);
+    setParams({...params, page: params.page + 1});
     setNfts((prevState) => [...prevState, ...collectionNFTList]);
   };
 
@@ -179,10 +186,47 @@ const CollectionDetails = (props) => {
     history.push(`/${route}`);
   }
 
+  const handleChangeFilterNFT = (params) => {
+    setParams(params);
+    updateNFTs(params);
+  };
+
+  const updateNFTs = async (params) => {
+    const collectionNFTData = await (
+      await getCollectionNFTs(params)
+    ).data;
+    const collectionNFTList = await Promise.all(
+      collectionNFTData.nfts.map(async (nft) => {
+        let collectionNFT = {
+          collectionName: nft.collectionId.name,
+          creatorLogo: nft.owner.urlProfile,
+          image: isSafari ? nft.urlFile.v1 : nft.urlFile.v0,
+          name: nft.name,
+          hasOpenOffer: nft.hasOpenOffer,
+          price: nft.price,
+          fileType: nft.fileType,
+          preview: isSafari ? nft.preview.v1 : nft.preview.v0,
+          owner: nft.owner.userName,
+          ownerId: nft.owner._id,
+          tokenId: nft.tokenId,
+          saleType: nft.saleType.toLowerCase(),
+          isVerified: nft.owner.isVerified,
+          collectionVerified: nft.creator.isVerified
+        };
+        return collectionNFT;
+      })
+    );
+    setMaxPrice(collectionNFTData.higherPrice);
+    setParams({...params, page: params.page + 1});
+    setLoadingState("loaded");
+    setNfts(collectionNFTList);
+    setCollection(collection);
+  };
+
   useEffect(() => {
     window.scrollTo(0, 0);
-    getData();
-  }, []);
+    getData(searchTerm);
+  }, [searchTerm]);
 
   const webLink = `https://www.xdsea.com/collection/${collectionNickName}`;
 
@@ -393,7 +437,7 @@ const CollectionDetails = (props) => {
                       width="18px"
                       height="18px"
                     ></IconImg>
-                    {collection.floorPrice ? (
+                    {collection.floorPrice !== undefined ? (
                       <BodyBold textcolor={({ theme }) => theme.text}>
                         {collection.floorPrice > 100000
                           ? Intl.NumberFormat("en-US", {
@@ -421,7 +465,7 @@ const CollectionDetails = (props) => {
                     boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
                   }}
                 >
-                  {collection.owners ? (
+                  {collection.owners !== undefined ? (
                     <BodyBold textcolor={({ theme }) => theme.text}>
                       {collection.owners}
                     </BodyBold>
@@ -483,7 +527,6 @@ const CollectionDetails = (props) => {
                       </BodyBold>
                     ) : (
                       <LoopBars width="54px">
-                        {console.log(collection.volumeTrade)}
                       </LoopBars>
                     )}
                   </HStack>
@@ -500,7 +543,7 @@ const CollectionDetails = (props) => {
 
           {/* Collection Description */}
           <VStack width={size.width < 768 ? "100%" : "60%"} padding="15px">
-            {collection.description ? (
+            {collection.description !== undefined ? (
               <BodyRegular textcolor={({ theme }) => theme.text} align="center">
                 {collection.description}
               </BodyRegular>
@@ -627,11 +670,26 @@ const CollectionDetails = (props) => {
         <StickySectionHeader top="90">
           {/* Filters Search and Sort */}
           <HStack responsive="true">
-            <SearchCollection placeholder="Search inside the collection"></SearchCollection>
+            <SearchCollection inputId = {"collectionNFT"} placeholder="Search inside the collection" onClickIcon = {(searchWord) => {
+                  setSearchTerm(searchWord);
+                }} 
+                onKeyPress={(e) => {
+                  if(e.key === 'Enter') {
+                    setSearchTerm(e.target.value);
+                  }
+                }}></SearchCollection>
             <HStack>
-              <FiltersButton isNftFilter={true}></FiltersButton>
-              <Spacer></Spacer>
-              <SortButtonNFTS></SortButtonNFTS>
+              <FiltersButton
+                isNftFilter={true}
+                onChange={handleChangeFilterNFT}
+                params={params}
+                maxPrice={maxPrice}
+              ></FiltersButton>
+              <SortButtonNFTS
+                onChange={handleChangeFilterNFT}
+                params={params}
+                isSearchPage={true}
+              ></SortButtonNFTS>
             </HStack>
           </HStack>
         </StickySectionHeader>

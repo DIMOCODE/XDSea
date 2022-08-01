@@ -16,8 +16,16 @@ export const getCollection = (nickName) => {
   return createRequest(HTTP_METHODS.get, `collection/byNickName/${nickName}`, null, null);
 };
 
-export const getCollectionNFTs = (collectionId, page) => {
-  return createRequest(HTTP_METHODS.get, `collection/nft/${collectionId}/${page}`, null, null);
+export const getCollectionNFTs = ({collectionId, page, searchBy, verified, saleType1, saleType2, saleType3, saleType4, priceRangeStart, priceRangeEnd,
+  sortBy, sortDirection}) => {
+  var params = `?${searchBy !== undefined ? `searchBy=${searchBy}&` : ""}` + 
+  `${priceRangeStart !== undefined ? `priceRangeStart=${priceRangeStart}&` : ""}` + 
+  `${priceRangeEnd !== undefined ? `priceRangeEnd=${priceRangeEnd}&` : ""}${sortBy !== undefined ? `sortBy=${sortBy}&` : ""}` + 
+  `${sortDirection !== undefined ? `sortDirection=${sortDirection}&` : ""}${verified !== undefined ? `verified=${verified}&` : ""}` +
+  `${saleType1 !== undefined ? `saleType=${saleType1}&` : ""}${saleType2 !== undefined ? `saleType=${saleType2}&` : ""}` + 
+  `${saleType3 !== undefined ? `saleType=${saleType3}&` : ""}${saleType4 !== undefined ? `saleType=${saleType4}&` : ""}`;
+  params = params.substring(0, params.length - 1);
+  return createRequest(HTTP_METHODS.get, `collection/nft/${collectionId}/${page}${params}`, null, null);
 };
 
 export const createCollection = (name, addressCreator, description, logo, banner, 
