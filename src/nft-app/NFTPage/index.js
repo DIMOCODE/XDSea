@@ -30,6 +30,7 @@ import Tooltip from "@mui/material/Tooltip";
 import lock from "../../images/unlockable2.gif";
 import mint from "../../images/mintIcon.png";
 import list from "../../images/listIcon.png";
+import eyesEmpty from "../../images/eyesEmpty.png";
 import withdrawList from "../../images/withdrawList.png";
 import sale from "../../images/partyIcon.png";
 import transferIcon from "../../images/transferIconGray.png";
@@ -1914,44 +1915,56 @@ const NFTDetails = (props) => {
           <VStack width="100%" alignment="flex">
             <TitleBold27 align="center">More from this Collection</TitleBold27>
 
-            <HStack
-              responsive={true}
-              padding="0 15px"
-              height={size.width < 768 ? "1800px" : "auto"}
-            >
-              {loadingMore
-                ? loadingNFTs.map((item) => (
-                    <VStack minwidth="240px" height="390px" key={item.name}>
-                      <LoadingNftContainer></LoadingNftContainer>
-                    </VStack>
-                  ))
-                : moreFromCollectionNfts.map((item, i) => (
-                    <VStack width="100%" height="450px" key={i}>
-                      <NftContainer
-                        isVerified={item.isVerified}
-                        iconStatus={item.saleType}
-                        hasOffers={item.hasOpenOffer ? true : false}
-                        key={item.name}
-                        fileType={item.fileType}
-                        creatorImage={item.creatorLogo}
-                        itemImage={item.image}
-                        price={item.price}
-                        collectionName={item.collectionName}
-                        itemNumber={item.name}
-                        background={({ theme }) => theme.backElement}
-                        onClick={() => {
-                          setNFT(null);
-                          NavigateTo(`nft/${nftaddress}/${item.tokenId}`);
-                        }}
-                        onClickCreator={() =>
-                          NavigateTo(`UserProfile/${item.ownerId}`)
-                        }
-                        usdPrice={props.xdc}
-                        owner={true}
-                        collectionVerified={item.collectionVerified}
-                      ></NftContainer>
-                    </VStack>
-                  ))}
+            <HStack flexwrap="wrap" padding="0 15px">
+              {loadingMore ? (
+                loadingNFTs.map((item) => (
+                  <VStack minwidth="240px" height="390px" key={item.name}>
+                    <LoadingNftContainer></LoadingNftContainer>
+                  </VStack>
+                ))
+              ) : moreFromCollectionNfts.length !== 0 ? (
+                moreFromCollectionNfts.map((item, i) => (
+                  <VStack minwidth="100%" height="450px" key={i}>
+                    <NftContainer
+                      isVerified={item.isVerified}
+                      iconStatus={item.saleType}
+                      hasOffers={item.hasOpenOffer ? true : false}
+                      key={item.name}
+                      fileType={item.fileType}
+                      creatorImage={item.creatorLogo}
+                      itemImage={item.image}
+                      price={item.price}
+                      collectionName={item.collectionName}
+                      itemNumber={item.name}
+                      background={({ theme }) => theme.backElement}
+                      onClick={() => {
+                        setNFT(null);
+                        NavigateTo(`nft/${nftaddress}/${item.tokenId}`);
+                      }}
+                      onClickCreator={() =>
+                        NavigateTo(`UserProfile/${item.ownerId}`)
+                      }
+                      usdPrice={props.xdc}
+                      owner={true}
+                      collectionVerified={item.collectionVerified}
+                    ></NftContainer>
+                  </VStack>
+                ))
+              ) : (
+                <VStack
+                  width="100%"
+                  height="260px"
+                  border="9px"
+                  spacing="9px"
+                  background={({ theme }) => theme.faded}
+                >
+                  <IconImg url={eyesEmpty} width="60px" height="60px"></IconImg>
+                  <BodyBold>Oh Snap!</BodyBold>
+                  <BodyRegular animate={{ opacity: 0.6 }}>
+                    There is no more NFTs on this collection
+                  </BodyRegular>
+                </VStack>
+              )}
             </HStack>
           </VStack>
         </VStack>
