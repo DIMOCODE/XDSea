@@ -22,7 +22,7 @@ import {
   TitleBold18,
   CaptionRegular,
   BodyBold,
-  BodyRegular
+  BodyRegular,
 } from "../../styles/TextStyles";
 import { appStyle } from "../../styles/AppStyles";
 import useWindowSize from "../../styles/useWindowSize";
