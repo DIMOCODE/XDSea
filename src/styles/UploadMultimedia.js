@@ -50,7 +50,12 @@ function UploadMultimedia(props) {
             spacing="0px"
             cursor="pointer"
           >
-            <IconImg url={multimediaIcon} width="45px" height="40px" cursor="pointer"></IconImg>
+            <IconImg
+              url={multimediaIcon}
+              width="45px"
+              height="40px"
+              cursor="pointer"
+            ></IconImg>
             <VStack maxheight="60px" spacing="6px" cursor="pointer">
               <BodyBold>{description}</BodyBold>
               <CaptionRegular align="Center">{sizeText}</CaptionRegular>
@@ -67,6 +72,7 @@ function UploadMultimedia(props) {
                 border={border}
                 background={({ theme }) => theme.backElement}
                 overflow="hidden"
+                overflowy="hidden"
                 cursor="pointer"
                 style={setBorder && borderColor}
               >
@@ -103,9 +109,7 @@ function UploadMultimedia(props) {
           <ZStack>
             <ZItem>
               <ReactPlayer
-                url={
-                  file.preview
-                }
+                url={file.preview}
                 playing={true}
                 muted={true}
                 loop={true}
@@ -200,9 +204,7 @@ function UploadMultimedia(props) {
             )}
             <PlayerAbsolute>
               <ReactPlayer
-                url={
-                  file.preview
-                }
+                url={file.preview}
                 playing={true}
                 muted={true}
                 controls={true}
