@@ -116,7 +116,7 @@ function Collection(props) {
           ></IconImg>
         </ZItem>
         <ZItem>
-          <AnimatePresence>
+          <AnimatePresence initial={false}>
             <VStack
               spacing="0"
               padding="21px"
@@ -129,7 +129,7 @@ function Collection(props) {
                 cursor={"pointer"}
                 key={keyID}
                 initial={{
-                  y: 150,
+                  y: 0,
                   x: 0,
                   opacity: 0,
                 }}
@@ -228,7 +228,7 @@ function Collection(props) {
                     <VStack
                       key={keyContent}
                       initial={{
-                        y: 150,
+                        y: 0,
                         x: 0,
                         opacity: 0,
                       }}
@@ -242,7 +242,7 @@ function Collection(props) {
                         },
                       }}
                       exit={{
-                        y: -150,
+                        y: 0,
                         opacity: 0,
                       }}
                       layout
@@ -282,27 +282,27 @@ function Collection(props) {
                                 ></IconImg>
                                 <BodyBold textcolor={appStyle.colors.white}>
                                   {floorprice > 100000
-                                    ? (Intl.NumberFormat('en-US', {
+                                    ? Intl.NumberFormat("en-US", {
                                         notation: "compact",
-                                        maximumFractionDigits: 2
-                                      }).format(floorprice))
-                                    : (
-                                      floorprice.toLocaleString(undefined, {
                                         maximumFractionDigits: 2,
-                                      }) || "0"
-                                    )}
+                                      }).format(floorprice)
+                                    : floorprice.toLocaleString(undefined, {
+                                        maximumFractionDigits: 2,
+                                      }) || "0"}
                                 </BodyBold>
                                 <CaptionRegular textcolor="white">
-                                  ({(props.xdc.xdcPrice * floorprice) > 100000
-                                    ? (Intl.NumberFormat('en-US', {
+                                  (
+                                  {props.xdc.xdcPrice * floorprice > 100000
+                                    ? Intl.NumberFormat("en-US", {
                                         notation: "compact",
-                                        maximumFractionDigits: 2
-                                      }).format(props.xdc.xdcPrice * floorprice))
-                                    : (
-                                      (props.xdc.xdcPrice * floorprice).toLocaleString(undefined, {
                                         maximumFractionDigits: 2,
-                                      }) || "0"
-                                    )} USD)
+                                      }).format(props.xdc.xdcPrice * floorprice)
+                                    : (
+                                        props.xdc.xdcPrice * floorprice
+                                      ).toLocaleString(undefined, {
+                                        maximumFractionDigits: 2,
+                                      }) || "0"}{" "}
+                                  USD)
                                 </CaptionRegular>
                               </HStack>{" "}
                               <CaptionRegular textcolor={appStyle.colors.white}>
@@ -365,27 +365,29 @@ function Collection(props) {
                                 ></IconImg>
                                 <BodyBold textcolor={appStyle.colors.white}>
                                   {volumetraded > 100000
-                                    ? (Intl.NumberFormat('en-US', {
+                                    ? Intl.NumberFormat("en-US", {
                                         notation: "compact",
-                                        maximumFractionDigits: 2
-                                      }).format(volumetraded))
-                                    : (
-                                      volumetraded.toLocaleString(undefined, {
                                         maximumFractionDigits: 2,
-                                      }) || "0"
-                                    )}
+                                      }).format(volumetraded)
+                                    : volumetraded.toLocaleString(undefined, {
+                                        maximumFractionDigits: 2,
+                                      }) || "0"}
                                 </BodyBold>
                                 <CaptionRegular textcolor="white">
-                                  ({(props.xdc.xdcPrice * volumetraded) > 100000
-                                    ? (Intl.NumberFormat('en-US', {
+                                  (
+                                  {props.xdc.xdcPrice * volumetraded > 100000
+                                    ? Intl.NumberFormat("en-US", {
                                         notation: "compact",
-                                        maximumFractionDigits: 2
-                                      }).format(props.xdc.xdcPrice * volumetraded))
-                                    : (
-                                      (props.xdc.xdcPrice * volumetraded).toLocaleString(undefined, {
                                         maximumFractionDigits: 2,
-                                      }) || "0"
-                                    )} USD)
+                                      }).format(
+                                        props.xdc.xdcPrice * volumetraded
+                                      )
+                                    : (
+                                        props.xdc.xdcPrice * volumetraded
+                                      ).toLocaleString(undefined, {
+                                        maximumFractionDigits: 2,
+                                      }) || "0"}{" "}
+                                  USD)
                                 </CaptionRegular>
                               </HStack>
                               <CaptionRegular

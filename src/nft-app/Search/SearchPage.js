@@ -63,9 +63,7 @@ function SearchPage(props) {
   const [newResults, setNewResults] = useState(true);
 
   const getCollectionData = async (params) => {
-    const collectionResults = await (
-      await getCollections(params)
-    ).data;
+    const collectionResults = await (await getCollections(params)).data;
     setCollectionData(collectionResults.collections);
     setTotalCollections(collectionResults.collectionsAmount);
     console.log(collectionResults);
@@ -73,7 +71,7 @@ function SearchPage(props) {
     setCollectionParams((prevState) => ({
       ...prevState,
       page: params.page + 1,
-      searchTerm: params.searchTerm
+      searchTerm: params.searchTerm,
     }));
   };
 
@@ -111,21 +109,25 @@ function SearchPage(props) {
   };
 
   const getNFTData = async (params) => {
-    console.log(params)
+    console.log(params);
     const nftResults = await (await getNFTs(params)).data;
     setNftData(nftResults.nfts);
     setTotalNFTs(nftResults.nftsAmount);
     console.log(nftResults);
     setLoading(false);
-    setNftParams((prevState) => ({ ...prevState, page: params.page + 1, searchBy: params.searchBy }));
+    setNftParams((prevState) => ({
+      ...prevState,
+      page: params.page + 1,
+      searchBy: params.searchBy,
+    }));
   };
 
   const fetchMoreNFTs = async () => {
-    console.log(nftParams)
+    console.log(nftParams);
     const nftResults = await (await getNFTs(nftParams)).data;
     setNftData([...nftData, ...nftResults.nfts]);
     setNftParams((prevState) => ({ ...prevState, page: prevState.page + 1 }));
-    console.log(nftResults.nfts)
+    console.log(nftResults.nfts);
   };
 
   /**
@@ -154,16 +156,17 @@ function SearchPage(props) {
   useEffect(async () => {
     setLoading(true);
     if (isSelected) {
-      console.log(location)
-      var newurl = location.pathname + `?searchTerm=${searchTerm}&mode=collection`;
-      window.history.replaceState({path:newurl},'',newurl);
-      getCollectionData({ page: 1, searchTerm: searchTerm});
-      setNftParams({page: 1, searchBy: searchTerm});
+      console.log(location);
+      var newurl =
+        location.pathname + `?searchTerm=${searchTerm}&mode=collection`;
+      window.history.replaceState({ path: newurl }, "", newurl);
+      getCollectionData({ page: 1, searchTerm: searchTerm });
+      setNftParams({ page: 1, searchBy: searchTerm });
     } else {
-      console.log(location)
+      console.log(location);
       var newurl = location.pathname + `?searchTerm=${searchTerm}&mode=nft`;
-      window.history.replaceState({path:newurl},'',newurl);
-      getNFTData({ page: 1, searchBy: searchTerm});
+      window.history.replaceState({ path: newurl }, "", newurl);
+      getNFTData({ page: 1, searchBy: searchTerm });
       setCollectionParams({ page: 1, searchTerm: searchTerm });
     }
     setNewResults(true);
@@ -231,9 +234,10 @@ function SearchPage(props) {
                         getCollectionData(collectionParams);
                       }
                       setNewResults(false);
-                      console.log(location)
-                      var newurl = location.pathname + `?${searchTerm}&mode=collection`;
-                      window.history.replaceState({path:newurl},'',newurl);
+                      console.log(location);
+                      var newurl =
+                        location.pathname + `?${searchTerm}&mode=collection`;
+                      window.history.replaceState({ path: newurl }, "", newurl);
                       setIsSelected(true);
                     }}
                     cursor="pointer"
@@ -255,9 +259,10 @@ function SearchPage(props) {
                         getNFTData(nftParams);
                       }
                       setNewResults(false);
-                      console.log(location)
-                      var newurl = location.pathname + `?${searchTerm}&mode=nft`;
-                      window.history.replaceState({path:newurl},'',newurl);
+                      console.log(location);
+                      var newurl =
+                        location.pathname + `?${searchTerm}&mode=nft`;
+                      window.history.replaceState({ path: newurl }, "", newurl);
                       setIsSelected(false);
                     }}
                   >
@@ -291,14 +296,18 @@ function SearchPage(props) {
                 isNftFilter={false}
                 isSearchPage={true}
               ></FiltersButton>
-              <SearchCollection inputId = {"searchPageCollection"} placeholder={searchTerm} onClickIcon = {(searchWord) => {
+              <SearchCollection
+                inputId={"searchPageCollection"}
+                placeholder={searchTerm}
+                onClickIcon={(searchWord) => {
                   setSearchTerm(searchWord);
-                }} 
+                }}
                 onKeyPress={(e) => {
-                  if(e.key === 'Enter') {
+                  if (e.key === "Enter") {
                     setSearchTerm(e.target.value);
                   }
-                }}></SearchCollection>
+                }}
+              ></SearchCollection>
               <SortButtonCollections
                 onChange={handleChangeFilter}
                 params={collectionParams}
@@ -318,14 +327,18 @@ function SearchPage(props) {
                 params={nftParams}
                 isSearchPage={true}
               ></FiltersButton>
-              <SearchCollection inputId = {"searchPageNFT"} placeholder={searchTerm} onClickIcon = {(searchWord) => {
+              <SearchCollection
+                inputId={"searchPageNFT"}
+                placeholder={searchTerm}
+                onClickIcon={(searchWord) => {
                   setSearchTerm(searchWord);
-                }} 
+                }}
                 onKeyPress={(e) => {
-                  if(e.key === 'Enter') {
+                  if (e.key === "Enter") {
                     setSearchTerm(e.target.value);
                   }
-                }}></SearchCollection>
+                }}
+              ></SearchCollection>
               <SortButtonNFTS
                 onChange={handleChangeFilterNFT}
                 params={nftParams}
@@ -336,9 +349,11 @@ function SearchPage(props) {
         </StickySectionHeader>
 
         {isSelected ? (
-          <VStack style={{ zIndex: "20" }} spacing="30px" padding="30px 0">
+          <VStack style={{ zIndex: "20" }} spacing="30px" padding="30px 12px">
             {loading ? (
-              <LoopLogo></LoopLogo>
+              <VStack minheight="300px">
+                <LoopLogo></LoopLogo>
+              </VStack>
             ) : collectionData.length !== 0 ? (
               <InfiniteScroll
                 dataLength={collectionData.length}
@@ -357,46 +372,42 @@ function SearchPage(props) {
                 scrollableTarget="#scrollableDiv"
                 style={{ overflow: "hidden" }}
               >
-                <VStack
-                  spacing="30px"
-                  padding={size.width < 1200 ? "0 12px" : "0"}
-                >
-                  <HStack>
-                    <HStack spacing="12px" flexwrap="wrap" justify="flex-start">
-                      {collectionData.map((item) => (
-                        <LayoutGroup id="collection" key={item.name}>
-                          <VStack width="326px" height="440px">
-                            <Collection
-                              key={item.name}
-                              isVerified={item.creator.isVerified}
-                              keyContent={item.name}
-                              keyID={item.creator._id}
-                              collectionImage={
-                                isSafari ? item.banner.v1 : item.banner.v0
-                              }
-                              creatorLogo={
-                                isSafari ? item.logo.v1 : item.logo.v0
-                              }
-                              collectionName={item.name}
-                              collectionDescription={item.description}
-                              creatorName={item.creator.userName}
-                              onClickCollection={() =>
-                                NavigateTo(`collection/${item.nickName}`)
-                              }
-                              floorprice={item.floorPrice}
-                              owners={item.owners}
-                              nfts={item.totalNfts}
-                              volumetraded={item.volumeTrade}
-                              onClickCreator={() =>
-                                NavigateTo(`UserProfile/${item.creator._id}`)
-                              }
-                            ></Collection>
-                          </VStack>
-                        </LayoutGroup>
-                      ))}
-                    </HStack>
-                  </HStack>
-                </VStack>
+                <HStack spacing="12px" flexwrap="wrap" justify="flex-start">
+                  {collectionData.map((item) => (
+                    <LayoutGroup id="collection" key={item.name}>
+                      <VStack
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        width="326px"
+                        height="440px"
+                      >
+                        <Collection
+                          key={item.name}
+                          isVerified={item.creator.isVerified}
+                          keyContent={item.name}
+                          keyID={item.creator._id}
+                          collectionImage={
+                            isSafari ? item.banner.v1 : item.banner.v0
+                          }
+                          creatorLogo={isSafari ? item.logo.v1 : item.logo.v0}
+                          collectionName={item.name}
+                          collectionDescription={item.description}
+                          creatorName={item.creator.userName}
+                          onClickCollection={() =>
+                            NavigateTo(`collection/${item.nickName}`)
+                          }
+                          floorprice={item.floorPrice}
+                          owners={item.owners}
+                          nfts={item.totalNfts}
+                          volumetraded={item.volumeTrade}
+                          onClickCreator={() =>
+                            NavigateTo(`UserProfile/${item.creator._id}`)
+                          }
+                        ></Collection>
+                      </VStack>
+                    </LayoutGroup>
+                  ))}
+                </HStack>
               </InfiniteScroll>
             ) : (
               <>
@@ -415,7 +426,7 @@ function SearchPage(props) {
             )}
           </VStack>
         ) : (
-          <VStack spacing="30px" padding="30px 0">
+          <VStack spacing="30px" padding="30px 12px">
             {loading ? (
               <HStack height="360px">
                 <LoopLogo></LoopLogo>
@@ -437,43 +448,39 @@ function SearchPage(props) {
                 scrollableTarget="#scrollableDiv"
                 style={{ overflow: "hidden" }}
               >
-                <VStack
-                  spacing="30px"
-                  padding={size.width < 1200 ? "0 12px" : "0"}
-                >
-                  <HStack>
-                    <HStack spacing="12px" flexwrap="wrap" justify="flex-start">
-                      {nftData.map((item, i) => (
-                        <VStack minwidth="240px" height="390px">
-                          <NftContainer
-                            key={i}
-                            isVerified={item.owner.isVerified}
-                            iconStatus={item.saleType}
-                            hasOffers={item.hasOpenOffer ? true : false}
-                            creatorImage={item.owner.urlProfile}
-                            itemImage={
-                              isSafari ? item.urlFile.v1 : item.urlFile.v0
-                            }
-                            price={item.price}
-                            collectionName={item.collectionId.name}
-                            itemNumber={item.name}
-                            fileType={item.fileType}
-                            background={({ theme }) => theme.backElement}
-                            onClick={() =>
-                              NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
-                            }
-                            onClickCreator={() =>
-                              NavigateTo(`UserProfile/${item.creator._id}`)
-                            }
-                            owner={true}
-                            usdPrice={props.xdc}
-                            collectionVerified={item.creator.isVerified}
-                          ></NftContainer>
-                        </VStack>
-                      ))}
-                    </HStack>
-                  </HStack>
-                </VStack>
+                <HStack spacing="12px" flexwrap="wrap" justify="flex-start">
+                  {nftData.map((item, i) => (
+                    <VStack
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      minwidth="240px"
+                      height="390px"
+                    >
+                      <NftContainer
+                        key={i}
+                        isVerified={item.owner.isVerified}
+                        iconStatus={item.saleType}
+                        hasOffers={item.hasOpenOffer ? true : false}
+                        creatorImage={item.owner.urlProfile}
+                        itemImage={isSafari ? item.urlFile.v1 : item.urlFile.v0}
+                        price={item.price}
+                        collectionName={item.collectionId.name}
+                        itemNumber={item.name}
+                        fileType={item.fileType}
+                        background={({ theme }) => theme.backElement}
+                        onClick={() =>
+                          NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
+                        }
+                        onClickCreator={() =>
+                          NavigateTo(`UserProfile/${item.creator._id}`)
+                        }
+                        owner={true}
+                        usdPrice={props.xdc}
+                        collectionVerified={item.creator.isVerified}
+                      ></NftContainer>
+                    </VStack>
+                  ))}
+                </HStack>
               </InfiniteScroll>
             ) : (
               <>

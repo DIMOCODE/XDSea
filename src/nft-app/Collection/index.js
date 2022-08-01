@@ -124,7 +124,7 @@ const CollectionDetails = (props) => {
             tokenId: nft.tokenId,
             saleType: nft.saleType.toLowerCase(),
             isVerified: nft.owner.isVerified,
-            collectionVerified: nft.creator.isVerified
+            collectionVerified: nft.creator.isVerified,
           };
           return collectionNFT;
         })
@@ -164,7 +164,7 @@ const CollectionDetails = (props) => {
           tokenId: nft.tokenId,
           saleType: nft.saleType.toLowerCase(),
           isVerified: nft.owner.isVerified,
-          collectionVerified: nft.creator.isVerified
+          collectionVerified: nft.creator.isVerified,
         };
         return collectionNFT;
       })
@@ -652,80 +652,74 @@ const CollectionDetails = (props) => {
           scrollableTarget="#scrollableDiv"
           style={{ overflow: "hidden" }}
         >
-          <VStack padding="30px 0">
-            <HStack>
-              <HStack
-                flexwrap="wrap"
-                padding="0"
-                justify={size.width < 768 ? "center" : "flex-start"}
-                width={size.width < 1191 ? "900px" : "1191px"}
-                spacing="9px"
-              >
-                {loadingState === "loaded" ? (
-                  nfts.length !== 0 ? (
-                    nfts.map((item, i) => (
-                      <VStack
-                        minwidth={size.width < 768 ? "330px" : "290px"}
-                        maxwidth={size.width < 768 ? "330px" : "290px"}
-                        height="450px"
-                        key={i}
-                      >
-                        <NftContainer
-                          key={i}
-                          isVerified={item.isVerified}
-                          iconStatus={item.saleType}
-                          hasOffers={item.offerCount > 0 ? true : false}
-                          creatorImage={item.creatorLogo}
-                          itemImage={item.image}
-                          price={item.price}
-                          collectionName={item.collectionName}
-                          itemNumber={item.name}
-                          fileType={item.fileType}
-                          background={({ theme }) => theme.backElement}
-                          onClick={() =>
-                            NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
-                          }
-                          onClickCreator={() =>
-                            NavigateTo(`UserProfile/${item.ownerId}`)
-                          }
-                          owner={true}
-                          usdPrice={props.xdc}
-                          collectionVerified={item.collectionVerified}
-                        ></NftContainer>
-                      </VStack>
-                    ))
-                  ) : (
-                    <VStack
-                      padding="90px"
-                      width="100%"
-                      background={({ theme }) => theme.faded}
-                      style={{ zIndex: "-50" }}
-                      border="6px"
-                    >
-                      <IconImg
-                        url={noResult}
-                        width="90px"
-                        height="90px"
-                      ></IconImg>
-                      <TitleBold18 animate={{ opacity: 0.6 }}>
-                        Nothing Found
-                      </TitleBold18>
-                    </VStack>
-                  )
-                ) : (
-                  loadingNFTs.map((item) => (
-                    <VStack
-                      minwidth={size.width < 768 ? "230px" : "280px"}
-                      height="450px"
-                      key={item.id}
-                    >
-                      <LoadingNftContainer></LoadingNftContainer>
-                    </VStack>
-                  ))
-                )}
-              </HStack>
-            </HStack>
-          </VStack>
+          <HStack
+            flexwrap="wrap"
+            padding="30px 6px"
+            justify={size.width < 768 ? "center" : "flex-start"}
+            spacing="9px"
+          >
+            {loadingState === "loaded" ? (
+              nfts.length !== 0 ? (
+                nfts.map((item, i) => (
+                  <VStack
+                    // minwidth={size.width < 768 ? "330px" : "290px"}
+                    // maxwidth={size.width < 768 ? "330px" : "290px"}
+                    minwidth="260px"
+                    height="450px"
+                    key={i}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                  >
+                    <NftContainer
+                      key={i}
+                      isVerified={item.isVerified}
+                      iconStatus={item.saleType}
+                      hasOffers={item.offerCount > 0 ? true : false}
+                      creatorImage={item.creatorLogo}
+                      itemImage={item.image}
+                      price={item.price}
+                      collectionName={item.collectionName}
+                      itemNumber={item.name}
+                      fileType={item.fileType}
+                      background={({ theme }) => theme.backElement}
+                      onClick={() =>
+                        NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
+                      }
+                      onClickCreator={() =>
+                        NavigateTo(`UserProfile/${item.ownerId}`)
+                      }
+                      owner={true}
+                      usdPrice={props.xdc}
+                      collectionVerified={item.collectionVerified}
+                    ></NftContainer>
+                  </VStack>
+                ))
+              ) : (
+                <VStack
+                  padding="90px"
+                  width="100%"
+                  background={({ theme }) => theme.faded}
+                  style={{ zIndex: "-50" }}
+                  border="6px"
+                >
+                  <IconImg url={noResult} width="90px" height="90px"></IconImg>
+                  <TitleBold18 animate={{ opacity: 0.6 }}>
+                    Nothing Found
+                  </TitleBold18>
+                </VStack>
+              )
+            ) : (
+              loadingNFTs.map((item) => (
+                <VStack
+                  minwidth={size.width < 768 ? "230px" : "280px"}
+                  height="450px"
+                  key={item.id}
+                >
+                  <LoadingNftContainer></LoadingNftContainer>
+                </VStack>
+              ))
+            )}
+          </HStack>
         </InfiniteScroll>
       </CollectionContent>
     </CollectionSection>
