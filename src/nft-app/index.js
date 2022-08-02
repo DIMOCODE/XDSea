@@ -37,7 +37,7 @@ const NFTApp = () => {
   const [theme, setTheme] = useState("light");
   const [isModalAds, setIsModalAds] = useState(false);
   const [randomNumber, setRandomNumber] = useState(0);
-  const [isDevMode] = useState(true);
+  const [isDevMode] = useState(false);
   const size = useWindowSize();
   const [showMenu, setShowMenu] = useState(false);
   const [xdcPrice, setXdcPrice] = useState(0);
