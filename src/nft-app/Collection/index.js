@@ -165,7 +165,7 @@ const CollectionDetails = (props) => {
 
   const fetchMoreNFTs = async () => {
     const collectionNFTData = await (
-      await getCollectionNFTs({ params })
+      await getCollectionNFTs(params)
     ).data.nfts;
     const collectionNFTList = await Promise.all(
       collectionNFTData.map(async (nft) => {
