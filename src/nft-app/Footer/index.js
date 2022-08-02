@@ -126,7 +126,7 @@ export { Footer };
 const FooterSection = styled(motion.div)`
   padding: 90px 0;
   width: 100%;
-  background: ${({ theme }) => theme.walletButton};
+  background: #20222d;
 `;
 
 const FooterContent = styled(motion.div)`
