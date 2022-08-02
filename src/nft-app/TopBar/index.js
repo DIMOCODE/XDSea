@@ -152,10 +152,10 @@ function TopBar(props) {
   const connectXDCPay = async () => {
     if (window.ethereum) {
       try {
-        if (
+        if ((
           window.ethereum.publicConfigStore._state.networkVersion === "50" ||
-          (window.ethereum.publicConfigStore._state.networkVersion === "51" &&
-            window.ethereum.publicConfigStore._state.selectedAddress)
+          window.ethereum.publicConfigStore._state.networkVersion === "51") &&
+            window.ethereum.publicConfigStore._state.selectedAddress !== undefined
         ) {
           const address =
             window.ethereum.publicConfigStore._state.selectedAddress;
@@ -176,7 +176,7 @@ function TopBar(props) {
         setShowError(2);
       }
     } else {
-      setShowError(1);
+      setShowError(5);
     }
   };
 
@@ -219,7 +219,7 @@ function TopBar(props) {
         setShowError(2);
       }
     } else {
-      setShowError("Connect to network");
+      setShowError(6);
     }
   };
 
@@ -1082,6 +1082,38 @@ function TopBar(props) {
                       </BodyRegular>
                     </HStack>
                   )}
+                  {showError === 5 && (
+                    <HStack
+                      border="9px"
+                      background={appStyle.colors.yellow}
+                      cursor="pointer"
+                      padding="18px"
+                    >
+                      <BodyRegular
+                        align="center"
+                        textcolor={appStyle.colors.darkYellow}
+                      >
+                        XDCPay is not detected. Install the official wallet to
+                        connect with our marketplace
+                      </BodyRegular>
+                    </HStack>
+                  )}
+                  {showError === 6 && (
+                    <HStack
+                      border="9px"
+                      background={appStyle.colors.yellow}
+                      cursor="pointer"
+                      padding="18px"
+                    >
+                      <BodyRegular
+                        align="center"
+                        textcolor={appStyle.colors.darkYellow}
+                      >
+                        DCent Wallet is not detected. Install the official wallet application to
+                        connect with our marketplace
+                      </BodyRegular>
+                    </HStack>
+                  )}
                 </VStack>
               ) : null}
 
@@ -1279,6 +1311,38 @@ function TopBar(props) {
                         >
                           <BodyBold textcolor={appStyle.colors.darkRed}>
                             Connect to XDC Mainnet
+                          </BodyBold>
+                        </HStack>
+                      )}
+                      {showError === 5 && (
+                        <HStack
+                          whileHover={{ opacity: 0.8 }}
+                          whileTap={{ scale: 0.98 }}
+                          minheight="39px"
+                          border="9px"
+                          bordersize="1px"
+                          bordercolor={appStyle.colors.yellow}
+                          background={appStyle.colors.yellow}
+                          cursor="pointer"
+                        >
+                          <BodyBold textcolor={appStyle.colors.darkYellow}>
+                            Install XDCPay
+                          </BodyBold>
+                        </HStack>
+                      )}
+                      {showError === 6 && (
+                        <HStack
+                          whileHover={{ opacity: 0.8 }}
+                          whileTap={{ scale: 0.98 }}
+                          minheight="39px"
+                          border="9px"
+                          bordersize="1px"
+                          bordercolor={appStyle.colors.yellow}
+                          background={appStyle.colors.yellow}
+                          cursor="pointer"
+                        >
+                          <BodyBold textcolor={appStyle.colors.darkYellow}>
+                            Use Dcent Wallet Application
                           </BodyBold>
                         </HStack>
                       )}
