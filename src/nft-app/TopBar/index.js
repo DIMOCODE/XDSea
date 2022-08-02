@@ -112,6 +112,8 @@ function TopBar(props) {
           const res = await window.ethereum.request({
             method: "eth_requestAccounts",
           });
+          const { data } = await anonymousLogin(res[0]);
+          LS.set(LS_ROOT_KEY, data);
           setWallet({
             connected: true,
             address: res[0],
@@ -120,8 +122,6 @@ function TopBar(props) {
             connected: true,
             address: res[0],
           });
-          const { data } = await anonymousLogin(res[0]);
-          LS.set(LS_ROOT_KEY, data);
           window.ethereum.on("accountsChanged", (accounts) => {
             setWallet({
               connected: false,
@@ -159,6 +159,8 @@ function TopBar(props) {
         ) {
           const address =
             window.ethereum.publicConfigStore._state.selectedAddress;
+          const { data } = await anonymousLogin(address);
+          LS.set(LS_ROOT_KEY, data);
           setWallet({
             connected: true,
             address: address,
@@ -167,8 +169,6 @@ function TopBar(props) {
             connected: true,
             address: address,
           });
-          const { data } = await anonymousLogin(address);
-          LS.set(LS_ROOT_KEY, data);
           setShowMetamask(false);
           setShowError(0);
         }
@@ -187,6 +187,8 @@ function TopBar(props) {
           const res = await window.ethereum.request({
             method: "eth_requestAccounts",
           });
+          const { data } = await anonymousLogin(res[0]);
+          LS.set(LS_ROOT_KEY, data);
           setWallet({
             connected: true,
             address: res[0],
@@ -195,8 +197,6 @@ function TopBar(props) {
             connected: true,
             address: res[0],
           });
-          const { data } = await anonymousLogin(res[0]);
-          LS.set(LS_ROOT_KEY, data);
           window.ethereum.on("accountsChanged", (accounts) => {
             setWallet({
               connected: false,
@@ -271,13 +271,12 @@ function TopBar(props) {
   const [searchPhone, setSearchPhone] = useState(false);
 
   const handleOnWalletChange = async (wallet) => {
-    setWallet(wallet);
-    onWalletChange(wallet);
-
     try {
       if (wallet.connected) {
         const { data } = await anonymousLogin(wallet.address);
         LS.set(LS_ROOT_KEY, data);
+        setWallet(wallet);
+        onWalletChange(wallet);
       } else {
         logout();
       }
