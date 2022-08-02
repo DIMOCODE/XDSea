@@ -163,9 +163,7 @@ const CollectionDetails = (props) => {
   };
 
   const fetchMoreNFTs = async () => {
-    const collectionNFTData = await (
-      await getCollectionNFTs(params)
-    ).data.nfts;
+    const collectionNFTData = await (await getCollectionNFTs(params)).data.nfts;
     const collectionNFTList = await Promise.all(
       collectionNFTData.map(async (nft) => {
         let collectionNFT = {
@@ -198,7 +196,7 @@ const CollectionDetails = (props) => {
   }
 
   const handleChangeFilterNFT = (params) => {
-    setLoadingState("not-loaded")
+    setLoadingState("not-loaded");
     setParams(params);
     updateNFTs(params);
   };
@@ -740,9 +738,9 @@ const CollectionDetails = (props) => {
               nfts.length !== 0 ? (
                 nfts.map((item, i) => (
                   <VStack
-                    // minwidth={size.width < 768 ? "330px" : "290px"}
-                    // maxwidth={size.width < 768 ? "330px" : "290px"}
-                    minwidth="260px"
+                    minwidth={size.width < 768 ? "100%" : "300px"}
+                    width={"240px"}
+                    // maxwidth={size.width < 768 ? "330px" : "220px"}
                     height="450px"
                     key={i}
                     initial={{ opacity: 0 }}
@@ -790,8 +788,11 @@ const CollectionDetails = (props) => {
             ) : (
               loadingNFTs.map((item) => (
                 <VStack
-                  minwidth={size.width < 768 ? "230px" : "280px"}
+                  minwidth={size.width < 768 ? "100%" : "300px"}
+                  width={"240px"}
                   height="450px"
+                  // minwidth={size.width < 768 ? "230px" : "280px"}
+                  // height="450px"
                   key={item.id}
                 >
                   <LoadingNftContainer></LoadingNftContainer>
