@@ -216,7 +216,6 @@ const NFTDetails = (props) => {
         nft.price,
         nft._id
       );
-      console.log(buyData);
       setPurchased(true);
     } else {
       setBuyButtonStatus(4);
@@ -249,7 +248,6 @@ const NFTDetails = (props) => {
       const offerData = await (
         await placeOfferRequest(offerPrice, wallet.address, nft._id)
       ).data;
-      console.log(offerData);
     } else {
       setOfferButtonStatus(4);
     }
@@ -274,7 +272,6 @@ const NFTDetails = (props) => {
       const withdrawListData = await (
         await withdrawListingNFTRequest(nft._id)
       ).data;
-      console.log(withdrawListData);
     } else {
       setWithdrawButtonStatus(4);
     }
@@ -307,7 +304,6 @@ const NFTDetails = (props) => {
       const editListData = await (
         await editListingNFTRequest(editPrice, nft._id)
       ).data;
-      console.log(editListData);
     } else {
       setEditButtonStatus(4);
     }
@@ -338,7 +334,6 @@ const NFTDetails = (props) => {
     if (success) {
       setListButtonStatus(3);
       const listData = await (await listNFTRequest(listPrice, nft._id)).data;
-      console.log(listData);
     } else {
       setListButtonStatus(4);
     }
@@ -371,7 +366,6 @@ const NFTDetails = (props) => {
       const transferData = await (
         await transferNFTRequest(wallet?.address, transferAddress, nft._id)
       ).data;
-      console.log(transferData);
     } else {
       setTransferButtonStatus(4);
     }
@@ -403,7 +397,6 @@ const NFTDetails = (props) => {
         return [...prevState];
       });
       const withdrawOfferData = await (await withdrawOfferRequest(id)).data;
-      console.log(withdrawOfferData);
     } else {
       setWithdrawOfferButtonStatus((prevState) => {
         prevState[i] = 4;
@@ -436,7 +429,6 @@ const NFTDetails = (props) => {
         return [...prevState];
       });
       const acceptOfferData = await (await acceptOfferRequest(id)).data;
-      console.log(acceptOfferData);
     } else {
       setAcceptOfferButtonStatus((prevState) => {
         prevState[i] = 4;
@@ -471,7 +463,6 @@ const NFTDetails = (props) => {
       setLoadingEvents(true);
       setLoadingMore(true);
       const nftData = await (await getNFT(id)).data;
-      console.log(nftData);
       let currentItem = {
         _id: nftData.nft._id,
         price: nftData.nft.price,
@@ -533,7 +524,6 @@ const NFTDetails = (props) => {
             const offerData = await (
               await getNFTOffers(currentItem._id)
             ).data.offers;
-            console.log(offerData);
             var highestOffer = 0;
             const offerList = await Promise.all(
               offerData.map(async (offer) => {
@@ -561,7 +551,6 @@ const NFTDetails = (props) => {
             const eventData = await (
               await getNFTEvents(currentItem._id)
             ).data.events;
-            console.log(eventData);
             const eventList = await Promise.all(
               eventData.map(async (item, i) => {
                 let event = {
@@ -1928,7 +1917,7 @@ const NFTDetails = (props) => {
                     <NftContainer
                       isVerified={item.isVerified}
                       iconStatus={item.saleType}
-                      hasOffers={item.hasOpenOffer ? true : false}
+                      hasOffers={item.hasOpenOffer}
                       key={item.name}
                       fileType={item.fileType}
                       creatorImage={item.creatorLogo}

@@ -702,7 +702,6 @@ function TopBar(props) {
                       <UserMenuButton wallet={wallet}></UserMenuButton>
                     ) : null}
 
-                    {console.log(showMenu)}
                     <VStack
                       minwidth="46px"
                       height="46px"
@@ -772,7 +771,6 @@ function TopBar(props) {
                         )}
                       </VStack>
                     </HStack>
-                    {console.log(location)}
                     <Spacer></Spacer>
                     {/* Search  */}
                     {location.pathname === "/SearchPage" ? null : (
@@ -786,7 +784,6 @@ function TopBar(props) {
                       ></Searchbar>
                     )}
 
-                    {console.log(isSearch)}
                     <AnimatePresence>
                       {!isSearch && (
                         <HStack

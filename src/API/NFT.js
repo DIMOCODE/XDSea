@@ -11,7 +11,6 @@ export const getNFTs = ({searchBy, page, pageSize, userId, sortBy, sortDirection
     `${saleType1 !== undefined ? `saleType=${saleType1}&` : ""}${saleType2 !== undefined ? `saleType=${saleType2}&` : ""}` + 
     `${saleType3 !== undefined ? `saleType=${saleType3}&` : ""}${saleType4 !== undefined ? `saleType=${saleType4}&` : ""}`;
   params = params.substring(0, params.length - 1);
-  console.log(params)
   return createRequest(HTTP_METHODS.get, `nft/${page}${params}`, null, null);
 };
 

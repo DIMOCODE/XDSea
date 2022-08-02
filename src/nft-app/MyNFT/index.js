@@ -65,7 +65,6 @@ const MyNFT = (props) => {
     const collectionData = await (
       await getCollections({ userId: userId })
     ).data;
-    console.log(collectionData);
     const collectionList = await Promise.all(
       collectionData.collections.map(async (item) => {
         let collection = {
@@ -85,15 +84,12 @@ const MyNFT = (props) => {
   };
 
   const getOwnedNFTs = async () => {
-    setLoading(true);
-    console.log(LS.get(LS_ROOT_KEY));
-    
+    setLoading(true);    
     const requestData = await Promise.all(
       [1, 2].map(async (i) => {
         if (i === 1) {
           let userData = await (await getUser(userId)).data.user;
           setUser(userData);
-          console.log(userData);
           return userData;
         } else {
           let nftData = await (
@@ -116,7 +112,6 @@ const MyNFT = (props) => {
               return nft;
             })
           );
-          console.log(nftData);
           setNfts(nftList);
           setTotalNfts(nftData.nftsAmount);
           return nftData;
@@ -130,7 +125,6 @@ const MyNFT = (props) => {
 
   const fetchMoreNFTs = async () => {
     const nftData = await (await getNFTs({ pageSize: 15, page: page, userId: userId })).data;
-    console.log(nftData);
 
     const nftList = await Promise.all(
       nftData.nfts.map(async (item) => {

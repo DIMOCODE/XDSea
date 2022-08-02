@@ -121,7 +121,6 @@ const CollectionDetails = (props) => {
           searchBy: searchBy,
         })
       ).data;
-      console.log(collectionNFTData)
       const collectionNFTList = await Promise.all(
         collectionNFTData.nfts.map(async (nft) => {
           let collectionNFT = {
@@ -753,7 +752,7 @@ const CollectionDetails = (props) => {
                       key={i}
                       isVerified={item.isVerified}
                       iconStatus={item.saleType}
-                      hasOffers={item.offerCount > 0 ? true : false}
+                      hasOffers={item.hasOpenOffer}
                       creatorImage={item.creatorLogo}
                       itemImage={item.image}
                       price={item.price}

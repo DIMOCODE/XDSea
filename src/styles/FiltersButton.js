@@ -102,7 +102,6 @@ function FiltersButton(props) {
     }
     if (params?.priceRangeStart) filters += 1;
     if (params?.verified) filters += 1;
-    console.log(params)
     setBtnSale(params?.saleType1 === "");
     setBtnSold(params?.saleType3 === "");
     setBtnRelist(params?.saleType2 === "");

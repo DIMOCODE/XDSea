@@ -8,7 +8,6 @@ export const getCollections = ({searchTerm, page, userId, categoryId, sortBy, so
     `${categoryId !== undefined ? `categoryId=${categoryId}&` : ""}${sortBy !== undefined ? `sortBy=${sortBy}&` : ""}` + 
     `${sortDirection !== undefined ? `sortDirection=${sortDirection}&` : ""}${verified !== undefined ? `verified=${verified}&` : ""}`;
   params = params.substring(0, params.length - 1);
-  console.log(params)
   return createRequest(HTTP_METHODS.get, `collection/${params}`, null, null);
 };
 

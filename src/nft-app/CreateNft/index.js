@@ -176,7 +176,6 @@ function CreateNft(props) {
         const collectionData = await (
           await getCollections({ userId: userData.user._id })
         ).data;
-        console.log(collectionData.collections);
         setCollections(collectionData.collections);
       } else {
         setIsWalletDisconnectedCollection(true);
@@ -269,7 +268,6 @@ function CreateNft(props) {
     const collectionData = await (
       await checkCollectionExistsRequest(collectionName)
     ).data;
-    console.log(collectionData, user)
     if(collectionData.alreadyExist) {
       if (collectionData.collection.creator._id === user.user._id) {
         setCollectionExists(false);
@@ -448,7 +446,6 @@ function CreateNft(props) {
             setIsCollectionNotSelected(true);
           } else {
             const filteredProperties = await removeBlankProperties();
-            console.log(filteredProperties);
             setProperties(filteredProperties);
             const nftUrl = await addToIPFS();
             const previewUrl = await addToIPFSPreview();
@@ -468,7 +465,6 @@ function CreateNft(props) {
                   fileType: nft.fileType,
                   preview: previewUrl,
                 });
-                console.log(uploadData);
                 const added = await client.add(uploadData);
                 const url = `https://xdsea.infura-ipfs.io/ipfs/${added.path}`;
                 updateMarketplace(url, nftUrl, filteredProperties);
@@ -489,7 +485,6 @@ function CreateNft(props) {
 
   const updateMarketplace = async (url, nftUrl, filteredProperties) => {
     try {
-      console.log("Update " + assetURL);
       const xdc3 = new Xdc3(
         new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER)
       );
@@ -581,19 +576,6 @@ function CreateNft(props) {
         const collectionId = await (
           await getCollection(collectionNickName)
         ).data.collection._id;
-        console.log(
-          collectionId,
-          tokenId,
-          isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address,
-          price,
-          royalty,
-          name,
-          description,
-          assetURL,
-          nft.fileType,
-          previewURL,
-          properties
-        );
         const nftCreation = await (
           await createNFT(
             collectionId,
@@ -628,7 +610,6 @@ function CreateNft(props) {
   const getUser = async () => {
     const userData = await LS.get(LS_ROOT_KEY);
     setUser(userData);
-    console.log(userData);
     return userData;
   };
 

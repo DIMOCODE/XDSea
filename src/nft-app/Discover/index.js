@@ -801,7 +801,7 @@ const Discover = (props) => {
                               key={i}
                               isVerified={item.isVerified}
                               iconStatus={item.saleType}
-                              hasOffers={item.hasOpenOffer ? true : false}
+                              hasOffers={item.hasOpenOffer}
                               creatorImage={item.creatorLogo}
                               itemImage={item.image}
                               price={item.price}

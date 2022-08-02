@@ -472,7 +472,7 @@ function SearchPage(props) {
                             key={i}
                             isVerified={item.owner.isVerified}
                             iconStatus={item.saleType.toLowerCase()}
-                            hasOffers={item.hasOpenOffer ? true : false}
+                            hasOffers={item.hasOpenOffer}
                             creatorImage={item.owner.urlProfile}
                             itemImage={
                               isSafari ? item.urlFile.v1 : item.urlFile.v0

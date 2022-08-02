@@ -70,8 +70,6 @@ const Home = (props) => {
     try {
       setLoading(true);
       const homeData = (await getHomeData()).data;
-      console.log(homeData);
-
       const featuredNFTList = await Promise.all(
         homeData.featuredNfts.map(async (nft) => {
           let featuredNFT = {
@@ -573,7 +571,7 @@ const Home = (props) => {
                   <NftContainer
                     isVerified={item.isVerified}
                     iconStatus={item.saleType}
-                    hasOffers={item.hasOpenOffer ? true : false}
+                    hasOffers={item.hasOpenOffer}
                     fileType={item.fileType}
                     creatorImage={item.creatorLogo}
                     itemImage={item.image}
@@ -603,7 +601,7 @@ const Home = (props) => {
                   <NftContainer
                     isVerified={item.isVerified}
                     iconStatus={item.saleType}
-                    hasOffers={item.hasOpenOffer ? true : false}
+                    hasOffers={item.hasOpenOffer}
                     fileType={item.fileType}
                     creatorImage={item.creatorLogo}
                     itemImage={item.image}
@@ -632,7 +630,7 @@ const Home = (props) => {
                   <NftContainer
                     isVerified={item.isVerified}
                     iconStatus={item.saleType}
-                    hasOffers={item.hasOpenOffer ? true : false}
+                    hasOffers={item.hasOpenOffer}
                     fileType={item.fileType}
                     creatorImage={item.creatorLogo}
                     itemImage={item.image}
