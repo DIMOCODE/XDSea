@@ -454,6 +454,7 @@ const MyNFT = (props) => {
                                     <ReactPlayer
                                       url={item.image}
                                       playing={true}
+                                      volume={0}
                                       muted={true}
                                       loop={false}
                                       width="100%"
@@ -471,6 +472,7 @@ const MyNFT = (props) => {
                                       url={item?.image}
                                       playing={false}
                                       muted={true}
+                                      volume={0}
                                       loop={false}
                                       width="50%"
                                       height="50%"
@@ -591,6 +593,7 @@ const MyNFT = (props) => {
                                         playing={true}
                                         muted={true}
                                         loop={false}
+                                        volume={0}
                                         width="100%"
                                         height="180%"
                                       />
@@ -610,6 +613,7 @@ const MyNFT = (props) => {
                                         }
                                         playing={false}
                                         muted={true}
+                                        volume={0}
                                         loop={false}
                                         width="100%"
                                         height="100%"

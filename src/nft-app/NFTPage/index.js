@@ -56,7 +56,7 @@ import {
   LayoutGroup,
 } from "framer-motion/dist/framer-motion";
 import gradientlocked from "../../images/gradientlocked.jpg";
-
+import { SendTransaction } from "xdc-connect";
 import linkSocial from "../../images/linkSocial.png";
 import whatsSocial from "../../images/whatsSocial.png";
 import telegramSocial from "../../images/telegramSocial.png";
@@ -459,6 +459,49 @@ const NFTDetails = (props) => {
 
   const getData = async () => {
     try {
+
+      // Update payout addresses of NFTs function
+
+      // const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
+      // const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
+      // const marketContract = new xdc3.eth.Contract(
+      //     NFTMarketLayer1.abi,
+      //     nftmarketlayeraddress,
+      //     xdc3
+      //   );
+      
+      // const data2 = await marketContract.methods.idToMarketItem(2689).call()
+      // var item = await marketContract.methods.getTokenEventHistory(2689).call();
+      // const weiprice = await xdc3.utils.toWei("20", "ether");
+      // console.log(data2, item)
+      // let data = marketContract.methods.editMarketItem(
+      //     data2.tokenId,
+      //     data2.itemId,
+      //     // "0x0d0C5e0F7F26277794753fBC739612CEd4cD1d18",
+      //     data2.owner,
+      //     // "0x0d0C5e0F7F26277794753fBC739612CEd4cD1d18",
+      //     data2.creator,
+      //     // weiprice,
+      //     data2.price,
+      //     // false,
+      //     data2.isListed,
+      //     data2.royalty,
+      //     // 4,
+      //     data2.eventCount,
+      //     0,
+      //     // data2.offerCount,
+      //     data2.name,
+      //     data2.collectionName,
+      // ).encodeABI()
+      // const tx = {
+      //     from: props?.wallet?.address,
+      //     to: nftmarketlayeraddress,
+      //     data
+      // }
+      // var gasLimit = await xdc3.eth.estimateGas(tx)
+      // tx["gas"] = gasLimit
+      // let transaction = await SendTransaction(tx);
+
       setLoadingOffers(true);
       setLoadingEvents(true);
       setLoadingMore(true);
@@ -491,6 +534,8 @@ const NFTDetails = (props) => {
         unlockableContent: nftData.nft.unlockableContent,
         collectionNickName: nftData.nft.collectionId.nickName,
       };
+
+      console.log(nftData.nft.urlFile.v1)
       const requestData = await Promise.all(
         [1, 2, 3].map(async (i) => {
           if (i == 1) {
@@ -1067,11 +1112,13 @@ const NFTDetails = (props) => {
                           url={nft?.image}
                           playing={true}
                           muted={true}
+                          volume={0}
                           loop={true}
                           controls={true}
                           width="100%"
                           height="100%"
                         />
+                        {console.log(ReactPlayer.canPlay(nft?.image))}
                       </VStack>
                     ) : isAudio(nft?.fileType) ? (
                       <VStack
@@ -1134,6 +1181,7 @@ const NFTDetails = (props) => {
                           playing={true}
                           muted={true}
                           controls={true}
+                          volume={0}
                           loop={true}
                           width="100%"
                           height="100%"

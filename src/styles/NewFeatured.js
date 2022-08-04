@@ -107,6 +107,7 @@ function NewFeatured(props) {
                   url={itemImage}
                   playing={isPlaying}
                   muted={true}
+                  volume={0}
                   loop={true}
                   width="180%"
                   height="100%"

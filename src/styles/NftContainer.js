@@ -110,10 +110,10 @@ function NftContainer(props) {
                 url={itemImage}
                 playing={isPlaying}
                 muted={true}
+                volume={0}
                 loop={true}
                 width="120%"
                 height="100%"
-                volume="0"
               />
             </VStack>
           )}

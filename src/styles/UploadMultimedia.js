@@ -114,6 +114,7 @@ function UploadMultimedia(props) {
               <ReactPlayer
                 url={file.preview}
                 playing={true}
+                volume={0}
                 muted={true}
                 loop={true}
                 width="100%"
@@ -212,6 +213,7 @@ function UploadMultimedia(props) {
                 url={file.preview}
                 playing={true}
                 muted={true}
+                volume={0}
                 controls={true}
                 loop={true}
                 width="100%"

@@ -375,30 +375,35 @@ function CreateNft(props) {
 
   const addToIPFSCollectionBanner = async () => {
     setUploadBannerStatus(true);
-    const file = document.getElementById("upload-button-collection").files[0];
-    try {
-      const added = await client.add(file);
-      const url = `https://xdsea.infura-ipfs.io/ipfs/${added.path}`;
-      setCollectionBannerURL(url);
-      setUploadBannerStatus(false);
-      return url;
-    } catch (error) {
-      console.log("Error uploading file:", error);
-    }
+    if(collectionBanner.raw !== "") {
+      const file = document.getElementById("upload-button-collection").files[0];
+      try {
+        const added = await client.add(file);
+        const url = `https://xdsea.infura-ipfs.io/ipfs/${added.path}`;
+        setCollectionBannerURL(url);
+        setUploadBannerStatus(false);
+        return url;
+      } catch (error) {
+        console.log("Error uploading file:", error);
+      }
+    } else return "";
   };
 
   const addToIPFSCollectionLogo = async () => {
     setUploadLogoStatus(true);
-    const file = document.getElementById("upload-button-logo").files[0];
-    try {
-      const added = await client.add(file);
-      const url = `https://xdsea.infura-ipfs.io/ipfs/${added.path}`;
-      setCollectionLogoURL(url);
-      setUploadLogoStatus(false);
-      return url;
-    } catch (error) {
-      console.log("Error uploading file:", error);
+    if(collectionLogo.raw !== "") {
+      const file = document.getElementById("upload-button-logo").files[0];
+      try {
+        const added = await client.add(file);
+        const url = `https://xdsea.infura-ipfs.io/ipfs/${added.path}`;
+        setCollectionLogoURL(url);
+        setUploadLogoStatus(false);
+        return url;
+      } catch (error) {
+        console.log("Error uploading file:", error);
+      }
     }
+    else return "";
   };
 
   const addToIPFSPreview = async () => {
@@ -541,9 +546,9 @@ function CreateNft(props) {
       gasLimit = await xdc3.eth.estimateGas(tx2);
       tx2["gas"] = gasLimit;
       transaction = await SendTransaction(tx2);
-      const bannerUrl = await addToIPFSCollectionBanner();
-      const logoUrl = await addToIPFSCollectionLogo();
       if (newCollection && !collectionExists) {
+        const bannerUrl = await addToIPFSCollectionBanner();
+        const logoUrl = await addToIPFSCollectionLogo();
         const collectionCreation = await (
           await createCollection(
             collectionName,

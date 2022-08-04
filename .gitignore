@@ -109,3 +109,6 @@ dist
 CIDS.txt
 CIDS_dedupe.txt
 src/.DS_Store
+
+#Build folder
+build
