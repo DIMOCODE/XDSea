@@ -53,8 +53,6 @@ function TopCollectionItem(props) {
       padding="9px, 12px"
       width={width}
       spacing="0px"
-      // animate={isVisible ? "hover" : "initial"}
-      // variants={creator}
       onHoverStart={() => setIsVisible((isVisible) => !isVisible)}
       onHoverEnd={() => setIsVisible((isVisible) => !isVisible)}
       background={({ theme }) => theme.backElement}
