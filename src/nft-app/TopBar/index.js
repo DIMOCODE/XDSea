@@ -152,10 +152,10 @@ function TopBar(props) {
   const connectXDCPay = async () => {
     if (window.ethereum) {
       try {
-        if ((
-          window.ethereum.publicConfigStore._state.networkVersion === "50" ||
-          window.ethereum.publicConfigStore._state.networkVersion === "51") &&
-            window.ethereum.publicConfigStore._state.selectedAddress !== undefined
+        if (
+          (window.ethereum.publicConfigStore._state.networkVersion === "50" ||
+            window.ethereum.publicConfigStore._state.networkVersion === "51") &&
+          window.ethereum.publicConfigStore._state.selectedAddress !== undefined
         ) {
           const address =
             window.ethereum.publicConfigStore._state.selectedAddress;
@@ -286,6 +286,7 @@ function TopBar(props) {
   };
   return (
     <ContentBar>
+      {/* Top bar organized by Phone Tablet and Computer, each case of the switch have the content of the bar */}
       <HStack height="90px" width="100%" justify="center">
         {(() => {
           switch (deviceSize) {
@@ -307,16 +308,6 @@ function TopBar(props) {
                         height="420px"
                         border="0 0 15px 15px"
                       >
-                        {/* <HStack background="pink">
-                        <IconImg
-                          url={XDSealogo}
-                          width="66px"
-                          height="66px"
-                          cursor={"pointer"}
-                        ></IconImg>
-                        <Spacer></Spacer>
-                      </HStack> */}
-
                         <VStack
                           alignment="flex-start"
                           width="180px"
@@ -350,22 +341,13 @@ function TopBar(props) {
                         </VStack>
 
                         <VStack style={{ zIndex: -100 }}>
-                          {/* <Connect>
-                            <XdcConnect
-                              btnName={" "}
-                              btnClass={`walletConnectPhone ${
-                                wallet?.connected ? "hide" : ""
-                              }`}
-                              onConnect={handleOnWalletChange}
-                              onAddressChange={handleOnWalletChange}
-                              onDisconnect={handleOnWalletChange}
-                            />
-                          </Connect> */}
                           <WalletButton
                             logout={
-                              isMetamask ? disconnectMetamask
-                                : isXdcPay ? disconnectXdcPay
-                                  : disconnectDcent
+                              isMetamask
+                                ? disconnectMetamask
+                                : isXdcPay
+                                ? disconnectXdcPay
+                                : disconnectDcent
                             }
                             status={wallet?.connected}
                             wallet={wallet}
@@ -515,7 +497,6 @@ function TopBar(props) {
                           height="26"
                           viewBox="-2 0 26 26"
                           fill={"#5C6976"}
-                          // fill={({ theme }) => theme.menubars}
                           xmlns="http://www.w3.org/2000/svg"
                         >
                           <motion.path
@@ -666,22 +647,13 @@ function TopBar(props) {
                     <VStack maxwidth="180px">
                       <ZStack>
                         <ZItem>
-                          {/* <Connect> */}
-                            {/* <XdcConnect
-                              btnName={" "}
-                              btnClass={`walletConnectTablet ${
-                                wallet?.connected ? "hide" : ""
-                              }`}
-                              onConnect={handleOnWalletChange}
-                              onAddressChange={handleOnWalletChange}
-                              onDisconnect={handleOnWalletChange}
-                            />
-                          </Connect> */}
                           <WalletButton
                             logout={
-                              isMetamask ? disconnectMetamask
-                                : isXdcPay ? disconnectXdcPay
-                                  : disconnectDcent
+                              isMetamask
+                                ? disconnectMetamask
+                                : isXdcPay
+                                ? disconnectXdcPay
+                                : disconnectDcent
                             }
                             status={wallet?.connected}
                             wallet={wallet}
@@ -790,14 +762,6 @@ function TopBar(props) {
                           animate={{ opacity: 1 }}
                           spacing="3px"
                         >
-                          {/* <ButtonApp
-                            background="rgba(255, 255, 255, 0)"
-                            textcolor={({ theme }) => theme.text}
-                            text="SearchPage"
-                            cursor="pointer"
-                            onClick={() => NavigateTo("SearchPage")}
-                            btnStatus={0}
-                          ></ButtonApp> */}
                           <ButtonApp
                             background="rgba(255, 255, 255, 0)"
                             textcolor={({ theme }) => theme.text}
@@ -834,17 +798,6 @@ function TopBar(props) {
                     <VStack maxwidth="180px">
                       <ZStack>
                         <ZItem>
-                          {/* <Connect>
-                            <XdcConnect
-                              btnName={" "}
-                              btnClass={`walletConnect ${
-                                wallet?.connected ? "hide" : ""
-                              }`}
-                              onConnect={handleOnWalletChange}
-                              onAddressChange={handleOnWalletChange}
-                              onDisconnect={handleOnWalletChange}
-                            />
-                          </Connect> */}
                           <WalletButton
                             logout={
                               isMetamask
@@ -890,7 +843,6 @@ function TopBar(props) {
               {walletOptions ? (
                 <VStack
                   self="none"
-                  // background={({ theme }) => theme.walletButton}
                   background="rgb(0,0,0,0.3)"
                   padding="15px"
                   border="15px"
@@ -1105,8 +1057,8 @@ function TopBar(props) {
                         align="center"
                         textcolor={appStyle.colors.darkYellow}
                       >
-                        DCent Wallet is not detected. Install the official wallet application to
-                        connect with our marketplace
+                        DCent Wallet is not detected. Install the official
+                        wallet application to connect with our marketplace
                       </BodyRegular>
                     </HStack>
                   )}
@@ -1350,200 +1302,6 @@ function TopBar(props) {
           </MetamaskSteps>
         </AnimatePresence>
       ) : null}
-
-      {/* {showMetamask ? (
-        <AnimatePresence>
-          <MetamaskSteps
-            key="metamaskModal"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ type: "spring", damping: 10 }}
-          >
-            <VStack width="100%" height="100%" border="15px">
-              <HStack
-                self="none"
-                background={({ theme }) => theme.walletButton}
-                width={deviceSize === "phone" ? "100%" : "560px"}
-                padding="15px"
-                border="15px"
-                responsive={true}
-              >
-                {deviceSize === "phone" ? null : (
-                  <IconImg
-                    url={gif}
-                    width="280px"
-                    height="420px"
-                    backsize="cover"
-                    border="9px"
-                  ></IconImg>
-                )}
-
-                <VStack height="420px">
-                  <HStack>
-                    <Spacer></Spacer>
-                    <IconImg
-                      url={closeIcon}
-                      width="21px"
-                      height="21px"
-                      onClick={() => setShowMetamask(false)}
-                    ></IconImg>
-                  </HStack>
-                  <VStack alignment="flex-start">
-                    <HStack spacing="9px">
-                      <IconImg
-                        url={Metamask}
-                        width="49px"
-                        height="49px"
-                        backsize="cover"
-                        border="9px"
-                      ></IconImg>
-                      <TitleBold18 textcolor={({ theme }) => theme.walletText}>
-                        Add XinFin Network to Metamask
-                      </TitleBold18>
-                    </HStack>
-                    <Spacer></Spacer>
-
-                    <HStack justify="flex-start">
-                      <CaptionRegular
-                        textcolor={({ theme }) => theme.walletText}
-                      >
-                        Network Name:
-                      </CaptionRegular>
-                      <BodyRegular textcolor={({ theme }) => theme.walletText}>
-                        Xinfin Mainnet
-                      </BodyRegular>
-                    </HStack>
-
-                    <HStack justify="flex-start">
-                      <CaptionRegular
-                        textcolor={({ theme }) => theme.walletText}
-                      >
-                        URL:
-                      </CaptionRegular>
-                      <BodyRegular textcolor={({ theme }) => theme.walletText}>
-                        https://erpc.xinfin.network
-                      </BodyRegular>
-                    </HStack>
-
-                    <HStack justify="flex-start">
-                      <CaptionRegular
-                        textcolor={({ theme }) => theme.walletText}
-                      >
-                        Chain ID:
-                      </CaptionRegular>
-                      <BodyRegular textcolor={({ theme }) => theme.walletText}>
-                        50
-                      </BodyRegular>
-                    </HStack>
-
-                    <HStack justify="flex-start">
-                      <CaptionRegular
-                        textcolor={({ theme }) => theme.walletText}
-                      >
-                        Currency Symbol:
-                      </CaptionRegular>
-                      <BodyRegular textcolor={({ theme }) => theme.walletText}>
-                        XDC
-                      </BodyRegular>
-                    </HStack>
-
-                    <VStack alignment="flex-start" spacing="3px">
-                      <CaptionRegular
-                        textcolor={({ theme }) => theme.walletText}
-                      >
-                        Block Explorer URL:
-                      </CaptionRegular>
-                      <BodyRegular textcolor={({ theme }) => theme.walletText}>
-                        https://explorer.xinfin.network
-                      </BodyRegular>
-                    </VStack>
-                  </VStack>
-
-                  <Spacer></Spacer>
-                  <HStack
-                    whileHover={{ opacity: 0.8 }}
-                    whileTap={{ scale: 0.98 }}
-                    background="blue"
-                    minheight="39px"
-                    border="9px"
-                    cursor="pointer"
-                    onClick={connectXDCPay}
-                  >
-                    <BodyBold cursor="pointer" textcolor="white">
-                      Connect Metamask
-                    </BodyBold>
-                  </HStack>
-
-                  {showError === 0 && null}
-                  {showError === 1 && (
-                    <HStack
-                      whileHover={{ opacity: 0.8 }}
-                      whileTap={{ scale: 0.98 }}
-                      minheight="39px"
-                      border="9px"
-                      bordersize="1px"
-                      bordercolor={appStyle.colors.yellow}
-                      background={appStyle.colors.yellow}
-                      cursor="pointer"
-                    >
-                      <BodyBold textcolor={appStyle.colors.darkYellow}>
-                        Install Metamask
-                      </BodyBold>
-                    </HStack>
-                  )}
-                  {showError === 2 && (
-                    <HStack
-                      whileHover={{ opacity: 0.8 }}
-                      whileTap={{ scale: 0.98 }}
-                      minheight="39px"
-                      border="9px"
-                      bordersize="1px"
-                      background={appStyle.colors.softRed}
-                      cursor="pointer"
-                    >
-                      <BodyBold textcolor={appStyle.colors.darkRed}>
-                        Connection Error
-                      </BodyBold>
-                    </HStack>
-                  )}
-                  {showError === 3 && (
-                    <HStack
-                      whileHover={{ opacity: 0.8 }}
-                      whileTap={{ scale: 0.98 }}
-                      minheight="39px"
-                      border="9px"
-                      bordersize="1px"
-                      bordercolor={appStyle.colors.yellow}
-                      background={appStyle.colors.yellow}
-                      cursor="pointer"
-                    >
-                      <BodyBold textcolor={appStyle.colors.darkYellow}>
-                        Use XDCPay Button
-                      </BodyBold>
-                    </HStack>
-                  )}
-                  {showError === 4 && (
-                    <HStack
-                      whileHover={{ opacity: 0.8 }}
-                      whileTap={{ scale: 0.98 }}
-                      minheight="39px"
-                      border="9px"
-                      bordersize="1px"
-                      background={appStyle.colors.softRed}
-                      cursor="pointer"
-                    >
-                      <BodyBold textcolor={appStyle.colors.darkRed}>
-                        Connect to XDC Mainnet
-                      </BodyBold>
-                    </HStack>
-                  )}
-                </VStack>
-              </HStack>
-            </VStack>
-          </MetamaskSteps>
-        </AnimatePresence>
-      ) : null} */}
     </ContentBar>
   );
 }
