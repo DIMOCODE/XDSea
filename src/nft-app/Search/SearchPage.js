@@ -31,7 +31,6 @@ import { getNFTs } from "../../API/NFT";
 import { LoopLogo } from "../../styles/LoopLogo";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { NftContainer } from "../../styles/NftContainer";
-import banner1 from "../../images/Banner1.jpg";
 import { nftaddress } from "../../config";
 import { LayoutGroup } from "framer-motion/dist/framer-motion";
 import { Collection } from "../../styles/Collection";
@@ -41,7 +40,6 @@ import { SearchCollection } from "../../styles/SearchCollection";
 
 function SearchPage(props) {
   const size = useWindowSize();
-  const history = useHistory();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const [searchTerm, setSearchTerm] = useState(searchParams.get("searchTerm"));
@@ -122,35 +120,47 @@ function SearchPage(props) {
     }));
   };
 
+  /**
+   * Get the next page of NFTs
+   */
   const fetchMoreNFTs = async () => {
     const nftResults = await (await getNFTs(nftParams)).data;
+
     setNftData([...nftData, ...nftResults.nfts]);
-    setNftParams((prevState) => ({ ...prevState, page: prevState.page + 1 }));
+    setNftParams({ 
+      ...nftParams, 
+      page: nftParams.page + 1 
+    });
   };
 
   /**
-   * Update the state of the component and update the nft data
-   *
-   * @param {*} params - NFT Search Params
+   * Update NFT list based on the filters chosen by the user
+   * 
+   * @param {*} params parameters used to filter query results
    */
   const handleChangeFilterNFT = (params) => {
+    setLoading(true);
     setNftParams(params);
     updateNFTs(params);
   };
 
+  /**
+   * Get the filtered list of NFTs
+   * 
+   * @param {*} params parameters used to filter query results
+   */
   const updateNFTs = async (params) => {
-    setLoading(true);
     const nftResults = await (await getNFTs(params)).data;
+
     setMaxPrice(nftResults.higherPrice);
     setNftData(nftResults.nfts);
-    setNftParams((prevState) => ({ ...prevState, page: prevState.page + 1 }));
+    setNftParams((prevState) => ({ 
+      ...prevState, 
+      page: prevState.page + 1 
+    }));
     setTotalNFTs(nftResults.nftsAmount);
     setLoading(false);
   };
-
-  function NavigateTo(route) {
-    history.push(`/${route}`);
-  }
 
   useEffect(async () => {
     setLoading(true);
@@ -397,7 +407,7 @@ function SearchPage(props) {
                               collectionDescription={item.description}
                               creatorName={item.creator.userName}
                               onClickCollection={() =>
-                                NavigateTo(`collection/${item.nickName}`)
+                                props.redirect(`collection/${item.nickName}`)
                               }
                               floorprice={item.floorPrice}
                               owners={item.owners}
@@ -412,7 +422,7 @@ function SearchPage(props) {
                                 collectionParams.sortBy === "volumeTrade"
                               }
                               onClickCreator={() =>
-                                NavigateTo(`UserProfile/${item.creator._id}`)
+                                props.redirect(`UserProfile/${item.creator._id}`)
                               }
                               xdc={props.xdc}
                             ></Collection>
@@ -486,10 +496,10 @@ function SearchPage(props) {
                             fileType={item.fileType}
                             background={({ theme }) => theme.backElement}
                             onClick={() =>
-                              NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
+                              props.redirect(`nft/${nftaddress}/${item.tokenId}`)
                             }
                             onClickCreator={() =>
-                              NavigateTo(`UserProfile/${item.creator._id}`)
+                              props.redirect(`UserProfile/${item.creator._id}`)
                             }
                             owner={true}
                             usdPrice={props.xdc}

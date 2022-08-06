@@ -7,6 +7,7 @@ import xdclogo from "../images/miniXdcLogo.png";
 import Tooltip from "@mui/material/Tooltip";
 import styled from "styled-components";
 import { motion } from "framer-motion/dist/framer-motion";
+import { truncateAddress } from "../common/common";
 
 function TableActivityNft(props) {
   const widthRow = "264px";
@@ -45,12 +46,6 @@ function TableActivityNft(props) {
     }
     return Math.floor(seconds) + " seconds ago";
   }
-
-  const truncateAddress = (address) => {
-    return address
-      ? address.substring(0, 7) + "..." + address.substring(38)
-      : "undefined";
-  };
 
   return (
     <VStack width="100%" height="100%" spacing="3px">

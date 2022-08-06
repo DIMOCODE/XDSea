@@ -5,7 +5,7 @@ import xdclogo from "../images/miniXdcLogo.png";
 import ButtonApp from "./Buttons";
 import { appStyle } from "./AppStyles";
 import { useHistory } from "react-router-dom";
-import { isXdc, fromXdc } from "../common/common";
+import { isXdc, fromXdc, truncateAddress } from "../common/common";
 
 function TableOffersNft(props) {
   const {
@@ -26,13 +26,6 @@ function TableOffersNft(props) {
   const widthRow = "100%";
   const debugColor = "transparent";
   const heightRow = "69px";
-  const history = useHistory();
-
-  const truncateAddress = (address) => {
-    return address
-      ? address.substring(0, 7) + "..." + address.substring(38)
-      : "undefined";
-  };
 
   const convertPrice = (price) => {
     return price
@@ -41,10 +34,6 @@ function TableOffersNft(props) {
         })
       : "-";
   };
-
-  function NavigateTo(route) {
-    history.push(`/${route}`);
-  }
 
   return (
     <>
@@ -56,7 +45,7 @@ function TableOffersNft(props) {
             <HStack
               justify="flex-start"
               spacing="6px"
-              onClick={() => NavigateTo(`UserProfile/${offerUser}`)}
+              onClick={() => props.redirect(`UserProfile/${offerUser}`)}
             >
               <IconImg
                 url={imageBuyer}

@@ -13,7 +13,6 @@ import emptyNFT from "../../images/emptyNFT.png";
 import axios from "axios";
 import NFTMarketLayer1 from "../../abis/NFTMarketLayer1.json";
 import { burnedNFTs } from "../../blacklist";
-import banner1 from "../../images/Banner1.jpg";
 import copyIcon from "../../images/copyAddress.png";
 import verified from "../../images/verified.png";
 
@@ -42,7 +41,6 @@ import { appStyle } from "../../styles/AppStyles";
 import { BubbleCopied } from "../../styles/BubbleCopied";
 import ReactPlayer from "react-player";
 import InfiniteScroll from "react-infinite-scroll-component";
-import menuContext from "../../context/menuContext";
 import CID from "cids";
 import { getNFTs } from "../../API/NFT";
 import { getCollections } from "../../API/Collection";
@@ -51,7 +49,6 @@ import { getUser } from "../../API/User";
 
 const MyNFT = (props) => {
   const { userId } = useParams();
-  const history = useHistory();
   const [collections, setCollections] = useState([]);
   const [nfts, setNfts] = useState([]);
   const [totalNfts, setTotalNfts] = useState(0);
@@ -59,94 +56,61 @@ const MyNFT = (props) => {
   const [loading, setLoading] = useState(false);
   const [loadingCollection, setLoadingCollection] = useState(false);
   const [user, setUser] = useState({});
+  const [nftParams, setNftParams] = useState({
+    pageSize: 15, 
+    page: 1, 
+    userId: userId
+  });
+  const [collectionParams, setCollectionParams] = useState({
+    userId: userId
+  })
 
+  /**
+   * Get the owned collections of the user
+   */
   const getCreatedCollections = async () => {
-    setLoadingCollection(true);
-    const collectionData = await (
-      await getCollections({ userId: userId })
-    ).data;
-    const collectionList = await Promise.all(
-      collectionData.collections.map(async (item) => {
-        let collection = {
-          logo: isSafari ? item.logo.v1 : item.logo.v0,
-          name: item.name,
-          nftCount: item.totalNfts,
-          nfts: item.nfts,
-          nickName: item.nickName,
-        };
+    const collectionData = await (await getCollections(collectionParams)).data;
 
-        return collection;
-      })
-    );
-
-    setCollections(collectionList);
+    setCollections(collectionData.collections);
     setLoadingCollection(false);
   };
 
+  /**
+   * Get the first page of owned NFTs of the user
+   */
   const getOwnedNFTs = async () => {
-    setLoading(true);
-    const requestData = await Promise.all(
+    await Promise.all(
       [1, 2].map(async (i) => {
         if (i === 1) {
           let userData = await (await getUser(userId)).data.user;
           setUser(userData);
-          return userData;
         } else {
-          let nftData = await (
-            await getNFTs({ pageSize: 15, page: page, userId: userId })
-          ).data;
-          const nftList = await Promise.all(
-            nftData.nfts.map(async (item) => {
-              let nft = {
-                tokenId: item.tokenId,
-                image: isSafari ? item.urlFile.v1 : item.urlFile.v0,
-                preview: isSafari ? item.preview.v1 : item.preview.v0,
-                name: item.name,
-                logo: isSafari
-                  ? item.collectionId.logo.v1
-                  : item.collectionId.logo.v0,
-                fileType: item.fileType,
-                hasOpenOffer: item.hasOpenOffer,
-              };
+          let nftData = await (await getNFTs(nftParams)).data;
 
-              return nft;
-            })
-          );
-          setNfts(nftList);
+          setNfts(nftData.nfts);
           setTotalNfts(nftData.nftsAmount);
-          return nftData;
         }
       })
     );
 
-    setPage(page + 1);
+    setNftParams({
+      ...nftParams,
+      page: nftParams.page + 1
+    });
     setLoading(false);
   };
 
+  /**
+   * Get the next page of owned NFTs of the user
+   */
   const fetchMoreNFTs = async () => {
-    const nftData = await (
-      await getNFTs({ pageSize: 15, page: page, userId: userId })
-    ).data;
+    const nftData = await (await getNFTs(nftParams)).data;
 
-    const nftList = await Promise.all(
-      nftData.nfts.map(async (item) => {
-        let nft = {
-          tokenId: item.tokenId,
-          image: isSafari ? item.urlFile.v1 : item.urlFile.v0,
-          preview: isSafari ? item.preview.v1 : item.preview.v0,
-          name: item.name,
-          logo: isSafari
-            ? item.collectionId.logo.v1
-            : item.collectionId.logo.v0,
-          fileType: item.fileType,
-        };
-
-        return nft;
-      })
-    );
-
-    setNfts((prevState) => [...prevState, ...nftList]);
-    setPage(page + 1);
+    setNfts([...nfts, ...nftData.nfts]);
+    setNftParams({
+      ...nftParams,
+      page: nftParams.page + 1
+    });
   };
 
   const isImage = (fileType) => {
@@ -166,12 +130,9 @@ const MyNFT = (props) => {
   useEffect(() => {
     window.scrollTo(0, 0);
     setSubMenu(0);
+    setLoading(true);
     getOwnedNFTs();
   }, [userId]);
-
-  function NavigateTo(route) {
-    history.push(`/${route}`);
-  }
 
   const size = useWindowSize();
 
@@ -179,7 +140,7 @@ const MyNFT = (props) => {
     return str?.length > n ? str.substr(0, n - 1) + "..." : str;
   };
 
-  const [, setShowMenu] = useContext(menuContext);
+  const [, setShowMenu] = useState(props.showMenu);
   const [scrollTop, setScrollTop] = useState();
   const [scrolling, setScrolling] = useState();
 
@@ -271,6 +232,7 @@ const MyNFT = (props) => {
                 height="39px"
                 onClick={() => {
                   setSubMenu(1);
+                  setLoadingCollection(true);
                   getCreatedCollections();
                 }}
                 cursor={"pointer"}
@@ -329,7 +291,7 @@ const MyNFT = (props) => {
                             overflow="hidden"
                             whileHover={{ scale: 1.05 }}
                             onClick={() => {
-                              NavigateTo(`nft/${nftaddress}/${item.tokenId}`);
+                              props.redirect(`nft/${nftaddress}/${item.tokenId}`);
                             }}
                           >
                             <ZStack cursor={"pointer"}>
@@ -351,12 +313,19 @@ const MyNFT = (props) => {
                               ) : null}
                               <ZItem
                                 backgroundimage={
-                                  isAudio(item.fileType) ? item.preview : null
+                                  isAudio(item.fileType) 
+                                    ? isSafari
+                                      ? item.preview.v1
+                                      : item.preview.v0 
+                                    : null
                                 }
                               >
                                 {isImage(item.fileType) ? (
                                   <IconImg
-                                    url={item.image}
+                                    url={isSafari
+                                      ? item.urlFile.v1
+                                      : item.urlFile.v0
+                                    }
                                     width="100%"
                                     height="100%"
                                     backsize="cover"
@@ -370,7 +339,10 @@ const MyNFT = (props) => {
                                     overflow="hidden"
                                   >
                                     <ReactPlayer
-                                      url={item.image}
+                                      url={isSafari
+                                        ? item.urlFile.v1
+                                        : item.urlFile.v0
+                                      }
                                       playing={true}
                                       volume={0}
                                       muted={true}
@@ -387,7 +359,10 @@ const MyNFT = (props) => {
                                     overflow="hidden"
                                   >
                                     <ReactPlayer
-                                      url={item?.image}
+                                      url={isSafari
+                                        ? item.urlFile.v1
+                                        : item.urlFile.v0
+                                      }
                                       playing={false}
                                       muted={true}
                                       volume={0}
@@ -450,7 +425,10 @@ const MyNFT = (props) => {
                       <VStack width="100%" padding="30px" spacing="30px">
                         <HStack width="100%">
                           <IconImg
-                            url={item.logo}
+                            url={isSafari
+                              ? item.logo.v1
+                              : item.logo.v0
+                            }
                             width="60px"
                             height="60px"
                             backsize="cover"
@@ -458,7 +436,7 @@ const MyNFT = (props) => {
                           ></IconImg>
                           <VStack spacing="6px" alignment="flex-start">
                             <TitleBold18>{item.name}</TitleBold18>
-                            <BodyRegular>{item.nftCount} Items</BodyRegular>
+                            <BodyRegular>{item.totalNfts} Items</BodyRegular>
                           </VStack>
                         </HStack>
                         <HStack justify="flex-start">
@@ -470,7 +448,7 @@ const MyNFT = (props) => {
                               whileHover={{ scale: 1.05 }}
                               overflow="hidden"
                               onClick={() => {
-                                NavigateTo(`nft/${nftaddress}/${nft.tokenId}`);
+                                props.redirect(`nft/${nftaddress}/${nft.tokenId}`);
                               }}
                             >
                               <ZStack cursor={"pointer"}>
@@ -553,13 +531,13 @@ const MyNFT = (props) => {
                             </VStack>
                           ))}
                         </HStack>
-                        {item.nftCount > 5 ? (
+                        {item.totalNfts > 5 ? (
                           <ButtonApp
                             text={"See Collection"}
                             textcolor={appStyle.colors.white}
                             border="30px"
                             onClick={() =>
-                              NavigateTo(`collection/${item.nickName}`)
+                              props.redirect(`collection/${item.nickName}`)
                             }
                             btnStatus={0}
                           ></ButtonApp>

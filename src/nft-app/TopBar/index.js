@@ -40,7 +40,6 @@ import twitter from "../../images/twitterFaded.png";
 
 import instagram from "../../images/instagramFaded.png";
 import mail from "../../images/mailFaded.png";
-import menuContext from "../../context/menuContext";
 import gif from "../../images/gifConnect.gif";
 import search from "../../images/searchIcon.png";
 import XDClogo from "../../images/xdcpayLogo.png";
@@ -57,10 +56,9 @@ import { Divider, Icon } from "@mui/material";
 
 function TopBar(props) {
   const { device, themeToggler, devMode, onWalletChange } = props;
-  const history = useHistory();
   const [wallet, setWallet] = useState({});
   const [deviceSize, setDeviceSize] = useState("");
-  const [showMenu, setShowMenu] = useContext(menuContext);
+  const [showMenu, setShowMenu] = useState(props.showMenu);
   const [showMetamask, setShowMetamask] = useState(false);
   const [isMetamask, setIsMetamask] = useState(false);
   const [isDcent, setIsDcent] = useState(false);
@@ -85,11 +83,6 @@ function TopBar(props) {
       setShowMenu(false);
     };
   }, [device]);
-
-  function NavigateTo(route) {
-    setShowMenu(false);
-    history.push(`/${route}`);
-  }
 
   function handleBarStatus(status) {
     setIsSearch(status);
@@ -315,26 +308,26 @@ function TopBar(props) {
                           style={{ zIndex: -100 }}
                         >
                           <TitleBold21
-                            onClick={() => NavigateTo("")}
+                            onClick={() => props.redirect("")}
                             textcolor={({ theme }) => theme.text}
                           >
                             Home
                           </TitleBold21>
                           <TitleBold21
-                            onClick={() => NavigateTo("Discover")}
+                            onClick={() => props.redirect("Discover")}
                             textcolor={({ theme }) => theme.text}
                           >
                             Discover
                           </TitleBold21>
                           <TitleBold21
                             textcolor={({ theme }) => theme.text}
-                            onClick={() => NavigateTo("HowToStart")}
+                            onClick={() => props.redirect("HowToStart")}
                           >
                             How to Start
                           </TitleBold21>
                           <TitleBold21
                             textcolor={({ theme }) => theme.text}
-                            onClick={() => NavigateTo("CreateNFT")}
+                            onClick={() => props.redirect("CreateNFT")}
                           >
                             Create an NFT
                           </TitleBold21>
@@ -366,7 +359,7 @@ function TopBar(props) {
                             clickOnSwitch={themeToggler}
                           ></SwitchButton>
                           {wallet?.connected ? (
-                            <UserMenuButton wallet={wallet}></UserMenuButton>
+                            <UserMenuButton wallet={wallet} redirect={props.redirect}></UserMenuButton>
                           ) : null}
 
                           <a href="https://www.instagram.com/xdsea.nft/">
@@ -432,7 +425,7 @@ function TopBar(props) {
                       padding="0 12px"
                       style={{ position: "relative" }}
                     >
-                      <HStack onClick={() => NavigateTo("")} cursor={"pointer"}>
+                      <HStack onClick={() => props.redirect("")} cursor={"pointer"}>
                         <IconImg
                           url={XDSealogo}
                           width="52px"
@@ -539,26 +532,26 @@ function TopBar(props) {
                           spacing="21px"
                         >
                           <TitleBold21
-                            onClick={() => NavigateTo("")}
+                            onClick={() => props.redirect("")}
                             textcolor={({ theme }) => theme.text}
                           >
                             Home
                           </TitleBold21>
                           <TitleBold21
-                            onClick={() => NavigateTo("Discover")}
+                            onClick={() => props.redirect("Discover")}
                             textcolor={({ theme }) => theme.text}
                           >
                             Discover
                           </TitleBold21>
                           <TitleBold21
                             textcolor={({ theme }) => theme.text}
-                            onClick={() => NavigateTo("HowToStart")}
+                            onClick={() => props.redirect("HowToStart")}
                           >
                             How to Start
                           </TitleBold21>
                           <TitleBold21
                             textcolor={({ theme }) => theme.text}
-                            onClick={() => NavigateTo("CreateNFT")}
+                            onClick={() => props.redirect("CreateNFT")}
                           >
                             Create an NFT
                           </TitleBold21>
@@ -598,7 +591,7 @@ function TopBar(props) {
                     padding="0 26px"
                     style={{ position: "relative" }}
                   >
-                    <HStack onClick={() => NavigateTo("")} cursor={"pointer"}>
+                    <HStack onClick={() => props.redirect("")} cursor={"pointer"}>
                       <IconImg
                         url={XDSealogo}
                         width="52px"
@@ -670,7 +663,7 @@ function TopBar(props) {
 
                     <SwitchButton clickOnSwitch={themeToggler}></SwitchButton>
                     {wallet?.connected ? (
-                      <UserMenuButton wallet={wallet}></UserMenuButton>
+                      <UserMenuButton wallet={wallet} redirect={props.redirect}></UserMenuButton>
                     ) : null}
 
                     <VStack
@@ -708,7 +701,7 @@ function TopBar(props) {
               return (
                 <>
                   <HStack width="1200px">
-                    <HStack onClick={() => NavigateTo("")} cursor={"pointer"}>
+                    <HStack onClick={() => props.redirect("")} cursor={"pointer"}>
                       <IconImg
                         url={XDSealogo}
                         width="66px"
@@ -767,7 +760,7 @@ function TopBar(props) {
                             textcolor={({ theme }) => theme.text}
                             text="Discover"
                             cursor="pointer"
-                            onClick={() => NavigateTo("Discover")}
+                            onClick={() => props.redirect("Discover")}
                             btnStatus={0}
                           ></ButtonApp>
                           <ButtonApp
@@ -775,7 +768,7 @@ function TopBar(props) {
                             textcolor={({ theme }) => theme.text}
                             text="How To Start"
                             cursor="pointer"
-                            onClick={() => NavigateTo("HowToStart")}
+                            onClick={() => props.redirect("HowToStart")}
                             btnStatus={0}
                             width="150px"
                             padding="0px"
@@ -785,7 +778,7 @@ function TopBar(props) {
                             textcolor={({ theme }) => theme.blue}
                             text="Create an NFT"
                             cursor="pointer"
-                            onClick={() => NavigateTo("CreateNFT")}
+                            onClick={() => props.redirect("CreateNFT")}
                             btnStatus={0}
                             width="150px"
                             padding="0px"
@@ -821,7 +814,7 @@ function TopBar(props) {
 
                     <SwitchButton clickOnSwitch={themeToggler}></SwitchButton>
                     {wallet?.connected ? (
-                      <UserMenuButton wallet={wallet}></UserMenuButton>
+                      <UserMenuButton wallet={wallet} redirect={props.redirect}></UserMenuButton>
                     ) : null}
                   </HStack>
                 </>

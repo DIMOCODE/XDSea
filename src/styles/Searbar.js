@@ -27,13 +27,10 @@ import verifiedMask from "../images/verifiedMask.png";
 import arrowRight from "../images/arrowRight.png";
 import { useClickAway } from "react-use";
 import { Icon } from "@mui/material";
-import dummyNFT from "../images/abstract1.jpg";
-import dummyUser from "../images/dummyuser.jpg";
-import dummyUser1 from "../images/dummyuser1.jpg";
 import { getCollections } from "../API/Collection";
 import { getNFTs } from "../API/NFT";
 import loadingIcon from "../images/loadingDots.gif";
-import { isSafari } from "../common/common";
+import { isSafari, truncateAddress } from "../common/common";
 import { nftaddress } from "../config";
 
 function Searchbar({
@@ -74,12 +71,11 @@ function Searchbar({
     setShowResults(false);
   };
 
-  const truncateAddress = (address) => {
-    return address
-      ? address.substring(0, 6) + "..." + address.substring(38)
-      : "undefined";
-  };
-
+  /**
+   * Redirect the user to a specific path
+   * 
+   * @param {string} route path to be redirected to
+   */
   function NavigateTo(route) {
     history.push(`/${route}`);
     setShowResults(false);

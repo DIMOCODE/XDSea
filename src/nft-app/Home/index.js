@@ -25,15 +25,12 @@ import useWindowSize from "../../styles/useWindowSize";
 import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
 import logoXDSEA from "../../images/LogoXDSEA.png";
 import bannerXDC from "../../images/bannerXdc.png";
-import menuContext from "../../context/menuContext";
 import { NewFeatured } from "../../styles/NewFeatured";
 import { borderColor } from "@mui/system";
 import "./customstyles.css";
-import banner1 from "../../images/Banner1.jpg";
-import { isSafari } from "../../common/common";
+import { isSafari, truncateAddress } from "../../common/common";
 
 const Home = (props) => {
-  const history = useHistory();
   const [featuredNFTs, setFeaturedNFTs] = useState([]);
   const [topCollections, setTopCollections] = useState([]);
   const [trendingNFTs, setTrendingNFTs] = useState([]);
@@ -61,97 +58,27 @@ const Home = (props) => {
   const size = useWindowSize();
   const [scrollTop, setScrollTop] = useState();
   const [scrolling, setScrolling] = useState();
-  const [, setShowMenu] = useContext(menuContext);
+  const [, setShowMenu] = useState(props.showMenu);
 
   /**
-   * Get content for the Home page
+   * Get content for the Home page including featured NFTs, trending NFTs and top Collections
    */
   const getData = async () => {
     try {
-      setLoading(true);
       const homeData = (await getHomeData()).data;
-      const featuredNFTList = await Promise.all(
-        homeData.featuredNfts.map(async (nft) => {
-          let featuredNFT = {
-            collectionName: nft.nftId.collectionId.name,
-            collectionNickName: nft.nftId.collectionId.nickName,
-            collectionLogo: isSafari
-              ? nft.nftId.collectionId.logo.v1
-              : nft.nftId.collectionId.logo.v0,
-            image: isSafari ? nft.nftId.urlFile.v1 : nft.nftId.urlFile.v0,
-            name: nft.nftId.name,
-            fileType: nft.nftId.fileType,
-            preview: isSafari ? nft.nftId.preview.v1 : nft.nftId.preview.v0,
-            creator: nft.nftId.creator.userName,
-            creatorId: nft.nftId.creator._id,
-            tokenId: nft.nftId.tokenId,
-            isVerified: nft.nftId.creator.isVerified,
-          };
-          return featuredNFT;
-        })
-      );
-
-      const topCollectionList = await Promise.all(
-        homeData.topCollections.map(async (collection, i) => {
-          let topCollection = {
-            id: i,
-            name: collection.name,
-            nickName: collection.nickName,
-            logo: isSafari ? collection.logo.v1 : collection.logo.v0,
-            floorPrice: collection.floorPrice,
-            volumeTraded: collection.volumeTrade,
-            items: collection.totalNfts,
-            owners: collection.owners,
-          };
-          return topCollection;
-        })
-      );
-
-      const trendingNFTList = await Promise.all(
-        homeData.trendingNfts.map(async (nft) => {
-          let trendingNFT = {
-            collectionName: nft.nftId.collectionId.name,
-            collectionNickName: nft.nftId.collectionId.nickName,
-            creatorLogo: nft.nftId.owner.urlProfile,
-            image: isSafari ? nft.nftId.urlFile.v1 : nft.nftId.urlFile.v0,
-            name: nft.nftId.name,
-            hasOpenOffer: nft.nftId.hasOpenOffer,
-            price: nft.nftId.price,
-            fileType: nft.nftId.fileType,
-            preview: isSafari ? nft.nftId.preview.v1 : nft.nftId.preview.v0,
-            creator: nft.nftId.creator.userName,
-            ownerId: nft.nftId.owner._id,
-            tokenId: nft.nftId.tokenId,
-            saleType: nft.nftId.saleType.toLowerCase(),
-            isVerified: nft.nftId.owner.isVerified,
-            collectionVerified: nft.nftId.creator.isVerified,
-          };
-          return trendingNFT;
-        })
-      );
-
-      setFeaturedNFTs(featuredNFTList);
-      setTopCollections(topCollectionList);
-      setTrendingNFTs(trendingNFTList);
+      
+      setFeaturedNFTs(homeData.featuredNfts);
+      setTopCollections(homeData.topCollections);
+      setTrendingNFTs(homeData.trendingNfts);
       setLoading(false);
     } catch (error) {
       console.log(error);
     }
   };
 
-  const truncateAddress = (address) => {
-    return address
-      ? address.substring(0, 6) + "..." + address.substring(38)
-      : "undefined";
-  };
-
-  function NavigateTo(route) {
-    setShowMenu(false);
-    history.push(`/${route}`);
-  }
-
   useEffect(() => {
     window.scrollTo(0, 0);
+    setLoading(true);
     getData();
   }, []);
 
@@ -216,19 +143,25 @@ const Home = (props) => {
             >
               <LayoutGroup id="number1">
                 <NewFeatured
-                  creatorImage={featuredNFTs[0]?.collectionLogo}
-                  itemImage={featuredNFTs[0]?.image}
-                  collectionName={featuredNFTs[0]?.collectionName}
-                  creatorName={truncateAddress(featuredNFTs[0]?.creator)}
+                  creatorImage={isSafari
+                    ? featuredNFTs[0]?.collectionId.logo.v1
+                    : featuredNFTs[0]?.collectionId.logo.v0
+                  }
+                  itemImage={isSafari
+                    ? featuredNFTs[0]?.urlFile.v1
+                    : featuredNFTs[0]?.urlFile.v0
+                  }
+                  collectionName={featuredNFTs[0]?.collectionId.name}
+                  creatorName={truncateAddress(featuredNFTs[0]?.creator.userName)}
                   itemNumber={featuredNFTs[0]?.name}
                   fileType={featuredNFTs[0]?.fileType}
                   onClickCreator={() =>
-                    NavigateTo(
-                      `collection/${featuredNFTs[0]?.collectionNickName}`
+                    props.redirect(
+                      `collection/${featuredNFTs[0]?.collectionId.nickName}`
                     )
                   }
                   onClick={() =>
-                    NavigateTo(`nft/${nftaddress}/${featuredNFTs[0]?.tokenId}`)
+                    props.redirect(`nft/${nftaddress}/${featuredNFTs[0]?.tokenId}`)
                   }
                 ></NewFeatured>
               </LayoutGroup>
@@ -242,19 +175,25 @@ const Home = (props) => {
             >
               <LayoutGroup id="number2">
                 <NewFeatured
-                  creatorImage={featuredNFTs[1]?.collectionLogo}
-                  itemImage={featuredNFTs[1]?.image}
-                  collectionName={featuredNFTs[1]?.collectionName}
-                  creatorName={truncateAddress(featuredNFTs[1]?.creator)}
+                  creatorImage={isSafari
+                    ? featuredNFTs[1]?.collectionId.logo.v1
+                    : featuredNFTs[1]?.collectionId.logo.v0
+                  }
+                  itemImage={isSafari
+                    ? featuredNFTs[1]?.urlFile.v1
+                    : featuredNFTs[1]?.urlFile.v0
+                  }
+                  collectionName={featuredNFTs[1]?.collectionId.name}
+                  creatorName={truncateAddress(featuredNFTs[1]?.creator.userName)}
                   itemNumber={featuredNFTs[1]?.name}
                   fileType={featuredNFTs[1]?.fileType}
                   onClickCreator={() =>
-                    NavigateTo(
-                      `collection/${featuredNFTs[1]?.collectionNickName}`
+                    props.redirect(
+                      `collection/${featuredNFTs[1]?.collectionId.nickName}`
                     )
                   }
                   onClick={() =>
-                    NavigateTo(`nft/${nftaddress}/${featuredNFTs[1]?.tokenId}`)
+                    props.redirect(`nft/${nftaddress}/${featuredNFTs[1]?.tokenId}`)
                   }
                 ></NewFeatured>
               </LayoutGroup>
@@ -268,19 +207,25 @@ const Home = (props) => {
             >
               <LayoutGroup id="number3">
                 <NewFeatured
-                  creatorImage={featuredNFTs[2]?.collectionLogo}
-                  itemImage={featuredNFTs[2]?.image}
-                  collectionName={featuredNFTs[2]?.collectionName}
-                  creatorName={truncateAddress(featuredNFTs[2]?.creator)}
+                  creatorImage={isSafari
+                    ? featuredNFTs[2]?.collectionId.logo.v1
+                    : featuredNFTs[2]?.collectionId.logo.v0
+                  }
+                  itemImage={isSafari
+                    ? featuredNFTs[2]?.urlFile.v1
+                    : featuredNFTs[2]?.urlFile.v0
+                  }
+                  collectionName={featuredNFTs[2]?.collectionId.name}
+                  creatorName={truncateAddress(featuredNFTs[2]?.creator.userName)}
                   itemNumber={featuredNFTs[2]?.name}
                   fileType={featuredNFTs[2]?.fileType}
                   onClickCreator={() =>
-                    NavigateTo(
-                      `collection/${featuredNFTs[2]?.collectionNickName}`
+                    props.redirect(
+                      `collection/${featuredNFTs[2]?.collectionId.nickName}`
                     )
                   }
                   onClick={() =>
-                    NavigateTo(`nft/${nftaddress}/${featuredNFTs[2]?.tokenId}`)
+                    props.redirect(`nft/${nftaddress}/${featuredNFTs[2]?.tokenId}`)
                   }
                 ></NewFeatured>
               </LayoutGroup>
@@ -294,19 +239,25 @@ const Home = (props) => {
             >
               <LayoutGroup id="number4">
                 <NewFeatured
-                  creatorImage={featuredNFTs[3]?.collectionLogo}
-                  itemImage={featuredNFTs[3]?.image}
-                  collectionName={featuredNFTs[3]?.collectionName}
-                  creatorName={truncateAddress(featuredNFTs[3]?.creator)}
+                  creatorImage={isSafari
+                    ? featuredNFTs[3]?.collectionId.logo.v1
+                    : featuredNFTs[3]?.collectionId.logo.v0
+                  }
+                  itemImage={isSafari
+                    ? featuredNFTs[3]?.urlFile.v1
+                    : featuredNFTs[3]?.urlFile.v0
+                  }
+                  collectionName={featuredNFTs[3]?.collectionId.name}
+                  creatorName={truncateAddress(featuredNFTs[3]?.creator.userName)}
                   itemNumber={featuredNFTs[3]?.name}
                   fileType={featuredNFTs[3]?.fileType}
                   onClickCreator={() =>
-                    NavigateTo(
-                      `collection/${featuredNFTs[3]?.collectionNickName}`
+                    props.redirect(
+                      `collection/${featuredNFTs[3]?.collectionId.nickName}`
                     )
                   }
                   onClick={() =>
-                    NavigateTo(`nft/${nftaddress}/${featuredNFTs[3]?.tokenId}`)
+                    props.redirect(`nft/${nftaddress}/${featuredNFTs[3]?.tokenId}`)
                   }
                 ></NewFeatured>
               </LayoutGroup>
@@ -333,21 +284,25 @@ const Home = (props) => {
               >
                 <LayoutGroup id="number1">
                   <NewFeatured
-                    creatorImage={featuredNFTs[0]?.collectionLogo}
-                    itemImage={featuredNFTs[0]?.image}
-                    collectionName={featuredNFTs[0]?.collectionName}
-                    creatorName={truncateAddress(featuredNFTs[0]?.creator)}
+                    creatorImage={isSafari
+                      ? featuredNFTs[0]?.collectionId.logo.v1
+                      : featuredNFTs[0]?.collectionId.logo.v0
+                    }
+                    itemImage={isSafari
+                      ? featuredNFTs[0]?.urlFile.v1
+                      : featuredNFTs[0]?.urlFile.v0
+                    }
+                    collectionName={featuredNFTs[0]?.collectionId.name}
+                    creatorName={truncateAddress(featuredNFTs[0]?.creator.userName)}
                     itemNumber={featuredNFTs[0]?.name}
                     fileType={featuredNFTs[0]?.fileType}
                     onClickCreator={() =>
-                      NavigateTo(
-                        `collection/${featuredNFTs[0]?.collectionNickName}`
+                      props.redirect(
+                        `collection/${featuredNFTs[0]?.collectionId.nickName}`
                       )
                     }
                     onClick={() =>
-                      NavigateTo(
-                        `nft/${nftaddress}/${featuredNFTs[0]?.tokenId}`
-                      )
+                      props.redirect(`nft/${nftaddress}/${featuredNFTs[0]?.tokenId}`)
                     }
                   ></NewFeatured>
                 </LayoutGroup>
@@ -361,21 +316,25 @@ const Home = (props) => {
               >
                 <LayoutGroup id="number2">
                   <NewFeatured
-                    creatorImage={featuredNFTs[1]?.collectionLogo}
-                    itemImage={featuredNFTs[1]?.image}
-                    collectionName={featuredNFTs[1]?.collectionName}
-                    creatorName={truncateAddress(featuredNFTs[1]?.creator)}
+                    creatorImage={isSafari
+                      ? featuredNFTs[1]?.collectionId.logo.v1
+                      : featuredNFTs[1]?.collectionId.logo.v0
+                    }
+                    itemImage={isSafari
+                      ? featuredNFTs[1]?.urlFile.v1
+                      : featuredNFTs[1]?.urlFile.v0
+                    }
+                    collectionName={featuredNFTs[1]?.collectionId.name}
+                    creatorName={truncateAddress(featuredNFTs[1]?.creator.userName)}
                     itemNumber={featuredNFTs[1]?.name}
                     fileType={featuredNFTs[1]?.fileType}
                     onClickCreator={() =>
-                      NavigateTo(
-                        `collection/${featuredNFTs[1]?.collectionNickName}`
+                      props.redirect(
+                        `collection/${featuredNFTs[1]?.collectionId.nickName}`
                       )
                     }
                     onClick={() =>
-                      NavigateTo(
-                        `nft/${nftaddress}/${featuredNFTs[1]?.tokenId}`
-                      )
+                      props.redirect(`nft/${nftaddress}/${featuredNFTs[1]?.tokenId}`)
                     }
                   ></NewFeatured>
                 </LayoutGroup>
@@ -390,21 +349,25 @@ const Home = (props) => {
               >
                 <LayoutGroup id="number3">
                   <NewFeatured
-                    creatorImage={featuredNFTs[2]?.collectionLogo}
-                    itemImage={featuredNFTs[2]?.image}
-                    collectionName={featuredNFTs[2]?.collectionName}
-                    creatorName={truncateAddress(featuredNFTs[2]?.creator)}
+                    creatorImage={isSafari
+                      ? featuredNFTs[2]?.collectionId.logo.v1
+                      : featuredNFTs[2]?.collectionId.logo.v0
+                    }
+                    itemImage={isSafari
+                      ? featuredNFTs[2]?.urlFile.v1
+                      : featuredNFTs[2]?.urlFile.v0
+                    }
+                    collectionName={featuredNFTs[2]?.collectionId.name}
+                    creatorName={truncateAddress(featuredNFTs[2]?.creator.userName)}
                     itemNumber={featuredNFTs[2]?.name}
                     fileType={featuredNFTs[2]?.fileType}
                     onClickCreator={() =>
-                      NavigateTo(
-                        `collection/${featuredNFTs[2]?.collectionNickName}`
+                      props.redirect(
+                        `collection/${featuredNFTs[2]?.collectionId.nickName}`
                       )
                     }
                     onClick={() =>
-                      NavigateTo(
-                        `nft/${nftaddress}/${featuredNFTs[2]?.tokenId}`
-                      )
+                      props.redirect(`nft/${nftaddress}/${featuredNFTs[2]?.tokenId}`)
                     }
                   ></NewFeatured>
                 </LayoutGroup>
@@ -419,21 +382,25 @@ const Home = (props) => {
               >
                 <LayoutGroup id="number4">
                   <NewFeatured
-                    creatorImage={featuredNFTs[3]?.collectionLogo}
-                    itemImage={featuredNFTs[3]?.image}
-                    collectionName={featuredNFTs[3]?.collectionName}
-                    creatorName={truncateAddress(featuredNFTs[3]?.creator)}
+                    creatorImage={isSafari
+                      ? featuredNFTs[3]?.collectionId.logo.v1
+                      : featuredNFTs[3]?.collectionId.logo.v0
+                    }
+                    itemImage={isSafari
+                      ? featuredNFTs[3]?.urlFile.v1
+                      : featuredNFTs[3]?.urlFile.v0
+                    }
+                    collectionName={featuredNFTs[3]?.collectionId.name}
+                    creatorName={truncateAddress(featuredNFTs[3]?.creator.userName)}
                     itemNumber={featuredNFTs[3]?.name}
                     fileType={featuredNFTs[3]?.fileType}
                     onClickCreator={() =>
-                      NavigateTo(
-                        `collection/${featuredNFTs[3]?.collectionNickName}`
+                      props.redirect(
+                        `collection/${featuredNFTs[3]?.collectionId.nickName}`
                       )
                     }
                     onClick={() =>
-                      NavigateTo(
-                        `nft/${nftaddress}/${featuredNFTs[3]?.tokenId}`
-                      )
+                      props.redirect(`nft/${nftaddress}/${featuredNFTs[3]?.tokenId}`)
                     }
                   ></NewFeatured>
                 </LayoutGroup>
@@ -478,7 +445,7 @@ const Home = (props) => {
               width="100%"
               height="100%"
               whileHover={{ scale: 1.05 }}
-              onClick={() => NavigateTo("HowToStart")}
+              onClick={() => props.redirect("HowToStart")}
             >
               <TitleBold27 textcolor={appStyle.colors.white}>
                 Want to Get Started?
@@ -524,20 +491,23 @@ const Home = (props) => {
                     width={size.width < 1200 ? "100%" : "580px"}
                   ></LoadingSpot>
                 ))
-              : topCollections.map((item) => (
-                  <LayoutGroup id={item.id + 1}>
+              : topCollections.map((item, i) => (
+                  <LayoutGroup id={i + 1}>
                     <TopCollectionItem
-                      key={item?.id + 1}
+                      key={i + 1}
                       width={size.width < 1200 ? "100%" : "580px"}
-                      imageCreator={item?.logo}
+                      imageCreator={isSafari
+                        ? item?.logo.v1
+                        : item?.logo.v0
+                      }
                       collectionName={item?.name}
-                      position={item?.id + 1}
+                      position={i + 1}
                       floorprice={item?.floorPrice}
                       owners={item?.owners}
-                      nfts={item?.items}
-                      volumetraded={item?.volumeTraded}
+                      nfts={item?.totalNfts}
+                      volumetraded={item?.volumeTrade}
                       textcolor={({ theme }) => theme.text}
-                      onClick={() => NavigateTo(`collection/${item?.nickName}`)}
+                      onClick={() => props.redirect(`collection/${item?.nickName}`)}
                     ></TopCollectionItem>
                   </LayoutGroup>
                 ))}
@@ -570,25 +540,28 @@ const Home = (props) => {
                   key={i}
                 >
                   <NftContainer
-                    isVerified={item.isVerified}
-                    iconStatus={item.saleType}
+                    isVerified={item.owner.isVerified}
+                    iconStatus={item.saleType.toLowerCase()}
                     hasOffers={item.hasOpenOffer}
                     fileType={item.fileType}
-                    creatorImage={item.creatorLogo}
-                    itemImage={item.image}
+                    creatorImage={item.owner.urlProfile}
+                    itemImage={isSafari
+                      ? item.urlFile.v1
+                      : item.urlFile.v0
+                    }
                     price={item.price}
-                    collectionName={item.collectionName}
+                    collectionName={item.collectionId.name}
                     itemNumber={item.name}
                     background={({ theme }) => theme.backElement}
                     onClick={() =>
-                      NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
+                      props.redirect(`nft/${nftaddress}/${item.tokenId}`)
                     }
                     onClickCreator={() =>
-                      NavigateTo(`UserProfile/${item.ownerId}`)
+                      props.redirect(`UserProfile/${item.owner._id}`)
                     }
                     owner={true}
                     usdPrice={props.xdc}
-                    collectionVerified={item.collectionVerified}
+                    collectionVerified={item.creator.isVerified}
                   ></NftContainer>
                 </VStack>
               ))
@@ -600,25 +573,28 @@ const Home = (props) => {
                   key={i}
                 >
                   <NftContainer
-                    isVerified={item.isVerified}
-                    iconStatus={item.saleType}
+                    isVerified={item.owner.isVerified}
+                    iconStatus={item.saleType.toLowerCase()}
                     hasOffers={item.hasOpenOffer}
                     fileType={item.fileType}
-                    creatorImage={item.creatorLogo}
-                    itemImage={item.image}
+                    creatorImage={item.owner.urlProfile}
+                    itemImage={isSafari
+                      ? item.urlFile.v1
+                      : item.urlFile.v0
+                    }
                     price={item.price}
-                    collectionName={item.collectionName}
+                    collectionName={item.collectionId.name}
                     itemNumber={item.name}
                     background={({ theme }) => theme.backElement}
                     onClick={() =>
-                      NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
+                      props.redirect(`nft/${nftaddress}/${item.tokenId}`)
                     }
                     onClickCreator={() =>
-                      NavigateTo(`UserProfile/${item.ownerId}`)
+                      props.redirect(`UserProfile/${item.owner._id}`)
                     }
                     owner={true}
                     usdPrice={props.xdc}
-                    collectionVerified={item.collectionVerified}
+                    collectionVerified={item.creator.isVerified}
                   ></NftContainer>
                 </VStack>
               ))
@@ -629,25 +605,28 @@ const Home = (props) => {
                   key={i}
                 >
                   <NftContainer
-                    isVerified={item.isVerified}
-                    iconStatus={item.saleType}
+                    isVerified={item.owner.isVerified}
+                    iconStatus={item.saleType.toLowerCase()}
                     hasOffers={item.hasOpenOffer}
                     fileType={item.fileType}
-                    creatorImage={item.creatorLogo}
-                    itemImage={item.image}
+                    creatorImage={item.owner.urlProfile}
+                    itemImage={isSafari
+                      ? item.urlFile.v1
+                      : item.urlFile.v0
+                    }
                     price={item.price}
-                    collectionName={item.collectionName}
+                    collectionName={item.collectionId.name}
                     itemNumber={item.name}
                     background={({ theme }) => theme.backElement}
                     onClick={() =>
-                      NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
+                      props.redirect(`nft/${nftaddress}/${item.tokenId}`)
                     }
                     onClickCreator={() =>
-                      NavigateTo(`UserProfile/${item.ownerId}`)
+                      props.redirect(`UserProfile/${item.owner._id}`)
                     }
-                    usdPrice={props.xdc}
                     owner={true}
-                    collectionVerified={item.collectionVerified}
+                    usdPrice={props.xdc}
+                    collectionVerified={item.creator.isVerified}
                   ></NftContainer>
                 </VStack>
               ))}
@@ -657,7 +636,7 @@ const Home = (props) => {
           width="300px"
           text="Discover More"
           textcolor={appStyle.colors.white}
-          onClick={() => NavigateTo(`discover`)}
+          onClick={() => props.redirect(`discover`)}
           cursor="pointer"
           btnStatus={0}
           background={({ theme }) => theme.blue}

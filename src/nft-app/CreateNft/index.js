@@ -36,7 +36,6 @@ import { PropertyValue } from "../../styles/PropertyValue";
 import percent from "../../images/percent.png";
 import lock from "../../images/lock.png";
 import { UploadMultimedia } from "../../styles/UploadMultimedia";
-import xinfinLogo from "../../images/xinfinLogo.png";
 import useWindowSize from "../../styles/useWindowSize";
 import { InputStyledURL } from "../../styles/InputStyledURL";
 import { InputStyledLink } from "../../styles/InputStyledLink";
@@ -48,7 +47,6 @@ import loading from "../../images/loadingDots.gif";
 import empty from "../../images/empty.png";
 import { TxModal } from "../../styles/TxModal";
 import { useHistory } from "react-router-dom";
-import menuContext from "../../context/menuContext";
 import { createRequest } from "../../API";
 import {
   checkCollectionExistsRequest,
@@ -59,7 +57,6 @@ import {
 import { createNFT } from "../../API/NFT";
 
 function CreateNft(props) {
-  const history = useHistory();
   const size = useWindowSize();
   const [nft, setNFT] = useState({
     preview: "",
@@ -133,7 +130,7 @@ function CreateNft(props) {
   const [wallet, setWallet] = useState(null);
   const [minted, setMinted] = useState(false);
   const [tokenId, setTokenId] = useState(0);
-  const [, setShowMenu] = useContext(menuContext);
+  const [, setShowMenu] = useState(props.showMenu);
   const [scrollTop, setScrollTop] = useState();
   const [scrolling, setScrolling] = useState();
   const [collectionNickName, setCollectionNickName] = useState("");
@@ -608,10 +605,6 @@ function CreateNft(props) {
     }, 1500);
   };
 
-  function NavigateTo(route) {
-    history.push(`/${route}`);
-  }
-
   const getUser = async () => {
     const userData = await LS.get(LS_ROOT_KEY);
     setUser(userData);
@@ -750,7 +743,7 @@ function CreateNft(props) {
               mintName={name}
               mintedNFT={assetURL}
               confirmActionModal={() => {
-                NavigateTo(`nft/${nftaddress}/${tokenId}`);
+                props.redirect(`nft/${nftaddress}/${tokenId}`);
               }}
             ></TxModal>
           </VStack>
