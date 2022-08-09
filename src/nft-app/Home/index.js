@@ -31,6 +31,8 @@ import "./customstyles.css";
 import { isSafari, truncateAddress } from "../../common/common";
 
 const Home = (props) => {
+  const size = useWindowSize();
+
   const [featuredNFTs, setFeaturedNFTs] = useState([]);
   const [topCollections, setTopCollections] = useState([]);
   const [trendingNFTs, setTrendingNFTs] = useState([]);
@@ -55,7 +57,6 @@ const Home = (props) => {
     { id: 5, name: "NFT 5" },
     { id: 6, name: "NFT 6" },
   ]);
-  const size = useWindowSize();
   const [scrollTop, setScrollTop] = useState();
   const [scrolling, setScrolling] = useState();
   const [, setShowMenu] = useState(props.showMenu);
@@ -76,12 +77,18 @@ const Home = (props) => {
     }
   };
 
+  /**
+   * React Hook to render component on load
+   */
   useEffect(() => {
     window.scrollTo(0, 0);
     setLoading(true);
     getData();
   }, []);
 
+  /**
+   * Scroll listeners to close the menu on scroll
+   */
   useEffect(() => {
     const onScroll = (e) => {
       setScrollTop(e.target.documentElement.scrollTop);

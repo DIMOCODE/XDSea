@@ -1,28 +1,25 @@
-// import { useState } from "react";
-import { useHistory } from "react-router-dom";
-import { IconImg, VStack } from "../../styles/Stacks";
+import { 
+  IconImg, 
+  VStack 
+} from "../../styles/Stacks";
 import userIcon from "../../images/userIcon.png";
 import styled from "styled-components";
-import { LayoutGroup, motion } from "framer-motion/dist/framer-motion";
-import { isXdc, fromXdc } from "../../common/common";
-import { LS, LS_ROOT_KEY } from "../../constant";
+import { 
+  LayoutGroup, 
+  motion 
+} from "framer-motion/dist/framer-motion";
+import { 
+  LS, 
+  LS_ROOT_KEY 
+} from "../../constant";
 
+/**
+ * User Profile button shown on the Top Bar
+ * 
+ * @param {*} props 
+ * @returns User Menu Button Component
+ */
 function UserMenuButton(props) {
-  const {
-    // clickOnUser,
-    // clickOnSettings,
-    // clickOnLogout,
-    wallet,
-  } = props;
-  // const appear = {
-  //   selected: { y: 0, opacity: 1 },
-  //   normal: { y: 0, opacity: 0 },
-  // };
-  // const scale = {
-  //   selected: { scale: 1 },
-  //   normal: { scale: 1 },
-  // };
-
   return (
     <LayoutGroup id="usermenu">
       <UserMenu>

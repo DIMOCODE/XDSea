@@ -13,7 +13,6 @@ import MyNFT from "./MyNFT";
 import { CreateNft } from "./CreateNft";
 import Collection from "./Collection";
 import NFTPage from "./NFTPage";
-import { ModalAds } from "../ModalAds";
 import { HowToStart } from "../HowToStart";
 import alertWhite from "../images/alertWhite.png";
 import { nftaddress } from "../config";
@@ -30,23 +29,33 @@ ReactGA.initialize(TRACKING_ID);
 
 const NFTApp = () => {
   const history = useHistory();
+  const size = useWindowSize();
+
   const [wallet, setWallet] = useState({});
   const [theme, setTheme] = useState("light");
-  const [isModalAds, setIsModalAds] = useState(false);
-  const [randomNumber, setRandomNumber] = useState(0);
   const [isDevMode] = useState(false);
-  const size = useWindowSize();
   const [showMenu, setShowMenu] = useState(false);
   const [xdcPrice, setXdcPrice] = useState(0);
 
+  /**
+   * Toggle the theme from light to dark
+   */
   const themeToggler = () => {
     theme === "light" ? setTheme("dark") : setTheme("light");
   };
 
+  /**
+   * Update the state with the wallet information
+   * 
+   * @param {*} connectedWallet the wallet object
+   */
   const handleWallet = (connectedWallet) => {
     setWallet(connectedWallet);
   };
 
+  /**
+   * Get the USD Price for XDC
+   */
   const getXDCPrice = async () => {
     const price = await (
       await createRequest(HTTP_METHODS.get, "ping/xdcPrice", null, null)
@@ -64,6 +73,9 @@ const NFTApp = () => {
     history.push(`/${route}`);
   }
 
+  /**
+   * React Hook to initialise Google Analytics and get the USD prices
+   */
   useEffect(() => {
     ReactGA.pageview(window.location.pathname + window.location.search);
     getXDCPrice();
@@ -74,17 +86,6 @@ const NFTApp = () => {
       <>
         <GlobalStyles />
         <HomeStack>
-          {isModalAds ? (
-            <ModalAds
-              // imageAd={randomNumber === 0 ? starwarsYoda : starwarsVader}
-              onClickCancel={() => setIsModalAds(!isModalAds)}
-              onClick={() => {
-                randomNumber === 0
-                  ? NavigateTo(`/nft/${nftaddress}/1793`)
-                  : NavigateTo(`/nft/${nftaddress}/1792`);
-              }}
-            ></ModalAds>
-          ) : null}
           {isDevMode ? (
             <DevMode>
               <HStack padding="15px 21px" spacing="9px">
