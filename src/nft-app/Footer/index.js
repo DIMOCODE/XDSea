@@ -1,15 +1,26 @@
-import { HStack, IconImg, Spacer, VStack } from "../../styles/Stacks";
+import { 
+  HStack, 
+  IconImg, 
+  Spacer, 
+  VStack 
+} from "../../styles/Stacks";
 import XDSeaWhite from "../../images/logoXDSEAWhite.png";
 import twitter from "../../images/twitterLogoWhite.png";
 import instagram from "../../images/InstagramLogoWhite.png";
 import mail from "../../images/mailWhite.png";
-import { BodyRegular, TitleBold21, TitleBold27 } from "../../styles/TextStyles";
+import { 
+  BodyRegular, 
+  TitleBold21, 
+  TitleBold27 
+} from "../../styles/TextStyles";
 import { appStyle } from "../../styles/AppStyles";
-import { LayoutGroup, motion } from "framer-motion/dist/framer-motion";
+import { 
+  LayoutGroup, 
+  motion 
+} from "framer-motion/dist/framer-motion";
 import { Link } from "../../styles/Link";
 import useWindowSize from "../../styles/useWindowSize";
 import styled from "styled-components";
-import { useHistory } from "react-router-dom";
 
 function Footer(props) {
   const size = useWindowSize();
@@ -24,6 +35,7 @@ function Footer(props) {
               alignment="flex-start"
               padding={size.width < 768 ? "0 60px" : "0 30px"}
             >
+              {/* Footer Logo */}
               <VStack
                 alignment="flex-start"
                 spacing="6px"
@@ -43,6 +55,8 @@ function Footer(props) {
                 </BodyRegular>
                 <Spacer></Spacer>
               </VStack>
+
+              {/* Marketplace Quick Links */}
               <VStack alignment="flex-start">
                 <TitleBold21 textcolor={appStyle.colors.white}>
                   Marketplace
@@ -54,6 +68,8 @@ function Footer(props) {
                 </LayoutGroup>
                 <Spacer></Spacer>
               </VStack>
+
+              {/* Account Quick Links */}
               <VStack alignment="flex-start">
                 <TitleBold21 textcolor={appStyle.colors.white}>
                   Account
@@ -63,6 +79,8 @@ function Footer(props) {
 
                 <Spacer></Spacer>
               </VStack>
+
+              {/* Social Links */}
               <VStack alignment="flex-start">
                 <TitleBold21 textcolor={appStyle.colors.white}>
                   Social
@@ -96,6 +114,8 @@ function Footer(props) {
                 <Spacer></Spacer>
               </VStack>
             </HStack>
+
+            {/* Copyright Information */}
             <VStack
               background={appStyle.colors.darkgrey30}
               padding="6px 6px"
@@ -122,6 +142,5 @@ const FooterSection = styled(motion.div)`
 
 const FooterContent = styled(motion.div)`
   max-width: 1200px;
-
   margin: 0 auto;
 `;

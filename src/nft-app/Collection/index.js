@@ -2,10 +2,7 @@ import React, {
   useEffect, 
   useState
 } from "react";
-import { 
-  useHistory, 
-  useParams 
-} from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { nftaddress } from "../../config";
 import ButtonApp from "../../styles/Buttons";
 import { 
@@ -52,7 +49,10 @@ import {
   getCollection, 
   getCollectionNFTs 
 } from "../../API/Collection";
-import { isSafari, truncateAddress } from "../../common/common";
+import { 
+  isSafari, 
+  truncateAddress 
+} from "../../common/common";
 import { SearchCollection } from "../../styles/SearchCollection";
 import { FiltersButton } from "../../styles/FiltersButton";
 import { SortButtonNFTS } from "../../styles/SortButtonNFTS";
@@ -86,6 +86,18 @@ const CollectionPage = (props) => {
     page: 1,
     searchBy: searchTerm,
   });
+  const [copied, setCopied] = useState(false);
+  
+  const webLink = `https://www.xdsea.com/collection/${collectionNickName}`;
+
+  /**
+   * Copy the current location URL to the clipboard
+   */
+  const copy = async () => {
+    await navigator.clipboard.writeText(webLink);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
 
   /**
    * Get collection NFT data for the first page
@@ -179,20 +191,13 @@ const CollectionPage = (props) => {
     setCollection(collection);
   };
 
+  /**
+   * React Hook to re-render when the search term state value is changed
+   */
   useEffect(() => {
     window.scrollTo(0, 0);
     getData(searchTerm);
   }, [searchTerm]);
-
-  const webLink = `https://www.xdsea.com/collection/${collectionNickName}`;
-
-  const [copied, setCopied] = useState(false);
-
-  const copy = async () => {
-    await navigator.clipboard.writeText(webLink);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
-  };
 
   return (
     <CollectionSection>
@@ -650,7 +655,6 @@ const CollectionPage = (props) => {
                 params={params}
                 maxPrice={maxPrice}
               ></FiltersButton>
-              <Spacer></Spacer>
               <SortButtonNFTS
                 onChange={handleChangeFilterNFT}
                 params={params}
@@ -660,6 +664,7 @@ const CollectionPage = (props) => {
           </HStack>
         </StickySectionHeader>
 
+        {/* Collection NFT Cards */}
         <InfiniteScroll
           dataLength={nfts.length}
           next={fetchMoreNFTs}
@@ -688,7 +693,6 @@ const CollectionPage = (props) => {
                   <VStack
                     minwidth={size.width < 768 ? "100%" : "300px"}
                     width={"240px"}
-                    // maxwidth={size.width < 768 ? "330px" : "220px"}
                     height="450px"
                     key={i}
                     initial={{ opacity: 0 }}
@@ -742,8 +746,6 @@ const CollectionPage = (props) => {
                   minwidth={size.width < 768 ? "100%" : "300px"}
                   width={"240px"}
                   height="450px"
-                  // minwidth={size.width < 768 ? "230px" : "280px"}
-                  // height="450px"
                   key={item.id}
                 >
                   <LoadingNftContainer></LoadingNftContainer>
