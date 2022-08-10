@@ -12,6 +12,11 @@ function Link(props) {
   const [isVisible] = useState(false);
   const history = useHistory();
 
+  /**
+   * Redirect the user to a specific path
+   * 
+   * @param {string} route path to be redirected to
+   */
   function NavigateTo(route) {
     if(route === "Home")
       history.push("/");

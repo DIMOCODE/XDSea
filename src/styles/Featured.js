@@ -104,6 +104,7 @@ function Featured(props) {
                     playing={isPlaying}
                     muted={true}
                     loop={true}
+                    volume={0}
                     width="100%"
                     height="100%"
                   />

@@ -7,57 +7,12 @@ import NFTMarketLayer1 from "./abis/NFTMarketLayer1.json";
 import { GetWallet, SendTransaction } from "xdc-connect";
 import { fromXdc, isXdc } from "./common/common";
 
-export const BuyNFT = async (nft) => {
-  try {
-    const wallet = await GetWallet();
-    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
-
-    // console.log(nft)
-
-    // const contract = new xdc3.eth.Contract(NFTMarket.abi, nftmarketaddress, isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address)
-    const contract = new xdc3.eth.Contract(
-      NFTMarketLayer1.abi,
-      nftmarketlayeraddress,
-      isXdc(wallet.wallet.address)
-        ? fromXdc(wallet.wallet.address)
-        : wallet.wallet.address
-    );
-    var item = await contract.methods.idToMarketItem(nft.tokenId).call();
-
-    var price = item.price;
-
-    const xdcPrice = await xdc3.utils.fromWei(price, "ether");
-
-    var numToString = (xdcPrice * 102) / 100;
-    var marketplacefee = await xdc3.utils.toBN(countDecimals(numToString));
-
-    var data = await contract.methods
-      .createMarketSale(nftaddress, nft.tokenId)
-      .encodeABI();
-
-    const tx = {
-      from: isXdc(wallet.wallet.address)
-        ? fromXdc(wallet.wallet.address)
-        : wallet.wallet.address,
-      to: nftmarketlayeraddress,
-      value: marketplacefee,
-      data: data,
-    };
-
-    var gasLimit = await xdc3.eth.estimateGas(tx);
-
-    tx["gas"] = gasLimit;
-
-    await SendTransaction(tx);
-
-    return true;
-  } catch (error) {
-    console.log(error);
-
-    return false;
-  }
-};
-
+/**
+ * Convert numbers with decimals to the correct wei amount
+ * 
+ * @param {number} value the amount of ether to be converted to wei
+ * @returns the amount in wei
+ */
 const countDecimals = (value) => {
   var zeroes = 18;
   var decimal = 0;
@@ -77,27 +32,69 @@ const countDecimals = (value) => {
   return amount;
 };
 
-export const LegacyBuyNFT = async (nft) => {
+/**
+ * Buy a specific NFT
+ * 
+ * @param {*} nft the NFT to be bought
+ * @param {string} wallet the wallet address of the user
+ * @returns true if the transaction is successful, false if not
+ */
+export const BuyNFT = async (nft, wallet) => {
   try {
-    const wallet = await GetWallet();
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
+    const contract = new xdc3.eth.Contract(
+      NFTMarketLayer1.abi,
+      nftmarketlayeraddress,
+      wallet
+    );
+    var item = await contract.methods.idToMarketItem(nft.tokenId).call();
+    var price = item.price;
+    const xdcPrice = await xdc3.utils.fromWei(price, "ether");
+    var numToString = (xdcPrice * 102) / 100;
+    var marketplacefee = await xdc3.utils.toBN(countDecimals(numToString));
 
-    // console.log(nft)
+    var data = await contract.methods
+      .createMarketSale(nftaddress, nft.tokenId)
+      .encodeABI();
 
-    // const contract = new xdc3.eth.Contract(NFTMarket.abi, nftmarketaddress, isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address)
+    const tx = {
+      from: wallet,
+      to: nftmarketlayeraddress,
+      value: marketplacefee,
+      data: data,
+    };
+
+    var gasLimit = await xdc3.eth.estimateGas(tx);
+
+    tx["gas"] = gasLimit;
+
+    await SendTransaction(tx);
+
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+};
+
+/**
+ * Buy a specific NFT using the old marketplace contract
+ * 
+ * @param {*} nft the NFT to be bought
+ * @param {string} wallet the wallet address of the user
+ * @returns true if the transaction is successful, false if not
+ */
+export const LegacyBuyNFT = async (nft, wallet) => {
+  try {
+    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
     const contract = new xdc3.eth.Contract(
       NFTMarket.abi,
       nftmarketaddress,
-      isXdc(wallet.wallet.address)
-        ? fromXdc(wallet.wallet.address)
-        : wallet.wallet.address
+      wallet
     );
     var item = await contract.methods.idToMarketItem(nft.itemId).call();
-
     var price = item.price;
-
     const xdcPrice = await xdc3.utils.fromWei(price, "ether");
-
     var numToString = (xdcPrice * 102) / 100;
     var marketplacefee = await xdc3.utils.toBN(countDecimals(numToString));
 
@@ -106,9 +103,7 @@ export const LegacyBuyNFT = async (nft) => {
       .encodeABI();
 
     const tx = {
-      from: isXdc(wallet.wallet.address)
-        ? fromXdc(wallet.wallet.address)
-        : wallet.wallet.address,
+      from: wallet,
       to: nftmarketaddress,
       value: marketplacefee,
       data: data,
@@ -123,29 +118,31 @@ export const LegacyBuyNFT = async (nft) => {
     return true;
   } catch (error) {
     console.log(error);
-
     return false;
   }
 };
 
-export const SellNFT = async (approved, sellData, sellPrice) => {
+/**
+ * List a specific NFT
+ * 
+ * @param {boolean} approved check user approval of the marketplace
+ * @param {*} sellData the NFT to be listed
+ * @param {number} sellPrice the amount for which the NFT is to be listed
+ * @param {string} wallet the wallet address of the user
+ * @returns true if the transaction is successful, false if not
+ */
+export const SellNFT = async (approved, sellData, sellPrice, wallet) => {
   try {
-    const wallet = await GetWallet();
-    // console.log(wallet, approved, sellData, sellPrice);
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
     if (approved === false) {
-      // console.log("Approving")
       const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
-
       var appData = nftContract.methods
         .setApprovalForAll(nftmarketlayeraddress, true)
         .encodeABI();
 
       const tx1 = {
-        from: isXdc(wallet.wallet.address)
-          ? fromXdc(wallet.wallet.address)
-          : wallet.wallet.address,
+        from: wallet,
         to: nftaddress,
         data: appData,
       };
@@ -155,67 +152,52 @@ export const SellNFT = async (approved, sellData, sellPrice) => {
       tx1["gas"] = gasLimit;
 
       await SendTransaction(tx1);
-      // console.log(trans)
     }
 
-    // console.log(sellData.tokenId)
-
     const price = await xdc3.utils.toWei(sellPrice, "ether");
-    var formattedWallet = isXdc(wallet.wallet.address)
-      ? fromXdc(wallet.wallet.address)
-      : wallet.wallet.address;
 
-    // console.log(price, formattedWallet, nftaddress);
-
-    // const contract2 = new xdc3.eth.Contract(NFTMarket.abi, nftmarketaddress, formattedWallet)
     const contract2 = new xdc3.eth.Contract(
       NFTMarketLayer1.abi,
       nftmarketlayeraddress,
-      formattedWallet
+      wallet
     );
-    // let tokenOwner = await contract2.methods.getOwnerOfToken(nftaddress, sellData.tokenId).call()
-    // console.log(tokenOwner)
 
     let data = contract2.methods
       .listItem(nftaddress, sellData.tokenId, price)
       .encodeABI();
 
-    // console.log(nft)
-
-    // console.log(data);
-
     const tx2 = {
-      from: formattedWallet,
+      from: wallet,
       to: nftmarketlayeraddress,
       data,
     };
-
-    // console.log(tx2)
 
     var gasLimit2 = await xdc3.eth.estimateGas(tx2);
 
     tx2["gas"] = gasLimit2;
 
-    // console.log(tx2)
-
     await SendTransaction(tx2);
 
     return true;
-    // console.log(transaction)
   } catch (error) {
     console.log(error);
-
     return false;
   }
 };
 
-export const WithdrawListing = async (approved, nft) => {
+/**
+ * Withdraw a specific NFT Listing
+ * 
+ * @param {boolean} approved check user approval of the marketplace
+ * @param {*} nft the NFT Listing to be withdrawn
+ * @param {string} wallet the wallet address of the user
+ * @returns true if the transaction is successful, false if not
+ */
+export const WithdrawListing = async (approved, nft, wallet) => {
   try {
-    const wallet = await GetWallet();
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
     if (approved === false) {
-      // console.log("Approving")
       const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
 
       var appData = nftContract.methods
@@ -223,9 +205,7 @@ export const WithdrawListing = async (approved, nft) => {
         .encodeABI();
 
       const tx1 = {
-        from: isXdc(wallet.wallet.address)
-          ? fromXdc(wallet.wallet.address)
-          : wallet.wallet.address,
+        from: wallet,
         to: nftaddress,
         data: appData,
       };
@@ -235,27 +215,20 @@ export const WithdrawListing = async (approved, nft) => {
       tx1["gas"] = gasLimit;
 
       await SendTransaction(tx1);
-      // console.log(trans)
     }
 
-    // console.log(nft.tokenId)
-
-    // const contract2 = new xdc3.eth.Contract(NFTMarket.abi, nftmarketaddress, isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address)
     const contract2 = new xdc3.eth.Contract(
       NFTMarketLayer1.abi,
       nftmarketlayeraddress,
-      isXdc(wallet.wallet.address)
-        ? fromXdc(wallet.wallet.address)
-        : wallet.wallet.address
+      wallet
     );
+
     let data = contract2.methods
       .withdrawListing(nftaddress, nft.tokenId)
       .encodeABI();
 
     const tx2 = {
-      from: isXdc(wallet.wallet.address)
-        ? fromXdc(wallet.wallet.address)
-        : wallet.wallet.address,
+      from: wallet,
       to: nftmarketlayeraddress,
       data,
     };
@@ -264,26 +237,28 @@ export const WithdrawListing = async (approved, nft) => {
 
     tx2["gas"] = gasLimit2;
 
-    // console.log(tx2)
-
     await SendTransaction(tx2);
 
     return true;
-    // console.log(transaction)
   } catch (error) {
     console.log(error);
-
     return false;
   }
 };
 
-export const LegacyWithdrawListing = async (approved, nft) => {
+/**
+ * Withdraw a specific NFT Listing using the old marketplace contract
+ * 
+ * @param {boolean} approved check user approval of the marketplace
+ * @param {*} nft the NFT Listing to be withdrawn
+ * @param {string} wallet the wallet address of the user
+ * @returns true if the transaction is successful, false if not
+ */
+export const LegacyWithdrawListing = async (approved, nft, wallet) => {
   try {
-    const wallet = await GetWallet();
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
     if (approved === false) {
-      // console.log("Approving")
       const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
 
       var appData = nftContract.methods
@@ -291,9 +266,7 @@ export const LegacyWithdrawListing = async (approved, nft) => {
         .encodeABI();
 
       const tx1 = {
-        from: isXdc(wallet.wallet.address)
-          ? fromXdc(wallet.wallet.address)
-          : wallet.wallet.address,
+        from: wallet,
         to: nftaddress,
         data: appData,
       };
@@ -303,27 +276,20 @@ export const LegacyWithdrawListing = async (approved, nft) => {
       tx1["gas"] = gasLimit;
 
       await SendTransaction(tx1);
-      // console.log(trans)
     }
 
-    // console.log(nft.tokenId)
-
-    // const contract2 = new xdc3.eth.Contract(NFTMarket.abi, nftmarketaddress, isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address)
     const contract2 = new xdc3.eth.Contract(
       NFTMarket.abi,
       nftmarketaddress,
-      isXdc(wallet.wallet.address)
-        ? fromXdc(wallet.wallet.address)
-        : wallet.wallet.address
+      wallet
     );
+
     let data = contract2.methods
       .withdrawListing(nftaddress, nft.itemId)
       .encodeABI();
 
     const tx2 = {
-      from: isXdc(wallet.wallet.address)
-        ? fromXdc(wallet.wallet.address)
-        : wallet.wallet.address,
+      from: wallet,
       to: nftmarketaddress,
       data,
     };
@@ -332,28 +298,29 @@ export const LegacyWithdrawListing = async (approved, nft) => {
 
     tx2["gas"] = gasLimit2;
 
-    // console.log(tx2)
-
     await SendTransaction(tx2);
 
     return true;
-    // console.log(transaction)
   } catch (error) {
     console.log(error);
-
     return false;
   }
 };
 
-export const TransferNFT = async (approved, transferNFT, transferAddress) => {
+/**
+ * Transfer a specific NFT to a given address
+ * 
+ * @param {boolean} approved check user approval of the marketplace
+ * @param {*} transferNFT the NFT to be transferred
+ * @param {string} transferAddress the wallet address the NFT is to be transferred to
+ * @param {string} wallet the wallet address of the user
+ * @returns true if the transaction is successful, false if not
+ */
+export const TransferNFT = async (approved, transferNFT, transferAddress, wallet) => {
   try {
-    const wallet = await GetWallet();
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
-    // console.log(wallet, approved, transferNFT, transferAddress);
-
     if (approved === false) {
-      // console.log("Approving")
       const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
 
       var appData = nftContract.methods
@@ -361,9 +328,7 @@ export const TransferNFT = async (approved, transferNFT, transferAddress) => {
         .encodeABI();
 
       const tx1 = {
-        from: isXdc(wallet.wallet.address)
-          ? fromXdc(wallet.wallet.address)
-          : wallet.wallet.address,
+        from: wallet,
         to: nftaddress,
         data: appData,
       };
@@ -373,65 +338,53 @@ export const TransferNFT = async (approved, transferNFT, transferAddress) => {
       tx1["gas"] = gasLimit;
 
       await SendTransaction(tx1);
-      // console.log(trans)
     }
 
-    // console.log(sellData.tokenId)
-
-    // const price = await xdc3.utils.toWei(sellPrice, "ether")
-
-    // const contract2 = new xdc3.eth.Contract(NFTMarket.abi, nftmarketaddress, isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address)
     const contract2 = new xdc3.eth.Contract(
       NFTMarketLayer1.abi,
       nftmarketlayeraddress,
-      isXdc(wallet.wallet.address)
-        ? fromXdc(wallet.wallet.address)
-        : wallet.wallet.address
+      wallet
     );
-    // let tokenOwner = await contract2.methods.getOwnerOfToken(nftaddress, sellData.tokenId).call()
-    // console.log(tokenOwner)
+
     let data = contract2.methods
       .transferNFT(nftaddress, transferNFT.tokenId, isXdc(transferAddress)
         ? fromXdc(transferAddress)
         : transferAddress)
       .encodeABI();
 
-    // console.log(data);
-
     const tx2 = {
-      from: isXdc(wallet.wallet.address)
-        ? fromXdc(wallet.wallet.address)
-        : wallet.wallet.address,
+      from: wallet,
       to: nftmarketlayeraddress,
       data,
     };
-
-    // console.log(tx2)
 
     var gasLimit2 = await xdc3.eth.estimateGas(tx2);
 
     tx2["gas"] = gasLimit2;
 
-    // console.log(tx2)
-
     await SendTransaction(tx2);
 
     return true;
-    // console.log(transaction)
   } catch (error) {
     console.log(error);
-
     return false;
   }
 };
 
-export const Offer = async (approved, offerNFT, offerPrice) => {
+/**
+ * Place an offer on a specific NFT
+ * 
+ * @param {boolean} approved check user approval of the marketplace
+ * @param {*} offerNFT the NFT on which the offer is being placed
+ * @param {number} offerPrice the offer amount
+ * @param {string} wallet the wallet address of the user
+ * @returns true if the transaction is successful, false if not
+ */
+export const Offer = async (approved, offerNFT, offerPrice, wallet) => {
   try {
-    const wallet = await GetWallet();
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
     if (approved === false) {
-      // console.log("Approving")
       const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
 
       var appData = nftContract.methods
@@ -439,9 +392,7 @@ export const Offer = async (approved, offerNFT, offerPrice) => {
         .encodeABI();
 
       const tx1 = {
-        from: isXdc(wallet.wallet.address)
-          ? fromXdc(wallet.wallet.address)
-          : wallet.wallet.address,
+        from: wallet,
         to: nftaddress,
         data: appData,
       };
@@ -451,23 +402,13 @@ export const Offer = async (approved, offerNFT, offerPrice) => {
       tx1["gas"] = gasLimit;
 
       await SendTransaction(tx1);
-      // console.log(trans)
     }
 
-    // console.log(sellData.tokenId)
-
-    // const price = await xdc3.utils.toWei(sellPrice, "ether")
-
-    // const contract2 = new xdc3.eth.Contract(NFTMarket.abi, nftmarketaddress, isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address)
     const contract2 = new xdc3.eth.Contract(
       NFTMarketLayer1.abi,
       nftmarketlayeraddress,
-      isXdc(wallet.wallet.address)
-        ? fromXdc(wallet.wallet.address)
-        : wallet.wallet.address
+      wallet
     );
-    // let tokenOwner = await contract2.methods.getOwnerOfToken(nftaddress, sellData.tokenId).call()
-    // console.log(tokenOwner)
 
     const price = await xdc3.utils.toWei(offerPrice, "ether");
 
@@ -479,9 +420,7 @@ export const Offer = async (approved, offerNFT, offerPrice) => {
     var marketplacefee = await xdc3.utils.toBN(countDecimals(numToString));
 
     const tx2 = {
-      from: isXdc(wallet.wallet.address)
-        ? fromXdc(wallet.wallet.address)
-        : wallet.wallet.address,
+      from: wallet,
       to: nftmarketlayeraddress,
       value: marketplacefee,
       data,
@@ -491,26 +430,29 @@ export const Offer = async (approved, offerNFT, offerPrice) => {
 
     tx2["gas"] = gasLimit2;
 
-    // console.log(tx2)
-
     await SendTransaction(tx2);
 
     return true;
-    // console.log(transaction)
   } catch (error) {
     console.log(error);
-
     return false;
   }
 };
 
-export const WithdrawOffer = async (approved, tokenId, offerId) => {
+/**
+ * Withdraw a specific offer made on a given NFT
+ * 
+ * @param {boolean} approved check user approval of the marketplace
+ * @param {number} tokenId the token ID of the NFT on which the offer is placed
+ * @param {number} offerId the offer ID of the offer that is to be withdrawn
+ * @param {string} wallet the wallet address of the user
+ * @returns true if the transaction is successful, false if not
+ */
+export const WithdrawOffer = async (approved, tokenId, offerId, wallet) => {
   try {
-    const wallet = await GetWallet();
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
     if (approved === false) {
-      // console.log("Approving")
       const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
 
       var appData = nftContract.methods
@@ -518,9 +460,7 @@ export const WithdrawOffer = async (approved, tokenId, offerId) => {
         .encodeABI();
 
       const tx1 = {
-        from: isXdc(wallet.wallet.address)
-          ? fromXdc(wallet.wallet.address)
-          : wallet.wallet.address,
+        from: wallet,
         to: nftaddress,
         data: appData,
       };
@@ -530,23 +470,18 @@ export const WithdrawOffer = async (approved, tokenId, offerId) => {
       tx1["gas"] = gasLimit;
 
       await SendTransaction(tx1);
-      // console.log(trans)
     }
 
     const contract2 = new xdc3.eth.Contract(
       NFTMarketLayer1.abi,
       nftmarketlayeraddress,
-      isXdc(wallet.wallet.address)
-        ? fromXdc(wallet.wallet.address)
-        : wallet.wallet.address
+      wallet
     );
 
     let data = contract2.methods.withdrawOffer(tokenId, offerId).encodeABI();
 
     const tx2 = {
-      from: isXdc(wallet.wallet.address)
-        ? fromXdc(wallet.wallet.address)
-        : wallet.wallet.address,
+      from: wallet,
       to: nftmarketlayeraddress,
       data,
     };
@@ -560,18 +495,24 @@ export const WithdrawOffer = async (approved, tokenId, offerId) => {
     return true;
   } catch (error) {
     console.log(error);
-
     return false;
   }
 };
 
-export const AcceptOffer = async (approved, tokenId, offerId) => {
+/**
+ * Accept a specific offer made on a given NFT
+ * 
+ * @param {boolean} approved check user approval of the marketplace
+ * @param {number} tokenId the token ID of the NFT on which the offer is placed
+ * @param {number} offerId the offer ID of the offer that is to be accepted
+ * @param {string} wallet the wallet address of the user
+ * @returns true if the transaction is successful, false if not
+ */
+export const AcceptOffer = async (approved, tokenId, offerId, wallet) => {
   try {
-    const wallet = await GetWallet();
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
     if (approved === false) {
-      // console.log("Approving")
       const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
 
       var appData = nftContract.methods
@@ -579,9 +520,7 @@ export const AcceptOffer = async (approved, tokenId, offerId) => {
         .encodeABI();
 
       const tx1 = {
-        from: isXdc(wallet.wallet.address)
-          ? fromXdc(wallet.wallet.address)
-          : wallet.wallet.address,
+        from: wallet,
         to: nftaddress,
         data: appData,
       };
@@ -591,24 +530,18 @@ export const AcceptOffer = async (approved, tokenId, offerId) => {
       tx1["gas"] = gasLimit;
 
       await SendTransaction(tx1);
-      // console.log(trans)
     }
 
     const contract2 = new xdc3.eth.Contract(
       NFTMarketLayer1.abi,
       nftmarketlayeraddress,
-      isXdc(wallet.wallet.address)
-        ? fromXdc(wallet.wallet.address)
-        : wallet.wallet.address
+      wallet
     );
 
     let data = contract2.methods.acceptOffer(tokenId, offerId, nftaddress).encodeABI();
-    // console.log(tokenId, offerId)
 
     const tx2 = {
-      from: isXdc(wallet.wallet.address)
-        ? fromXdc(wallet.wallet.address)
-        : wallet.wallet.address,
+      from: wallet,
       to: nftmarketlayeraddress,
       data,
     };
@@ -622,18 +555,24 @@ export const AcceptOffer = async (approved, tokenId, offerId) => {
     return true;
   } catch (error) {
     console.log(error);
-
     return false;
   }
 };
 
-export const EditNFT = async (approved, sellData, sellPrice) => {
+/**
+ * Edit a specific NFT Listing and update the price
+ * 
+ * @param {boolean} approved check user approval of the marketplace
+ * @param {*} sellData the NFT Listing to be edited
+ * @param {number} sellPrice the edited price of the listing
+ * @param {string} wallet the wallet address of the user
+ * @returns true if the transaction is successful, false if not
+ */
+export const EditNFT = async (approved, sellData, sellPrice, wallet) => {
   try {
-    const wallet = await GetWallet();
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
     if (approved === false) {
-      // console.log("Approving")
       const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
 
       var appData = nftContract.methods
@@ -641,9 +580,7 @@ export const EditNFT = async (approved, sellData, sellPrice) => {
         .encodeABI();
 
       const tx1 = {
-        from: isXdc(wallet.wallet.address)
-          ? fromXdc(wallet.wallet.address)
-          : wallet.wallet.address,
+        from: wallet,
         to: nftaddress,
         data: appData,
       };
@@ -653,31 +590,22 @@ export const EditNFT = async (approved, sellData, sellPrice) => {
       tx1["gas"] = gasLimit;
 
       await SendTransaction(tx1);
-      // console.log(trans)
     }
-
-    // console.log(sellData.tokenId)
 
     const price = await xdc3.utils.toWei(sellPrice, "ether");
 
-    // const contract2 = new xdc3.eth.Contract(NFTMarket.abi, nftmarketaddress, isXdc(wallet.wallet.address) ? fromXdc(wallet.wallet.address) : wallet.wallet.address)
     const contract2 = new xdc3.eth.Contract(
       NFTMarketLayer1.abi,
       nftmarketlayeraddress,
-      isXdc(wallet.wallet.address)
-        ? fromXdc(wallet.wallet.address)
-        : wallet.wallet.address
+      wallet
     );
-    // let tokenOwner = await contract2.methods.getOwnerOfToken(nftaddress, sellData.tokenId).call()
-    // console.log(tokenOwner)
+
     let data = contract2.methods
       .editListing(sellData.tokenId, price)
       .encodeABI();
 
     const tx2 = {
-      from: isXdc(wallet.wallet.address)
-        ? fromXdc(wallet.wallet.address)
-        : wallet.wallet.address,
+      from: wallet,
       to: nftmarketlayeraddress,
       data,
     };
@@ -686,27 +614,41 @@ export const EditNFT = async (approved, sellData, sellPrice) => {
 
     tx2["gas"] = gasLimit2;
 
-    // console.log(tx2)
-
     await SendTransaction(tx2);
 
     return true;
-    // console.log(transaction)
   } catch (error) {
     console.log(error);
-
     return false;
   }
 };
 
+/**
+ * Check if the file is an image
+ * 
+ * @param {string} fileType MIME type of the file
+ * @returns true if the file is an image, false if not
+ */
 export const isImage = (fileType) => {
   return !!fileType?.match("image.*");
 };
 
+/**
+ * Check if the file is an video
+ * 
+ * @param {string} fileType MIME type of the file
+ * @returns true if the file is a video, false if not
+ */
 export const isVideo = (fileType) => {
   return !!fileType?.match("video.*");
 };
 
+/**
+ * Check if the file is an audio file
+ * 
+ * @param {string} fileType MIME type of the file
+ * @returns true if the file is an audio file, false if not
+ */
 export const isAudio = (fileType) => {
   return !!fileType?.match("audio.*");
 };

@@ -49,8 +49,14 @@ function UploadMultimedia(props) {
             whileTap={{ scale: 0.96 }}
             spacing="0px"
             cursor="pointer"
+            overflow="hidden"
           >
-            <IconImg url={multimediaIcon} width="45px" height="40px" cursor="pointer"></IconImg>
+            <IconImg
+              url={multimediaIcon}
+              width="45px"
+              height="40px"
+              cursor="pointer"
+            ></IconImg>
             <VStack maxheight="60px" spacing="6px" cursor="pointer">
               <BodyBold>{description}</BodyBold>
               <CaptionRegular align="Center">{sizeText}</CaptionRegular>
@@ -67,6 +73,7 @@ function UploadMultimedia(props) {
                 border={border}
                 background={({ theme }) => theme.backElement}
                 overflow="hidden"
+                overflowy="hidden"
                 cursor="pointer"
                 style={setBorder && borderColor}
               >
@@ -97,19 +104,20 @@ function UploadMultimedia(props) {
           height={height}
           border={border}
           background={({ theme }) => theme.backElement}
-          overflow="hidden"
           cursor="pointer"
+          overflow="hidden"
+          overflowx="hidden"
+          overflowy="hidden"
         >
           <ZStack>
             <ZItem>
               <ReactPlayer
-                url={
-                  file.preview
-                }
+                url={file.preview}
                 playing={true}
+                volume={0}
                 muted={true}
                 loop={true}
-                width="180%"
+                width="100%"
                 height="100%"
               />
             </ZItem>
@@ -172,13 +180,15 @@ function UploadMultimedia(props) {
                         url={audioCover}
                         width="60px"
                         height="60px"
+                        style={{ cursor: "pointer" }}
                       ></IconImg>
-                      <TitleBold15 align="center">
+                      <TitleBold15 style={{ cursor: "pointer" }} align="center">
                         Upload a Cover Audio
                       </TitleBold15>
                       <BodyRegular
                         align="center"
                         textcolor={({ theme }) => theme.text}
+                        style={{ cursor: "pointer" }}
                       >
                         Compatible: jpg, png, gif
                       </BodyRegular>
@@ -200,11 +210,10 @@ function UploadMultimedia(props) {
             )}
             <PlayerAbsolute>
               <ReactPlayer
-                url={
-                  file.preview
-                }
+                url={file.preview}
                 playing={true}
                 muted={true}
+                volume={0}
                 controls={true}
                 loop={true}
                 width="100%"

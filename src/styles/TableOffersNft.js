@@ -5,7 +5,7 @@ import xdclogo from "../images/miniXdcLogo.png";
 import ButtonApp from "./Buttons";
 import { appStyle } from "./AppStyles";
 import { useHistory } from "react-router-dom";
-import { isXdc, fromXdc } from "../common/common";
+import { isXdc, fromXdc, truncateAddress } from "../common/common";
 
 function TableOffersNft(props) {
   const {
@@ -20,18 +20,12 @@ function TableOffersNft(props) {
     withdrawStatus,
     acceptStatus,
     offerUser,
+    xdc
   } = props;
 
   const widthRow = "100%";
   const debugColor = "transparent";
   const heightRow = "69px";
-  const history = useHistory();
-
-  const truncateAddress = (address) => {
-    return address
-      ? address.substring(0, 7) + "..." + address.substring(38)
-      : "undefined";
-  };
 
   const convertPrice = (price) => {
     return price
@@ -41,21 +35,17 @@ function TableOffersNft(props) {
       : "-";
   };
 
-  function NavigateTo(route) {
-    history.push(`/${route}`);
-  }
-
   return (
     <>
       <Divider></Divider>
       <HStack width="100%" height={heightRow} spacing="6px">
-        <HStack background={debugColor} width={widthRow}>
+        <HStack background={debugColor} width={widthRow} justify="flex-start">
           <VStack alignment="flex-start" padding="3px 30px" spacing="3px">
             <CaptionRegular>Offer By</CaptionRegular>
             <HStack
               justify="flex-start"
               spacing="6px"
-              onClick={() => NavigateTo(`UserProfile/${offerUser}`)}
+              onClick={() => props.redirect(`UserProfile/${offerUser}`)}
             >
               <IconImg
                 url={imageBuyer}
@@ -81,22 +71,34 @@ function TableOffersNft(props) {
                 height="18px"
               ></IconImg>
               <BodyBold>{offerAmount
-                          ? offerAmount > 100000
-                            ? (Intl.NumberFormat('en-US', {
-                                notation: "compact",
-                                maximumFractionDigits: 2
-                              }).format(offerAmount))
-                            : (
-                              offerAmount.toLocaleString(undefined, {
-                                maximumFractionDigits: 2,
-                              }) || "0"
-                            )
-                          : "-"
-                        }</BodyBold>
+                ? offerAmount > 100000
+                  ? (Intl.NumberFormat('en-US', {
+                      notation: "compact",
+                      maximumFractionDigits: 2
+                    }).format(offerAmount))
+                  : (
+                    offerAmount.toLocaleString(undefined, {
+                      maximumFractionDigits: 2,
+                    }) || "0"
+                  )
+                : "-"
+              }</BodyBold>
             </HStack>
+            <CaptionRegular>
+            {`(${(Number(xdc.xdcPrice) * Number(offerAmount)) > 100000
+              ? (Intl.NumberFormat('en-US', {
+                  notation: "compact",
+                  maximumFractionDigits: 2
+                }).format((Number(xdc.xdcPrice) * Number(offerAmount))))
+              : (
+                (Number(xdc.xdcPrice) * Number(offerAmount)).toLocaleString(undefined, {
+                  maximumFractionDigits: 2,
+                }) || "0"
+              )} USD)`}
+            </CaptionRegular>
           </VStack>
         </HStack>
-        <HStack background={debugColor} width={widthRow} padding="3px 30px">
+        <HStack background={debugColor} width={widthRow} justify={"flex-end"} padding={"0 30px 0 0"}>
           <Spacer></Spacer>
           {isWithdrawn ? (
             <ButtonApp

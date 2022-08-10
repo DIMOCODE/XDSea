@@ -5,22 +5,25 @@ import { appStyle } from "./AppStyles";
 import verifiedMask from "../images/verifiedMask.png";
 import verifiedShape from "../images/verifiedShape.png";
 import verifiedBlue from "../images/verifiedBlue.png";
+import miniXdcLogo from "../images/miniXdcLogo.png";
 import {
   BodyRegular,
+  BodyBold,
   CaptionBold,
   CaptionBoldShort,
   TitleBold21,
+  CaptionRegular,
 } from "./TextStyles";
 import { motion, AnimatePresence } from "framer-motion/dist/framer-motion";
-import { fromXdc, isXdc } from "../common/common";
+import { fromXdc, isXdc, truncateAddress } from "../common/common";
 import styled from "styled-components";
 
 function Collection(props) {
   const {
-    // floorprice,
-    // owners,
-    // nfts,
-    // volumetraded,
+    floorprice,
+    owners,
+    nfts,
+    volumetraded,
     collectionImage,
     creatorLogo,
     collectionName,
@@ -31,14 +34,19 @@ function Collection(props) {
     keyContent,
     keyID,
     isVerified,
+    sortFloor,
+    sortOwners,
+    sortNFTs,
+    sortVolume,
+    sortDate,
   } = props;
 
   const scaleImage = {
     initial: {
-      scale: 1,
+      scale: 1.01,
     },
     hover: {
-      scale: 1.05,
+      scale: 1,
       transition: {
         type: "spring",
         bounce: 0.15,
@@ -62,7 +70,7 @@ function Collection(props) {
   const background = {
     initial: {
       background:
-        "linear-gradient(359.63deg, rgba(2, 2, 2, 0.74) 5.27%, rgba(2, 2, 2, 0.602581) 20.13%, rgba(2, 2, 2, 0) 40.93%)",
+        "linear-gradient(359.63deg, rgba(2, 2, 2, 0.74) 10.27%, rgba(2, 2, 2, 0.602581) 25.13%, rgba(2, 2, 2, 0) 50.93%)",
     },
     hover: {
       transition: {
@@ -74,12 +82,6 @@ function Collection(props) {
     },
   };
   const [isVisible, setIsVisible] = useState(false);
-
-  const truncateAddress = (address) => {
-    return address
-      ? address.substring(0, 6) + "..." + address.substring(38)
-      : "undefined";
-  };
 
   return (
     <VStack
@@ -108,11 +110,11 @@ function Collection(props) {
           ></IconImg>
         </ZItem>
         <ZItem>
-          <AnimatePresence>
+          <AnimatePresence initial={false}>
             <VStack
               spacing="0"
               padding="21px"
-              // animate={isVisible ? "hover" : "initial"}
+              animate={isVisible ? "hover" : "initial"}
               variants={background}
               cursor={"pointer"}
               border="12px"
@@ -121,7 +123,7 @@ function Collection(props) {
                 cursor={"pointer"}
                 key={keyID}
                 initial={{
-                  y: 150,
+                  y: 0,
                   x: 0,
                   opacity: 0,
                 }}
@@ -135,7 +137,6 @@ function Collection(props) {
                 }}
                 layout
                 width="100%"
-                border="9px"
               >
                 <Spacer></Spacer>
                 <motion.div layout="position" cursor={"pointer"}>
@@ -221,7 +222,7 @@ function Collection(props) {
                     <VStack
                       key={keyContent}
                       initial={{
-                        y: 150,
+                        y: 0,
                         x: 0,
                         opacity: 0,
                       }}
@@ -235,7 +236,7 @@ function Collection(props) {
                         },
                       }}
                       exit={{
-                        y: -150,
+                        y: 0,
                         opacity: 0,
                       }}
                       layout
@@ -253,86 +254,171 @@ function Collection(props) {
                         >
                           {collectionDescription || null}
                         </BodyRegular>
-                        {/* <HStack spacing="6px" width="450px">
-                          <VStack
-                            spacing="9px"
-                            border="9px"
-                            padding="18px 0"
-                            background={appStyle.colors.white30}
-                          >
-                            <HStack spacing="6px">
-                              <IconImg
-                                url={miniXdcLogo}
-                                width="18px"
-                                height="18px"
-                              ></IconImg>
+                        <HStack
+                          spacing="6px"
+                          width="100%"
+                          background="transparent"
+                        >
+                          {/* Sorting by Floor Price */}
+                          {sortFloor && (
+                            <VStack
+                              spacing="2px"
+                              border="9px"
+                              padding="12px 0"
+                              width="100%"
+                              background={appStyle.colors.darkgrey30}
+                              blur="26px"
+                            >
+                              <HStack spacing="6px">
+                                <IconImg
+                                  url={miniXdcLogo}
+                                  width="18px"
+                                  height="18px"
+                                ></IconImg>
+                                <BodyBold textcolor={appStyle.colors.white}>
+                                  {floorprice > 100000
+                                    ? Intl.NumberFormat("en-US", {
+                                        notation: "compact",
+                                        maximumFractionDigits: 2,
+                                      }).format(floorprice)
+                                    : floorprice.toLocaleString(undefined, {
+                                        maximumFractionDigits: 2,
+                                      }) || "0"}
+                                </BodyBold>
+                                <CaptionRegular textcolor="white">
+                                  (
+                                  {props.xdc.xdcPrice * floorprice > 100000
+                                    ? Intl.NumberFormat("en-US", {
+                                        notation: "compact",
+                                        maximumFractionDigits: 2,
+                                      }).format(props.xdc.xdcPrice * floorprice)
+                                    : (
+                                        props.xdc.xdcPrice * floorprice
+                                      ).toLocaleString(undefined, {
+                                        maximumFractionDigits: 2,
+                                      }) || "0"}{" "}
+                                  USD)
+                                </CaptionRegular>
+                              </HStack>{" "}
+                              <CaptionRegular textcolor={appStyle.colors.white}>
+                                Floor Price
+                              </CaptionRegular>
+                            </VStack>
+                          )}
+
+                          {/* Sorting by Owners */}
+                          {sortOwners && (
+                            <VStack
+                              border="9px"
+                              padding="12px 0"
+                              spacing="9px"
+                              background={appStyle.colors.darkgrey30}
+                              blur="26px"
+                            >
+                              <HStack>
+                                <CaptionRegular
+                                  textcolor={appStyle.colors.white}
+                                >
+                                  Owners
+                                </CaptionRegular>
+                                <BodyBold textcolor={appStyle.colors.white}>
+                                  {owners || "0"}
+                                </BodyBold>{" "}
+                              </HStack>
+                            </VStack>
+                          )}
+
+                          {/* Sorting by NFTs Items */}
+                          {sortNFTs && (
+                            <HStack
+                              border="9px"
+                              padding="12px 0"
+                              background={appStyle.colors.darkgrey30}
+                              blur="26px"
+                              spacing="9px"
+                              width="100%"
+                            >
+                              <CaptionRegular textcolor={appStyle.colors.white}>
+                                NFT Pieces
+                              </CaptionRegular>{" "}
                               <BodyBold textcolor={appStyle.colors.white}>
-                                {floorprice || "0"}
-                              </BodyBold>
-                            </HStack>{" "}
-                            <CaptionBoldShort textcolor={appStyle.colors.white}>
-                              Floor Price
-                            </CaptionBoldShort>
-                          </VStack>
-                          <VStack
-                            border="9px"
-                            padding="18px 0"
-                            spacing="9px"
-                            background={appStyle.colors.white30}
-                          >
-                            <BodyBold textcolor={appStyle.colors.white}>
-                              {owners || "0"}
-                            </BodyBold>{" "}
-                            <CaptionBoldShort textcolor={appStyle.colors.white}>
-                              Owners
-                            </CaptionBoldShort>
-                          </VStack>
-                          <VStack
-                            border="9px"
-                            padding="18px 0"
-                            background={appStyle.colors.white30}
-                            spacing="9px"
-                          >
-                            <BodyBold textcolor={appStyle.colors.white}>
-                              {nfts || "0"}
-                            </BodyBold>
-                            <CaptionBoldShort textcolor={appStyle.colors.white}>
-                              NFT's
-                            </CaptionBoldShort>{" "}
-                          </VStack>
-                          <VStack
-                            border="9px"
-                            padding="18px 0"
-                            background={appStyle.colors.white30}
-                            spacing="9px"
-                          >
-                            <HStack spacing="6px">
-                              <IconImg
-                                url={miniXdcLogo}
-                                width="18px"
-                                height="18px"
-                              ></IconImg>
-                              <BodyBold textcolor={appStyle.colors.white}>
-                                {Number(volumetraded) || "0"}
+                                {nfts || "0"}
                               </BodyBold>
                             </HStack>
-                            <CaptionBoldShort
-                              textcolor={appStyle.colors.white}
-                              align="center"
+                          )}
+
+                          {sortVolume && (
+                            <VStack
+                              border="9px"
+                              padding="12px 0"
+                              background={appStyle.colors.darkgrey30}
+                              blur="26px"
+                              spacing="6px"
                             >
-                              Volume Traded
-                            </CaptionBoldShort>
-                          </VStack>
-                        </HStack> */}
-                        {/* <ButtonApp
-                          height="39px"
-                          background={appStyle.colors.blue}
-                          text="Visit Collection"
-                          textcolor={appStyle.colors.white}
-                          onClick={onClickCollection}
-                          cursor={"pointer"}
-                          btnStatus={0}
-                        ></ButtonApp> */}
+                              <HStack spacing="6px">
+                                <IconImg
+                                  url={miniXdcLogo}
+                                  width="18px"
+                                  height="18px"
+                                ></IconImg>
+                                <BodyBold textcolor={appStyle.colors.white}>
+                                  {volumetraded > 100000
+                                    ? Intl.NumberFormat("en-US", {
+                                        notation: "compact",
+                                        maximumFractionDigits: 2,
+                                      }).format(volumetraded)
+                                    : volumetraded.toLocaleString(undefined, {
+                                        maximumFractionDigits: 2,
+                                      }) || "0"}
+                                </BodyBold>
+                                <CaptionRegular textcolor="white">
+                                  (
+                                  {props.xdc.xdcPrice * volumetraded > 100000
+                                    ? Intl.NumberFormat("en-US", {
+                                        notation: "compact",
+                                        maximumFractionDigits: 2,
+                                      }).format(
+                                        props.xdc.xdcPrice * volumetraded
+                                      )
+                                    : (
+                                        props.xdc.xdcPrice * volumetraded
+                                      ).toLocaleString(undefined, {
+                                        maximumFractionDigits: 2,
+                                      }) || "0"}{" "}
+                                  USD)
+                                </CaptionRegular>
+                              </HStack>
+                              <CaptionRegular
+                                textcolor={appStyle.colors.white}
+                                align="center"
+                              >
+                                Volume Traded
+                              </CaptionRegular>
+                            </VStack>
+                          )}
+
+                          {sortDate && (
+                            <VStack
+                              border="9px"
+                              padding="12px 0"
+                              background={appStyle.colors.white30}
+                              spacing="9px"
+                            >
+                              <HStack>
+                                <CaptionRegular textcolor="white">
+                                  Published
+                                </CaptionRegular>
+
+                                <CaptionBoldShort
+                                  textcolor={appStyle.colors.white}
+                                  align="center"
+                                >
+                                  10 Jan 2022
+                                </CaptionBoldShort>
+                              </HStack>
+                            </VStack>
+                          )}
+                        </HStack>
                       </VStack>
                     </VStack>
                   </VStack>

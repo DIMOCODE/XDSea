@@ -27,13 +27,10 @@ import verifiedMask from "../images/verifiedMask.png";
 import arrowRight from "../images/arrowRight.png";
 import { useClickAway } from "react-use";
 import { Icon } from "@mui/material";
-import dummyNFT from "../images/abstract1.jpg";
-import dummyUser from "../images/dummyuser.jpg";
-import dummyUser1 from "../images/dummyuser1.jpg";
 import { getCollections } from "../API/Collection";
 import { getNFTs } from "../API/NFT";
 import loadingIcon from "../images/loadingDots.gif";
-import { isSafari } from "../common/common";
+import { isSafari, truncateAddress } from "../common/common";
 import { nftaddress } from "../config";
 
 function Searchbar({
@@ -62,8 +59,6 @@ function Searchbar({
   const ref = useRef(null);
 
   useClickAway(ref, () => {
-    setFilteredCollectionData([]);
-    setFilteredNFTData([]);
     switchBarStatus(false);
     setShowResults(false);
   });
@@ -76,12 +71,11 @@ function Searchbar({
     setShowResults(false);
   };
 
-  const truncateAddress = (address) => {
-    return address
-      ? address.substring(0, 6) + "..." + address.substring(38)
-      : "undefined";
-  };
-
+  /**
+   * Redirect the user to a specific path
+   * 
+   * @param {string} route path to be redirected to
+   */
   function NavigateTo(route) {
     history.push(`/${route}`);
     setShowResults(false);
@@ -91,19 +85,25 @@ function Searchbar({
   useEffect(() => {
     const delayDebounceFn = setTimeout(async () => {
       if (searchTerm !== "") {
-        const collectionResults = await (
-          await getCollections({ searchTerm: searchTerm })
-        ).data;
-        console.log(collectionResults);
-        const nftResults = await (
-          await getNFTs({ page: 1, searchBy: searchTerm })
-        ).data;
-        console.log(nftResults);
-        setFilteredCollectionData(collectionResults.collections);
-        setFilteredNFTData(nftResults.nfts);
-        setLoading(false);
-        switchBarStatus(true);
-        setShowResults(true);
+        const requestData = await Promise.all(
+          [1, 2].map(async (i) => {
+            if (i === 1) {
+              const collectionResults = await (
+                await getCollections({ searchTerm: searchTerm })
+              ).data;
+              setFilteredCollectionData(collectionResults.collections);
+            } else {
+              const nftResults = await (
+                await getNFTs({ page: 1, searchBy: searchTerm })
+              ).data;
+              setFilteredNFTData(nftResults.nfts);
+            }
+
+            setLoading(false);
+            switchBarStatus(true);
+            setShowResults(true);
+          })
+        );
       } else {
         setFilteredCollectionData([]);
         setFilteredNFTData([]);
@@ -135,6 +135,11 @@ function Searchbar({
 
           return () => clearTimeout(delayFn);
         }}
+        onKeyPress={(event) => {
+          if (event.key === "Enter") {
+            NavigateTo(`SearchPage?searchTerm=${searchTerm}&mode=nft`);
+          }
+        }}
         height="42px"
       ></InputStyled>
       {showResults && (
@@ -147,7 +152,6 @@ function Searchbar({
               boxShadow: "0px 15px 15px rgba(0, 0, 0, 0.15)",
             }}
             spacing="0px"
-            // background="pink"
             width={width}
           >
             {/* Title Results */}
@@ -180,125 +184,6 @@ function Searchbar({
               justify={isPhone ? "flex-start" : "center"}
               padding="15px 0 15px 0"
             >
-              {/* Creators */}
-              {/* <VStack alignment="flex-start">
-                <CaptionBoldShort>Creators</CaptionBoldShort>
-
-                <VStack spacing="9px">
-                  {filteredData.slice(0, 5).map((value, key) => {
-                    return (
-                      <HStack>
-                        {value.isVerified ? (
-                          <HStack
-                            whileHover={{ background: "rgb(0,0,0,0.06" }}
-                            padding="6px"
-                            border="6px"
-                          >
-                            <VStack maxwidth="45px">
-                              <ZStack>
-                                <ZItem>
-                                  <Mask img={verifiedMask}>
-                                    <IconImg
-                                      url={dummyUser1}
-                                      width="42px"
-                                      height="42px"
-                                      border="90px"
-                                      backsize="cover"
-                                    ></IconImg>
-                                  </Mask>
-                                </ZItem>
-
-                                <ZItem>
-                                  <IconImg
-                                    url={verifiedShape}
-                                    width="45px"
-                                    height="45px"
-                                    border="120px"
-                                    whileTap={clickVerifiedCretor}
-                                    backsize="cover"
-                                    cursor={"pointer"}
-                                    style={{
-                                      boxShadow:
-                                        "0px 4px 2px rgba(0, 0, 0, 0.15)",
-                                    }}
-                                  ></IconImg>
-                                  <AbsoluteVerified>
-                                    <IconImg
-                                      url={verifiedBlue}
-                                      width="21px"
-                                      height="21px"
-                                      border="120px"
-                                    ></IconImg>
-                                  </AbsoluteVerified>
-                                </ZItem>
-                              </ZStack>
-                            </VStack>
-
-                            <VStack
-                              alignment="flex-start"
-                              spacing="6px"
-                              cursor="pointer"
-                            >
-                              <BodyBold>{value.name}</BodyBold>
-                              <CaptionRegular>{value.address}</CaptionRegular>
-                            </VStack>
-                          </HStack>
-                        ) : (
-                          <HStack
-                            width="100%"
-                            whileHover={{ background: "rgb(0,0,0,0.06" }}
-                            padding="6px"
-                            border="6px"
-                          >
-                            <IconImg
-                              url={dummyUser}
-                              width="43px"
-                              height="43px"
-                              border="120px"
-                              bordersize="4px"
-                              bordercolor="white"
-                              whileTap={onClickCreator}
-                              backsize="cover"
-                              cursor={"pointer"}
-                              style={{
-                                boxShadow: "0px 4px 2px rgba(0, 0, 0, 0.15)",
-                              }}
-                            ></IconImg>
-
-                            <VStack
-                              alignment="flex-start"
-                              spacing="6px"
-                              cursor="pointer"
-                            >
-                              <BodyBold>{value.name}</BodyBold>
-                              <CaptionRegular>{value.address}</CaptionRegular>
-                            </VStack>
-                          </HStack>
-                        )}
-                      </HStack>
-                    );
-                  })}
-                </VStack>
-
-                <a>
-                  <HStack
-                    spacing="5px"
-                    background={({ theme }) => theme.faded}
-                    padding="5px 15px"
-                    border="9px"
-                    cursor="pointer"
-                  >
-                    <CaptionBoldShort>See all Creators</CaptionBoldShort>
-                    <IconImg
-                      url={arrowRight}
-                      width="26px"
-                      height="26px"
-                      cursor="pointer"
-                    ></IconImg>
-                  </HStack>
-                </a>
-              </VStack> */}
-
               {/* NFTs */}
               {filteredNFTData.length !== 0 && (
                 <VStack alignment="flex-start" spacing="9px">
@@ -399,6 +284,7 @@ function Searchbar({
                           width="32px"
                           height="32px"
                           border="15px"
+                          backsize="cover"
                         ></IconImg>
                         <VStack
                           alignment="flex-start"

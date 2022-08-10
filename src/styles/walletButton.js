@@ -7,6 +7,8 @@ import copyIcon from "../images/copyIcon.png";
 import checkIcon from "../images/checkOkIcon.png";
 import infoIcon from "../images/infoIcon.png";
 import disconnect from "../images/disconnect.png";
+import dcentLogo from "../images/dcent.png";
+import walletIcon from "../images/wallet.png";
 import styled from "styled-components";
 import {
   BodyBold,
@@ -18,7 +20,7 @@ import { motion } from "framer-motion/dist/framer-motion";
 import { AnimatePresence } from "framer-motion/dist/framer-motion";
 import ButtonApp from "./Buttons";
 import { LayoutGroup } from "framer-motion/dist/framer-motion";
-import { fromXdc, isXdc } from "../common/common";
+import { fromXdc, isXdc, truncateAddress } from "../common/common";
 
 function WalletButton(props) {
   const {
@@ -27,9 +29,11 @@ function WalletButton(props) {
     logout,
     onClickMetamask,
     isMetamask,
+    isXdcPay,
     isMobile,
     hasAlert,
     clickAlert,
+    isDcent,
   } = props;
 
   const [isVisible, setIsVisible] = useState(false);
@@ -76,10 +80,6 @@ function WalletButton(props) {
     return () => clearTimeout(timeout);
   }, [showAlert]);
 
-  const truncateAddress = (address) => {
-    return address.substring(0, 7) + "..." + address.substring(38);
-  };
-
   return (
     <LayoutGroup id="WalletButton">
       <AnimatePresence>
@@ -89,6 +89,7 @@ function WalletButton(props) {
           onTap={() => setIsVisible(true)}
           onHoverEnd={() => setIsVisible(false)}
           cursor={"pointer"}
+          spacing="12px"
           padding={isMobile ? "0 30px" : "0"}
         >
           <HStack
@@ -99,7 +100,7 @@ function WalletButton(props) {
             spacing="9px"
             cursor="pointer"
             alignment="flex-start"
-            padding="6px 9px"
+            padding={isMobile ? "12px 9px" : "6px 9px"}
           >
             <VStack minwidth="0" spacing="0px" alignment="flex-start">
               {status ? (
@@ -301,15 +302,9 @@ function WalletButton(props) {
                   animate="hover"
                   exit="initial"
                 >
-                  <CaptionRegular
-                    animate={{ opacity: 0.3 }}
-                    textcolor={({ theme }) => theme.walletText}
-                  >
-                    Connect
-                  </CaptionRegular>
-                  <CaptionBoldShort textcolor={({ theme }) => theme.walletText}>
-                    Wallet
-                  </CaptionBoldShort>
+                  <BodyBold textcolor={({ theme }) => theme.walletText}>
+                    Connect Wallet
+                  </BodyBold>
                 </motion.div>
               )}
             </VStack>
@@ -319,44 +314,11 @@ function WalletButton(props) {
                 <a>
                   <IconImg
                     cursor={"pointer"}
-                    url={XDClogo}
+                    url={walletIcon}
                     width="26px"
                     height="26px"
+                    onClick={clickAlert}
                   ></IconImg>
-                </a>
-
-                <a>
-                  <IconImg
-                    cursor={"pointer"}
-                    url={Metamask}
-                    width="30px"
-                    height="30px"
-                    onClick={onClickMetamask}
-                  ></IconImg>
-                </a>
-                <a>
-                  <VStack>
-                    <IconImg
-                      cursor={"pointer"}
-                      url={infoIcon}
-                      width="26px"
-                      height="26px"
-                      onClick={clickAlert}
-                    ></IconImg>
-                    {hasAlert && (
-                      <AlertStatus
-                        key="ledalert"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{
-                          repeat: Infinity,
-                          repeatType: "reverse",
-                          duration: 0.6,
-                        }}
-                      ></AlertStatus>
-                    )}
-                  </VStack>
                 </a>
               </HStack>
             ) : isMetamask ? (
@@ -370,12 +332,23 @@ function WalletButton(props) {
                   ></IconImg>
                 </a>
               </HStack>
-            ) : (
+            ) : isXdcPay ? (
               <HStack alignment={isMobile ? "flex-start" : "center"}>
                 <a>
                   <IconImg
                     cursor={"pointer"}
                     url={XDClogo}
+                    width="26px"
+                    height="26px"
+                  ></IconImg>
+                </a>
+              </HStack>
+            ) : (
+              <HStack alignment={isMobile ? "flex-start" : "center"}>
+                <a>
+                  <IconImg
+                    cursor={"pointer"}
+                    url={dcentLogo}
                     width="26px"
                     height="26px"
                   ></IconImg>

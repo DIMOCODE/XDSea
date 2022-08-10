@@ -8,17 +8,12 @@ import styled from "styled-components";
 import checkOk from "../images/checkOkIcon.png";
 import { motion } from "framer-motion/dist/framer-motion";
 import { Tooltip } from "@mui/material";
+import { truncateAddress } from "../common/common";
 
 function BubbleCopied(props) {
   const { logo, address, icon } = props;
 
   const [showAlertLink, setShowAlertLink] = useState(false);
-
-  const truncateAddress = (address) => {
-    return address
-      ? address.substring(0, 7) + "..." + address.substring(38)
-      : "undefined";
-  };
 
   useEffect(() => {
     let timeout;

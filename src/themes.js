@@ -1,6 +1,8 @@
 import XDSeaLightLogo from "./images/xdsea_logo_light.svg";
 import XDSeaDarklogo from "./images/xdsea_logo.svg";
 
+{/* Light and Dark theme style attributes */}
+
 export const lightTheme = {
   body: "#FFF",
   text: "#363537",

@@ -36,10 +36,10 @@ function TopCollectionItem(props) {
 
   const creator = {
     initial: {
-      background: "rgba(255, 255, 255, 1)",
+      background: "rgba(255, 255, 255, 0)",
     },
     hover: {
-      background: "rgba(255, 255, 255, 1)",
+      background: "rgba(255, 255, 255, 0)",
     },
   };
   const opacity = {
@@ -53,14 +53,13 @@ function TopCollectionItem(props) {
       padding="9px, 12px"
       width={width}
       spacing="0px"
-      animate={isVisible ? "hover" : "initial"}
-      variants={creator}
       onHoverStart={() => setIsVisible((isVisible) => !isVisible)}
       onHoverEnd={() => setIsVisible((isVisible) => !isVisible)}
+      background={({ theme }) => theme.backElement}
       onClick={onClick}
       cursor={"pointer"}
     >
-      <HStack padding="12px 12px ">
+      <HStack cursor="pointer" padding="12px 12px ">
         <TitleRegular21
           textcolor={({ theme }) => theme.text}
           animate={isVisible ? "hover" : "initial"}
@@ -81,19 +80,36 @@ function TopCollectionItem(props) {
             boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
           }}
         ></IconImg>
-        <TitleBold15>{collectionName || "Collection Name"}</TitleBold15>
+        <TitleBold15 style={{ cursor: "pointer" }}>
+          {collectionName || "Collection Name"}
+        </TitleBold15>
         <Spacer></Spacer>
 
         {hasCup === 1 && (
-          <IconImg url={firstPlace} width="21px" height="21px"></IconImg>
+          <IconImg
+            cursor={"pointer"}
+            url={firstPlace}
+            width="21px"
+            height="21px"
+          ></IconImg>
         )}
 
         {hasCup === 2 && (
-          <IconImg url={secondPlace} width="21px" height="21px"></IconImg>
+          <IconImg
+            cursor={"pointer"}
+            url={secondPlace}
+            width="21px"
+            height="21px"
+          ></IconImg>
         )}
 
         {hasCup === 3 && (
-          <IconImg url={thirdPlace} width="21px" height="21px"></IconImg>
+          <IconImg
+            cursor={"pointer"}
+            url={thirdPlace}
+            width="21px"
+            height="21px"
+          ></IconImg>
         )}
       </HStack>
       <Divider></Divider>
@@ -138,16 +154,14 @@ function TopCollectionItem(props) {
           <HStack spacing="6px">
             <IconImg url={miniXdcLogo} width="18px" height="18px"></IconImg>
             <BodyBold>
-            {volumetraded > 100000
-              ? (Intl.NumberFormat('en-US', {
-                notation: "compact",
-                maximumFractionDigits: 2
-              }).format(volumetraded))
-            : (
-              volumetraded.toLocaleString(undefined, {
-                maximumFractionDigits: 2,
-              }) || "0"
-            )}
+              {volumetraded > 100000
+                ? Intl.NumberFormat("en-US", {
+                    notation: "compact",
+                    maximumFractionDigits: 2,
+                  }).format(volumetraded)
+                : volumetraded.toLocaleString(undefined, {
+                    maximumFractionDigits: 2,
+                  }) || "0"}
             </BodyBold>
           </HStack>
         </VStack>

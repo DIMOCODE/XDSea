@@ -28,9 +28,16 @@ function InputStyled(props) {
     inputId,
     iconHeight,
     iconWidth,
+    onKeyPress,
+    iconClickable,
+    onClickIcon,
   } = props;
 
   const [hasURL] = useState(false);
+
+  const handleClick = () => {
+    onClickIcon(document.getElementById(inputId).value);
+  };
 
   return (
     <ZStack>
@@ -55,12 +62,15 @@ function InputStyled(props) {
         iconWidth={iconWidth}
         iconHeight={iconHeight}
         onClick={onClick}
+        onKeyPress={onKeyPress}
       />
       <InputIcon>
         <IconImg
           url={icon || empty}
           width={iconWidth || "18px"}
           height={iconHeight || "18px"}
+          cursor={iconClickable ? "pointer" : "default"}
+          onClick={handleClick}
         ></IconImg>
       </InputIcon>
       {hasURL ? (
@@ -90,7 +100,7 @@ const Input = styled.input.attrs((props) => ({
   background: props.background || props.theme.backElement,
   padding: props.padding || "0px 36px 0px 12px",
   textalign: props.textalign || "left",
-  fontsize: props.fontsize || "15px",
+  fontsize: props.fontsize || "16px",
   texttransform: props.texttransform || "none",
   height: props.height || "39px",
 }))`

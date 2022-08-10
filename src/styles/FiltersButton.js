@@ -17,9 +17,8 @@ import {
 } from "framer-motion/dist/framer-motion";
 
 import verifiedBlue from "../images/verifiedBlue.png";
-import nonVerified from "../images/nonVerified.png";
+import xdcLogo from "../images/miniXdcLogo.png";
 import filter from "../images/filter.png";
-import all from "../images/all.png";
 import notforsale from "../images/notforsale.png";
 import relist from "../images/relist.png";
 import sold from "../images/sold.png";
@@ -33,12 +32,22 @@ import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 import { FilterNFT } from "./FilterNFT";
 import useWindowSize from "../styles/useWindowSize";
+import { InputStyled } from "./InputStyled";
 
 function FiltersButton(props) {
-  const { isNftFilter, onChange, params, top, right, left, isSearchPage, switched } = props;
+  const {
+    isNftFilter,
+    onChange,
+    params,
+    top,
+    right,
+    left,
+    isSearchPage,
+    switched,
+    maxPrice,
+  } = props;
 
   const size = useWindowSize();
-  const [btnAll, setBtnAll] = useState(false);
   const [btnSale, setBtnSale] = useState(false);
   const [btnSold, setBtnSold] = useState(false);
   const [btnRelist, setBtnRelist] = useState(false);
@@ -47,6 +56,7 @@ function FiltersButton(props) {
   const [minValue, setMinValue] = useState(1000);
   const [maxValue, setMaxValue] = useState(150000);
   const [activeFilters, setActiveFilters] = useState(0);
+  const [activeSaleType, setActiveSaleType] = useState(false);
 
   const activated = {
     on: {
@@ -80,23 +90,23 @@ function FiltersButton(props) {
 
   useEffect(() => {
     var filters = 0;
-    if(params.saleType1 || params.saleType2 || params.saleType3 || params.saleType4)
+    if ( activeSaleType && (
+      (params?.saleType1 !== "" && params?.saleType1) || 
+      (params?.saleType2 !== "" && params?.saleType2) ||
+      (params?.saleType3 !== "" && params?.saleType3) ||
+      (params?.saleType4 !== "" && params?.saleType4)
+    )) {
       filters += 1;
-    if(params.priceRangeStart)
-      filters += 1;
-    if(params.verified)
-      filters += 1;
-    setBtnAll((params.saleType1 === "" ? true : false)
-      || (params.saleType2 === "" ? true : false) 
-      || (params.saleType3 === "" ? true : false)
-      || (params.saleType4 === "" ? true : false));
-    setBtnSale(params.saleType1 === "");
-    setBtnSold(params.saleType3 === "");
-    setBtnRelist(params.saleType2 === "");
-    setBtnNFS(params.saleType4 === "");
-    setBtnVerified(params.verified);
-    setMinValue(params.priceRangeStart ? params.priceRangeStart : 1000);
-    setMaxValue(params.priceRangeEnd ? params.priceRangeEnd : 150000);
+    }
+    if (params?.priceRangeStart) filters += 1;
+    if (params?.verified) filters += 1;
+    setBtnSale(params?.saleType1 === "");
+    setBtnSold(params?.saleType3 === "");
+    setBtnRelist(params?.saleType2 === "");
+    setBtnNFS(params?.saleType4 === "");
+    setBtnVerified(params?.verified);
+    setMinValue(params?.priceRangeStart ? params.priceRangeStart : 1000);
+    setMaxValue(params?.priceRangeEnd ? params.priceRangeEnd : 150000);
     setActiveFilters(filters);
   }, [switched]);
 
@@ -143,18 +153,15 @@ function FiltersButton(props) {
               <BodyBold textcolor="white">{activeFilters}</BodyBold>
             </HStack>
           </Bubble>
-        ) : activeFilters > 0 && size.width > 728 
-          ? (
-            <HStack
-              background={({ theme }) => theme.blue}
-              width="48px"
-              border="6px"
-            >
-              <BodyBold textcolor="white">{activeFilters}</BodyBold>
-            </HStack>
-          )
-          : null
-        }
+        ) : activeFilters > 0 && size.width > 728 ? (
+          <HStack
+            background={({ theme }) => theme.blue}
+            width="48px"
+            border="6px"
+          >
+            <BodyBold textcolor="white">{activeFilters}</BodyBold>
+          </HStack>
+        ) : null}
 
         <IconImg
           cursor="pointer"
@@ -163,24 +170,23 @@ function FiltersButton(props) {
           height="21px"
           whileTap={{ scale: 0.9 }}
           onClick={() => {
-            if(isSearchPage) {
-              if(isNftFilter)
+            if (isSearchPage) {
+              if (isNftFilter)
                 onChange({
                   searchBy: params.searchBy,
-                  page: 1
+                  page: 1,
                 });
               else
                 onChange({
                   searchTerm: params.searchTerm,
-                  page: 1
+                  page: 1,
                 });
-            }
-            else{
-              if(isNftFilter)
+            } else {
+              if (isNftFilter)
                 onChange({
                   page: 1,
                   sortBy: "publication",
-                  sortDirection: -1
+                  sortDirection: -1,
                 });
               else
                 onChange({
@@ -208,45 +214,116 @@ function FiltersButton(props) {
                 {/*Slider*/}
 
                 <VStack width="100%" alignment="flex-start" spacing="15px">
-                  <CaptionBoldShort cursor="pointer">Price Range</CaptionBoldShort>
+                  <CaptionBoldShort cursor="pointer">
+                    Price Range
+                  </CaptionBoldShort>
 
-                  <HStack
-                    background="transparent"
-                    height="60px"
-                    alignment="flex-end"
-                  >
+                  <HStack>
+                    <InputStyled
+                      icon={xdcLogo}
+                      type="number"
+                      placeholder={minValue}
+                      value={minValue}
+                      inputId="MinFilterPrice"
+                      onChange={(e) => setMinValue(e.target.value)}
+                      background={({ theme }) => theme.faded}
+                    ></InputStyled>
+                    <InputStyled
+                      icon={xdcLogo}
+                      type="number"
+                      placeholder={maxValue}
+                      value={maxValue}
+                      onChange={(e) => setMaxValue(e.target.value)}
+                      inputId="MaxFilterPrice"
+                      background={({ theme }) => theme.faded}
+                    ></InputStyled>
+                  </HStack>
+
+                  <HStack height="60px" alignment="flex-end">
                     <CustomSlider
                       min={1}
-                      max={3000000}
+                      max={maxPrice}
+                      // step={300000}
                       defaultValue={[minValue, maxValue]}
                       valueLabelDisplay="on"
                       className="FilterPriceSlider"
                     />
                   </HStack>
 
-                  <HStack
-                    background={({ theme }) => theme.blue}
-                    width="100%"
-                    border="6px"
-                    height="43px"
-                    cursor="pointer"
-                    whileTap={{ scale: 0.96 }}
-                    onClick={() => {
-                      setMinValue(document.getElementsByClassName("FilterPriceSlider")[0]
-                        .getElementsByTagName("span")[2].getElementsByTagName("input")[0].value);
-                      setMaxValue(document.getElementsByClassName("FilterPriceSlider")[0]
-                      .getElementsByTagName("span")[6].getElementsByTagName("input")[0].value);
-                      onChange({...params, page: 1, priceRangeStart: document.getElementsByClassName("FilterPriceSlider")[0]
-                        .getElementsByTagName("span")[2].getElementsByTagName("input")[0].value, priceRangeEnd: document.getElementsByClassName("FilterPriceSlider")[0]
-                        .getElementsByTagName("span")[6].getElementsByTagName("input")[0].value
-                      });
-                      if(!params.priceRangeStart)
-                        setActiveFilters(activeFilters + 1);
-                    }}
-                  >
-                    <BodyRegular cursor="pointer" textcolor="white">
-                      Apply
-                    </BodyRegular>
+                  {/* Buttons Filters */}
+                  <HStack>
+                    {/* Remove Button  */}
+                    <HStack
+                      background={({ theme }) => theme.faded}
+                      width="100%"
+                      border="6px"
+                      height="43px"
+                      cursor="pointer"
+                      whileTap={{ scale: 0.96 }}
+                      onClick={() => {
+                        setMinValue(1000);
+                        document.getElementById("MinFilterPrice").value = "";
+                        setMaxValue(150000);
+                        document.getElementById("MaxFilterPrice").value = "";
+                        onChange({
+                          ...params,
+                          page: 1,
+                          priceRangeStart: "",
+                          priceRangeEnd: "",
+                        });
+                        if(activeFilters !== 0);
+                          setActiveFilters(activeFilters - 1);
+                      }}
+                    >
+                      <BodyRegular cursor="pointer">Remove</BodyRegular>
+                    </HStack>
+
+                    {/* Apply Button  */}
+                    <HStack
+                      background={({ theme }) => theme.blue}
+                      width="100%"
+                      border="6px"
+                      height="43px"
+                      cursor="pointer"
+                      whileTap={{ scale: 0.96 }}
+                      onClick={() => {
+                        if(maxValue < minValue)
+                          setMaxValue(minValue);
+                          setMinValue(maxValue)
+                        setMinValue(
+                          document
+                            .getElementsByClassName("FilterPriceSlider")[0]
+                            .getElementsByTagName("span")[2]
+                            .getElementsByTagName("input")[0].value
+                        );
+                        setMaxValue(
+                          document
+                            .getElementsByClassName("FilterPriceSlider")[0]
+                            .getElementsByTagName("span")[6]
+                            .getElementsByTagName("input")[0].value
+                        );
+                        document.getElementById("MinFilterPrice").value = "";
+                        document.getElementById("MaxFilterPrice").value = "";
+                        onChange({
+                          ...params,
+                          page: 1,
+                          priceRangeStart: document
+                            .getElementsByClassName("FilterPriceSlider")[0]
+                            .getElementsByTagName("span")[2]
+                            .getElementsByTagName("input")[0].value,
+                          priceRangeEnd: document
+                            .getElementsByClassName("FilterPriceSlider")[0]
+                            .getElementsByTagName("span")[6]
+                            .getElementsByTagName("input")[0].value,
+                        });
+                        if (!params.priceRangeStart)
+                          setActiveFilters(activeFilters + 1);
+                      }}
+                    >
+                      <BodyRegular cursor="pointer" textcolor="white">
+                        Apply
+                      </BodyRegular>
+                    </HStack>
                   </HStack>
                 </VStack>
                 <Divider></Divider>
@@ -258,34 +335,13 @@ function FiltersButton(props) {
 
                   <HStack width="100%" spacing="15px">
                     <IconImg
-                      url={all}
-                      width="36px"
-                      height="36px"
-                      cursor="pointer"
-                      onTapStart={() => {
-                        setBtnAll(!btnAll);
-                        setBtnSale(!btnAll);
-                        setBtnSold(!btnAll);
-                        setBtnRelist(!btnAll);
-                        setBtnNFS(!btnAll);
-                      }}
-                      variants={activated}
-                      animate={btnAll ? "off" : "on"}
-                    ></IconImg>
-
-                    <IconImg
                       url={sale}
                       width="36px"
                       height="36px"
                       cursor="pointer"
                       onTapStart={() => {
-                        setBtnSale(!btnSale);
-                        if(btnSale && !btnNFS && !btnSold && !btnRelist) {
-                          setBtnAll(false);
-                        }
-                        else if(!btnSale && !btnNFS && !btnSold && !btnRelist) {
-                          setBtnAll(true);
-                        }
+                        if (!btnSold || !btnRelist || !btnNFS)
+                          setBtnSale(!btnSale);
                       }}
                       variants={activated}
                       animate={btnSale ? "off" : "on"}
@@ -297,13 +353,8 @@ function FiltersButton(props) {
                       height="36px"
                       cursor="pointer"
                       onTapStart={() => {
-                        setBtnSold(!btnSold);
-                        if(btnSold && !btnNFS && !btnSale && !btnRelist) {
-                          setBtnAll(false);
-                        }
-                        else if(!btnSold && !btnNFS && !btnSale && !btnRelist) {
-                          setBtnAll(true);
-                        }
+                        if (!btnSale || !btnRelist || !btnNFS)
+                          setBtnSold(!btnSold);
                       }}
                       variants={activated}
                       animate={btnSold ? "off" : "on"}
@@ -315,13 +366,8 @@ function FiltersButton(props) {
                       height="36px"
                       cursor="pointer"
                       onTapStart={() => {
-                        setBtnRelist(!btnRelist);
-                        if(btnRelist && !btnNFS && !btnSale && !btnSold) {
-                          setBtnAll(false);
-                        }
-                        else if(!btnRelist && !btnNFS && !btnSale && !btnSold) {
-                          setBtnAll(true);
-                        }
+                        if (!btnSold || !btnSale || !btnNFS)
+                          setBtnRelist(!btnRelist);
                       }}
                       variants={activated}
                       animate={btnRelist ? "off" : "on"}
@@ -333,37 +379,81 @@ function FiltersButton(props) {
                       height="36px"
                       cursor="pointer"
                       onTapStart={() => {
-                        setBtnNFS(!btnNFS);
-                        if(btnNFS && !btnRelist && !btnSale && !btnSold) {
-                          setBtnAll(false);
-                        }
-                        else if(!btnNFS && !btnRelist && !btnSale && !btnSold) {
-                          setBtnAll(true);
-                        }
+                        if (!btnSold || !btnRelist || !btnSale)
+                          setBtnNFS(!btnNFS);
                       }}
                       variants={activated}
                       animate={btnNFS ? "off" : "on"}
                     ></IconImg>
                   </HStack>
 
-                  {/* ApplyChanges  */}
-                  <HStack
-                    background={({ theme }) => theme.blue}
-                    width="100%"
-                    border="6px"
-                    height="43px"
-                    cursor="pointer"
-                    whileTap={{ scale: 0.96 }}
-                    onClick={() => {
-                      onChange({...params, page: 1, saleType1: !btnSale ? "SALE" : "", saleType2: !btnRelist ? "RELIST" : "",
-                        saleType3: !btnSold ? "SOLD" : "", saleType4: !btnNFS ? "NOT_SALE" : ""});
-                      if(!params.saleType1 && !params.saleType2 && !params.saleType3 && !params.saleType4)
-                        setActiveFilters(activeFilters + 1);
-                    }}
-                  >
-                    <BodyRegular cursor="pointer" textcolor="white">
-                      Apply
-                    </BodyRegular>
+                  <HStack>
+                    {/* Remove Button  */}
+                    <HStack
+                      background={({ theme }) => theme.faded}
+                      width="100%"
+                      border="6px"
+                      height="43px"
+                      cursor="pointer"
+                      whileTap={{ scale: 0.96 }}
+                      onClick={() => {
+                        onChange({
+                          ...params,
+                          page: 1,
+                          saleType1: "",
+                          saleType2: "",
+                          saleType3: "",
+                          saleType4: ""
+                        });
+                        setBtnSold(false);
+                        setBtnSale(false);
+                        setBtnNFS(false);
+                        setBtnRelist(false);
+                        setActiveSaleType(false);
+                        if (activeFilters !== 0)
+                          setActiveFilters(activeFilters - 1);
+                      }}
+                    >
+                      <BodyRegular cursor="pointer">Remove</BodyRegular>
+                    </HStack>
+                    {/* ApplyChanges  */}
+                    <HStack
+                      background={({ theme }) => theme.blue}
+                      width="100%"
+                      border="6px"
+                      height="43px"
+                      cursor="pointer"
+                      whileTap={{ scale: 0.96 }}
+                      onClick={() => {
+                        onChange({
+                          ...params,
+                          page: 1,
+                          saleType1: !btnSale ? "SALE" : "",
+                          saleType2: !btnRelist ? "RELIST" : "",
+                          saleType3: !btnSold ? "SOLD" : "",
+                          saleType4: !btnNFS ? "NOT_SALE" : "",
+                        });
+                        if ( !activeSaleType && (
+                          btnSale ||
+                          btnSold ||
+                          btnNFS ||
+                          btnRelist
+                        )) {
+                          setActiveFilters(activeFilters + 1);
+                          setActiveSaleType(true);
+                        }
+                        if (activeFilters !== 0) {
+                          if (!btnSale && !btnSold && !btnNFS && !btnRelist) {
+                            setActiveFilters(activeFilters - 1);
+                            setActiveSaleType(false);
+                          }
+                        }
+                      }}
+                    >
+                      <BodyRegular cursor="pointer" textcolor="white">
+                        Apply
+                      </BodyRegular>
+                    </HStack>
                   </HStack>
                 </VStack>
                 <Divider></Divider>
@@ -377,19 +467,18 @@ function FiltersButton(props) {
               spacing="9px"
               onClick={() => {
                 setBtnVerified(!btnVerified);
-                if(!btnVerified)
-                  onChange({...params, page: 1, verified: !btnVerified});
-                else
-                  onChange({...params, page: 1, verified: ""});
-                setActiveFilters(btnVerified ? activeFilters - 1 : activeFilters + 1);
+                if (!btnVerified)
+                  onChange({ ...params, page: 1, verified: !btnVerified });
+                else onChange({ ...params, page: 1, verified: "" });
+                setActiveFilters(
+                  btnVerified ? activeFilters - 1 : activeFilters + 1
+                );
               }}
               cursor="pointer"
             >
               <CaptionBoldShort cursor="pointer">Status</CaptionBoldShort>
               <HStack cursor="pointer">
-                <BodyBold cursor="pointer">
-                  Verified Only
-                </BodyBold>
+                <BodyBold cursor="pointer">Verified Only</BodyBold>
                 <Spacer></Spacer>
                 <IconImg
                   cursor="pointer"
