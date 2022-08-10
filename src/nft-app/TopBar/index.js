@@ -849,7 +849,7 @@ function TopBar(props) {
                 </>
               );
           }
-        })}
+        })()}
       </HStack>
 
       {showInfo ? (
