@@ -9,11 +9,11 @@ module.exports = {
       network_id: "*" // Match any network id
     },
   },
-  contracts_directory: './contracts',
+  contracts_directory: './contracts/NFT',
   contracts_build_directory: './src/abis/',
   compilers: {
     solc: {
-      version: "0.8.3",
+      version: "0.8.15",
       settings: {
         optimizer: {
           enabled: false,

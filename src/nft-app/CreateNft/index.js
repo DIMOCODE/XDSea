@@ -13,6 +13,7 @@ import {
   LS_ROOT_KEY,
 } from "../../constant";
 import NFT from "../../abis/NFT.json";
+import NFT721 from "../../abis/NFT721.json";
 import { 
   nftaddress, 
   nftmarketlayeraddress 
@@ -146,6 +147,10 @@ function CreateNft(props) {
   const [scrolling, setScrolling] = useState();
   const [collectionNickName, setCollectionNickName] = useState("");
   const [collectionAllowed, setCollectionAllowed] = useState(false);
+  const [isDeployContract, setDeployContract] = useState(true);
+  const [isERC721, setERC721] = useState(true);
+  const [collectionSymbol, setCollectionSymbol] = useState("");
+  const [collectionAddress, setCollectionAddress] = useState(nftaddress);
 
   /**
    * Adding Authentication for pinning new uploads to the IPFS Project
@@ -569,7 +574,19 @@ function CreateNft(props) {
                 });
                 const added = await client.add(uploadData);
                 const url = `https://xdsea.infura-ipfs.io/ipfs/${added.path}`;
-                updateMarketplace(url, nftUrl, filteredProperties);
+                if(isDeployContract) {
+                  if(isERC721) {
+                    const {success, address} = await deployERC721();
+                    if(success) {
+                      updateMarketplace(url, nftUrl, filteredProperties, address);
+                    }
+                    else{
+                      console.log("Deployment Failed");
+                      setMintButtonStatus(4);
+                    }   
+                  }
+                }
+                else updateMarketplace(url, nftUrl, filteredProperties, nftaddress);
               } catch (error) {
                 console.log(error);
                 setMintButtonStatus(4);
@@ -585,6 +602,35 @@ function CreateNft(props) {
   };
 
   /**
+   * Deploy the ERC721 custom collection contract for the creator
+   * 
+   * @returns true and the contract address if the contract is deployed successfully, false if not
+   */
+  const deployERC721 = async () => {
+      try{
+        const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
+        const nftContract = new xdc3.eth.Contract(NFT721.abi);
+        const data = nftContract.deploy({
+          data: NFT721.bytecode,
+          arguments: [collectionName, collectionSymbol, nftmarketlayeraddress]
+        }).encodeABI();
+        const tx = {
+          from: wallet.address,
+          data
+        };
+        let gasLimit = await xdc3.eth.estimateGas(tx);
+        tx["gas"] = gasLimit;
+        let transaction = await SendTransaction(tx);
+        setCollectionAddress(transaction.contractAddress);
+        return {success: true, address: transaction.contractAddress};
+      }
+      catch (error) {
+        console.log(error);
+        return {success: false, address: ""};
+      }
+    }
+
+  /**
    * Mint the NFT, update the marketplace ledger with the NFT, and update the DB with
    * the new NFT
    * 
@@ -592,14 +638,14 @@ function CreateNft(props) {
    * @param {string} nftUrl url of the NFT asset
    * @param {*} filteredProperties list of properties with blank properties removed
    */
-  const updateMarketplace = async (url, nftUrl, filteredProperties) => {
+  const updateMarketplace = async (url, nftUrl, filteredProperties, address) => {
     try {
       const xdc3 = new Xdc3(
         new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER)
       );
       const contract = new xdc3.eth.Contract(
-        NFT.abi,
-        nftaddress,
+        isERC721 ? NFT721.abi : NFT.abi,
+        isERC721 ? address : nftaddress,
         isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address
       );
       let data = contract.methods.createToken(url).encodeABI();
@@ -607,17 +653,25 @@ function CreateNft(props) {
         from: isXdc(wallet?.address)
           ? fromXdc(wallet?.address)
           : wallet?.address,
-        to: nftaddress,
+        to: isDeployContract ? address : nftaddress,
         data,
       };
       let gasLimit = await xdc3.eth.estimateGas(tx);
       tx["gas"] = gasLimit;
       let transaction = await SendTransaction(tx);
+      console.log(transaction);
       setMintButtonStatus(2);
       var txReceipt = await xdc3.eth.getTransactionReceipt(
         transaction.transactionHash
       );
-      var tokenId = await txReceipt.logs[0].topics[3];
+
+      /**
+       * 
+       * Need Miguel to help with this numContract variable
+       *
+       */
+      var tokenId = Number(await txReceipt.logs[0].topics[3]) + 100000;
+
       setTokenId(tokenId);
       const weiprice = await xdc3.utils.toWei(price, "ether");
       const contract2 = new xdc3.eth.Contract(
@@ -627,7 +681,7 @@ function CreateNft(props) {
       );
       data = contract2.methods
         .createMarketItem(
-          Number(tokenId),
+          tokenId,
           0,
           isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address,
           isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address,
@@ -655,6 +709,7 @@ function CreateNft(props) {
         const logoUrl = await addToIPFSCollectionLogo();
         const collectionCreation = await (
           await createCollection(
+            isDeployContract ? address : nftaddress,
             collectionName,
             isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address,
             collectionDescription,
@@ -669,6 +724,12 @@ function CreateNft(props) {
         const nftCreation = await (
           await createNFT(
             collectionCreation._id,
+
+            /**
+             * 
+             * Need Miguel to help with calculating the tokenID
+             * 
+             */
             tokenId,
             isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address,
             price,

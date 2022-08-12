@@ -71,6 +71,7 @@ export const getCollectionNFTs = ({collectionId, page, searchBy, verified, saleT
 /**
  * Send a User-authorized HTTP request to create a new collection
  * 
+ * @param {string} address contract address of the NFT tokens
  * @param {string} name name of the collection
  * @param {string} addressCreator wallet address of the creator
  * @param {string} description description of the collection
@@ -82,10 +83,10 @@ export const getCollectionNFTs = ({collectionId, page, searchBy, verified, saleT
  * @param {string} websiteUrl url of the website linked to the collection
  * @returns HTTP POST request response with the newly created DB Collecion object
  */
-export const createCollection = (name, addressCreator, description, logo, banner, 
+export const createCollection = (address, name, addressCreator, description, logo, banner, 
   twitterUrl, instagramUrl, discordUrl, websiteUrl) => {
     const body = {
-      address: nftaddress,
+      address,
       name,
       addressCreator,
       description,

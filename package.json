@@ -43,6 +43,7 @@
     "secure-ls": "^1.2.6",
     "serve": "^14.0.1",
     "styled-components": "^5.3.5",
+    "truffle": "^5.5.26",
     "truffle-contract-size": "^2.0.1",
     "web-vitals": "^2.1.4",
     "xdc-connect": "^1.0.39",
