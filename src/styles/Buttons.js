@@ -89,6 +89,11 @@ export default function ButtonApp(props) {
             <BodyRegular textcolor={appStyle.colors.white}>Accepting Offer</BodyRegular>
             <RingSpinner size={21} color={appStyle.colors.white} loading={true} />
           </HStack>
+        ) : func === "LazyMint" ? (
+          <HStack spacing="6px">
+            <BodyRegular textcolor={appStyle.colors.white}>Uploading</BodyRegular>
+            <RingSpinner size={21} color={appStyle.colors.white} loading={true} />
+          </HStack>
         ) : null
       : btnStatus === 2 ? (
         <HStack spacing="6px">
@@ -141,6 +146,11 @@ export default function ButtonApp(props) {
       ) : func === "AcceptOffer" ? (
         <HStack spacing="6px">
           <BodyRegular textcolor={appStyle.colors.white}>Offer Accepted</BodyRegular>
+          <IconImg url={successIcon} width="21px" height="21px"></IconImg>
+        </HStack>
+      ) : func === "LazyMint" ? (
+        <HStack spacing="6px">
+          <BodyRegular textcolor={appStyle.colors.white}>NFT Uploaded</BodyRegular>
           <IconImg url={successIcon} width="21px" height="21px"></IconImg>
         </HStack>
       ) : null
@@ -205,6 +215,13 @@ export default function ButtonApp(props) {
         <HStack spacing="6px">
             <BodyRegular textcolor={appStyle.colors.white}>
               Acceptance Failed
+            </BodyRegular>
+            <IconImg url={failIcon} width="21px" height="21px"></IconImg>
+          </HStack>
+      ) : func === "LazyMint" ? (
+        <HStack spacing="6px">
+            <BodyRegular textcolor={appStyle.colors.white}>
+              NFT Upload Failed
             </BodyRegular>
             <IconImg url={failIcon} width="21px" height="21px"></IconImg>
           </HStack>

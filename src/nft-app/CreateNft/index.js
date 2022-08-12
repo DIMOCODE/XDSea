@@ -146,6 +146,7 @@ function CreateNft(props) {
   const [scrolling, setScrolling] = useState();
   const [collectionNickName, setCollectionNickName] = useState("");
   const [collectionAllowed, setCollectionAllowed] = useState(false);
+  const [isLazyMint, setIsLazyMint] = useState(false);
 
   /**
    * Adding Authentication for pinning new uploads to the IPFS Project
@@ -249,10 +250,9 @@ function CreateNft(props) {
    */
   const getCollectionName = async () => {
     setLoadingIcon(loading);
-    const tokenData = await (
-      await createRequest(HTTP_METHODS.get, "nft/higher", null, null)
-    ).data.higher.tokenId;
+    const tokenData = 0;
     setCollectionName(`Untitled Collection ${tokenData + 1}`);
+    setTokenId(tokenData + 1)
     setCollectionExists(false);
     setCollectionEmpty(true);
     if (document.getElementsByClassName("collection-url")[0])
@@ -520,7 +520,108 @@ function CreateNft(props) {
       setRoyaltyAlert(true);
     } else {
       setRoyaltyAlert(false);
-      mintNFT();
+      if(isLazyMint) {
+        lazyMintNFT();
+      }
+      else{
+        mintNFT();
+      }
+    }
+  };
+
+  const toggleLazyMint = () => {
+    setIsLazyMint(!isLazyMint);
+  }
+
+  const lazyMintNFT = async () => {
+    setRoyaltyAlert(false);
+    if (nft.raw === "") {
+      setIsAssetEmpty(true);
+      document.getElementById("nft-asset").scrollIntoView();
+    } else {
+      if (name === "") {
+        setIsNameEmpty(true);
+        document.getElementById("creation-banner").scrollIntoView();
+      } else {
+        if (price == 0) {
+          setIsPriceZero(true);
+          document
+            .getElementsByClassName("nft-description")[0]
+            .scrollIntoView();
+        } else {
+          if (collection === "" && collectionName === "") {
+            setIsCollectionNotSelected(true);
+          } else {
+            if (user?.user?._id && wallet?.address) {
+              const filteredProperties = await removeBlankProperties();
+              setProperties(filteredProperties);
+              const nftUrl = await addToIPFS();
+              const previewUrl = await addToIPFSPreview();
+              setMintButtonStatus(1);
+              console.log("Lazy Mint");
+              if (newCollection && !collectionExists) {
+                const bannerUrl = await addToIPFSCollectionBanner();
+                const logoUrl = await addToIPFSCollectionLogo();
+                const collectionCreation = await (
+                  await createCollection(
+                    collectionName,
+                    isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address,
+                    collectionDescription,
+                    logoUrl,
+                    bannerUrl,
+                    twitterLink,
+                    instagramLink,
+                    discordLink,
+                    websiteLink
+                  )
+                ).data.collection;
+                const nftCreation = await (
+                  await createNFT(
+                    collectionCreation._id,
+                    0,
+                    isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address,
+                    price,
+                    royalty,
+                    name,
+                    description,
+                    nftUrl,
+                    nft.fileType,
+                    previewURL,
+                    filteredProperties,
+                    isLazyMint
+                  )
+                ).data.nft;
+              } else {
+                const collectionId = await (
+                  await getCollection(collectionNickName)
+                ).data.collection._id;
+                const nftCreation = await (
+                  await createNFT(
+                    collectionId,
+                    0,
+                    isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address,
+                    price,
+                    royalty,
+                    name,
+                    description,
+                    nftUrl,
+                    nft.fileType,
+                    previewURL,
+                    filteredProperties,
+                    isLazyMint
+                  )
+                ).data.nft;
+              }
+              setMintButtonStatus(3);
+              setMinted(true);
+              
+            } else {
+              setIsWalletDisconnected(true);
+              setMintButtonStatus(4);
+            }
+          }
+        }
+      }
     }
   };
 
@@ -547,13 +648,14 @@ function CreateNft(props) {
           if (collection === "" && collectionName === "") {
             setIsCollectionNotSelected(true);
           } else {
-            const filteredProperties = await removeBlankProperties();
-            setProperties(filteredProperties);
-            const nftUrl = await addToIPFS();
-            const previewUrl = await addToIPFSPreview();
-
-            setMintButtonStatus(1);
             if (user?.user?._id && wallet?.address) {
+              const filteredProperties = await removeBlankProperties();
+              setProperties(filteredProperties);
+              const nftUrl = await addToIPFS();
+              const previewUrl = await addToIPFSPreview();
+
+              setMintButtonStatus(1);
+            
               try {
                 const uploadData = JSON.stringify({
                   name,
@@ -833,7 +935,9 @@ function CreateNft(props) {
                 with 0% royalty?"
               cancelActionModal={() => setRoyaltyAlert(false)}
               confirmActionModal={() => {
-                mintNFT();
+                if(isLazyMint)
+                  lazyMintNFT();
+                else mintNFT();
               }}
             ></TxModal>
           </VStack>
@@ -1617,6 +1721,14 @@ function CreateNft(props) {
               </VStack>
             </HStack>
             <HStack width="100%">
+              <input 
+                type="checkbox"
+                checked={isLazyMint}
+                onChange={toggleLazyMint}
+              />
+              <BodyRegular width = "100%">
+                Lazy Mint NFT
+              </BodyRegular>
 
               {/* Clear Form Button */}
               <ButtonApp
@@ -1633,9 +1745,9 @@ function CreateNft(props) {
               {/* Mint Button */}
               <ButtonApp
                 buttonId="mint-button"
-                text="Mint your NFT"
+                text={isLazyMint ? "Lazy Mint your NFT" : "Mint your NFT"}
                 btnStatus={mintButtonStatus}
-                func={"Mint"}
+                func={isLazyMint ? "LazyMint" : "Mint"}
                 height="39px"
                 width="100%"
                 background={({ theme }) => theme.blue}
