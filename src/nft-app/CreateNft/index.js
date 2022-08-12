@@ -8,15 +8,13 @@ import Xdc3 from "xdc3";
 import {
   DEFAULT_PROVIDER,
   HEADER,
-  HTTP_METHODS,
   LS,
   LS_ROOT_KEY,
 } from "../../constant";
 import NFT from "../../abis/NFT.json";
 import { 
   nftaddress, 
-  nftmarketlayeraddress 
-} from "../../config";
+  nftmarketlayeraddress} from "../../config";
 import { 
   fromXdc, 
   isXdc 
@@ -60,7 +58,6 @@ import linkIcon from "../../images/link.png";
 import loading from "../../images/loadingDots.gif";
 import empty from "../../images/empty.png";
 import { TxModal } from "../../styles/TxModal";
-import { createRequest } from "../../API";
 import {
   checkCollectionExistsRequest,
   createCollection,
@@ -529,10 +526,16 @@ function CreateNft(props) {
     }
   };
 
+  /**
+   * Change the value of the lazy mint state
+   */
   const toggleLazyMint = () => {
     setIsLazyMint(!isLazyMint);
   }
 
+  /**
+   * Lazy mint the NFT (Upload the NFT only to the database)
+   */
   const lazyMintNFT = async () => {
     setRoyaltyAlert(false);
     if (nft.raw === "") {
