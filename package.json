@@ -28,6 +28,7 @@
     "multiformats": "^9.6.5",
     "ng": "^0.0.0",
     "react": "^17.0.2",
+    "react-aws-s3": "^1.5.0",
     "react-cookie": "^4.1.1",
     "react-dom": "^17.0.2",
     "react-elastic-carousel": "^0.11.5",

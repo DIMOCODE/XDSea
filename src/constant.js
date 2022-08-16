@@ -36,3 +36,10 @@ export const HTTP_METHODS = {
   put: "PUT",
   delete: "DELETE",
 };
+
+export const AWS_CONFIG = {
+  bucketName: process.env.REACT_APP_BUCKET_NAME,
+  region: process.env.REACT_APP_REGION,
+  accessKeyId: process.env.REACT_APP_ACCESS_ID,
+  secretAccessKey: process.env.REACT_APP_ACCESS_KEY
+};
