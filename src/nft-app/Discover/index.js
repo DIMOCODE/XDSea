@@ -40,7 +40,6 @@ import { SortButtonNFTS } from "../../styles/SortButtonNFTS";
 import { FiltersButton } from "../../styles/FiltersButton";
 import { SortButtonCollections } from "../../styles/SortButtonCollections";
 import { StickySectionHeader } from "@mayank1513/sticky-section-header";
-import "./customstyles.css";
 
 const Discover = (props) => {
   const size = useWindowSize();
@@ -261,7 +260,7 @@ const Discover = (props) => {
             <ZStack>
               <ZItem>
                 {/* Selector */}
-                <AnimatePresence initial="false">
+                <AnimatePresence inital="false">
                   <HStack
                     height="43px"
                     self="none"
