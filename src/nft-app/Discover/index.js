@@ -1,7 +1,5 @@
-import React, { 
-  useEffect, 
-  useState 
-} from "react";
+import React, { useEffect, useState, useContext } from "react";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import { Collection } from "../../styles/Collection";
 import DiscoverBar from "../../images/DiscoverBar.png";
@@ -22,6 +20,7 @@ import {
   CaptionBoldShort,
   TitleBold27,
   TitleBold18,
+  CaptionRegular,
   BodyBold,
   BodyRegular,
 } from "../../styles/TextStyles";
@@ -32,17 +31,31 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { LoopLogo } from "../../styles/LoopLogo";
 import { getCollections } from "../../API/Collection";
 import { getNFTs } from "../../API/NFT";
-import { nftaddress } from "../../config";
+import {
+  nftaddress,
+  nftmarketaddress,
+  nftmarketlayeraddress,
+} from "../../config";
 import { NftContainer } from "../../styles/NftContainer";
 import { isSafari } from "../../common/common";
 import noResult from "../../images/noResult.png";
+import { untitledCollections, verifiedProfiles } from "../../blacklist";
+import CID from "cids";
 import { SortButtonNFTS } from "../../styles/SortButtonNFTS";
+import { FilterCollections } from "../../styles/FilterCollections";
+import { FilterNFT } from "../../styles/FilterNFT";
 import { FiltersButton } from "../../styles/FiltersButton";
+import "./customstyles.css";
 import { SortButtonCollections } from "../../styles/SortButtonCollections";
 import { StickySectionHeader } from "@mayank1513/sticky-section-header";
+import Xdc3 from "xdc3";
+import NFT from "../../abis/NFT.json";
+import NFTMarket from "../../abis/NFTMarket.json";
+import axios from "axios";
+import { DEFAULT_PROVIDER, HEADER } from "../../constant";
+import NFTMarketLayer1 from "../../abis/NFTMarketLayer1.json";
 
 const Discover = (props) => {
-  const size = useWindowSize();
 
   const [collections, setCollections] = useState([]);
   const [nfts, setNfts] = useState([]);
@@ -76,9 +89,9 @@ const Discover = (props) => {
     { id: 11, name: "NFT 11" },
     { id: 12, name: "NFT 12" },
   ]);
+  const size = useWindowSize();
   const [scrollTop, setScrollTop] = useState();
   const [scrolling, setScrolling] = useState();
-  const [, setShowMenu] = useState(props.showMenu);
   const [collectionParams, setCollectionParams] = useState({
     page: 1,
     sortBy: "volumeTrade",
@@ -101,6 +114,75 @@ const Discover = (props) => {
       if(isSelected){
         if(collections.length == 0) {
           const collectionData = await (await getCollections(collectionParams)).data;
+    
+          // Old to new contract migration of NFTs function
+          {
+            /*
+            // const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
+            // const marketContract = new xdc3.eth.Contract(
+            //   NFTMarketLayer1.abi,
+            //   nftmarketlayeraddress,
+            //   xdc3
+            // );
+            // const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
+            // const oldMarketContract = new xdc3.eth.Contract(
+            //   NFTMarket.abi,
+            //   nftmarketaddress,
+            //   xdc3
+            // );
+            // const data2 = await oldMarketContract.methods.idToMarketItem(1124).call()
+            // console.log(data2)
+            // var eventCount = data2.eventCount
+            // var events = []
+            // for(var i = 1; i <= eventCount; i++) {
+            //   var event = await oldMarketContract.methods.getEventHistory(data2.itemId, i).call()
+            //   if(event.timestamp >= 1648900000) {
+            //       const uri = await nftContract.methods.tokenURI(data2.tokenId).call()
+            //       var metadata = await axios.get(uri)
+            //       console.log(data2, event, metadata?.data?.collection?.nft?.name, metadata?.data?.collection?.name)
+                  // let data = marketContract.methods.addEventsToItem(
+                  //     data2.tokenId,
+                  //     i,
+                  //     event.eventType,
+                  //     event.from,
+                  //     event.to,
+                  //     event.price,
+                  //     event.timestamp
+                  // ).encodeABI()
+                  // const wallet = await GetWallet();
+                  // const tx = {
+                  //     from: wallet.wallet.address,
+                  //     to: nftmarketlayeraddress,
+                  //     data
+                  // }
+                  // var gasLimit = await xdc3.eth.estimateGas(tx)
+                  // tx["gas"] = gasLimit
+                  // let transaction = SendTransaction(tx)
+                  // let data = marketContract.methods.editMarketItem(
+                  //     data2.tokenId,
+                  //     data2.itemId,
+                  //     data2.owner,
+                  //     data2.creator,
+                  //     data2.price,
+                  //     data2.isListed,
+                  //     data2.royalty,
+                  //     data2.eventCount,
+                  //     0,
+                  //     metadata?.data?.collection?.nft?.name,
+                  //     metadata?.data?.collection?.name,
+                  // ).encodeABI()
+                  // const tx = {
+                  //     from: wallet.wallet.address,
+                  //     to: nftmarketlayeraddress,
+                  //     data
+                  // }
+                  // var gasLimit = await xdc3.eth.estimateGas(tx)
+                  // tx["gas"] = gasLimit
+                  // let transaction = await SendTransaction(tx);
+            //   }
+            // }
+          */
+          }
     
           setCollections(collectionData.collections);
           setTotalCollections(collectionData.collectionsAmount);
@@ -215,30 +297,11 @@ const Discover = (props) => {
     setLoading(false);
   };
 
-  /**
-   * React Hook re-render when the Collection/NFT switch is toggled
-   */
   useEffect(() => {
     window.scrollTo(0, 0);
     setLoading(true);
     getData();
   }, [isSelected]);
-
-  /**
-   * Scroll listeners to close the menu on scroll
-   */
-   useEffect(() => {
-    const onScroll = (e) => {
-      setScrollTop(e.target.documentElement.scrollTop);
-      setScrolling(e.target.documentElement.scrollTop > scrollTop);
-      setShowMenu(false);
-    };
-    window.addEventListener("scroll", onScroll);
-
-    return () => window.removeEventListener("scroll", onScroll);
-  }, [scrollTop]);
-
-  useEffect(() => {}, [scrolling]);
 
   return (
     <DiscoverSection id="scrollableDiv">

@@ -1,11 +1,10 @@
-import React, { 
-  useEffect, 
-  useState 
-} from "react";
+import React, { useEffect, useMemo } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import {
   VStack,
   HStack,
+  Spacer,
   ZItem,
   ZStack,
   IconImg,
@@ -14,21 +13,19 @@ import {
   BodyBold,
   BodyRegular,
   CaptionBoldShort,
+  TitleBold18,
   TitleBold27,
   TitleRegular27,
 } from "../../styles/TextStyles";
 import { appStyle } from "../../styles/AppStyles";
-import { 
-  AnimatePresence, 
-  motion 
-} from "framer-motion/dist/framer-motion";
+import { AnimatePresence, motion } from "framer-motion/dist/framer-motion";
 import DiscoverBar from "../../images/DiscoverBar.png";
 import { SortButtonCollections } from "../../styles/SortButtonCollections";
 import useWindowSize from "../../styles/useWindowSize";
 import { FiltersButton } from "../../styles/FiltersButton";
 import { SortButtonNFTS } from "../../styles/SortButtonNFTS";
 import noResult from "../../images/noResult.png";
-import { useLocation } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { getCollections } from "../../API/Collection";
 import { getNFTs } from "../../API/NFT";
 import { LoopLogo } from "../../styles/LoopLogo";
@@ -45,12 +42,9 @@ function SearchPage(props) {
   const size = useWindowSize();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-
   const [searchTerm, setSearchTerm] = useState(searchParams.get("searchTerm"));
   const [isSelected, setIsSelected] = useState(
-    searchParams.get("mode") === "nft" 
-      ? false 
-      : true
+    searchParams.get("mode") === "nft" ? false : true
   );
   const [collectionData, setCollectionData] = useState([]);
   const [totalCollections, setTotalCollections] = useState(0);
@@ -68,11 +62,6 @@ function SearchPage(props) {
   const [newResults, setNewResults] = useState(true);
   const [maxPrice, setMaxPrice] = useState(0);
 
-  /**
-   * Get a list of collections
-   * 
-   * @param {*} params the collection parameters for filtering
-   */
   const getCollectionData = async (params) => {
     const collectionResults = await (await getCollections(params)).data;
     setCollectionData(collectionResults.collections);
@@ -85,9 +74,6 @@ function SearchPage(props) {
     }));
   };
 
-  /**
-   * Get the next page of collections
-   */
   const fetchMoreCollections = async () => {
     const collectionResults = await (
       await getCollections(collectionParams)
@@ -109,11 +95,6 @@ function SearchPage(props) {
     updateCollections(params);
   };
 
-  /**
-   * Update the list of collections with the new parameters
-   * 
-   * @param {*} params the collection filter parameters
-   */
   const updateCollections = async (params) => {
     setLoading(true);
     const collectionResults = await (await getCollections(params)).data;
@@ -126,14 +107,8 @@ function SearchPage(props) {
     setLoading(false);
   };
 
-  /**
-   * Get a list of NFTs
-   * 
-   * @param {*} params the NFT parameters for filtering
-   */
   const getNFTData = async (params) => {
     const nftResults = await (await getNFTs(params)).data;
-
     setMaxPrice(nftResults.higherPrice);
     setNftData(nftResults.nfts);
     setTotalNFTs(nftResults.nftsAmount);
@@ -187,9 +162,6 @@ function SearchPage(props) {
     setLoading(false);
   };
 
-  /**
-   * React Hook to re-render the component when the search term is updated
-   */
   useEffect(async () => {
     setLoading(true);
     if (isSelected) {

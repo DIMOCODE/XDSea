@@ -34,8 +34,6 @@ function HowToStart() {
       </HStack>
       <ContentHowTo>
         <VStack padding="30px 30px">
-
-          {/* Step 1 */}
           <HStack
             spacing="0px"
             height={size.width < 768 ? "auto" : "auto"}
@@ -182,8 +180,6 @@ function HowToStart() {
               <IconImg url={Step3} width="390px" height="390px"></IconImg>
             </VStack>
           </HStack>
-
-          {/* Step 4 */}
           <HStack
             spacing="0px"
             height={size.width < 768 ? "auto" : "auto"}

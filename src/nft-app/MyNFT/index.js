@@ -1,15 +1,21 @@
-import React, { 
-  useEffect, 
-  useState 
-} from "react";
-import { useParams } from "react-router-dom";
-import { nftaddress } from "../../config";
+import React, { useEffect, useState, useContext } from "react";
+import { useHistory, useParams } from "react-router-dom";
+import Xdc3 from "xdc3";
+import { nftaddress, nftmarketlayeraddress } from "../../config";
+import { DEFAULT_PROVIDER, HEADER, LS_ROOT_KEY, LS } from "../../constant";
+import NFT from "../../abis/NFT.json";
 import { AnimatePresence } from "framer-motion/dist/framer-motion";
 import { LoopLogo } from "../../styles/LoopLogo";
+import { deletedCollections, verifiedProfiles } from "../../blacklist";
 import emptyCollection from "../../images/emptyCollection.png";
 import emptyNFT from "../../images/emptyNFT.png";
+
+import axios from "axios";
+import NFTMarketLayer1 from "../../abis/NFTMarketLayer1.json";
+import { burnedNFTs } from "../../blacklist";
 import copyIcon from "../../images/copyAddress.png";
 import verified from "../../images/verified.png";
+
 import styled from "styled-components";
 import {
   HStack,
@@ -26,6 +32,7 @@ import {
   TitleBold15,
   TitleBold18,
   CaptionBoldShort,
+  CaptionSmallRegular,
 } from "../../styles/TextStyles";
 import xdcLogo from "../../images/miniXdcLogo.png";
 import useWindowSize from "../../styles/useWindowSize";
@@ -34,23 +41,18 @@ import { appStyle } from "../../styles/AppStyles";
 import { BubbleCopied } from "../../styles/BubbleCopied";
 import ReactPlayer from "react-player";
 import InfiniteScroll from "react-infinite-scroll-component";
+import CID from "cids";
 import { getNFTs } from "../../API/NFT";
 import { getCollections } from "../../API/Collection";
 import { isSafari } from "../../common/common";
 import { getUser } from "../../API/User";
-import {
-  isImage,
-  isVideo,
-  isAudio
-} from "../../common";
 
 const MyNFT = (props) => {
   const { userId } = useParams();
-  const size = useWindowSize();
-
   const [collections, setCollections] = useState([]);
   const [nfts, setNfts] = useState([]);
   const [totalNfts, setTotalNfts] = useState(0);
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [loadingCollection, setLoadingCollection] = useState(false);
   const [user, setUser] = useState({});
@@ -59,13 +61,9 @@ const MyNFT = (props) => {
     page: 1, 
     userId: userId
   });
-  const [collectionParams, ] = useState({
+  const [collectionParams, setCollectionParams] = useState({
     userId: userId
-  });
-  const [subMenu, setSubMenu] = useState(0);
-  const [, setShowMenu] = useState(props.showMenu);
-  const [scrollTop, setScrollTop] = useState();
-  const [scrolling, setScrolling] = useState();
+  })
 
   /**
    * Get the owned collections of the user
@@ -115,20 +113,20 @@ const MyNFT = (props) => {
     });
   };
 
-  /**
-   * Truncate the string to the specified number of characters
-   * 
-   * @param {string} str the string to be truncated
-   * @param {number} n the maximum number of characters to include
-   * @returns the truncated string
-   */
-  const truncate = (str, n) => {
-    return str?.length > n ? str.substr(0, n - 1) + "..." : str;
+  const isImage = (fileType) => {
+    return !!fileType?.match("image.*");
   };
 
-  /**
-   * React Hook to re-render the component when the userId state changes
-   */
+  const isVideo = (fileType) => {
+    return !!fileType?.match("video.*");
+  };
+
+  const isAudio = (fileType) => {
+    return !!fileType?.match("audio.*");
+  };
+
+  const [subMenu, setSubMenu] = useState(0);
+
   useEffect(() => {
     window.scrollTo(0, 0);
     setSubMenu(0);
@@ -136,9 +134,16 @@ const MyNFT = (props) => {
     getOwnedNFTs();
   }, [userId]);
 
-  /**
-   * Scroll listeners to close the menu on scroll
-   */
+  const size = useWindowSize();
+
+  const truncate = (str, n) => {
+    return str?.length > n ? str.substr(0, n - 1) + "..." : str;
+  };
+
+  const [, setShowMenu] = useState(props.showMenu);
+  const [scrollTop, setScrollTop] = useState();
+  const [scrolling, setScrolling] = useState();
+
   useEffect(() => {
     const onScroll = (e) => {
       setScrollTop(e.target.documentElement.scrollTop);

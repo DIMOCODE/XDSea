@@ -19,11 +19,9 @@ export const HEADER = {
   ],
 };
 
-{/* HTTP Provider for connecting to the blockchain */}
 export const DEFAULT_PROVIDER = HTTP_PROVIDER[50];
 export const NETWORK_NAME = NETWORK_DICT[50];
 
-{/* Local Storage Encrypted Cookie Storage */}
 export const LS = new SecureLS({
   encodingType: "rabbit",
   isCompression: true,
