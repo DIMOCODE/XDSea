@@ -425,6 +425,16 @@ function Collection(props) {
                             </VStack>
                           )}
                         </HStack>
+
+                        {/* <ButtonApp
+                          height="39px"
+                          background={appStyle.colors.blue}
+                          text="Visit Collection"
+                          textcolor={appStyle.colors.white}
+                          onClick={onClickCollection}
+                          cursor={"pointer"}
+                          btnStatus={0}
+                        ></ButtonApp> */}
                       </VStack>
                     </VStack>
                   </VStack>

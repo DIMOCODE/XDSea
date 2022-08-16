@@ -75,7 +75,7 @@ function SortButtonNFTS(props) {
                   ? "Highest Price"
                   : "Lowest Price"
                 : isSelected === 2
-                ? "Most Relevance"
+                  ? "Most Relevance"
                 : isSelected === 3
                 ? isTopOffer
                   ? "Most Offers"
@@ -109,52 +109,55 @@ function SortButtonNFTS(props) {
             spacing="9px"
           >
             {/* Relevance */}
-            {isSearchPage ? (
-              <VStack
-                minheight="49px"
-                background={({ theme }) => theme.faded}
-                border="6px"
-                spacing="6px"
-                onClick={() => {
-                  setIsSelected(2);
-                }}
-                padding="3px"
-                width="100%"
-              >
-                {/* Option1  */}
-                <HStack
-                  background={
-                    isSelected === 2 ? ({ theme }) => theme.blue : "transparent"
-                  }
-                  width="100%"
+            {isSearchPage
+              ? 
+                <VStack
+                  minheight="49px"
+                  background={({ theme }) => theme.faded}
+                  // background={isSelected === 1 ? "green" : "yellow"}
                   border="6px"
-                  cursor="pointer"
-                  height="43px"
+                  spacing="6px"
                   onClick={() => {
-                    onChange({
-                      ...params,
-                      page: 1,
-                      sortBy: "relevance",
-                      sortDirection: 1,
-                    });
+                    setIsSelected(2);
                   }}
+                  padding="3px"
+                  width="100%"
                 >
-                  <BodyRegular
-                    cursor="pointer"
-                    textcolor={
-                      isSelected === 2 ? "white" : ({ theme }) => theme.text
+                  {/* Option1  */}
+                  <HStack
+                    background={
+                      isSelected === 2
+                        ? ({ theme }) => theme.blue
+                        : "transparent"
                     }
+                    width="100%"
+                    border="6px"
+                    cursor="pointer"
+                    height="43px"
+                    onClick={() => {
+                      onChange({...params, page: 1, sortBy: "relevance", sortDirection: 1});
+                    }}
                   >
-                    Most Relevance
-                  </BodyRegular>
-                </HStack>
-              </VStack>
-            ) : null}
+                    <BodyRegular
+                      cursor="pointer"
+                      textcolor={
+                        isSelected === 2
+                          ? "white"
+                          : ({ theme }) => theme.text
+                      }
+                    >
+                      Most Relevance
+                    </BodyRegular>
+                  </HStack>
+                </VStack>
+              : null
+            }
 
             {/* Publication */}
             <HStack
               height="49px"
               background={({ theme }) => theme.faded}
+              // background={isSelected === 0 ? "green" : "yellow"}
               border="6px"
               spacing="6px"
               onClick={() => {
@@ -176,12 +179,7 @@ function SortButtonNFTS(props) {
                 cursor="pointer"
                 onClick={() => {
                   setIsOld(true);
-                  onChange({
-                    ...params,
-                    page: 1,
-                    sortBy: "publication",
-                    sortDirection: 1,
-                  });
+                  onChange({...params, page: 1, sortBy: "publication", sortDirection: 1});
                 }}
               >
                 <BodyRegular
@@ -212,12 +210,7 @@ function SortButtonNFTS(props) {
                 }
                 onClick={() => {
                   setIsOld(false);
-                  onChange({
-                    ...params,
-                    page: 1,
-                    sortBy: "publication",
-                    sortDirection: -1,
-                  });
+                  onChange({...params, page: 1, sortBy: "publication", sortDirection: -1});
                 }}
               >
                 <BodyRegular
@@ -239,6 +232,7 @@ function SortButtonNFTS(props) {
             <HStack
               height="49px"
               background={({ theme }) => theme.faded}
+              // background={isSelected === 1 ? "green" : "yellow"}
               border="6px"
               spacing="6px"
               onClick={() => {
@@ -260,12 +254,7 @@ function SortButtonNFTS(props) {
                 cursor="pointer"
                 onClick={() => {
                   setIsTopPrice(true);
-                  onChange({
-                    ...params,
-                    page: 1,
-                    sortBy: "price",
-                    sortDirection: -1,
-                  });
+                  onChange({...params, page: 1, sortBy: "price", sortDirection: -1});
                 }}
               >
                 <BodyRegular
@@ -296,12 +285,7 @@ function SortButtonNFTS(props) {
                 }
                 onClick={() => {
                   setIsTopPrice(false);
-                  onChange({
-                    ...params,
-                    page: 1,
-                    sortBy: "price",
-                    sortDirection: 1,
-                  });
+                  onChange({...params, page: 1, sortBy: "price", sortDirection: 1});
                 }}
               >
                 <BodyRegular
@@ -323,6 +307,7 @@ function SortButtonNFTS(props) {
             <VStack
               minheight="98px"
               background={({ theme }) => theme.faded}
+              // background={isSelected === 1 ? "green" : "yellow"}
               border="6px"
               spacing="6px"
               onClick={() => {
@@ -346,12 +331,7 @@ function SortButtonNFTS(props) {
                 height="43px"
                 onClick={() => {
                   setIsTopOffer(true);
-                  onChange({
-                    ...params,
-                    page: 1,
-                    sortBy: "offersAmount",
-                    sortDirection: -1,
-                  });
+                  onChange({...params, page: 1, sortBy: "offersAmount", sortDirection: -1});
                 }}
               >
                 <BodyRegular
@@ -382,12 +362,7 @@ function SortButtonNFTS(props) {
                 }
                 onClick={() => {
                   setIsTopOffer(false);
-                  onChange({
-                    ...params,
-                    page: 1,
-                    sortBy: "offersAmount",
-                    sortDirection: 1,
-                  });
+                  onChange({...params, page: 1, sortBy: "offersAmount", sortDirection: 1});
                 }}
                 height="43px"
               >
@@ -410,6 +385,7 @@ function SortButtonNFTS(props) {
             <HStack
               height="49px"
               background={({ theme }) => theme.faded}
+              // background={isSelected === 1 ? "green" : "yellow"}
               border="6px"
               spacing="6px"
               onClick={() => {
@@ -431,12 +407,7 @@ function SortButtonNFTS(props) {
                 cursor="pointer"
                 onClick={() => {
                   setIsAtoZ(true);
-                  onChange({
-                    ...params,
-                    page: 1,
-                    sortBy: "alphabetical",
-                    sortDirection: 1,
-                  });
+                  onChange({...params, page: 1, sortBy: "alphabetical", sortDirection: 1});
                 }}
               >
                 <BodyRegular
@@ -467,12 +438,7 @@ function SortButtonNFTS(props) {
                 }
                 onClick={() => {
                   setIsAtoZ(false);
-                  onChange({
-                    ...params,
-                    page: 1,
-                    sortBy: "alphabetical",
-                    sortDirection: -1,
-                  });
+                  onChange({...params, page: 1, sortBy: "alphabetical", sortDirection: -1});
                 }}
               >
                 <BodyRegular
