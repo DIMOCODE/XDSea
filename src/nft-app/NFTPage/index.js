@@ -459,6 +459,7 @@ const NFTDetails = (props) => {
 
   const getData = async () => {
     try {
+
       // Update payout addresses of NFTs function
 
       // const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
@@ -468,7 +469,7 @@ const NFTDetails = (props) => {
       //     nftmarketlayeraddress,
       //     xdc3
       //   );
-
+      
       // const data2 = await marketContract.methods.idToMarketItem(2689).call()
       // var item = await marketContract.methods.getTokenEventHistory(2689).call();
       // const weiprice = await xdc3.utils.toWei("20", "ether");
@@ -534,7 +535,7 @@ const NFTDetails = (props) => {
         collectionNickName: nftData.nft.collectionId.nickName,
       };
 
-      console.log(nftData.nft.urlFile.v1);
+      console.log(nftData.nft.urlFile.v1)
       const requestData = await Promise.all(
         [1, 2, 3].map(async (i) => {
           if (i == 1) {
@@ -1057,6 +1058,7 @@ const NFTDetails = (props) => {
                         width="100%"
                         height="540px"
                         border="15px"
+                        // background={({ theme }) => theme.backElement}
                         background="black"
                         overflow="hidden"
                         cursor="pointer"
@@ -1243,6 +1245,16 @@ const NFTDetails = (props) => {
             <VStack width="100%" padding="21px 12px">
               {/* NFT Description Tabs */}
               <HStack height="60px" justify="flex-start">
+                {/* {propertyProportions[0]?.property === "" ? null : (
+                      <TitleBold18
+                        animate={isActive === 0 ? "selected" : "normal"}
+                        variants={variants}
+                        onClick={() => setIsActive(0)}
+                        cursor="pointer"
+                      >
+                        Description
+                      </TitleBold18>
+                    )} */}
                 <TitleBold18
                   animate={isActive === 1 ? "selected" : "normal"}
                   variants={variants}
@@ -1282,6 +1294,9 @@ const NFTDetails = (props) => {
                               spacing="6px"
                               width="100%"
                               justify="flex-start"
+                              // padding={
+                              //   size.width < 768 ? "0 0 12px 15px" : "5px"
+                              // }
                             >
                               {nft?.properties?.length !== 0
                                 ? nft?.properties.map((property, index) => (
@@ -1595,7 +1610,7 @@ const NFTDetails = (props) => {
                 </HStack>
               </VStack>
 
-              {/* Buttons for interacting with NFT */}
+              {/* Buttons */}
               <HStack>
                 {wallet?.connected ? (
                   nft?.isListed ? (
@@ -1732,7 +1747,6 @@ const NFTDetails = (props) => {
           </HStack>
 
           <VStack width="100%" padding="15px 12px">
-            {/* Offers Table */}
             <TitleBold27>Offers</TitleBold27>
             <HStack
               width="100%"
@@ -1872,9 +1886,16 @@ const NFTDetails = (props) => {
             </HStack>
           </VStack>
           <VStack width="100%" padding="15px 12px">
-            {/* Activity Table */}
             <TitleBold27>Activity</TitleBold27>
-
+            {/* <VStack
+              width="100%"
+              overflowx={size.width < 768 ? "scroll" : "visible"}
+              overflowy="auto"
+              justify="flex-start"
+              height="300px"
+              background={({ theme }) => theme.backElement}
+              border="12px"
+            > */}
             <VStack
               maxwidth={size.width < 768 ? "360px" : "100%"}
               overflowy="scroll"
@@ -1928,9 +1949,6 @@ const NFTDetails = (props) => {
               </VStack>
             </VStack>
           </VStack>
-
-          {/* More from this collection sections */}
-
           <VStack width="100%" alignment="flex">
             <TitleBold27 align="center">More from this Collection</TitleBold27>
 

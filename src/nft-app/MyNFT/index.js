@@ -72,7 +72,7 @@ const MyNFT = (props) => {
           name: item.name,
           nftCount: item.totalNfts,
           nfts: item.nfts,
-          nickName: item.nickName,
+          nickName: item.nickName
         };
 
         return collection;
@@ -84,7 +84,7 @@ const MyNFT = (props) => {
   };
 
   const getOwnedNFTs = async () => {
-    setLoading(true);
+    setLoading(true);    
     const requestData = await Promise.all(
       [1, 2].map(async (i) => {
         if (i === 1) {
@@ -106,7 +106,7 @@ const MyNFT = (props) => {
                   ? item.collectionId.logo.v1
                   : item.collectionId.logo.v0,
                 fileType: item.fileType,
-                hasOpenOffer: item.hasOpenOffer,
+                hasOpenOffer: item.hasOpenOffer
               };
 
               return nft;
@@ -124,9 +124,7 @@ const MyNFT = (props) => {
   };
 
   const fetchMoreNFTs = async () => {
-    const nftData = await (
-      await getNFTs({ pageSize: 15, page: page, userId: userId })
-    ).data;
+    const nftData = await (await getNFTs({ pageSize: 15, page: page, userId: userId })).data;
 
     const nftList = await Promise.all(
       nftData.nfts.map(async (item) => {
@@ -200,7 +198,6 @@ const MyNFT = (props) => {
     <UserSection>
       <Content id="scrollableDiv">
         <VStack spacing="36px" width="100%">
-          {/* Account information  */}
           <VStack>
             <VStack direction={size.width < 768 ? "row" : "column"}>
               <VStack>
@@ -236,11 +233,56 @@ const MyNFT = (props) => {
                   address={user.XDCWallets ? user.XDCWallets[0] : ""}
                   icon={copyIcon}
                 ></BubbleCopied>
+                {/* <CaptionBoldShort textcolor={({ theme }) => theme.text}>
+                  Joined 31 March 22
+                </CaptionBoldShort> */}
               </VStack>
             </VStack>
+            {/* <HStack
+                spacing="6px"
+                padding="6px 12px"
+                background={({ theme }) => theme.backElement}
+                border="9px"
+            >
+                <IconImg
+                    url={instagramMini}
+                    width="18px"
+                    height="18px"
+                ></IconImg>
+                <Spacer></Spacer>
+                <CaptionBoldShort textcolor={({ theme }) => theme.text}>
+                    @azuki_team3667
+                </CaptionBoldShort>
+                <Spacer></Spacer>
+            </HStack> */}
+            {/* <HStack
+                spacing="6px"
+                padding="6px 12px"
+                background={({ theme }) => theme.backElement}
+                border="9px"
+            >
+                <IconImg url={linkMini} width="18px" height="18px"></IconImg>
+                <Spacer></Spacer>
+                <CaptionBoldShort textcolor={({ theme }) => theme.text}>
+                    azuki.com
+                </CaptionBoldShort>
+                <Spacer></Spacer>
+            </HStack> */}
+            {/* <HStack
+                spacing="6px"
+                padding="6px 12px"
+                background={({ theme }) => theme.backElement}
+                border="9px"
+            >
+                <IconImg url={twitterMini} width="18px" height="18px"></IconImg>
+                <Spacer></Spacer>
+                <CaptionBoldShort textcolor={({ theme }) => theme.text}>
+                    @azuki77288
+                </CaptionBoldShort>
+                <Spacer></Spacer>
+            </HStack> */}
           </VStack>
 
-          {/* Creator buttons  Owned NFTs or Created Collections */}
           <VStack
             maxwidth={size.width < 768 ? "100%" : "70%"}
             minwidth={size.width < 768 ? "100%" : "70%"}
@@ -276,10 +318,47 @@ const MyNFT = (props) => {
                 cursor={"pointer"}
                 btnStatus={0}
               ></ButtonApp>
+
+              {/* <ButtonApp
+                background={
+                  subMenu === 2
+                    ? ({ theme }) => theme.backElement
+                    : "transparent"
+                }
+                textcolor={({ theme }) => theme.text}
+                text="Offers Received"
+                height="39px"
+                onClick={() => setSubMenu(2)}
+                cursor={"pointer"}
+                btnStatus={0}
+              ></ButtonApp>
+
+              <ButtonApp
+                background={
+                  subMenu === 3
+                    ? ({ theme }) => theme.backElement
+                    : "transparent"
+                }
+                textcolor={({ theme }) => theme.text}
+                text="Offers Placed"
+                height="39px"
+                onClick={() => setSubMenu(3)}
+                cursor={"pointer"}
+                btnStatus={0}
+              ></ButtonApp> */}
+
+              {/* <BodyBold textcolor={({ theme }) => theme.text}>Like</BodyBold>
+                <BodyBold textcolor={({ theme }) => theme.text}>
+                    Following
+                </BodyBold>
+                <HStack cursor={"pointer"} onClick={() => setSubMenu(1)}>
+                    <BodyBold textcolor={({ theme }) => theme.text}>
+                        Activity
+                    </BodyBold>
+                </HStack> */}
             </HStack>
           </VStack>
 
-          {/* Content of result of filtering Owned or Created Collections */}
           <AnimatePresence>
             <ZStack>
               {subMenu === 0 && (
@@ -333,22 +412,25 @@ const MyNFT = (props) => {
                             }}
                           >
                             <ZStack cursor={"pointer"}>
-                              {item.hasOpenOffer ? (
-                                <BubbleOffers>
-                                  <HStack
-                                    background="linear-gradient(180deg, #FF5A5A 0%, rgba(255, 90, 90, 0.88) 100%)"
-                                    width="26px"
-                                    height="26px"
-                                    border="300px"
-                                    padding="0 6px"
-                                    spacing="6px"
-                                  >
-                                    <CaptionBoldShort textcolor="white">
-                                      !
-                                    </CaptionBoldShort>
-                                  </HStack>
-                                </BubbleOffers>
-                              ) : null}
+                              {item.hasOpenOffer ? 
+                              <BubbleOffers>
+                                <HStack
+                                  background="linear-gradient(180deg, #FF5A5A 0%, rgba(255, 90, 90, 0.88) 100%)"
+                                  width="26px"
+                                  height="26px"
+                                  border="300px"
+                                  padding="0 6px"
+                                  spacing="6px"
+                                >
+                                  {/* <CaptionSmallRegular textcolor="white">
+                                    Offer
+                                  </CaptionSmallRegular> */}
+                                  <CaptionBoldShort textcolor="white">
+                                    !
+                                  </CaptionBoldShort>
+                                </HStack>
+                              </BubbleOffers>
+                              : null}
                               <ZItem
                                 backgroundimage={
                                   isAudio(item.fileType) ? item.preview : null
@@ -586,6 +668,108 @@ const MyNFT = (props) => {
                 </VStack>
               )}
             </ZStack>
+
+            {/* {subMenu === 2 && (
+                <VStack
+                width="100%"
+                padding="15px 30px"
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                >
+                <HStack
+                    width="100%"
+                    overflowx={size.width < 768 ? "scroll" : "visible"}
+                    overflowy={size.width < 768 ? "hidden" : "visible"}
+                    justify="flex-start"
+                >
+                    <VStack
+                    width={size.width < 768 ? "690px" : "100%"}
+                    spacing="0px"
+                    background={({ theme }) => theme.backElement}
+                    padding="9px"
+                    border="9px"
+                    >
+                    <TableUserProfile
+                        imageBuyer={banner1}
+                        offerBy="Team Woman"
+                        offerTime="Today 9:00 am"
+                        offerAmount="3200"
+                        collectionName="Elite Collection"
+                        nftName="Alice #003"
+                        nftImage={banner1}
+                        isPlaced={false}
+                        rejectOffer=""
+                        acceptOffer=""
+                    ></TableUserProfile>
+                    <Divider></Divider>
+                    <TableUserProfile
+                        imageBuyer={banner1}
+                        offerBy="Team Woman"
+                        offerTime="Today 9:00 am"
+                        offerAmount="3200"
+                        collectionName="Elite Collection"
+                        nftName="Alice #003"
+                        nftImage={banner1}
+                        isPlaced={false}
+                        rejectOffer=""
+                        acceptOffer=""
+                    ></TableUserProfile>
+                    </VStack>
+                </HStack>
+                </VStack>
+            )}
+            {subMenu === 3 && (
+                <VStack
+                width="100%"
+                padding="15px 30px"
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                >
+                <HStack
+                    width="100%"
+                    overflowx={size.width < 768 ? "scroll" : "visible"}
+                    overflowy={size.width < 768 ? "hidden" : "visible"}
+                    justify="flex-start"
+                >
+                    <VStack
+                    width={size.width < 768 ? "690px" : "100%"}
+                    spacing="0px"
+                    background={({ theme }) => theme.backElement}
+                    padding="9px"
+                    border="9px"
+                    >
+                    <TableUserProfile
+                        imageBuyer={banner1}
+                        offerBy="Team Woman"
+                        offerTime="Today 10:00 am"
+                        offerAmount="3600"
+                        collectionName="Elite Collection"
+                        nftName="Alice #003"
+                        nftImage={banner1}
+                        isPlaced={true}
+                        isRejected={true}
+                        onClickRejected=""
+                        onClickWithdraw=""
+                    ></TableUserProfile>
+                    <Divider></Divider>
+
+                    <TableUserProfile
+                        imageBuyer={banner1}
+                        offerBy="Team Woman"
+                        offerTime="Today 9:00 am"
+                        offerAmount="3200"
+                        collectionName="Elite Collection"
+                        nftName="Alice #003"
+                        nftImage={banner1}
+                        isPlaced={true}
+                        isRejected={false}
+                        onClickRejected=""
+                        onClickWithdraw=""
+                    ></TableUserProfile>
+                    </VStack>
+                </HStack>
+                </VStack>
+            )} */}
           </AnimatePresence>
         </VStack>
       </Content>

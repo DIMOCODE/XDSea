@@ -19,7 +19,7 @@ import { useClickAway } from "react-use";
 import useWindowSize from "./useWindowSize";
 
 function SortButtonCollections(props) {
-  const { onChange, params, isSearchPage } = props;
+  const {onChange, params, isSearchPage} = props;
   const ref = useRef(null);
   useClickAway(ref, () => {
     setIsActive(false);
@@ -91,8 +91,9 @@ function SortButtonCollections(props) {
                   ? "A to Z"
                   : "Z to A"
                 : isSelected === 6
-                ? "Most Relevance"
-                : null}
+                  ? "Most Relevance"
+                  : null
+                }
             </BodyBold>
           )}
 
@@ -108,7 +109,7 @@ function SortButtonCollections(props) {
         </HStack>
       </VStack>
       {isActive && (
-        <DropDown>
+        <DropDown> 
           <VStack
             background={({ theme }) => theme.backElement}
             border="9px"
@@ -117,52 +118,55 @@ function SortButtonCollections(props) {
             spacing="9px"
           >
             {/* Relevance */}
-            {isSearchPage ? (
-              <VStack
-                minheight="49px"
-                background={({ theme }) => theme.faded}
-                border="6px"
-                spacing="6px"
-                onClick={() => {
-                  setIsSelected(6);
-                }}
-                padding="3px"
-                width="100%"
-              >
-                {/* Option1  */}
-                <HStack
-                  background={
-                    isSelected === 6 ? ({ theme }) => theme.blue : "transparent"
-                  }
-                  width="100%"
+            {isSearchPage
+              ? 
+                <VStack
+                  minheight="49px"
+                  background={({ theme }) => theme.faded}
+                  // background={isSelected === 1 ? "green" : "yellow"}
                   border="6px"
-                  cursor="pointer"
-                  height="43px"
+                  spacing="6px"
                   onClick={() => {
-                    onChange({
-                      ...params,
-                      page: 1,
-                      sortBy: "relevance",
-                      sortDirection: 1,
-                    });
+                    setIsSelected(6);
                   }}
+                  padding="3px"
+                  width="100%"
                 >
-                  <BodyRegular
-                    cursor="pointer"
-                    textcolor={
-                      isSelected === 6 ? "white" : ({ theme }) => theme.text
+                  {/* Option1  */}
+                  <HStack
+                    background={
+                      isSelected === 6
+                        ? ({ theme }) => theme.blue
+                        : "transparent"
                     }
+                    width="100%"
+                    border="6px"
+                    cursor="pointer"
+                    height="43px"
+                    onClick={() => {
+                      onChange({...params, page: 1, sortBy: "relevance", sortDirection: 1});
+                    }}
                   >
-                    Most Relevance
-                  </BodyRegular>
-                </HStack>
-              </VStack>
-            ) : null}
+                    <BodyRegular
+                      cursor="pointer"
+                      textcolor={
+                        isSelected === 6
+                          ? "white"
+                          : ({ theme }) => theme.text
+                      }
+                    >
+                      Most Relevance
+                    </BodyRegular>
+                  </HStack>
+                </VStack>
+              : null
+            }
 
             {/* Publication */}
             <HStack
               height="49px"
               background={({ theme }) => theme.faded}
+              // background={isSelected === 0 ? "green" : "yellow"}
               border="6px"
               spacing="6px"
               onClick={() => {
@@ -184,12 +188,7 @@ function SortButtonCollections(props) {
                 cursor="pointer"
                 onClick={() => {
                   setIsOld(true);
-                  onChange({
-                    ...params,
-                    page: 1,
-                    sortBy: "publication",
-                    sortDirection: 1,
-                  });
+                  onChange({...params, page: 1, sortBy: "publication", sortDirection: 1});
                 }}
               >
                 <BodyRegular
@@ -220,12 +219,7 @@ function SortButtonCollections(props) {
                 }
                 onClick={() => {
                   setIsOld(false);
-                  onChange({
-                    ...params,
-                    page: 1,
-                    sortBy: "publication",
-                    sortDirection: -1,
-                  });
+                  onChange({...params, page: 1, sortBy: "publication", sortDirection: -1});
                 }}
               >
                 <BodyRegular
@@ -247,6 +241,7 @@ function SortButtonCollections(props) {
             <HStack
               height="49px"
               background={({ theme }) => theme.faded}
+              // background={isSelected === 1 ? "green" : "yellow"}
               border="6px"
               spacing="6px"
               onClick={() => {
@@ -268,12 +263,7 @@ function SortButtonCollections(props) {
                 cursor="pointer"
                 onClick={() => {
                   setIsVolumeTop(true);
-                  onChange({
-                    ...params,
-                    page: 1,
-                    sortBy: "volumeTrade",
-                    sortDirection: -1,
-                  });
+                  onChange({...params, page: 1, sortBy: "volumeTrade", sortDirection: -1});
                 }}
               >
                 <BodyRegular
@@ -304,12 +294,7 @@ function SortButtonCollections(props) {
                 }
                 onClick={() => {
                   setIsVolumeTop(false);
-                  onChange({
-                    ...params,
-                    page: 1,
-                    sortBy: "volumeTrade",
-                    sortDirection: 1,
-                  });
+                  onChange({...params, page: 1, sortBy: "volumeTrade", sortDirection: 1});
                 }}
               >
                 <BodyRegular
@@ -331,6 +316,7 @@ function SortButtonCollections(props) {
             <HStack
               height="49px"
               background={({ theme }) => theme.faded}
+              // background={isSelected === 1 ? "green" : "yellow"}
               border="6px"
               spacing="6px"
               onClick={() => {
@@ -352,12 +338,7 @@ function SortButtonCollections(props) {
                 cursor="pointer"
                 onClick={() => {
                   setIsTopOwners(true);
-                  onChange({
-                    ...params,
-                    page: 1,
-                    sortBy: "owners",
-                    sortDirection: -1,
-                  });
+                  onChange({...params, page: 1, sortBy: "owners", sortDirection: -1});
                 }}
               >
                 <BodyRegular
@@ -388,12 +369,7 @@ function SortButtonCollections(props) {
                 }
                 onClick={() => {
                   setIsTopOwners(false);
-                  onChange({
-                    ...params,
-                    page: 1,
-                    sortBy: "owners",
-                    sortDirection: 1,
-                  });
+                  onChange({...params, page: 1, sortBy: "owners", sortDirection: 1});
                 }}
               >
                 <BodyRegular
@@ -415,6 +391,7 @@ function SortButtonCollections(props) {
             <VStack
               minheight="98px"
               background={({ theme }) => theme.faded}
+              // background={isSelected === 1 ? "green" : "yellow"}
               border="6px"
               spacing="6px"
               onClick={() => {
@@ -438,12 +415,7 @@ function SortButtonCollections(props) {
                 height="43px"
                 onClick={() => {
                   setIsTopFloor(true);
-                  onChange({
-                    ...params,
-                    page: 1,
-                    sortBy: "floorPrice",
-                    sortDirection: -1,
-                  });
+                  onChange({...params, page: 1, sortBy: "floorPrice", sortDirection: -1});
                 }}
               >
                 <BodyRegular
@@ -474,12 +446,7 @@ function SortButtonCollections(props) {
                 }
                 onClick={() => {
                   setIsTopFloor(false);
-                  onChange({
-                    ...params,
-                    page: 1,
-                    sortBy: "floorPrice",
-                    sortDirection: 1,
-                  });
+                  onChange({...params, page: 1, sortBy: "floorPrice", sortDirection: 1});
                 }}
                 height="43px"
               >
@@ -502,6 +469,7 @@ function SortButtonCollections(props) {
             <HStack
               height="49px"
               background={({ theme }) => theme.faded}
+              // background={isSelected === 1 ? "green" : "yellow"}
               border="6px"
               spacing="6px"
               onClick={() => {
@@ -523,12 +491,7 @@ function SortButtonCollections(props) {
                 cursor="pointer"
                 onClick={() => {
                   setIsTopQuantity(true);
-                  onChange({
-                    ...params,
-                    page: 1,
-                    sortBy: "nfts",
-                    sortDirection: -1,
-                  });
+                  onChange({...params, page: 1, sortBy: "nfts", sortDirection: -1});
                 }}
               >
                 <BodyRegular
@@ -559,12 +522,7 @@ function SortButtonCollections(props) {
                 }
                 onClick={() => {
                   setIsTopQuantity(false);
-                  onChange({
-                    ...params,
-                    page: 1,
-                    sortBy: "nfts",
-                    sortDirection: 1,
-                  });
+                  onChange({...params, page: 1, sortBy: "nfts", sortDirection: 1});
                 }}
               >
                 <BodyRegular
@@ -586,6 +544,7 @@ function SortButtonCollections(props) {
             <HStack
               height="49px"
               background={({ theme }) => theme.faded}
+              // background={isSelected === 1 ? "green" : "yellow"}
               border="6px"
               spacing="6px"
               onClick={() => {
@@ -607,12 +566,7 @@ function SortButtonCollections(props) {
                 cursor="pointer"
                 onClick={() => {
                   setIsAtoZ(true);
-                  onChange({
-                    ...params,
-                    page: 1,
-                    sortBy: "alphabetical",
-                    sortDirection: 1,
-                  });
+                  onChange({...params, page: 1, sortBy: "alphabetical", sortDirection: 1});
                 }}
               >
                 <BodyRegular
@@ -643,12 +597,7 @@ function SortButtonCollections(props) {
                 }
                 onClick={() => {
                   setIsAtoZ(false);
-                  onChange({
-                    ...params,
-                    page: 1,
-                    sortBy: "alphabetical",
-                    sortDirection: -1,
-                  });
+                  onChange({...params, page: 1, sortBy: "alphabetical", sortDirection: -1});
                 }}
               >
                 <BodyRegular

@@ -170,7 +170,6 @@ const Home = (props) => {
 
   return (
     <Content>
-      {/* Top Section in Home */}
       <HStack width="100%" height="auto" flexwrap="wrap" spacing="9px">
         {/* Main Logo Square */}
         <VStack

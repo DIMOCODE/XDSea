@@ -14,6 +14,8 @@ function Property(props) {
     <VStack
       background={({ theme }) => theme.backElement}
       border="9px"
+      // minwidth="160px"
+      // maxwidth="160px"
       maxwidth={width}
       minwidth={width}
       height="120px"

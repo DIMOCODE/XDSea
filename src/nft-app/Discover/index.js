@@ -209,6 +209,7 @@ const Discover = (props) => {
         // }
       */
       }
+      
 
       // Export Contract data for migration to DB function
       // const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
@@ -496,9 +497,21 @@ const Discover = (props) => {
     getData();
   }, []);
 
+  // useEffect(() => {
+  //   const onScroll = (e) => {
+  //     setScrollTop(e.target.documentElement.scrollTop);
+  //     setScrolling(e.target.documentElement.scrollTop > scrollTop);
+  //     setShowMenu(false);
+  //   };
+  //   window.addEventListener("scroll", onScroll);
+
+  //   return () => window.removeEventListener("scroll", onScroll);
+  // }, [scrollTop]);
+
+  // useEffect(() => {}, [scrolling]);
+
   return (
     <DiscoverSection id="scrollableDiv">
-      {/* Discover top Section with toggle*/}
       <HStack backgroundimage={DiscoverBar}>
         <HStack width="1200px" height="157px" padding="0px 9px">
           <TitleBold27 textcolor={appStyle.colors.white}>Discover</TitleBold27>
@@ -571,10 +584,7 @@ const Discover = (props) => {
         </HStack>
       </HStack>
 
-      {/* Content of discover filtering */}
       <ContentDiscover id="scrollableDiv">
-        {/*Sticky bar for collections or for NFTs  */}
-
         <StickySectionHeader top="90">
           {isSelected ? (
             <HStack
@@ -620,8 +630,6 @@ const Discover = (props) => {
             </HStack>
           )}
         </StickySectionHeader>
-
-        {/* Show Collection or NFTS Content */}
 
         {isSelected ? (
           <VStack padding="30px 12px">
@@ -735,10 +743,14 @@ const Discover = (props) => {
                       justify="flex-start"
                       padding={size.width < 1200 ? "0 12px" : "0"}
                       width="100%"
+                      // width={size.width < 768 ? "100%" : "1100px"}
                     >
                       {loading ? (
                         loadingNFTs.map((item) => (
                           <VStack
+                            // minwidth={size.width < 768 ? "100%" : "326px"}
+                            // maxwidth="326px"
+                            // height={size.width < 768 ? "440px" : "420px"}
                             minwidth="240px"
                             height="390px"
                             key={item.name}
@@ -748,7 +760,11 @@ const Discover = (props) => {
                         ))
                       ) : nfts.length !== 0 ? (
                         nfts.map((item, i) => (
-                          <VStack minwidth="240px" height="390px">
+                          <VStack
+                            minwidth="240px"
+                            height="390px"
+                            // height={size.width < 768 ? "440px" : "420px"}
+                          >
                             <NftContainer
                               key={i}
                               isVerified={item.isVerified}
@@ -777,6 +793,7 @@ const Discover = (props) => {
                         <VStack
                           width="360px"
                           height="360px"
+                          // background={({ theme }) => theme.faded}
                           style={{ zIndex: "-50" }}
                           border="6px"
                         >

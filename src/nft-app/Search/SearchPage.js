@@ -192,7 +192,7 @@ function SearchPage(props) {
             >{`"${searchTerm}"`}</TitleBold27>
           </HStack>
 
-          {/* Toggle between NFTs and Collections */}
+          {/* Toggle */}
           <HStack
             background="rgb(0,0,0,0.3)"
             padding="3px"
@@ -276,7 +276,6 @@ function SearchPage(props) {
       </HStack>
 
       <ContentSearch id="scrollableDiv">
-        {/* Sticky bar with filters and sort for NFT and Collections */}
         <StickySectionHeader top="90">
           {isSelected ? (
             <HStack
@@ -346,8 +345,6 @@ function SearchPage(props) {
             </HStack>
           )}
         </StickySectionHeader>
-
-        {/* Content results depending of search query */}
 
         {isSelected ? (
           <VStack style={{ zIndex: "20" }} spacing="30px" padding="30px 12px">

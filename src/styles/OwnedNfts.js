@@ -54,9 +54,7 @@ function OwnedNfts(props) {
         >
           <ZStack cursor={"pointer"}>
             <CreatorTag>OWNER</CreatorTag>
-            <ZItem
-              backgroundimage={isAudio(item.fileType) ? item.preview : null}
-            >
+            <ZItem backgroundimage={isAudio(item.fileType) ? item.preview : null}>
               {isImage(item.fileType) ? (
                 <IconImg
                   url={item.image}
@@ -109,6 +107,66 @@ function OwnedNfts(props) {
             </ZItem>
           </ZStack>
         </VStack>
+        // <VStack
+        //   width="100%"
+        //   padding="30px"
+        //   spacing="21px"
+        //   alignment="flex-start"
+        // >
+        //   {console.log(collectionGroup)}
+        //   <HStack width="100%">
+        //     <IconImg
+        //       url={item.logo}
+        //       width="60px"
+        //       height="60px"
+        //       backsize="cover"
+        //       border="36px"
+        //     ></IconImg>
+        /* <VStack spacing="6px" alignment="flex-start">
+              <TitleBold18>{item.collection}</TitleBold18>
+              <BodyRegular>{item.owned} of {item.items} Items</BodyRegular>
+            </VStack> */
+          // </HStack>
+          // <HStack
+          //   flexwrap="wrap"
+          //   justify="flex-start"
+          //   width="100%"
+          //   overflowx="hidden"
+          //   overflowy="hidden"
+          //   height={expand ? "auto" : "199px"}
+          //   onClick={() => setIsExpand((value) => !value)}
+          //   padding="6px"
+          // >
+          //   {item.map((nft, j) => (
+              
+          //   ))}
+          /* <VStack
+              maxwidth="186px"
+              height="186px"
+              border="15px"
+              whileHover={{ scale: 1.05 }}
+              background={({ theme }) => theme.backElement}
+              spacing="6px"
+              cursor="pointer"
+              onClick={() => {
+                NavigateTo(`collection/${item.name}`);
+              }}
+            >
+              <IconImg url={seeAll} width="45px" height="45px"></IconImg>
+              <BodyBold>See All</BodyBold>
+            </VStack> */
+          // </HStack>
+
+            // {item.owned > 5 ? (
+            //   <ButtonApp
+            //     text={expand ? "See Less" : "See More"}
+            //     textcolor={appStyle.colors.white}
+            //     border="30px"
+            //     onClick={() => onClick(i)}
+            //     btnStatus={0}
+            //   ></ButtonApp>
+            // ) : null}
+        // </VStack>
       ))}
     </VStack>
   );

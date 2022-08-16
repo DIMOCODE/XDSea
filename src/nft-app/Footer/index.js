@@ -56,6 +56,8 @@ function Footer(props) {
                   <Link cursor={"pointer"} text="Home"></Link>
                   <Link cursor={"pointer"} text="Discover"></Link>
                   <Link cursor={"pointer"} text="How To Start"></Link>
+                  {/* <Link text="Terms of Service"></Link>
+                <Link text="Build on Xinfin"></Link> */}
                 </LayoutGroup>
                 <Spacer></Spacer>
               </VStack>
@@ -63,9 +65,10 @@ function Footer(props) {
                 <TitleBold21 textcolor={appStyle.colors.white}>
                   Account
                 </TitleBold21>
-
+                {/* <Link text="Sync XDCPay"></Link> */}
                 <Link text="Create NFT"></Link>
-
+                {/* <Link text="User Profile"></Link> */}
+                {/* <Link text="Collections"></Link> */}
                 <Spacer></Spacer>
               </VStack>
               <VStack alignment="flex-start">
@@ -97,6 +100,7 @@ function Footer(props) {
                       cursor="pointer"
                     ></IconImg>
                   </a>
+                  {/* <IconImg url={discord} width="52px" height="52px"></IconImg> */}
                 </HStack>
                 <Spacer></Spacer>
               </VStack>

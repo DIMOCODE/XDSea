@@ -324,6 +324,41 @@ function WalletButton(props) {
                     onClick={clickAlert}
                   ></IconImg>
                 </a>
+
+                {/* <a>
+                  <IconImg
+                    cursor={"pointer"}
+                    url={Metamask}
+                    width="30px"
+                    height="30px"
+                    onClick={onClickMetamask}
+                  ></IconImg>
+                </a> */}
+
+                {/* <a>
+                  <VStack>
+                    <IconImg
+                      cursor={"pointer"}
+                      url={infoIcon}
+                      width="26px"
+                      height="26px"
+                      onClick={clickAlert}
+                    ></IconImg>
+                    {hasAlert && (
+                      <AlertStatus
+                        key="ledalert"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{
+                          repeat: Infinity,
+                          repeatType: "reverse",
+                          duration: 0.6,
+                        }}
+                      ></AlertStatus>
+                    )}
+                  </VStack>
+                </a> */}
               </HStack>
             ) : isMetamask ? (
               <HStack alignment={isMobile ? "flex-start" : "center"}>

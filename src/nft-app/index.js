@@ -102,9 +102,10 @@ const NFTApp = () => {
                 </HStack>
               </DevMode>
             ) : null}
-
-            {/* This is the main TopBar of the website */}
+            {/* {size.width <  ? } */}
             <TopBar
+              // isMobile={size.width < 768 ? true : false}
+              // device={size.width > 768 ? "tablet" : "phone"}
               device={
                 size.width > 1024
                   ? "computer"
@@ -118,9 +119,6 @@ const NFTApp = () => {
               devMode={!isDevMode}
               themeToggler={themeToggler}
             ></TopBar>
-
-            {/* This is where all the content of the site is rendering */}
-
             <ScrollView>
               <Switch>
                 <Route
