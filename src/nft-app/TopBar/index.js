@@ -25,7 +25,6 @@ import {
   CaptionBold,
   TitleBold18,
 } from "../../styles/TextStyles";
-import { XdcConnect, Disconnect } from "xdc-connect";
 import XDSealogo from "../../images/LogoXDSEA.png";
 import { WalletButton } from "../../styles/walletButton";
 import { SwitchButton } from "../../styles/SwitchButton";
