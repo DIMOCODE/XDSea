@@ -141,9 +141,9 @@ const CollectionPage = (props) => {
         searchBy: searchBy,
         page: params.page + 1,
       });
+      setLoadingState("loaded");
       setNfts(collectionNFTData.nfts);
       setCollection(collection);
-      setLoadingState("loaded");
     } catch (error) {
       console.log(error);
     }
@@ -186,9 +186,9 @@ const CollectionPage = (props) => {
       ...params, 
       page: params.page + 1 
     });
+    setLoadingState("loaded");
     setNfts(collectionNFTData.nfts);
     setCollection(collection);
-    setLoadingState("loaded");
   };
 
   /**
