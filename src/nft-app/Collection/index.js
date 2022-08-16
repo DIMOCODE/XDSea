@@ -148,9 +148,9 @@ const CollectionDetails = (props) => {
         searchBy: searchBy,
         page: params.page + 1,
       });
-      setLoadingState("loaded");
       setNfts(collectionNFTList);
       setCollection(collection);
+      setLoadingState("loaded");
     } catch (error) {
       console.log(error);
     }
@@ -226,9 +226,9 @@ const CollectionDetails = (props) => {
     );
     setMaxPrice(collectionNFTData.higherPrice);
     setParams({ ...params, page: params.page + 1 });
-    setLoadingState("loaded");
     setNfts(collectionNFTList);
     setCollection(collection);
+    setLoadingState("loaded");
   };
 
   useEffect(() => {
