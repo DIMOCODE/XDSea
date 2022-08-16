@@ -22,6 +22,12 @@ function UserMenuButton(props) {
   //   selected: { scale: 1 },
   //   normal: { scale: 1 },
   // };
+  const history = useHistory();
+  // const [showMenu, setShowMenu] = useState(false);
+
+  function NavigateTo(route) {
+    history.push(`/${route}`);
+  }
 
   return (
     <LayoutGroup id="usermenu">
@@ -37,7 +43,7 @@ function UserMenuButton(props) {
           whileTap={{ scale: 0.9 }}
           onClick={async () => {
             const userId = await LS.get(LS_ROOT_KEY).user._id;
-            props.redirect(`UserProfile/${userId}`);
+            NavigateTo(`UserProfile/${userId}`);
           }}
           cursor={"pointer"}
           exit="normal"

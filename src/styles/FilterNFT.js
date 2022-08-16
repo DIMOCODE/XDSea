@@ -6,6 +6,7 @@ import { BodyBold, CaptionBold, CaptionBoldShort } from "./TextStyles";
 import arrowDown from "../images/arrowDown.png";
 import verifiedBlue from "../images/verifiedBlue.png";
 import filter from "../images/filter.png";
+import all from "../images/all.png";
 import notforsale from "../images/notforsale.png";
 import relist from "../images/relist.png";
 import sold from "../images/sold.png";
@@ -566,6 +567,17 @@ function FilterNFT({
         >
           <BodyBold cursor="pointer">Sale Type</BodyBold>
         </VStack>
+
+        <IconImg
+          url={all}
+          width="33px"
+          height="33px"
+          cursor="pointer"
+          onTapStart={() => setBtnAll(!btnAll)}
+          onClick={clickAll}
+          variants={activated}
+          animate={btnAll ? "off" : "on"}
+        ></IconImg>
 
         <IconImg
           url={sale}

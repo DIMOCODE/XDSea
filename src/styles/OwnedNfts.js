@@ -7,11 +7,13 @@ import { useHistory } from "react-router-dom";
 import { appStyle } from "./AppStyles";
 import { motion } from "framer-motion/dist/framer-motion";
 import { nftaddress } from "../config";
+import banner1 from "../images/Banner1.jpg";
 import ReactPlayer from "react-player";
 
 function OwnedNfts(props) {
   const { collectionGroup } = props;
 
+  const history = useHistory();
 
   const isImage = (fileType) => {
     return !!fileType?.match("image.*");
@@ -24,6 +26,10 @@ function OwnedNfts(props) {
   const isAudio = (fileType) => {
     return !!fileType?.match("audio.*");
   };
+
+  function NavigateTo(route) {
+    history.push(`/${route}`);
+  }
 
   return (
     <VStack
@@ -43,7 +49,7 @@ function OwnedNfts(props) {
           cursor="pointer"
           whileHover={{ scale: 1.05 }}
           onClick={() => {
-            props.redirect(`nft/${nftaddress}/${item}`);
+            NavigateTo(`nft/${nftaddress}/${item}`);
           }}
         >
           <ZStack cursor={"pointer"}>
@@ -85,6 +91,15 @@ function OwnedNfts(props) {
               <VStack padding="15px">
                 <HStack>
                   <Spacer></Spacer>
+                  <IconImg
+                    url={banner1}
+                    width="45px"
+                    height="45px"
+                    backsize="cover"
+                    border="45px"
+                    bordersize="3px"
+                    bordercolor="white"
+                  ></IconImg>
                 </HStack>
                 <Spacer></Spacer>
                 <TitleBold15 textcolor={appStyle.colors.white}>

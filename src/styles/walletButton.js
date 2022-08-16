@@ -20,7 +20,7 @@ import { motion } from "framer-motion/dist/framer-motion";
 import { AnimatePresence } from "framer-motion/dist/framer-motion";
 import ButtonApp from "./Buttons";
 import { LayoutGroup } from "framer-motion/dist/framer-motion";
-import { fromXdc, isXdc, truncateAddress } from "../common/common";
+import { fromXdc, isXdc } from "../common/common";
 
 function WalletButton(props) {
   const {
@@ -79,6 +79,10 @@ function WalletButton(props) {
     }
     return () => clearTimeout(timeout);
   }, [showAlert]);
+
+  const truncateAddress = (address) => {
+    return address.substring(0, 7) + "..." + address.substring(38);
+  };
 
   return (
     <LayoutGroup id="WalletButton">

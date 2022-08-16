@@ -13,6 +13,11 @@ import { useHistory } from "react-router-dom";
 
 function Footer(props) {
   const size = useWindowSize();
+  const history = useHistory();
+
+  function NavigateTo(route) {
+    history.push(`/${route}`);
+  }
 
   return (
     <FooterSection>
@@ -27,7 +32,7 @@ function Footer(props) {
               <VStack
                 alignment="flex-start"
                 spacing="6px"
-                onClick={() => props.redirect("")}
+                onClick={() => NavigateTo("")}
               >
                 <IconImg
                   url={XDSeaWhite}

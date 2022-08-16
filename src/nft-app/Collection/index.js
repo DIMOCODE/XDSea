@@ -1,25 +1,15 @@
-import React, { 
-  useEffect, 
-  useState
-} from "react";
-import { 
-  useHistory, 
-  useParams 
-} from "react-router-dom";
+import React, { useEffect, useState, useContext } from "react";
+import { useHistory, useParams } from "react-router-dom";
 import { nftaddress } from "../../config";
 import ButtonApp from "../../styles/Buttons";
-import { 
-  HStack, 
-  IconImg, 
-  Spacer, 
-  VStack 
-} from "../../styles/Stacks";
+import { HStack, IconImg, Spacer, VStack } from "../../styles/Stacks";
 import {
   BodyRegular,
   BodyBold,
   CaptionBoldShort,
   CaptionBold,
   TitleBold21,
+  TitleBold18,
 } from "../../styles/TextStyles";
 import instagram from "../../images/instagramMini.png";
 import twitter from "../../images/twitter.png";
@@ -35,7 +25,9 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { LoopBars } from "../../styles/LoopBars";
 import { LoopLogo } from "../../styles/LoopLogo";
 import { Tooltip } from "@mui/material";
+import banner1 from "../../images/Banner1.jpg";
 import verified from "../../images/verified.png";
+import menuContext from "../../context/menuContext";
 import linkSocial from "../../images/linkSocial.png";
 import whatsSocial from "../../images/whatsSocial.png";
 import telegramSocial from "../../images/telegramSocial.png";
@@ -48,23 +40,20 @@ import {
   TelegramShareButton,
   WhatsappShareButton,
 } from "react-share";
-import { 
-  getCollection, 
-  getCollectionNFTs 
-} from "../../API/Collection";
-import { isSafari, truncateAddress } from "../../common/common";
+import { getCollection, getCollectionNFTs } from "../../API/Collection";
+import { isSafari } from "../../common/common";
 import { SearchCollection } from "../../styles/SearchCollection";
 import { FiltersButton } from "../../styles/FiltersButton";
 import { SortButtonNFTS } from "../../styles/SortButtonNFTS";
 import noResult from "../../images/noResult.png";
 import { StickySectionHeader } from "@mayank1513/sticky-section-header";
 
-const CollectionPage = (props) => {
-  const size = useWindowSize();
-  const { collectionNickName } = useParams();
-  
+const CollectionDetails = (props) => {
+  const history = useHistory();
   const [nfts, setNfts] = useState([]);
   const [loadingState, setLoadingState] = useState("not-loaded");
+  const [page, setPage] = useState(1);
+  const size = useWindowSize();
   const [collection, setCollection] = useState({});
   const [loadingNFTs] = useState([
     { id: 1, name: "NFT 1" },
@@ -80,6 +69,9 @@ const CollectionPage = (props) => {
     { id: 11, name: "NFT 11" },
     { id: 12, name: "NFT 12" },
   ]);
+
+  const { collectionNickName } = useParams();
+  const [, setShowMenu] = useContext(menuContext);
   const [maxPrice, setMaxPrice] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
   const [params, setParams] = useState({
@@ -89,12 +81,17 @@ const CollectionPage = (props) => {
 
   /**
    * Get collection NFT data for the first page
-   * 
-   * @param {string} searchBy search word to filter NFT results
    */
   const getData = async (searchBy) => {
     try {
-      const collectionData = await ( await getCollection(collectionNickName)).data;
+      const collectionData = await (
+        await getCollection(collectionNickName)
+      ).data;
+      setParams({
+        ...params,
+        collectionId: collectionData.collection._id,
+        searchBy: searchBy,
+      });
       let collection = {
         _id: collectionData.collection._id,
         banner: isSafari
@@ -117,12 +114,34 @@ const CollectionPage = (props) => {
         nftsCount: collectionData.metrics.nftsCount,
         owners: collectionData.metrics.owners,
       };
-      const collectionNFTData = await ( await getCollectionNFTs({
-        ...params,
-        collectionId: collectionData.collection._id,
-        searchBy: searchBy,
-      })).data;
-
+      const collectionNFTData = await (
+        await getCollectionNFTs({
+          ...params,
+          collectionId: collectionData.collection._id,
+          searchBy: searchBy,
+        })
+      ).data;
+      const collectionNFTList = await Promise.all(
+        collectionNFTData.nfts.map(async (nft) => {
+          let collectionNFT = {
+            collectionName: nft.collectionId.name,
+            creatorLogo: nft.owner.urlProfile,
+            image: isSafari ? nft.urlFile.v1 : nft.urlFile.v0,
+            name: nft.name,
+            hasOpenOffer: nft.hasOpenOffer,
+            price: nft.price,
+            fileType: nft.fileType,
+            preview: isSafari ? nft.preview.v1 : nft.preview.v0,
+            owner: nft.owner.userName,
+            ownerId: nft.owner._id,
+            tokenId: nft.tokenId,
+            saleType: nft.saleType.toLowerCase(),
+            isVerified: nft.owner.isVerified,
+            collectionVerified: nft.creator.isVerified,
+          };
+          return collectionNFT;
+        })
+      );
       setMaxPrice(collectionNFTData.higherPrice);
       setParams({
         collectionId: collectionData.collection._id,
@@ -130,52 +149,85 @@ const CollectionPage = (props) => {
         page: params.page + 1,
       });
       setLoadingState("loaded");
-      setNfts(collectionNFTData.nfts);
+      setNfts(collectionNFTList);
       setCollection(collection);
     } catch (error) {
       console.log(error);
     }
   };
 
-  /**
-   * Get the next page of collection NFTs
-   */
-  const fetchMoreNFTs = async () => {
-    const collectionNFTData = await (await getCollectionNFTs(params)).data.nfts;
-
-    setParams({ 
-      ...params, 
-      page: params.page + 1 
-    });
-    setNfts([...nfts, ...collectionNFTData]);
+  const truncateAddress = (address) => {
+    return address
+      ? address.substring(0, 6) + "..." + address.substring(38)
+      : "undefined";
   };
 
-  /**
-   * Update NFT list based on the filters chosen by the user
-   * 
-   * @param {*} params parameters used to filter query results
-   */
+  const fetchMoreNFTs = async () => {
+    const collectionNFTData = await (await getCollectionNFTs(params)).data.nfts;
+    const collectionNFTList = await Promise.all(
+      collectionNFTData.map(async (nft) => {
+        let collectionNFT = {
+          collectionName: nft.collectionId.name,
+          creatorLogo: nft.owner.urlProfile,
+          image: isSafari ? nft.urlFile.v1 : nft.urlFile.v0,
+          name: nft.name,
+          hasOpenOffer: nft.hasOpenOffer,
+          price: nft.price,
+          fileType: nft.fileType,
+          preview: isSafari ? nft.preview.v1 : nft.preview.v0,
+          owner: nft.owner.userName,
+          ownerId: nft.owner._id,
+          tokenId: nft.tokenId,
+          saleType: nft.saleType.toLowerCase(),
+          isVerified: nft.owner.isVerified,
+          collectionVerified: nft.creator.isVerified,
+        };
+        return collectionNFT;
+      })
+    );
+
+    setParams({ ...params, page: params.page + 1 });
+    setNfts((prevState) => [...prevState, ...collectionNFTList]);
+  };
+
+  function NavigateTo(route) {
+    setShowMenu(false);
+    history.push(`/${route}`);
+  }
+
   const handleChangeFilterNFT = (params) => {
     setLoadingState("not-loaded");
     setParams(params);
     updateNFTs(params);
   };
 
-  /**
-   * Get the filtered list of collection NFTs
-   * 
-   * @param {*} params parameters used to filter query results
-   */
   const updateNFTs = async (params) => {
     const collectionNFTData = await (await getCollectionNFTs(params)).data;
-
+    const collectionNFTList = await Promise.all(
+      collectionNFTData.nfts.map(async (nft) => {
+        let collectionNFT = {
+          collectionName: nft.collectionId.name,
+          creatorLogo: nft.owner.urlProfile,
+          image: isSafari ? nft.urlFile.v1 : nft.urlFile.v0,
+          name: nft.name,
+          hasOpenOffer: nft.hasOpenOffer,
+          price: nft.price,
+          fileType: nft.fileType,
+          preview: isSafari ? nft.preview.v1 : nft.preview.v0,
+          owner: nft.owner.userName,
+          ownerId: nft.owner._id,
+          tokenId: nft.tokenId,
+          saleType: nft.saleType.toLowerCase(),
+          isVerified: nft.owner.isVerified,
+          collectionVerified: nft.creator.isVerified,
+        };
+        return collectionNFT;
+      })
+    );
     setMaxPrice(collectionNFTData.higherPrice);
-    setParams({ 
-      ...params, 
-      page: params.page + 1 
-    });
+    setParams({ ...params, page: params.page + 1 });
     setLoadingState("loaded");
-    setNfts(collectionNFTData.nfts);
+    setNfts(collectionNFTList);
     setCollection(collection);
   };
 
@@ -222,7 +274,7 @@ const CollectionPage = (props) => {
           {/* Creator Tag */}
           <CreatorAbsolute>
             <HStack
-              onClick={() => props.redirect(`UserProfile/${collection.creatorId}`)}
+              onClick={() => NavigateTo(`UserProfile/${collection.creatorId}`)}
               border="30px"
               padding="6px 15px"
               style={{
@@ -696,28 +748,25 @@ const CollectionPage = (props) => {
                   >
                     <NftContainer
                       key={i}
-                      isVerified={item.owner.isVerified}
-                      iconStatus={item.saleType.toLowerCase()}
+                      isVerified={item.isVerified}
+                      iconStatus={item.saleType}
                       hasOffers={item.hasOpenOffer}
-                      creatorImage={item.owner.urlProfile}
-                      itemImage={isSafari
-                        ? item.urlFile.v1
-                        : item.urlFile.v0
-                      }
+                      creatorImage={item.creatorLogo}
+                      itemImage={item.image}
                       price={item.price}
-                      collectionName={item.collectionId.name}
+                      collectionName={item.collectionName}
                       itemNumber={item.name}
                       fileType={item.fileType}
                       background={({ theme }) => theme.backElement}
                       onClick={() =>
-                        props.redirect(`nft/${nftaddress}/${item.tokenId}`)
+                        NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
                       }
                       onClickCreator={() =>
-                        props.redirect(`UserProfile/${item.owner._id}`)
+                        NavigateTo(`UserProfile/${item.ownerId}`)
                       }
                       owner={true}
                       usdPrice={props.xdc}
-                      collectionVerified={item.owner.isVerified}
+                      collectionVerified={item.collectionVerified}
                     ></NftContainer>
                   </VStack>
                 ))
@@ -757,7 +806,7 @@ const CollectionPage = (props) => {
   );
 };
 
-export default CollectionPage;
+export default CollectionDetails;
 
 const CollectionContent = styled(motion.div)`
   padding: 30px 0;
