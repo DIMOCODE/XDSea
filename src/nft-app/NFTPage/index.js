@@ -518,10 +518,8 @@ const NFTDetails = (props) => {
         ownerProfile: nftData.nft.owner.urlProfile,
         ownerId: nftData.nft.owner._id,
         collectionName: nftData.nft.collectionId.name,
-        collectionLogo: isSafari
-          ? nftData.nft.collectionId.logo.v1
-          : nftData.nft.collectionId.logo.v0,
-        image: isSafari ? nftData.nft.urlFile.v1 : nftData.nft.urlFile.v0,
+        collectionLogo: nftData.nft.collectionId.logo.v0,
+        image: nftData.nft.urlFile.v0,
         name: nftData.nft.name,
         description: nftData.nft.description,
         nftContract: nftaddress,
@@ -529,13 +527,12 @@ const NFTDetails = (props) => {
         inBlacklist: nftData.nft.inBlacklist,
         properties: nftData.nft.properties,
         fileType: nftData.nft.fileType,
-        preview: isSafari ? nftData.nft.preview.v1 : nftData.nft.preview.v0,
+        preview: nftData.nft.preview.v0,
         royalty: nftData.nft.royalty,
         unlockableContent: nftData.nft.unlockableContent,
         collectionNickName: nftData.nft.collectionId.nickName,
       };
 
-      console.log(nftData.nft.urlFile.v1)
       const requestData = await Promise.all(
         [1, 2, 3].map(async (i) => {
           if (i == 1) {
@@ -544,12 +541,12 @@ const NFTDetails = (props) => {
                 let item = {
                   collectionName: nft.collectionId.name,
                   creatorLogo: nft.owner.urlProfile,
-                  image: isSafari ? nft.urlFile.v1 : nft.urlFile.v0,
+                  image: nft.urlFile.v0,
                   name: nft.name,
                   hasOpenOffer: nft.hasOpenOffer,
                   price: nft.price,
                   fileType: nft.fileType,
-                  preview: isSafari ? nft.preview.v1 : nft.preview.v0,
+                  preview: nft.preview.v0,
                   owner: nft.owner.userName,
                   ownerId: nft.owner._id,
                   tokenId: nft.tokenId,

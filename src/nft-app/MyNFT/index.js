@@ -68,7 +68,7 @@ const MyNFT = (props) => {
     const collectionList = await Promise.all(
       collectionData.collections.map(async (item) => {
         let collection = {
-          logo: isSafari ? item.logo.v1 : item.logo.v0,
+          logo: item.logo.v0,
           name: item.name,
           nftCount: item.totalNfts,
           nfts: item.nfts,
@@ -99,12 +99,10 @@ const MyNFT = (props) => {
             nftData.nfts.map(async (item) => {
               let nft = {
                 tokenId: item.tokenId,
-                image: isSafari ? item.urlFile.v1 : item.urlFile.v0,
-                preview: isSafari ? item.preview.v1 : item.preview.v0,
+                image: item.urlFile.v0,
+                preview: item.preview.v0,
                 name: item.name,
-                logo: isSafari
-                  ? item.collectionId.logo.v1
-                  : item.collectionId.logo.v0,
+                logo: item.collectionId.logo.v0,
                 fileType: item.fileType,
                 hasOpenOffer: item.hasOpenOffer
               };
@@ -130,12 +128,10 @@ const MyNFT = (props) => {
       nftData.nfts.map(async (item) => {
         let nft = {
           tokenId: item.tokenId,
-          image: isSafari ? item.urlFile.v1 : item.urlFile.v0,
-          preview: isSafari ? item.preview.v1 : item.preview.v0,
+          image: item.urlFile.v0,
+          preview: item.preview.v0,
           name: item.name,
-          logo: isSafari
-            ? item.collectionId.logo.v1
-            : item.collectionId.logo.v0,
+          logo: item.collectionId.logo.v0,
           fileType: item.fileType,
         };
 
@@ -559,18 +555,14 @@ const MyNFT = (props) => {
                                 <ZItem
                                   backgroundimage={
                                     isAudio(nft.fileType)
-                                      ? isSafari
-                                        ? nft.preview.v1
-                                        : nft.preview.v0
+                                      ? nft.preview.v0
                                       : null
                                   }
                                 >
                                   {isImage(nft.fileType) ? (
                                     <IconImg
                                       url={
-                                        isSafari
-                                          ? nft.urlFile.v1
-                                          : nft.urlFile.v0
+                                        nft.urlFile.v0
                                       }
                                       width="100%"
                                       height="100%"
@@ -586,9 +578,7 @@ const MyNFT = (props) => {
                                     >
                                       <ReactPlayer
                                         url={
-                                          isSafari
-                                            ? nft.urlFile.v1
-                                            : nft.urlFile.v0
+                                          nft.urlFile.v0
                                         }
                                         playing={true}
                                         muted={true}
@@ -607,9 +597,7 @@ const MyNFT = (props) => {
                                     >
                                       <ReactPlayer
                                         url={
-                                          isSafari
-                                            ? nft.urlFile.v1
-                                            : nft.urlFile.v0
+                                          nft.urlFile.v0
                                         }
                                         playing={false}
                                         muted={true}

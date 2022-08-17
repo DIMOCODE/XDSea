@@ -94,9 +94,7 @@ const CollectionDetails = (props) => {
       });
       let collection = {
         _id: collectionData.collection._id,
-        banner: isSafari
-          ? collectionData.collection.banner.v1
-          : collectionData.collection.banner.v0,
+        banner: collectionData.collection.banner.v0,
         creator: collectionData.collection.addressCreator,
         creatorId: collectionData.collection.creator._id,
         isVerified: collectionData.collection.creator.isVerified,
@@ -104,9 +102,7 @@ const CollectionDetails = (props) => {
         discordUrl: collectionData.collection.discordUrl,
         floorPrice: collectionData.collection.floorPrice,
         instagramUrl: collectionData.collection.instagramUrl,
-        logo: isSafari
-          ? collectionData.collection.logo.v1
-          : collectionData.collection.logo.v0,
+        logo: collectionData.collection.logo.v0,
         name: collectionData.collection.name,
         twitterUrl: collectionData.collection.twitterUrl,
         volumeTrade: collectionData.collection.volumeTrade,
@@ -126,12 +122,12 @@ const CollectionDetails = (props) => {
           let collectionNFT = {
             collectionName: nft.collectionId.name,
             creatorLogo: nft.owner.urlProfile,
-            image: isSafari ? nft.urlFile.v1 : nft.urlFile.v0,
+            image: nft.urlFile.v0,
             name: nft.name,
             hasOpenOffer: nft.hasOpenOffer,
             price: nft.price,
             fileType: nft.fileType,
-            preview: isSafari ? nft.preview.v1 : nft.preview.v0,
+            preview: nft.preview.v0,
             owner: nft.owner.userName,
             ownerId: nft.owner._id,
             tokenId: nft.tokenId,
@@ -169,12 +165,12 @@ const CollectionDetails = (props) => {
         let collectionNFT = {
           collectionName: nft.collectionId.name,
           creatorLogo: nft.owner.urlProfile,
-          image: isSafari ? nft.urlFile.v1 : nft.urlFile.v0,
+          image: nft.urlFile.v0,
           name: nft.name,
           hasOpenOffer: nft.hasOpenOffer,
           price: nft.price,
           fileType: nft.fileType,
-          preview: isSafari ? nft.preview.v1 : nft.preview.v0,
+          preview: nft.preview.v0,
           owner: nft.owner.userName,
           ownerId: nft.owner._id,
           tokenId: nft.tokenId,
@@ -208,12 +204,12 @@ const CollectionDetails = (props) => {
         let collectionNFT = {
           collectionName: nft.collectionId.name,
           creatorLogo: nft.owner.urlProfile,
-          image: isSafari ? nft.urlFile.v1 : nft.urlFile.v0,
+          image: nft.urlFile.v0,
           name: nft.name,
           hasOpenOffer: nft.hasOpenOffer,
           price: nft.price,
           fileType: nft.fileType,
-          preview: isSafari ? nft.preview.v1 : nft.preview.v0,
+          preview: nft.preview.v0,
           owner: nft.owner.userName,
           ownerId: nft.owner._id,
           tokenId: nft.tokenId,
