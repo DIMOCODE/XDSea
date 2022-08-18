@@ -69,6 +69,19 @@ export const TitleBold27 = styled(motion.h2).attrs((props) => ({
   text-align: ${(props) => props.align};
 `;
 
+export const TitleSemi21 = styled(motion.h2).attrs((props) => ({
+  textcolor: props.textcolor || props.theme.text,
+  align: props.align || "left",
+}))`
+  font-style: normal;
+  font-weight: 400;
+  font-size: 21px;
+  letter-spacing: -0.03em;
+  line-height: 33px;
+  color: ${(props) => props.textcolor};
+  text-align: ${(props) => props.align};
+`;
+
 export const TitleRegular27 = styled(motion.h2).attrs((props) => ({
   textcolor: props.textcolor || props.theme.text,
   align: props.align || "left",
@@ -123,6 +136,16 @@ export const TitleBold18 = styled(motion.h3).attrs((props) => ({
 }))`
   font-style: normal;
   font-weight: bold;
+  letter-spacing: -0.04em;
+  font-size: 18px;
+  color: ${(props) => props.textcolor};
+`;
+
+export const TitleSemi18 = styled(motion.h3).attrs((props) => ({
+  textcolor: props.textcolor || props.theme.text,
+}))`
+  font-style: normal;
+  font-weight: 400;
   letter-spacing: -0.04em;
   font-size: 18px;
   color: ${(props) => props.textcolor};
