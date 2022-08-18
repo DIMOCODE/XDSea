@@ -56,6 +56,9 @@ import NFTMarket from "../../abis/NFTMarket.json";
 import axios from "axios";
 import { DEFAULT_PROVIDER, HEADER } from "../../constant";
 import NFTMarketLayer1 from "../../abis/NFTMarketLayer1.json";
+import "./customstyles.css";
+import { positions } from "@mui/system";
+import zIndex from "@mui/material/styles/zIndex";
 
 const Discover = (props) => {
   const history = useHistory();
@@ -444,9 +447,9 @@ const Discover = (props) => {
   };
 
   /**
-   * Update the NFT items
+   * Get the filtered list of NFTs
    *
-   * @param {*} params - NFT Search Params
+   * @param {*} params parameters used to filter query results
    */
   const updateNFTs = async (params) => {
     setLoading(true);
@@ -477,7 +480,10 @@ const Discover = (props) => {
 
     setNfts(nftList);
     setTotalNFTs(nftData.nftsAmount);
-    setNftParams((prevState) => ({ ...prevState, page: prevState.page + 1 }));
+    setNftParams((prevState) => ({
+      ...prevState,
+      page: prevState.page + 1,
+    }));
     setLoading(false);
   };
 
@@ -491,18 +497,21 @@ const Discover = (props) => {
     getData();
   }, []);
 
-  // useEffect(() => {
-  //   const onScroll = (e) => {
-  //     setScrollTop(e.target.documentElement.scrollTop);
-  //     setScrolling(e.target.documentElement.scrollTop > scrollTop);
-  //     setShowMenu(false);
-  //   };
-  //   window.addEventListener("scroll", onScroll);
+  /**
+   * Scroll listeners to close the menu on scroll
+   */
+  useEffect(() => {
+    const onScroll = (e) => {
+      setScrollTop(e.target.documentElement.scrollTop);
+      setScrolling(e.target.documentElement.scrollTop > scrollTop);
+      setShowMenu(false);
+    };
+    window.addEventListener("scroll", onScroll);
 
-  //   return () => window.removeEventListener("scroll", onScroll);
-  // }, [scrollTop]);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [scrollTop]);
 
-  // useEffect(() => {}, [scrolling]);
+  useEffect(() => {}, [scrolling]);
 
   return (
     <DiscoverSection id="scrollableDiv">
@@ -577,18 +586,18 @@ const Discover = (props) => {
           </HStack>
         </HStack>
       </HStack>
+      {/*Sticky bar for collections or for NFTs  */}
 
-      <ContentDiscover id="scrollableDiv">
-        <StickySectionHeader top="90">
-          {isSelected ? (
-            <HStack
-              background="rgb(0,0,0, 0.06)"
-              padding="6px"
-              border="9px"
-              width="100%"
-              style={{ zIndex: 10000 }}
-              blur="30px"
-            >
+      <StickySectionHeader top="90">
+        {isSelected ? (
+          <HStack
+            background="rgb(0,0,0, 0.06)"
+            padding="6px"
+            border="9px"
+            width="100%"
+            blur="30px"
+          >
+            <HStack width="1200px">
               <FiltersButton
                 onChange={handleChangeFilter}
                 params={collectionParams}
@@ -601,14 +610,16 @@ const Discover = (props) => {
                 params={collectionParams}
               ></SortButtonCollections>
             </HStack>
-          ) : (
-            <HStack
-              background="rgb(0,0,0, 0.06)"
-              padding="6px"
-              border="9px"
-              style={{ zIndex: 10000 }}
-              blur="30px"
-            >
+          </HStack>
+        ) : (
+          <HStack
+            background="rgb(0,0,0, 0.06)"
+            padding="6px"
+            border="9px"
+            width="100%"
+            blur="30px"
+          >
+            <HStack width="1200px">
               <FiltersButton
                 isNftFilter={true}
                 onChange={handleChangeFilterNFT}
@@ -622,8 +633,13 @@ const Discover = (props) => {
                 params={nftParams}
               ></SortButtonNFTS>
             </HStack>
-          )}
-        </StickySectionHeader>
+          </HStack>
+        )}
+      </StickySectionHeader>
+
+      {/* Content of discover filtering */}
+      <ContentDiscover id="scrollableDiv" style={{ zIndex: "-1000000" }}>
+        {/* Show Collection or NFTS Content */}
 
         {isSelected ? (
           <VStack padding="30px 12px">
@@ -727,7 +743,10 @@ const Discover = (props) => {
                   </HStack>
                 }
                 scrollableTarget="#scrollableDiv"
-                style={{ overflow: "hidden" }}
+                style={{
+                  overflow: "hidden",
+                  position: "relative",
+                }}
               >
                 <VStack>
                   <HStack>
@@ -824,6 +843,7 @@ const DiscoverSection = styled(motion.div)`
 `;
 
 const ContentDiscover = styled(motion.div)`
+  position: relative;
   padding: 30px 0;
   max-width: 1200px;
   margin: 0 auto;
