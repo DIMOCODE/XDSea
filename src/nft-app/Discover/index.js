@@ -166,7 +166,7 @@ const Discover = (props) => {
   const updateCollections = async (params) => {
     const collectionData = await (await getCollections(params)).data;
 
-    setCollections(collectionData);
+    setCollections(collectionData.collections);
     setTotalCollections(collectionData.collectionsAmount);
     setCollectionParams((prevState) => ({
       ...prevState,

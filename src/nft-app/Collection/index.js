@@ -131,6 +131,7 @@ const CollectionPage = (props) => {
       };
       const collectionNFTData = await ( await getCollectionNFTs({
         ...params,
+        page: 1,
         collectionId: collectionData.collection._id,
         searchBy: searchBy,
       })).data;
