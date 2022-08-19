@@ -68,6 +68,7 @@ import {
   getCollections,
 } from "../../API/Collection";
 import { createNFT } from "../../API/NFT";
+import axios from "axios";
 
 function CreateNft(props) {
   const size = useWindowSize();
@@ -712,10 +713,46 @@ function CreateNft(props) {
     }, 1500);
   };
 
+  const addNFTsToContract = async () => {
+    const collectionCreation = await (
+      await createCollection(
+        "Animal Reckless Party Club",
+        "0x7d67093bf2abca4a0501d6fd03dee8594ea4d58b",
+        "ARPC is a pfp NFT collection aiming to become the most sustainable brand on the web3 market and become the \"Mickey Mouse\" of the blockchain. Every one of 7,777 3D NFTs is a piece of the brand, piece of an IP. Use your turtle in ARPC partners' ecosystems and get rewards and bonuses.",
+        "https://xdsea.infura-ipfs.io/ipfs/QmdT55eDwqNodDGNRTqDWuEU7RtQcMm6ZJeaj2phXJDgVY",
+        "https://xdsea.infura-ipfs.io/ipfs/QmSwhMoSrXqub3nPvxbupAGjrDP5nhyLnVoLcBH93ggCo6",
+        "https://twitter.com/arpc_nft",
+        "https://instagram.com/arpc_nft",
+        "https://discord.gg/arpc",
+        "https://arpc.io/"
+      )
+    ).data.collection;
+    for(var i = 2001; i < 2501; i++) {
+      const metadata = await axios.get(`https://metadata.arpc.io/metadata/${i}`);
+      console.log(metadata.data);
+      const nftCreation = await (
+        await createNFT(
+          collectionCreation._id,
+          i,
+          "0x7d67093bf2abca4a0501d6fd03dee8594ea4d58b",
+          4200,
+          7,
+          metadata.data.name,
+          metadata.data.description,
+          metadata.data.image,
+          metadata.data.properties.files[0].type,
+          "",
+          metadata.data.attributes
+        )
+      ).data.nft;
+    }
+  }
+
   /**
    * React Hook to re-render component when the wallet connection is updated
    */
   useEffect(async () => {
+    // addNFTsToContract();
     setWallet(props?.wallet);
     await getUser();
   }, [props?.wallet]);
