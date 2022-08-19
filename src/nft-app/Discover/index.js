@@ -36,7 +36,8 @@ import noResult from "../../images/noResult.png";
 import { SortButtonNFTS } from "../../styles/SortButtonNFTS";
 import { FiltersButton } from "../../styles/FiltersButton";
 import { SortButtonCollections } from "../../styles/SortButtonCollections";
-import { StickySectionHeader } from "@mayank1513/sticky-section-header";
+import { StickySectionHeader } from "../../CustomModules/sticky/StickySectionHeader.js";
+
 import "./customstyles.css";
 import { positions } from "@mui/system";
 import zIndex from "@mui/material/styles/zIndex";
@@ -242,7 +243,7 @@ const Discover = (props) => {
   useEffect(() => {}, [scrolling]);
 
   return (
-    <DiscoverSection id="scrollableDiv">
+    <DiscoverSection id="scrollableDiv" style={{ zIndex: 10 }}>
       {/* Discover top Section with toggle*/}
       <HStack backgroundimage={DiscoverBar}>
         <HStack width="1200px" height="157px" padding="0px 9px">
@@ -364,11 +365,11 @@ const Discover = (props) => {
       </StickySectionHeader>
 
       {/* Content of discover filtering */}
-      <ContentDiscover id="scrollableDiv" style={{ zIndex: "-1000000" }}>
+      <ContentDiscover id="scrollableDiv" style={{ zIndex: "0" }}>
         {/* Show Collection or NFTS Content */}
 
         {isSelected ? (
-          <VStack padding="30px 12px">
+          <VStack padding="30px 12px" style={{ zIndex: "0" }}>
             <InfiniteScroll
               dataLength={collections.length}
               next={fetchMoreCollections}
@@ -384,7 +385,7 @@ const Discover = (props) => {
                 </HStack>
               }
               scrollableTarget="#scrollableDiv"
-              style={{ overflow: "show" }}
+              style={{ overflow: "show", zIndex: -1 }}
             >
               <HStack spacing="12px" flexwrap="wrap" justify="flex-start">
                 {loading ? (
