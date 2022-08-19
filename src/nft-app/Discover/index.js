@@ -49,13 +49,14 @@ import { FilterNFT } from "../../styles/FilterNFT";
 import { FiltersButton } from "../../styles/FiltersButton";
 import "./customstyles.css";
 import { SortButtonCollections } from "../../styles/SortButtonCollections";
-import { StickySectionHeader } from "@mayank1513/sticky-section-header";
 import Xdc3 from "xdc3";
 import NFT from "../../abis/NFT.json";
 import NFTMarket from "../../abis/NFTMarket.json";
 import axios from "axios";
 import { DEFAULT_PROVIDER, HEADER } from "../../constant";
 import NFTMarketLayer1 from "../../abis/NFTMarketLayer1.json";
+import { StickySectionHeader } from "../../CustomModules/sticky/StickySectionHeader.js";
+
 import "./customstyles.css";
 import { positions } from "@mui/system";
 import zIndex from "@mui/material/styles/zIndex";
@@ -514,7 +515,8 @@ const Discover = (props) => {
   useEffect(() => {}, [scrolling]);
 
   return (
-    <DiscoverSection id="scrollableDiv">
+    <DiscoverSection id="scrollableDiv" style={{ zIndex: 10 }}>
+      {/* Discover top Section with toggle*/}
       <HStack backgroundimage={DiscoverBar}>
         <HStack width="1200px" height="157px" padding="0px 9px">
           <TitleBold27 textcolor={appStyle.colors.white}>Discover</TitleBold27>
@@ -638,11 +640,11 @@ const Discover = (props) => {
       </StickySectionHeader>
 
       {/* Content of discover filtering */}
-      <ContentDiscover id="scrollableDiv" style={{ zIndex: "-1000000" }}>
+      <ContentDiscover id="scrollableDiv" style={{ zIndex: "0" }}>
         {/* Show Collection or NFTS Content */}
 
         {isSelected ? (
-          <VStack padding="30px 12px">
+          <VStack padding="30px 12px" style={{ zIndex: "0" }}>
             <InfiniteScroll
               dataLength={collections.length}
               next={fetchMoreCollections}
@@ -658,7 +660,7 @@ const Discover = (props) => {
                 </HStack>
               }
               scrollableTarget="#scrollableDiv"
-              style={{ overflow: "show" }}
+              style={{ overflow: "show", zIndex: -1 }}
             >
               <HStack spacing="12px" flexwrap="wrap" justify="flex-start">
                 {loading ? (
