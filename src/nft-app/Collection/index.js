@@ -46,7 +46,7 @@ import { SearchCollection } from "../../styles/SearchCollection";
 import { FiltersButton } from "../../styles/FiltersButton";
 import { SortButtonNFTS } from "../../styles/SortButtonNFTS";
 import noResult from "../../images/noResult.png";
-import { StickySectionHeader } from "@mayank1513/sticky-section-header";
+import { StickySectionHeader } from "../../CustomModules/sticky/StickySectionHeader.js";
 
 const CollectionDetails = (props) => {
   const history = useHistory();

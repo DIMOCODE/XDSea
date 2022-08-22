@@ -36,7 +36,7 @@ import { nftaddress } from "../../config";
 import { LayoutGroup } from "framer-motion/dist/framer-motion";
 import { Collection } from "../../styles/Collection";
 import { isSafari } from "../../common/common";
-import { StickySectionHeader } from "@mayank1513/sticky-section-header";
+import { StickySectionHeader } from "../../CustomModules/sticky/StickySectionHeader.js";
 import { SearchCollection } from "../../styles/SearchCollection";
 
 function SearchPage(props) {
