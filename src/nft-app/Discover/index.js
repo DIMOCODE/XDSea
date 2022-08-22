@@ -1,7 +1,4 @@
-import React, { 
-  useEffect, 
-  useState 
-} from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { Collection } from "../../styles/Collection";
 import DiscoverBar from "../../images/DiscoverBar.png";
@@ -38,8 +35,11 @@ import noResult from "../../images/noResult.png";
 import { SortButtonNFTS } from "../../styles/SortButtonNFTS";
 import { FiltersButton } from "../../styles/FiltersButton";
 import { SortButtonCollections } from "../../styles/SortButtonCollections";
-import { StickySectionHeader } from "@mayank1513/sticky-section-header";
+import { StickySectionHeader } from "../../CustomModules/sticky/StickySectionHeader.js";
+
 import "./customstyles.css";
+import { positions } from "@mui/system";
+import zIndex from "@mui/material/styles/zIndex";
 
 const Discover = (props) => {
   const size = useWindowSize();
@@ -98,10 +98,12 @@ const Discover = (props) => {
    */
   const getData = async () => {
     try {
-      if(isSelected){
-        if(collections.length == 0) {
-          const collectionData = await (await getCollections(collectionParams)).data;
-    
+      if (isSelected) {
+        if (collections.length == 0) {
+          const collectionData = await (
+            await getCollections(collectionParams)
+          ).data;
+
           setCollections(collectionData.collections);
           setTotalCollections(collectionData.collectionsAmount);
           setCollectionParams((prevState) => ({
@@ -110,17 +112,16 @@ const Discover = (props) => {
           }));
         }
         setLoading(false);
-      }
-      else {
+      } else {
         if (nfts.length === 0) {
           const nftData = await (await getNFTs(nftParams)).data;
 
           setMaxPrice(nftData.higherPrice);
           setNfts(nftData.nfts);
           setTotalNFTs(nftData.nftsAmount);
-          setNftParams((prevState) => ({ 
-            ...prevState, 
-            page: prevState.page + 1 
+          setNftParams((prevState) => ({
+            ...prevState,
+            page: prevState.page + 1,
           }));
         }
         setLoading(false);
@@ -137,7 +138,7 @@ const Discover = (props) => {
     const collectionData = await (
       await getCollections(collectionParams)
     ).data.collections;
-    
+
     setCollectionParams((prevState) => ({
       ...prevState,
       page: prevState.page + 1,
@@ -164,7 +165,7 @@ const Discover = (props) => {
   const updateCollections = async (params) => {
     const collectionData = await (await getCollections(params)).data;
 
-    setCollections(collectionData);
+    setCollections(collectionData.collections);
     setTotalCollections(collectionData.collectionsAmount);
     setCollectionParams((prevState) => ({
       ...prevState,
@@ -179,16 +180,16 @@ const Discover = (props) => {
   const fetchMoreNFTs = async () => {
     const nftData = await (await getNFTs(nftParams)).data.nfts;
 
-    setNftParams({ 
-      ...nftParams, 
-      page: nftParams.page + 1 
+    setNftParams({
+      ...nftParams,
+      page: nftParams.page + 1,
     });
     setNfts([...nfts, ...nftData]);
   };
 
   /**
    * Update NFT list based on the filters chosen by the user
-   * 
+   *
    * @param {*} params parameters used to filter query results
    */
   const handleChangeFilterNFT = (params) => {
@@ -199,7 +200,7 @@ const Discover = (props) => {
 
   /**
    * Get the filtered list of NFTs
-   * 
+   *
    * @param {*} params parameters used to filter query results
    */
   const updateNFTs = async (params) => {
@@ -208,9 +209,9 @@ const Discover = (props) => {
     setNfts(nftData.nfts);
     setMaxPrice(nftData.higherPrice);
     setTotalNFTs(nftData.nftsAmount);
-    setNftParams((prevState) => ({ 
-      ...prevState, 
-      page: prevState.page + 1 
+    setNftParams((prevState) => ({
+      ...prevState,
+      page: prevState.page + 1,
     }));
     setLoading(false);
   };
@@ -227,7 +228,7 @@ const Discover = (props) => {
   /**
    * Scroll listeners to close the menu on scroll
    */
-   useEffect(() => {
+  useEffect(() => {
     const onScroll = (e) => {
       setScrollTop(e.target.documentElement.scrollTop);
       setScrolling(e.target.documentElement.scrollTop > scrollTop);
@@ -241,7 +242,7 @@ const Discover = (props) => {
   useEffect(() => {}, [scrolling]);
 
   return (
-    <DiscoverSection id="scrollableDiv">
+    <DiscoverSection id="scrollableDiv" style={{ zIndex: 10 }}>
       {/* Discover top Section with toggle*/}
       <HStack backgroundimage={DiscoverBar}>
         <HStack width="1200px" height="157px" padding="0px 9px">
@@ -311,21 +312,18 @@ const Discover = (props) => {
           </HStack>
         </HStack>
       </HStack>
+      {/*Sticky bar for collections or for NFTs  */}
 
-      {/* Content of discover filtering */}
-      <ContentDiscover id="scrollableDiv">
-        {/*Sticky bar for collections or for NFTs  */}
-
-        <StickySectionHeader top="90">
-          {isSelected ? (
-            <HStack
-              background="rgb(0,0,0, 0.06)"
-              padding="6px"
-              border="9px"
-              width="100%"
-              style={{ zIndex: 10000 }}
-              blur="30px"
-            >
+      <StickySectionHeader top="90">
+        {isSelected ? (
+          <HStack
+            background="rgb(0,0,0, 0.06)"
+            padding="6px"
+            border="9px"
+            width="100%"
+            blur="30px"
+          >
+            <HStack width="1200px">
               <FiltersButton
                 onChange={handleChangeFilter}
                 params={collectionParams}
@@ -338,14 +336,16 @@ const Discover = (props) => {
                 params={collectionParams}
               ></SortButtonCollections>
             </HStack>
-          ) : (
-            <HStack
-              background="rgb(0,0,0, 0.06)"
-              padding="6px"
-              border="9px"
-              style={{ zIndex: 10000 }}
-              blur="30px"
-            >
+          </HStack>
+        ) : (
+          <HStack
+            background="rgb(0,0,0, 0.06)"
+            padding="6px"
+            border="9px"
+            width="100%"
+            blur="30px"
+          >
+            <HStack width="1200px">
               <FiltersButton
                 isNftFilter={true}
                 onChange={handleChangeFilterNFT}
@@ -359,13 +359,16 @@ const Discover = (props) => {
                 params={nftParams}
               ></SortButtonNFTS>
             </HStack>
-          )}
-        </StickySectionHeader>
+          </HStack>
+        )}
+      </StickySectionHeader>
 
+      {/* Content of discover filtering */}
+      <ContentDiscover id="scrollableDiv" style={{ zIndex: "0" }}>
         {/* Show Collection or NFTS Content */}
 
         {isSelected ? (
-          <VStack padding="30px 12px">
+          <VStack padding="30px 12px" style={{ zIndex: "0" }}>
             <InfiniteScroll
               dataLength={collections.length}
               next={fetchMoreCollections}
@@ -381,7 +384,7 @@ const Discover = (props) => {
                 </HStack>
               }
               scrollableTarget="#scrollableDiv"
-              style={{ overflow: "show" }}
+              style={{ overflow: "show", zIndex: -1 }}
             >
               <HStack spacing="12px" flexwrap="wrap" justify="flex-start">
                 {loading ? (
@@ -466,7 +469,10 @@ const Discover = (props) => {
                   </HStack>
                 }
                 scrollableTarget="#scrollableDiv"
-                style={{ overflow: "hidden" }}
+                style={{
+                  overflow: "hidden",
+                  position: "relative",
+                }}
               >
                 <VStack>
                   <HStack>
@@ -504,7 +510,9 @@ const Discover = (props) => {
                               fileType={item.fileType}
                               background={({ theme }) => theme.backElement}
                               onClick={() =>
-                                props.redirect(`nft/${nftaddress}/${item.tokenId}`)
+                                props.redirect(
+                                  `nft/${nftaddress}/${item.tokenId}`
+                                )
                               }
                               onClickCreator={() =>
                                 props.redirect(`UserProfile/${item.owner._id}`)
@@ -555,6 +563,7 @@ const DiscoverSection = styled(motion.div)`
 `;
 
 const ContentDiscover = styled(motion.div)`
+  position: relative;
   padding: 30px 0;
   max-width: 1200px;
   margin: 0 auto;
