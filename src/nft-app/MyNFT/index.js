@@ -408,76 +408,11 @@ const MyNFT = (props) => {
                                   <TitleBold15
                                     textcolor={appStyle.colors.white}
                                   >
-                                    {isImage(item.fileType) ? (
-                                      <IconImg
-                                        url={
-                                          isSafari
-                                            ? item.urlFile.v1
-                                            : item.urlFile.v0
-                                        }
-                                        width="100%"
-                                        height="100%"
-                                        backsize="cover"
-                                        border="15px"
-                                      ></IconImg>
-                                    ) : isVideo(item.fileType) ? (
-                                      <VStack
-                                        width="186px"
-                                        height="186px"
-                                        border="9px"
-                                        overflow="hidden"
-                                      >
-                                        <ReactPlayer
-                                          url={
-                                            isSafari
-                                              ? item.urlFile.v1
-                                              : item.urlFile.v0
-                                          }
-                                          playing={true}
-                                          volume={0}
-                                          muted={true}
-                                          loop={false}
-                                          width="100%"
-                                          height="160%"
-                                        />
-                                      </VStack>
-                                    ) : isAudio(item.fileType) ? (
-                                      <VStack
-                                        width="186px"
-                                        height="186px"
-                                        border="15px"
-                                        overflow="hidden"
-                                      >
-                                        <ReactPlayer
-                                          url={
-                                            isSafari
-                                              ? item.urlFile.v1
-                                              : item.urlFile.v0
-                                          }
-                                          playing={false}
-                                          muted={true}
-                                          volume={0}
-                                          loop={false}
-                                          width="50%"
-                                          height="50%"
-                                          style={{ borderRadius: 15 }}
-                                        />
-                                      </VStack>
-                                    ) : null}
-                                  </ZItem>
-                                  <ZItem>
-                                    <VStack padding="15px">
-                                      <Spacer></Spacer>
-                                      <TitleBold15
-                                        textcolor={appStyle.colors.white}
-                                      >
-                                        {item.name}
-                                      </TitleBold15>
-                                    </VStack>
-                                  </ZItem>
-                                </ZStack>
-                              </VStack>
-                            ))}
+                                    {item.name}
+                                  </TitleBold15>
+                                </VStack>
+                              </ZItem>    
+                            </ZStack>
                           </HStack>
                         </InfiniteScroll>
                       ) : (
