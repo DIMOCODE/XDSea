@@ -30,7 +30,7 @@ import { Icon } from "@mui/material";
 import { getCollections } from "../API/Collection";
 import { getNFTs } from "../API/NFT";
 import loadingIcon from "../images/loadingDots.gif";
-import { isSafari, truncateAddress } from "../common/common";
+import { truncateAddress } from "../common/common";
 import { nftaddress } from "../config";
 
 function Searchbar({
@@ -199,7 +199,7 @@ function Searchbar({
                         }
                       >
                         <IconImg
-                          url={isSafari ? nft.urlFile.v1 : nft.urlFile.v0}
+                          url={nft.urlFile.v0}
                           width="54px"
                           height="54px"
                           border="9px"
@@ -268,7 +268,7 @@ function Searchbar({
                     >
                       <IconImg
                         url={
-                          isSafari ? collection.banner.v1 : collection.banner.v0
+                          collection.banner.v0
                         }
                         width="100%"
                         height="60px"
@@ -279,7 +279,7 @@ function Searchbar({
                       <HStack>
                         <IconImg
                           url={
-                            isSafari ? collection.logo.v1 : collection.logo.v0
+                            collection.logo.v0
                           }
                           width="32px"
                           height="32px"

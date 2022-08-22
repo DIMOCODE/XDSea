@@ -28,7 +28,7 @@ import bannerXDC from "../../images/bannerXdc.png";
 import { NewFeatured } from "../../styles/NewFeatured";
 import { borderColor } from "@mui/system";
 import "./customstyles.css";
-import { isSafari, truncateAddress } from "../../common/common";
+import { truncateAddress } from "../../common/common";
 
 const Home = (props) => {
   const [featuredNFTs, setFeaturedNFTs] = useState([]);
@@ -143,14 +143,8 @@ const Home = (props) => {
             >
               <LayoutGroup id="number1">
                 <NewFeatured
-                  creatorImage={isSafari
-                    ? featuredNFTs[0]?.nftId.collectionId.logo.v1
-                    : featuredNFTs[0]?.nftId.collectionId.logo.v0
-                  }
-                  itemImage={isSafari
-                    ? featuredNFTs[0]?.nftId.urlFile.v1
-                    : featuredNFTs[0]?.nftId.urlFile.v0
-                  }
+                  creatorImage={featuredNFTs[0]?.nftId.collectionId.logo.v0}
+                  itemImage={featuredNFTs[0]?.nftId.urlFile.v0}
                   collectionName={featuredNFTs[0]?.nftId.collectionId.name}
                   creatorName={truncateAddress(featuredNFTs[0]?.nftId.creator.userName)}
                   itemNumber={featuredNFTs[0]?.nftId.name}
@@ -175,14 +169,8 @@ const Home = (props) => {
             >
               <LayoutGroup id="number2">
                 <NewFeatured
-                  creatorImage={isSafari
-                    ? featuredNFTs[1]?.nftId.collectionId.logo.v1
-                    : featuredNFTs[1]?.nftId.collectionId.logo.v0
-                  }
-                  itemImage={isSafari
-                    ? featuredNFTs[1]?.nftId.urlFile.v1
-                    : featuredNFTs[1]?.nftId.urlFile.v0
-                  }
+                  creatorImage={featuredNFTs[1]?.nftId.collectionId.logo.v0}
+                  itemImage={featuredNFTs[1]?.nftId.urlFile.v0}
                   collectionName={featuredNFTs[1]?.nftId.collectionId.name}
                   creatorName={truncateAddress(featuredNFTs[1]?.nftId.creator.userName)}
                   itemNumber={featuredNFTs[1]?.nftId.name}
@@ -207,14 +195,8 @@ const Home = (props) => {
             >
               <LayoutGroup id="number3">
                 <NewFeatured
-                  creatorImage={isSafari
-                    ? featuredNFTs[2]?.nftId.collectionId.logo.v1
-                    : featuredNFTs[2]?.nftId.collectionId.logo.v0
-                  }
-                  itemImage={isSafari
-                    ? featuredNFTs[2]?.nftId.urlFile.v1
-                    : featuredNFTs[2]?.nftId.urlFile.v0
-                  }
+                  creatorImage={featuredNFTs[2]?.nftId.collectionId.logo.v0}
+                  itemImage={featuredNFTs[2]?.nftId.urlFile.v0}
                   collectionName={featuredNFTs[2]?.nftId.collectionId.name}
                   creatorName={truncateAddress(featuredNFTs[2]?.nftId.creator.userName)}
                   itemNumber={featuredNFTs[2]?.nftId.name}
@@ -239,14 +221,8 @@ const Home = (props) => {
             >
               <LayoutGroup id="number4">
                 <NewFeatured
-                  creatorImage={isSafari
-                    ? featuredNFTs[3]?.nftId.collectionId.logo.v1
-                    : featuredNFTs[3]?.nftId.collectionId.logo.v0
-                  }
-                  itemImage={isSafari
-                    ? featuredNFTs[3]?.nftId.urlFile.v1
-                    : featuredNFTs[3]?.nftId.urlFile.v0
-                  }
+                  creatorImage={featuredNFTs[3]?.nftId.collectionId.logo.v0}
+                  itemImage={featuredNFTs[3]?.nftId.urlFile.v0}
                   collectionName={featuredNFTs[3]?.nftId.collectionId.name}
                   creatorName={truncateAddress(featuredNFTs[3]?.nftId.creator.userName)}
                   itemNumber={featuredNFTs[3]?.nftId.name}
@@ -284,14 +260,8 @@ const Home = (props) => {
               >
                 <LayoutGroup id="number1">
                   <NewFeatured
-                    creatorImage={isSafari
-                      ? featuredNFTs[0]?.nftId.collectionId.logo.v1
-                      : featuredNFTs[0]?.nftId.collectionId.logo.v0
-                    }
-                    itemImage={isSafari
-                      ? featuredNFTs[0]?.nftId.urlFile.v1
-                      : featuredNFTs[0]?.nftId.urlFile.v0
-                    }
+                    creatorImage={featuredNFTs[0]?.nftId.collectionId.logo.v0}
+                    itemImage={featuredNFTs[0]?.nftId.urlFile.v0}
                     collectionName={featuredNFTs[0]?.nftId.collectionId.name}
                     creatorName={truncateAddress(featuredNFTs[0]?.nftId.creator.userName)}
                     itemNumber={featuredNFTs[0]?.nftId.name}
@@ -316,14 +286,8 @@ const Home = (props) => {
               >
                 <LayoutGroup id="number2">
                   <NewFeatured
-                    creatorImage={isSafari
-                      ? featuredNFTs[1]?.nftId.collectionId.logo.v1
-                      : featuredNFTs[1]?.nftId.collectionId.logo.v0
-                    }
-                    itemImage={isSafari
-                      ? featuredNFTs[1]?.nftId.urlFile.v1
-                      : featuredNFTs[1]?.nftId.urlFile.v0
-                    }
+                    creatorImage={featuredNFTs[1]?.nftId.collectionId.logo.v0}
+                    itemImage={featuredNFTs[1]?.nftId.urlFile.v0}
                     collectionName={featuredNFTs[1]?.nftId.collectionId.name}
                     creatorName={truncateAddress(featuredNFTs[1]?.nftId.creator.userName)}
                     itemNumber={featuredNFTs[1]?.nftId.name}
@@ -349,14 +313,8 @@ const Home = (props) => {
               >
                 <LayoutGroup id="number3">
                   <NewFeatured
-                    creatorImage={isSafari
-                      ? featuredNFTs[2]?.nftId.collectionId.logo.v1
-                      : featuredNFTs[2]?.nftId.collectionId.logo.v0
-                    }
-                    itemImage={isSafari
-                      ? featuredNFTs[2]?.nftId.urlFile.v1
-                      : featuredNFTs[2]?.nftId.urlFile.v0
-                    }
+                    creatorImage={featuredNFTs[2]?.nftId.collectionId.logo.v0}
+                    itemImage={featuredNFTs[2]?.nftId.urlFile.v0}
                     collectionName={featuredNFTs[2]?.nftId.collectionId.name}
                     creatorName={truncateAddress(featuredNFTs[2]?.nftId.creator.userName)}
                     itemNumber={featuredNFTs[2]?.nftId.name}
@@ -382,14 +340,8 @@ const Home = (props) => {
               >
                 <LayoutGroup id="number4">
                   <NewFeatured
-                    creatorImage={isSafari
-                      ? featuredNFTs[3]?.nftId.collectionId.logo.v1
-                      : featuredNFTs[3]?.nftId.collectionId.logo.v0
-                    }
-                    itemImage={isSafari
-                      ? featuredNFTs[3]?.nftId.urlFile.v1
-                      : featuredNFTs[3]?.nftId.urlFile.v0
-                    }
+                    creatorImage={featuredNFTs[3]?.nftId.collectionId.logo.v0}
+                    itemImage={featuredNFTs[3]?.nftId.urlFile.v0}
                     collectionName={featuredNFTs[3]?.nftId.collectionId.name}
                     creatorName={truncateAddress(featuredNFTs[3]?.nftId.creator.userName)}
                     itemNumber={featuredNFTs[3]?.nftId.name}
@@ -496,10 +448,7 @@ const Home = (props) => {
                     <TopCollectionItem
                       key={i + 1}
                       width={size.width < 1200 ? "100%" : "580px"}
-                      imageCreator={isSafari
-                        ? item?.logo.v1
-                        : item?.logo.v0
-                      }
+                      imageCreator={item?.logo.v0}
                       collectionName={item?.name}
                       position={i + 1}
                       floorprice={item?.floorPrice}
@@ -545,10 +494,8 @@ const Home = (props) => {
                     hasOffers={item.nftId.hasOpenOffer}
                     fileType={item.nftId.fileType}
                     creatorImage={item.nftId.owner.urlProfile}
-                    itemImage={isSafari
-                      ? item.nftId.urlFile.v1
-                      : item.nftId.urlFile.v0
-                    }
+                    itemImage={item.nftId.urlFile.v0}
+                    itemPreview={item.preview.v0}
                     price={item.nftId.price}
                     collectionName={item.nftId.collectionId.name}
                     itemNumber={item.nftId.name}
@@ -578,10 +525,8 @@ const Home = (props) => {
                     hasOffers={item.nftId.hasOpenOffer}
                     fileType={item.nftId.fileType}
                     creatorImage={item.nftId.owner.urlProfile}
-                    itemImage={isSafari
-                      ? item.nftId.urlFile.v1
-                      : item.nftId.urlFile.v0
-                    }
+                    itemImage={item.nftId.urlFile.v0}
+                    itemPreview={item.preview.v0}
                     price={item.nftId.price}
                     collectionName={item.nftId.collectionId.name}
                     itemNumber={item.nftId.name}
@@ -610,10 +555,8 @@ const Home = (props) => {
                     hasOffers={item.nftId.hasOpenOffer}
                     fileType={item.nftId.fileType}
                     creatorImage={item.nftId.owner.urlProfile}
-                    itemImage={isSafari
-                      ? item.nftId.urlFile.v1
-                      : item.nftId.urlFile.v0
-                    }
+                    itemImage={item.nftId.urlFile.v0}
+                    itemPreview={item.preview.v0}
                     price={item.nftId.price}
                     collectionName={item.nftId.collectionId.name}
                     itemNumber={item.nftId.name}

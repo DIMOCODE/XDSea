@@ -31,7 +31,6 @@ import { getCollections } from "../../API/Collection";
 import { getNFTs } from "../../API/NFT";
 import { nftaddress } from "../../config";
 import { NftContainer } from "../../styles/NftContainer";
-import { isSafari } from "../../common/common";
 import noResult from "../../images/noResult.png";
 import { SortButtonNFTS } from "../../styles/SortButtonNFTS";
 import { FiltersButton } from "../../styles/FiltersButton";
@@ -408,10 +407,8 @@ const Discover = (props) => {
                           isVerified={item.creator.isVerified}
                           keyContent={item.name}
                           keyID={item.creator.userName}
-                          collectionImage={
-                            isSafari ? item.banner.v1 : item.banner.v0
-                          }
-                          creatorLogo={isSafari ? item.logo.v1 : item.logo.v0}
+                          collectionImage={item.banner.v0}
+                          creatorLogo={item.logo.v0}
                           collectionName={item.name}
                           collectionDescription={item.description}
                           creatorName={item.creator.userName}
@@ -505,9 +502,8 @@ const Discover = (props) => {
                               iconStatus={item.saleType.toLowerCase()}
                               hasOffers={item.hasOpenOffer}
                               creatorImage={item.owner.urlProfile}
-                              itemImage={
-                                isSafari ? item.urlFile.v1 : item.urlFile.v0
-                              }
+                              itemImage={item.urlFile.v0}
+                              itemPreview={item.preview.v0}
                               price={item.price}
                               collectionName={item.collectionId.name}
                               itemNumber={item.name}

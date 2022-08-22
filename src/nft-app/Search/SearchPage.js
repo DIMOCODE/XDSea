@@ -37,7 +37,6 @@ import { NftContainer } from "../../styles/NftContainer";
 import { nftaddress } from "../../config";
 import { LayoutGroup } from "framer-motion/dist/framer-motion";
 import { Collection } from "../../styles/Collection";
-import { isSafari } from "../../common/common";
 import { StickySectionHeader } from "@mayank1513/sticky-section-header";
 import { SearchCollection } from "../../styles/SearchCollection";
 
@@ -426,10 +425,10 @@ function SearchPage(props) {
                               keyContent={item.name}
                               keyID={item.creator._id}
                               collectionImage={
-                                isSafari ? item.banner.v1 : item.banner.v0
+                                item.banner.v0
                               }
                               creatorLogo={
-                                isSafari ? item.logo.v1 : item.logo.v0
+                                item.logo.v0
                               }
                               collectionName={item.name}
                               collectionDescription={item.description}
@@ -516,8 +515,9 @@ function SearchPage(props) {
                             hasOffers={item.hasOpenOffer}
                             creatorImage={item.owner.urlProfile}
                             itemImage={
-                              isSafari ? item.urlFile.v1 : item.urlFile.v0
+                              item.urlFile.v0
                             }
+                            itemPreview={item.preview.v0}
                             price={item.price}
                             collectionName={item.collectionId.name}
                             itemNumber={item.name}

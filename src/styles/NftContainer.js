@@ -31,6 +31,7 @@ function NftContainer(props) {
     isVerified,
     usdPrice,
     collectionVerified,
+    itemPreview
   } = props;
 
   const scaleImage = {
@@ -92,7 +93,7 @@ function NftContainer(props) {
               border="12px"
               cursor={"pointer"}
             ></IconImg>
-          ) : (
+          ) : fileType.match("video.*") ? (
             <VStack
               animate={isVisible ? "hover" : "initial"}
               variants={scaleImage}
@@ -109,6 +110,17 @@ function NftContainer(props) {
                 height="100%"
               />
             </VStack>
+          ) : (
+            <IconImg
+              url={itemPreview}
+              width="100%"
+              height="100%"
+              backsize="cover"
+              animate={isVisible ? "hover" : "initial"}
+              variants={scaleImage}
+              border="12px"
+              cursor={"pointer"}
+            ></IconImg>
           )}
         </ZItem>
         <ZItem>
