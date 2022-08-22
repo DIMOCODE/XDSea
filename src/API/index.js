@@ -46,13 +46,29 @@ export const createSignedRequest = async (method, url, params, body) => {
     throw error;
   }
 };
-
-export const createRequest = async (method, url, params, body) => {
+/**
+ * This function creates an http request without authentication header
+ * @param  {String} method http method, it should be one value of the HTTP_METHODS constant defined in the constant.js file
+ * @param  {String} url the request path without domain
+ * @param  {Object} params OPTIONAL. Query parameters needed in the request
+ * @param  {Object} body OPTIONAL.  Body parameters needed in the request
+ * @return {[Promise<Any>]}      Axios Promise Response
+ */
+export const createRequest = async (
+  method,
+  url,
+  params,
+  body,
+  customHeaders
+) => {
   const bodyRequest = {
     url: `${URL_ROOT}/${url}`,
     method,
     params: params ?? {},
     data: body ?? {},
   };
+  if (typeof customHeaders === "object" && Object.keys(customHeaders).length) {
+    bodyRequest.headers = customHeaders;
+  }
   return await axios(bodyRequest);
 };
