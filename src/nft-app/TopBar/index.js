@@ -307,16 +307,6 @@ function TopBar(props) {
                         height="420px"
                         border="0 0 15px 15px"
                       >
-                        {/* <HStack background="pink">
-                        <IconImg
-                          url={XDSealogo}
-                          width="66px"
-                          height="66px"
-                          cursor={"pointer"}
-                        ></IconImg>
-                        <Spacer></Spacer>
-                      </HStack> */}
-
                         <VStack
                           alignment="flex-start"
                           width="180px"
@@ -452,7 +442,7 @@ function TopBar(props) {
                     >
                       <HStack onClick={() => NavigateTo("")} cursor={"pointer"}>
                         <IconImg
-                          url={XDSealogo}
+                          url={XuppiLogo}
                           width="52px"
                           height="52px"
                           cursor={"pointer"}
@@ -619,7 +609,7 @@ function TopBar(props) {
                   >
                     <HStack onClick={() => NavigateTo("")} cursor={"pointer"}>
                       <IconImg
-                        url={XDSealogo}
+                        url={XuppiLogo}
                         width="52px"
                         height="52px"
                         cursor={"pointer"}
@@ -738,7 +728,7 @@ function TopBar(props) {
                   <HStack width="1200px">
                     <HStack onClick={() => NavigateTo("")} cursor={"pointer"}>
                       <IconImg
-                        url={XDSealogo}
+                        url={XuppiLogo}
                         width="66px"
                         height="66px"
                         cursor={"pointer"}

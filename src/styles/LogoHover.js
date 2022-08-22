@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { VStack, IconImg } from "./Stacks";
-import XDSealogo from "./../images/LogoXDSEA.png";
+import XuppiLogo from "./../images/LogoXDSEA.png";
 import curvedText from "./../images/curvedBold.png";
 import {
   motion,
@@ -57,7 +57,7 @@ function LogoHover() {
       >
         <IconImg url={curvedText} width="150px" height="150px"></IconImg>
       </CurvedText>
-      <IconImg url={XDSealogo} width="110px" height="110px"></IconImg>
+      <IconImg url={XuppiLogo} width="110px" height="110px"></IconImg>
     </VStack>
   );
 }
