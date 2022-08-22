@@ -19,14 +19,6 @@ export const isXdc = (address) => {
 export const fromXdc = (address) => '0x'+(address)?.substring(3);
 
 /**
- * Check if the browser is Safari
- */
-export const isSafari = navigator.vendor.match(/apple/i) &&
-    !navigator.userAgent.match(/crios/i) &&
-    !navigator.userAgent.match(/fxios/i) &&
-    !navigator.userAgent.match(/Opera|OPT\//);
-
-/**
  * Get a truncated string for displaying wallet address
  * 
  * @param {string} address wallet address that is to be truncated

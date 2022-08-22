@@ -36,7 +36,6 @@ import ReactPlayer from "react-player";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { getNFTs } from "../../API/NFT";
 import { getCollections } from "../../API/Collection";
-import { isSafari } from "../../common/common";
 import { getUser } from "../../API/User";
 import {
   isImage,
@@ -306,21 +305,10 @@ const MyNFT = (props) => {
                                   </HStack>
                                 </BubbleOffers>
                               ) : null}
-                              <ZItem
-                                backgroundimage={
-                                  isAudio(item.fileType) 
-                                    ? isSafari
-                                      ? item.preview.v1
-                                      : item.preview.v0 
-                                    : null
-                                }
-                              >
+                              <ZItem>
                                 {isImage(item.fileType) ? (
                                   <IconImg
-                                    url={isSafari
-                                      ? item.urlFile.v1
-                                      : item.urlFile.v0
-                                    }
+                                    url={item.urlFile.v0}
                                     width="100%"
                                     height="100%"
                                     backsize="cover"
@@ -334,10 +322,7 @@ const MyNFT = (props) => {
                                     overflow="hidden"
                                   >
                                     <ReactPlayer
-                                      url={isSafari
-                                        ? item.urlFile.v1
-                                        : item.urlFile.v0
-                                      }
+                                      url={item.urlFile.v0}
                                       playing={true}
                                       volume={0}
                                       muted={true}
@@ -347,26 +332,13 @@ const MyNFT = (props) => {
                                     />
                                   </VStack>
                                 ) : isAudio(item.fileType) ? (
-                                  <VStack
-                                    width="186px"
-                                    height="186px"
+                                  <IconImg
+                                    url={item.preview.v0}
+                                    width="100%"
+                                    height="100%"
+                                    backsize="cover"
                                     border="15px"
-                                    overflow="hidden"
-                                  >
-                                    <ReactPlayer
-                                      url={isSafari
-                                        ? item.urlFile.v1
-                                        : item.urlFile.v0
-                                      }
-                                      playing={false}
-                                      muted={true}
-                                      volume={0}
-                                      loop={false}
-                                      width="50%"
-                                      height="50%"
-                                      style={{ borderRadius: 15 }}
-                                    />
-                                  </VStack>
+                                  ></IconImg>
                                 ) : null}
                               </ZItem>
                               <ZItem>
@@ -420,10 +392,7 @@ const MyNFT = (props) => {
                       <VStack width="100%" padding="30px" spacing="30px">
                         <HStack width="100%">
                           <IconImg
-                            url={isSafari
-                              ? item.logo.v1
-                              : item.logo.v0
-                            }
+                            url={item.logo.v0}
                             width="60px"
                             height="60px"
                             backsize="cover"
@@ -447,22 +416,10 @@ const MyNFT = (props) => {
                               }}
                             >
                               <ZStack cursor={"pointer"}>
-                                <ZItem
-                                  backgroundimage={
-                                    isAudio(nft.fileType)
-                                      ? isSafari
-                                        ? nft.preview.v1
-                                        : nft.preview.v0
-                                      : null
-                                  }
-                                >
+                                <ZItem>
                                   {isImage(nft.fileType) ? (
                                     <IconImg
-                                      url={
-                                        isSafari
-                                          ? nft.urlFile.v1
-                                          : nft.urlFile.v0
-                                      }
+                                      url={nft.urlFile.v0}
                                       width="100%"
                                       height="100%"
                                       backsize="cover"
@@ -476,11 +433,7 @@ const MyNFT = (props) => {
                                       overflow="hidden"
                                     >
                                       <ReactPlayer
-                                        url={
-                                          isSafari
-                                            ? nft.urlFile.v1
-                                            : nft.urlFile.v0
-                                        }
+                                        url={nft.urlFile.v0}
                                         playing={true}
                                         muted={true}
                                         loop={false}
@@ -490,26 +443,13 @@ const MyNFT = (props) => {
                                       />
                                     </VStack>
                                   ) : isAudio(nft.fileType) ? (
-                                    <VStack
-                                      width="186px"
-                                      height="186px"
-                                      border="9px"
-                                      overflow="hidden"
-                                    >
-                                      <ReactPlayer
-                                        url={
-                                          isSafari
-                                            ? nft.urlFile.v1
-                                            : nft.urlFile.v0
-                                        }
-                                        playing={false}
-                                        muted={true}
-                                        volume={0}
-                                        loop={false}
-                                        width="100%"
-                                        height="100%"
-                                      />
-                                    </VStack>
+                                    <IconImg
+                                      url={nft.urlFile.v0}
+                                      width="100%"
+                                      height="100%"
+                                      backsize="cover"
+                                      border="15px"
+                                    ></IconImg>
                                   ) : null}
                                 </ZItem>
                                 <ZItem>

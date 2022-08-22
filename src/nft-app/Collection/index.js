@@ -49,10 +49,7 @@ import {
   getCollection, 
   getCollectionNFTs 
 } from "../../API/Collection";
-import { 
-  isSafari, 
-  truncateAddress 
-} from "../../common/common";
+import { truncateAddress } from "../../common/common";
 import { SearchCollection } from "../../styles/SearchCollection";
 import { FiltersButton } from "../../styles/FiltersButton";
 import { SortButtonNFTS } from "../../styles/SortButtonNFTS";
@@ -109,9 +106,7 @@ const CollectionPage = (props) => {
       const collectionData = await ( await getCollection(collectionNickName)).data;
       let collection = {
         _id: collectionData.collection._id,
-        banner: isSafari
-          ? collectionData.collection.banner.v1
-          : collectionData.collection.banner.v0,
+        banner: collectionData.collection.banner.v0,
         creator: collectionData.collection.addressCreator,
         creatorId: collectionData.collection.creator._id,
         isVerified: collectionData.collection.creator.isVerified,
@@ -119,9 +114,7 @@ const CollectionPage = (props) => {
         discordUrl: collectionData.collection.discordUrl,
         floorPrice: collectionData.collection.floorPrice,
         instagramUrl: collectionData.collection.instagramUrl,
-        logo: isSafari
-          ? collectionData.collection.logo.v1
-          : collectionData.collection.logo.v0,
+        logo: collectionData.collection.logo.v0,
         name: collectionData.collection.name,
         twitterUrl: collectionData.collection.twitterUrl,
         volumeTrade: collectionData.collection.volumeTrade,
@@ -704,10 +697,8 @@ const CollectionPage = (props) => {
                       iconStatus={item.saleType.toLowerCase()}
                       hasOffers={item.hasOpenOffer}
                       creatorImage={item.owner.urlProfile}
-                      itemImage={isSafari
-                        ? item.urlFile.v1
-                        : item.urlFile.v0
-                      }
+                      itemImage={item.urlFile.v0}
+                      itemPreview={item.preview.v0}
                       price={item.price}
                       collectionName={item.collectionId.name}
                       itemNumber={item.name}

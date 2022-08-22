@@ -30,7 +30,6 @@ import {
 } from "../../common";
 import { 
   fromXdc, 
-  isSafari, 
   isXdc, 
   truncateAddress 
 } from "../../common/common";
@@ -765,10 +764,7 @@ const NFTDetails = (props) => {
         <TxModal
           isPurchaised={true}
           PurchaisedNftName={nft.name}
-          ListedImage={isSafari
-            ? nft.urlFile.v1
-            : nft.urlFile.v0
-          }
+          ListedImage={nft.urlFile.v0}
           confirmBtnPurchaise={() =>
             props.redirect(`UserProfile/${LS.get(LS_ROOT_KEY).user._id}`)
           }
@@ -934,10 +930,7 @@ const NFTDetails = (props) => {
                         ) : null}
 
                         <IconImg
-                          url={isSafari
-                            ? nft.urlFile.v1
-                            : nft.urlFile.v0
-                          }
+                          url={nft.urlFile.v0}
                           width="100%"
                           height="540px"
                           border="15px"
@@ -1004,10 +997,7 @@ const NFTDetails = (props) => {
                           </AnimatePresence>
                         ) : null}
                         <ReactPlayer
-                          url={isSafari
-                            ? nft.urlFile.v1
-                            : nft.urlFile.v0
-                          }
+                          url={nft.urlFile.v0}
                           playing={true}
                           muted={true}
                           volume={0}
@@ -1022,10 +1012,7 @@ const NFTDetails = (props) => {
                         width="100%"
                         height="540px"
                         border="15px"
-                        backgroundimage={isSafari
-                          ? nft.preview.v1
-                          : nft.preview.v0
-                        }
+                        backgroundimage={nft.preview.v0}
                         overflow="hidden"
                         cursor="pointer"
                         padding="15px"
@@ -1076,10 +1063,7 @@ const NFTDetails = (props) => {
                           </AnimatePresence>
                         ) : null}
                         <ReactPlayer
-                          url={isSafari
-                            ? nft.urlFile.v1
-                            : nft.urlFile.v0
-                          }
+                          url={nft.urlFile.v0}
                           playing={true}
                           muted={true}
                           controls={true}
@@ -1856,10 +1840,8 @@ const NFTDetails = (props) => {
                       key={item.name}
                       fileType={item.fileType}
                       creatorImage={item.owner.urlProfile}
-                      itemImage={isSafari
-                        ? item.urlFile.v1
-                        : item.urlFile.v0
-                      }
+                      itemImage={item.urlFile.v0}
+                      itemPreview={item.preview.v0}
                       price={item.price}
                       collectionName={item.collectionId.name}
                       itemNumber={item.name}
