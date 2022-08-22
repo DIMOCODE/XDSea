@@ -24,7 +24,7 @@ import {
   TitleBold18,
   TitleRegular27,
 } from "../../styles/TextStyles";
-import XDSealogo from "../../images/LogoXDSEA.png";
+import XuppiLogo from "../../images/LogoXDSEA.png";
 import { WalletButton } from "../../styles/walletButton";
 import { fromXdc, isXdc } from "../../common/common";
 import { SwitchButton } from "../../styles/SwitchButton";
