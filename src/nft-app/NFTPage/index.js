@@ -511,7 +511,7 @@ const NFTDetails = (props) => {
       let currentItem = {
         _id: nftData.nft._id,
         price: nftData.nft.price,
-        tokenId: id,
+        tokenId: nftData.nft.SCTokenId,
         itemId: nftData.nft.itemId,
         creator: nftData.nft.creator.userName,
         creatorProfile: nftData.nft.creator.urlProfile,
