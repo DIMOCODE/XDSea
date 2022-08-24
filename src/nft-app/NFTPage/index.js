@@ -207,7 +207,7 @@ const NFTDetails = (props) => {
     if (nft.inBlacklist) {
       success = await LegacyBuyNFT(nft, wallet.address);
     } else {
-      success = await BuyNFT(nft, wallet.address);
+      success = await BuyNFT(nft, wallet.address, nftaddress);
     }
     if (success) {
       setBuyButtonStatus(3);
@@ -241,7 +241,7 @@ const NFTDetails = (props) => {
     setPlacingOffer(false);
     var success = false;
     if (!nft.inBlacklist) {
-      success = await Offer(approved, nft, offerPrice, wallet.address);
+      success = await Offer(approved, nft, offerPrice, wallet.address, nftaddress);
     }
     if (success) {
       setOfferButtonStatus(3);
@@ -265,7 +265,7 @@ const NFTDetails = (props) => {
     if (nft.inBlacklist) {
       success = await LegacyWithdrawListing(approved, nft, wallet.address);
     } else {
-      success = await WithdrawListing(approved, nft, wallet.address);
+      success = await WithdrawListing(approved, nft, wallet.address, nftaddress);
     }
     if (success) {
       setWithdrawButtonStatus(3);
@@ -297,7 +297,7 @@ const NFTDetails = (props) => {
     setEditingListing(false);
     var success = false;
     if (!nft.inBlacklist) {
-      success = await EditNFT(approved, nft, editPrice, wallet.address);
+      success = await EditNFT(approved, nft, editPrice, wallet.address, nftaddress);
     }
     if (success) {
       setEditButtonStatus(3);
@@ -329,7 +329,7 @@ const NFTDetails = (props) => {
     setListingNFT(false);
     var success = false;
     if (!nft.inBlacklist) {
-      success = await SellNFT(approved, nft, listPrice, wallet.address);
+      success = await SellNFT(approved, nft, listPrice, wallet.address, nftaddress);
     }
     if (success) {
       setListButtonStatus(3);
@@ -358,7 +358,8 @@ const NFTDetails = (props) => {
         approved,
         nft,
         transferAddress,
-        wallet.address
+        wallet.address,
+        nftaddress
       );
     }
     if (success) {
@@ -388,7 +389,8 @@ const NFTDetails = (props) => {
         approved,
         nft.tokenId,
         i + 1,
-        wallet.address
+        wallet.address,
+        nftaddress
       );
     }
     if (success) {
@@ -421,7 +423,7 @@ const NFTDetails = (props) => {
     });
     var success = false;
     if (!nft.inBlacklist) {
-      success = await AcceptOffer(approved, nft.tokenId, i + 1, wallet.address);
+      success = await AcceptOffer(approved, nft.tokenId, i + 1, wallet.address, nftaddress);
     }
     if (success) {
       setAcceptOfferButtonStatus((prevState) => {
@@ -521,6 +523,7 @@ const NFTDetails = (props) => {
         collectionLogo: nftData.nft.collectionId.logo.v0,
         image: nftData.nft.urlFile.v0,
         name: nftData.nft.name,
+        nftContract: nftData.nft.nftContract,
         description: nftData.nft.description,
         nftContract: nftaddress,
         isListed: nftData.nft.isListed,
@@ -544,6 +547,7 @@ const NFTDetails = (props) => {
                   image: nft.urlFile.v0,
                   name: nft.name,
                   hasOpenOffer: nft.hasOpenOffer,
+                  nftContract: nft.nftContract,
                   price: nft.price,
                   fileType: nft.fileType,
                   preview: nft.preview.v0,
@@ -1973,7 +1977,7 @@ const NFTDetails = (props) => {
                       background={({ theme }) => theme.backElement}
                       onClick={() => {
                         setNFT(null);
-                        NavigateTo(`nft/${nftaddress}/${item.tokenId}`);
+                        NavigateTo(`nft/${item.nftContract}/${item.tokenId}`);
                       }}
                       onClickCreator={() =>
                         NavigateTo(`UserProfile/${item.ownerId}`)

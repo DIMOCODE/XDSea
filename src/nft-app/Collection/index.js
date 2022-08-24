@@ -130,6 +130,7 @@ const CollectionDetails = (props) => {
             fileType: nft.fileType,
             preview: nft.preview.v0,
             owner: nft.owner.userName,
+            nftContract: nft.nftContract,
             ownerId: nft.owner._id,
             tokenId: nft.tokenId,
             saleType: nft.saleType.toLowerCase(),
@@ -173,6 +174,7 @@ const CollectionDetails = (props) => {
           fileType: nft.fileType,
           preview: nft.preview.v0,
           owner: nft.owner.userName,
+          nftContract: nft.nftContract,
           ownerId: nft.owner._id,
           tokenId: nft.tokenId,
           saleType: nft.saleType.toLowerCase(),
@@ -212,6 +214,7 @@ const CollectionDetails = (props) => {
           fileType: nft.fileType,
           preview: nft.preview.v0,
           owner: nft.owner.userName,
+          nftContract: nft.nftContract,
           ownerId: nft.owner._id,
           tokenId: nft.tokenId,
           saleType: nft.saleType.toLowerCase(),
@@ -698,6 +701,7 @@ const CollectionDetails = (props) => {
                 onChange={handleChangeFilterNFT}
                 params={params}
                 maxPrice={maxPrice}
+                isCollectionPage={true}
               ></FiltersButton>
               <Spacer></Spacer>
               <SortButtonNFTS
@@ -756,7 +760,7 @@ const CollectionDetails = (props) => {
                       fileType={item.fileType}
                       background={({ theme }) => theme.backElement}
                       onClick={() =>
-                        NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
+                        NavigateTo(`nft/${item.nftContract}/${item.tokenId}`)
                       }
                       onClickCreator={() =>
                         NavigateTo(`UserProfile/${item.ownerId}`)

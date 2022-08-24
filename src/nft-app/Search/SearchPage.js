@@ -483,7 +483,7 @@ function SearchPage(props) {
                             fileType={item.fileType}
                             background={({ theme }) => theme.backElement}
                             onClick={() =>
-                              NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
+                              NavigateTo(`nft/${item.nftContract}/${item.tokenId}`)
                             }
                             onClickCreator={() =>
                               NavigateTo(`UserProfile/${item.creator._id}`)

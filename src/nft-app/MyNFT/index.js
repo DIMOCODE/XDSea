@@ -102,6 +102,7 @@ const MyNFT = (props) => {
                 image: item.urlFile.v0,
                 preview: item.preview.v0,
                 name: item.name,
+                nftContract: item.nftContract,
                 logo: item.collectionId.logo.v0,
                 fileType: item.fileType,
                 hasOpenOffer: item.hasOpenOffer
@@ -131,6 +132,7 @@ const MyNFT = (props) => {
           image: item.urlFile.v0,
           preview: item.preview.v0,
           name: item.name,
+          nftContract: item.nftContract,
           logo: item.collectionId.logo.v0,
           fileType: item.fileType,
         };
@@ -404,7 +406,7 @@ const MyNFT = (props) => {
                             overflow="hidden"
                             whileHover={{ scale: 1.05 }}
                             onClick={() => {
-                              NavigateTo(`nft/${nftaddress}/${item.tokenId}`);
+                              NavigateTo(`nft/${item.nftContract}/${item.tokenId}`);
                             }}
                           >
                             <ZStack cursor={"pointer"}>
@@ -548,7 +550,7 @@ const MyNFT = (props) => {
                               whileHover={{ scale: 1.05 }}
                               overflow="hidden"
                               onClick={() => {
-                                NavigateTo(`nft/${nftaddress}/${nft.tokenId}`);
+                                NavigateTo(`nft/${nft.nftContract}/${nft.tokenId}`);
                               }}
                             >
                               <ZStack cursor={"pointer"}>

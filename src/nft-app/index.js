@@ -68,17 +68,6 @@ const NFTApp = () => {
         <>
           <GlobalStyles />
           <HomeStack>
-            {isModalAds ? (
-              <ModalAds
-                imageAd={randomNumber === 0 ? starwarsYoda : starwarsVader}
-                onClickCancel={() => setIsModalAds(!isModalAds)}
-                onClick={() => {
-                  randomNumber === 0
-                    ? history.push(`/nft/${nftaddress}/1793`)
-                    : history.push(`/nft/${nftaddress}/1792`);
-                }}
-              ></ModalAds>
-            ) : null}
             {isDevMode ? (
               <DevMode>
                 <HStack padding="15px 21px" spacing="9px">

@@ -386,6 +386,7 @@ const Discover = (props) => {
             fileType: nft.fileType,
             preview: nft.preview.v0,
             creator: nft.creator.userName,
+            nftContract: nft.nftContract,
             ownerId: nft.owner._id,
             tokenId: nft.tokenId,
             saleType: nft.saleType.toLowerCase(),
@@ -423,6 +424,7 @@ const Discover = (props) => {
           fileType: nft.fileType,
           preview: nft.preview.v0,
           creator: nft.creator.userName,
+          nftContract: nft.nftContract,
           ownerId: nft.owner._id,
           tokenId: nft.tokenId,
           saleType: nft.saleType.toLowerCase(),
@@ -469,6 +471,7 @@ const Discover = (props) => {
           fileType: nft.fileType,
           preview: nft.preview.v0,
           creator: nft.creator.userName,
+          nftContract: nft.nftContract,
           ownerId: nft.owner._id,
           tokenId: nft.tokenId,
           saleType: nft.saleType.toLowerCase(),
@@ -793,7 +796,7 @@ const Discover = (props) => {
                               fileType={item.fileType}
                               background={({ theme }) => theme.backElement}
                               onClick={() =>
-                                NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
+                                NavigateTo(`nft/${item.nftContract}/${item.tokenId}`)
                               }
                               onClickCreator={() =>
                                 NavigateTo(`UserProfile/${item.ownerId}`)
