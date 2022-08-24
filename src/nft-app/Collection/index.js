@@ -659,6 +659,7 @@ const CollectionPage = (props) => {
                 onChange={handleChangeFilterNFT}
                 params={params}
                 maxPrice={maxPrice}
+                isCollectionPage={true}
               ></FiltersButton>
               <SortButtonNFTS
                 onChange={handleChangeFilterNFT}
@@ -717,7 +718,7 @@ const CollectionPage = (props) => {
                       fileType={item.fileType}
                       background={({ theme }) => theme.backElement}
                       onClick={() =>
-                        props.redirect(`nft/${nftaddress}/${item.tokenId}`)
+                        props.redirect(`nft/${item.nftContract}/${item.tokenId}`)
                       }
                       onClickCreator={() =>
                         props.redirect(`user/${item.owner._id}`)

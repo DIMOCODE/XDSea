@@ -525,7 +525,7 @@ function SearchPage(props) {
                             background={({ theme }) => theme.backElement}
                             onClick={() =>
                               props.redirect(
-                                `nft/${nftaddress}/${item.tokenId}`
+                                `nft/${item.nftContract}/${item.tokenId}`
                               )
                             }
                             onClickCreator={() =>

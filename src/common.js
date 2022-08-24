@@ -6,6 +6,7 @@ import NFTMarket from "./abis/NFTMarket.json";
 import NFTMarketLayer1 from "./abis/NFTMarketLayer1.json";
 import { GetWallet, SendTransaction } from "xdc-connect";
 import { fromXdc, isXdc } from "./common/common";
+import ARPCNFT from "./abis/ARPCNFT.json";
 
 /**
  * Convert numbers with decimals to the correct wei amount
@@ -39,7 +40,7 @@ const countDecimals = (value) => {
  * @param {string} wallet the wallet address of the user
  * @returns true if the transaction is successful, false if not
  */
-export const BuyNFT = async (nft, wallet) => {
+export const BuyNFT = async (nft, wallet, nftaddress) => {
   try {
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
     const contract = new xdc3.eth.Contract(
@@ -131,12 +132,12 @@ export const LegacyBuyNFT = async (nft, wallet) => {
  * @param {string} wallet the wallet address of the user
  * @returns true if the transaction is successful, false if not
  */
-export const SellNFT = async (approved, sellData, sellPrice, wallet) => {
+export const SellNFT = async (approved, sellData, sellPrice, wallet, nftaddress) => {
   try {
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
     if (approved === false) {
-      const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
+      const nftContract = new xdc3.eth.Contract(nftaddress === "0x22222d61173b3b5be47965e19168b50f19826eee" ? ARPCNFT.abi : NFT.abi, nftaddress);
       var appData = nftContract.methods
         .setApprovalForAll(nftmarketlayeraddress, true)
         .encodeABI();
@@ -193,12 +194,12 @@ export const SellNFT = async (approved, sellData, sellPrice, wallet) => {
  * @param {string} wallet the wallet address of the user
  * @returns true if the transaction is successful, false if not
  */
-export const WithdrawListing = async (approved, nft, wallet) => {
+export const WithdrawListing = async (approved, nft, wallet, nftaddress) => {
   try {
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
     if (approved === false) {
-      const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
+      const nftContract = new xdc3.eth.Contract(nftaddress === "0x22222d61173b3b5be47965e19168b50f19826eee" ? ARPCNFT.abi : NFT.abi, nftaddress);
 
       var appData = nftContract.methods
         .setApprovalForAll(nftmarketlayeraddress, true)
@@ -316,12 +317,12 @@ export const LegacyWithdrawListing = async (approved, nft, wallet) => {
  * @param {string} wallet the wallet address of the user
  * @returns true if the transaction is successful, false if not
  */
-export const TransferNFT = async (approved, transferNFT, transferAddress, wallet) => {
+export const TransferNFT = async (approved, transferNFT, transferAddress, wallet, nftaddress) => {
   try {
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
     if (approved === false) {
-      const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
+      const nftContract = new xdc3.eth.Contract(nftaddress === "0x22222d61173b3b5be47965e19168b50f19826eee" ? ARPCNFT.abi : NFT.abi, nftaddress);
 
       var appData = nftContract.methods
         .setApprovalForAll(nftmarketlayeraddress, true)
@@ -380,12 +381,12 @@ export const TransferNFT = async (approved, transferNFT, transferAddress, wallet
  * @param {string} wallet the wallet address of the user
  * @returns true if the transaction is successful, false if not
  */
-export const Offer = async (approved, offerNFT, offerPrice, wallet) => {
+export const Offer = async (approved, offerNFT, offerPrice, wallet, nftaddress) => {
   try {
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
     if (approved === false) {
-      const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
+      const nftContract = new xdc3.eth.Contract(nftaddress === "0x22222d61173b3b5be47965e19168b50f19826eee" ? ARPCNFT.abi : NFT.abi, nftaddress);
 
       var appData = nftContract.methods
         .setApprovalForAll(nftmarketlayeraddress, true)
@@ -448,12 +449,12 @@ export const Offer = async (approved, offerNFT, offerPrice, wallet) => {
  * @param {string} wallet the wallet address of the user
  * @returns true if the transaction is successful, false if not
  */
-export const WithdrawOffer = async (approved, tokenId, offerId, wallet) => {
+export const WithdrawOffer = async (approved, tokenId, offerId, wallet, nftaddress) => {
   try {
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
     if (approved === false) {
-      const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
+      const nftContract = new xdc3.eth.Contract(nftaddress === "0x22222d61173b3b5be47965e19168b50f19826eee" ? ARPCNFT.abi : NFT.abi, nftaddress);
 
       var appData = nftContract.methods
         .setApprovalForAll(nftmarketlayeraddress, true)
@@ -508,12 +509,12 @@ export const WithdrawOffer = async (approved, tokenId, offerId, wallet) => {
  * @param {string} wallet the wallet address of the user
  * @returns true if the transaction is successful, false if not
  */
-export const AcceptOffer = async (approved, tokenId, offerId, wallet) => {
+export const AcceptOffer = async (approved, tokenId, offerId, wallet, nftaddress) => {
   try {
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
     if (approved === false) {
-      const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
+      const nftContract = new xdc3.eth.Contract(nftaddress === "0x22222d61173b3b5be47965e19168b50f19826eee" ? ARPCNFT.abi : NFT.abi, nftaddress);
 
       var appData = nftContract.methods
         .setApprovalForAll(nftmarketlayeraddress, true)
@@ -568,12 +569,12 @@ export const AcceptOffer = async (approved, tokenId, offerId, wallet) => {
  * @param {string} wallet the wallet address of the user
  * @returns true if the transaction is successful, false if not
  */
-export const EditNFT = async (approved, sellData, sellPrice, wallet) => {
+export const EditNFT = async (approved, sellData, sellPrice, wallet, nftaddress) => {
   try {
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
     if (approved === false) {
-      const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
+      const nftContract = new xdc3.eth.Contract(nftaddress === "0x22222d61173b3b5be47965e19168b50f19826eee" ? ARPCNFT.abi : NFT.abi, nftaddress);
 
       var appData = nftContract.methods
         .setApprovalForAll(nftmarketlayeraddress, true)

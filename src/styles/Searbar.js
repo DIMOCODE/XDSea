@@ -210,7 +210,7 @@ function Searchbar({
                             padding="6px"
                             border="6px"
                             onClick={() =>
-                              NavigateTo(`nft/${nftaddress}/${nft.tokenId}`)
+                              NavigateTo(`nft/${nft.nftContract}/${nft.tokenId}`)
                             }
                             key={nft._id}
                           >
@@ -363,7 +363,7 @@ function Searchbar({
                             padding="6px"
                             border="6px"
                             onClick={() =>
-                              NavigateTo(`nft/${nftaddress}/${nft.tokenId}`)
+                              NavigateTo(`nft/${nft.nftContract}/${nft.tokenId}`)
                             }
                             key={nft._id}
                             width="260px"
@@ -553,7 +553,7 @@ function Searchbar({
                             padding="6px"
                             border="6px"
                             onClick={() =>
-                              NavigateTo(`nft/${nftaddress}/${nft.tokenId}`)
+                              NavigateTo(`nft/${nft.nftContract}/${nft.tokenId}`)
                             }
                             key={nft._id}
                             width="100%"

@@ -2470,7 +2470,7 @@ const MyNFT = (props) => {
                                       border="6px"
                                       onClick={() => {
                                         props.redirect(
-                                          `nft/${nftaddress}/${item.tokenId}`
+                                          `nft/${item.nftContract}/${item.tokenId}`
                                         );
                                       }}
                                       onHoverStart={() => {
@@ -3126,7 +3126,7 @@ const MyNFT = (props) => {
                           }
                           onClick={() => {
                             props.redirect(
-                              `nft/${nftaddress}/${item.tokenId}`
+                              `nft/${item.nftContract}/${item.tokenId}`
                             );
                           }}
                           onHoverStart={() => {
