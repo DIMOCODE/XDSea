@@ -45,7 +45,7 @@ export const BuyNFT = async (nft, wallet, nftaddress) => {
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
     const contract = new xdc3.eth.Contract(
       NFTMarketLayer1.abi,
-      nftmarketlayeraddress,
+      nft.marketAddress,
       wallet
     );
     var item = await contract.methods.idToMarketItem(nft.tokenId).call();
@@ -60,7 +60,7 @@ export const BuyNFT = async (nft, wallet, nftaddress) => {
 
     const tx = {
       from: wallet,
-      to: nftmarketlayeraddress,
+      to: nft.marketAddress,
       value: marketplacefee,
       data: data,
     };
@@ -139,7 +139,7 @@ export const SellNFT = async (approved, sellData, sellPrice, wallet, nftaddress)
     if (approved === false) {
       const nftContract = new xdc3.eth.Contract(nftaddress === "0x22222d61173b3b5be47965e19168b50f19826eee" ? ARPCNFT.abi : NFT.abi, nftaddress);
       var appData = nftContract.methods
-        .setApprovalForAll(nftmarketlayeraddress, true)
+        .setApprovalForAll(sellData.marketAddress, true)
         .encodeABI();
 
       const tx1 = {
@@ -159,7 +159,7 @@ export const SellNFT = async (approved, sellData, sellPrice, wallet, nftaddress)
 
     const contract2 = new xdc3.eth.Contract(
       NFTMarketLayer1.abi,
-      nftmarketlayeraddress,
+      sellData.marketAddress,
       wallet
     );
 
@@ -169,7 +169,7 @@ export const SellNFT = async (approved, sellData, sellPrice, wallet, nftaddress)
 
     const tx2 = {
       from: wallet,
-      to: nftmarketlayeraddress,
+      to: sellData.marketAddress,
       data,
     };
 
@@ -202,7 +202,7 @@ export const WithdrawListing = async (approved, nft, wallet, nftaddress) => {
       const nftContract = new xdc3.eth.Contract(nftaddress === "0x22222d61173b3b5be47965e19168b50f19826eee" ? ARPCNFT.abi : NFT.abi, nftaddress);
 
       var appData = nftContract.methods
-        .setApprovalForAll(nftmarketlayeraddress, true)
+        .setApprovalForAll(nft.marketAddress, true)
         .encodeABI();
 
       const tx1 = {
@@ -220,7 +220,7 @@ export const WithdrawListing = async (approved, nft, wallet, nftaddress) => {
 
     const contract2 = new xdc3.eth.Contract(
       NFTMarketLayer1.abi,
-      nftmarketlayeraddress,
+      nft.marketAddress,
       wallet
     );
 
@@ -230,7 +230,7 @@ export const WithdrawListing = async (approved, nft, wallet, nftaddress) => {
 
     const tx2 = {
       from: wallet,
-      to: nftmarketlayeraddress,
+      to: nft.marketAddress,
       data,
     };
 
@@ -325,7 +325,7 @@ export const TransferNFT = async (approved, transferNFT, transferAddress, wallet
       const nftContract = new xdc3.eth.Contract(nftaddress === "0x22222d61173b3b5be47965e19168b50f19826eee" ? ARPCNFT.abi : NFT.abi, nftaddress);
 
       var appData = nftContract.methods
-        .setApprovalForAll(nftmarketlayeraddress, true)
+        .setApprovalForAll(transferNFT.marketAddress, true)
         .encodeABI();
 
       const tx1 = {
@@ -343,7 +343,7 @@ export const TransferNFT = async (approved, transferNFT, transferAddress, wallet
 
     const contract2 = new xdc3.eth.Contract(
       NFTMarketLayer1.abi,
-      nftmarketlayeraddress,
+      transferNFT.marketAddress,
       wallet
     );
 
@@ -355,7 +355,7 @@ export const TransferNFT = async (approved, transferNFT, transferAddress, wallet
 
     const tx2 = {
       from: wallet,
-      to: nftmarketlayeraddress,
+      to: transferNFT.marketAddress,
       data,
     };
 
@@ -389,7 +389,7 @@ export const Offer = async (approved, offerNFT, offerPrice, wallet, nftaddress) 
       const nftContract = new xdc3.eth.Contract(nftaddress === "0x22222d61173b3b5be47965e19168b50f19826eee" ? ARPCNFT.abi : NFT.abi, nftaddress);
 
       var appData = nftContract.methods
-        .setApprovalForAll(nftmarketlayeraddress, true)
+        .setApprovalForAll(offerNFT.marketAddress, true)
         .encodeABI();
 
       const tx1 = {
@@ -407,7 +407,7 @@ export const Offer = async (approved, offerNFT, offerPrice, wallet, nftaddress) 
 
     const contract2 = new xdc3.eth.Contract(
       NFTMarketLayer1.abi,
-      nftmarketlayeraddress,
+      offerNFT.marketAddress,
       wallet
     );
 
@@ -422,7 +422,7 @@ export const Offer = async (approved, offerNFT, offerPrice, wallet, nftaddress) 
 
     const tx2 = {
       from: wallet,
-      to: nftmarketlayeraddress,
+      to: offerNFT.marketAddress,
       value: marketplacefee,
       data,
     };
@@ -449,7 +449,7 @@ export const Offer = async (approved, offerNFT, offerPrice, wallet, nftaddress) 
  * @param {string} wallet the wallet address of the user
  * @returns true if the transaction is successful, false if not
  */
-export const WithdrawOffer = async (approved, tokenId, offerId, wallet, nftaddress) => {
+export const WithdrawOffer = async (approved, tokenId, offerId, wallet, nftaddress, marketAddress) => {
   try {
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
@@ -457,7 +457,7 @@ export const WithdrawOffer = async (approved, tokenId, offerId, wallet, nftaddre
       const nftContract = new xdc3.eth.Contract(nftaddress === "0x22222d61173b3b5be47965e19168b50f19826eee" ? ARPCNFT.abi : NFT.abi, nftaddress);
 
       var appData = nftContract.methods
-        .setApprovalForAll(nftmarketlayeraddress, true)
+        .setApprovalForAll(marketAddress, true)
         .encodeABI();
 
       const tx1 = {
@@ -475,7 +475,7 @@ export const WithdrawOffer = async (approved, tokenId, offerId, wallet, nftaddre
 
     const contract2 = new xdc3.eth.Contract(
       NFTMarketLayer1.abi,
-      nftmarketlayeraddress,
+      marketAddress,
       wallet
     );
 
@@ -483,7 +483,7 @@ export const WithdrawOffer = async (approved, tokenId, offerId, wallet, nftaddre
 
     const tx2 = {
       from: wallet,
-      to: nftmarketlayeraddress,
+      to: marketAddress,
       data,
     };
 
@@ -509,7 +509,7 @@ export const WithdrawOffer = async (approved, tokenId, offerId, wallet, nftaddre
  * @param {string} wallet the wallet address of the user
  * @returns true if the transaction is successful, false if not
  */
-export const AcceptOffer = async (approved, tokenId, offerId, wallet, nftaddress) => {
+export const AcceptOffer = async (approved, tokenId, offerId, wallet, nftaddress, marketAddress) => {
   try {
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
@@ -517,7 +517,7 @@ export const AcceptOffer = async (approved, tokenId, offerId, wallet, nftaddress
       const nftContract = new xdc3.eth.Contract(nftaddress === "0x22222d61173b3b5be47965e19168b50f19826eee" ? ARPCNFT.abi : NFT.abi, nftaddress);
 
       var appData = nftContract.methods
-        .setApprovalForAll(nftmarketlayeraddress, true)
+        .setApprovalForAll(marketAddress, true)
         .encodeABI();
 
       const tx1 = {
@@ -535,7 +535,7 @@ export const AcceptOffer = async (approved, tokenId, offerId, wallet, nftaddress
 
     const contract2 = new xdc3.eth.Contract(
       NFTMarketLayer1.abi,
-      nftmarketlayeraddress,
+      marketAddress,
       wallet
     );
 
@@ -543,7 +543,7 @@ export const AcceptOffer = async (approved, tokenId, offerId, wallet, nftaddress
 
     const tx2 = {
       from: wallet,
-      to: nftmarketlayeraddress,
+      to: marketAddress,
       data,
     };
 
@@ -577,7 +577,7 @@ export const EditNFT = async (approved, sellData, sellPrice, wallet, nftaddress)
       const nftContract = new xdc3.eth.Contract(nftaddress === "0x22222d61173b3b5be47965e19168b50f19826eee" ? ARPCNFT.abi : NFT.abi, nftaddress);
 
       var appData = nftContract.methods
-        .setApprovalForAll(nftmarketlayeraddress, true)
+        .setApprovalForAll(sellData.marketAddress, true)
         .encodeABI();
 
       const tx1 = {
@@ -597,7 +597,7 @@ export const EditNFT = async (approved, sellData, sellPrice, wallet, nftaddress)
 
     const contract2 = new xdc3.eth.Contract(
       NFTMarketLayer1.abi,
-      nftmarketlayeraddress,
+      sellData.marketAddress,
       wallet
     );
 
@@ -607,7 +607,7 @@ export const EditNFT = async (approved, sellData, sellPrice, wallet, nftaddress)
 
     const tx2 = {
       from: wallet,
-      to: nftmarketlayeraddress,
+      to: sellData.marketAddress,
       data,
     };
 

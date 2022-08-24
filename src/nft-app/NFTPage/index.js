@@ -413,7 +413,8 @@ const NFTDetails = (props) => {
         nft.tokenId,
         i + 1,
         wallet.address,
-        nftaddress
+        nftaddress,
+        nft.marketAddress
       );
     }
     if (success) {
@@ -454,7 +455,7 @@ const NFTDetails = (props) => {
     });
     var success = false;
     if (!nft.inBlacklist) {
-      success = await AcceptOffer(approved, nft.tokenId, i + 1, wallet.address, nftaddress);
+      success = await AcceptOffer(approved, nft.tokenId, i + 1, wallet.address, nftaddress, nft.marketAddress);
     }
     if (success) {
       setAcceptOfferButtonStatus((prevState) => {
@@ -628,7 +629,7 @@ const NFTDetails = (props) => {
           isXdc(props?.wallet?.address)
             ? fromXdc(props?.wallet?.address)
             : props?.wallet?.address,
-          nftmarketlayeraddress
+          nft.marketAddress
         )
         .call();
     setApproved(getVal);
