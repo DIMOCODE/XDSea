@@ -38,8 +38,8 @@ export const getNFTs = ({searchBy, page, pageSize, userId, sortBy, sortDirection
  * @param {string} tokenId token Id of the NFT (soon to be replaced by NFT Contract and tokenId)
  * @returns HTTP GET request response with the requested NFT
  */
-export const getNFT = (tokenId) => {
-  return createRequest(HTTP_METHODS.get, `nft/byToken/${tokenId}`, null, null);
+export const getNFT = (collectionAddress,tokenId) => {
+  return createRequest(HTTP_METHODS.get, `nft/byToken/${collectionAddress}/${tokenId}`, null, null);
 };
 
 /**

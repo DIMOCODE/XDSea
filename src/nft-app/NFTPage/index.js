@@ -505,7 +505,7 @@ const NFTDetails = (props) => {
       setLoadingOffers(true);
       setLoadingEvents(true);
       setLoadingMore(true);
-      const nftData = await (await getNFT(id)).data;
+      const nftData = await (await getNFT(nftaddress,id)).data;
       let currentItem = {
         _id: nftData.nft._id,
         price: nftData.nft.price,
