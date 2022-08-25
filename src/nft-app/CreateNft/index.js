@@ -58,7 +58,6 @@ import {
 } from "../../API/Collection";
 import { createNFT, getSignedURLNFT, updateNFT } from "../../API/NFT";
 import { isVideo } from "../../common";
-import axios from "axios";
 
 function CreateNft(props) {
   const history = useHistory();
