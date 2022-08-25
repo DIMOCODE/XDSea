@@ -79,6 +79,7 @@ const Home = (props) => {
             image: nft.nftId.urlFile.v0,
             name: nft.nftId.name,
             fileType: nft.nftId.fileType,
+            nftContract: nft.nftId.collectionId.address,
             preview: nft.nftId.preview.v0,
             creator: nft.nftId.creator.userName,
             creatorId: nft.nftId.creator._id,
@@ -111,12 +112,13 @@ const Home = (props) => {
             collectionName: nft.nftId.collectionId.name,
             collectionNickName: nft.nftId.collectionId.nickName,
             creatorLogo: nft.nftId.owner.urlProfile,
-            image: nft.nftId.urlFile.v0,
+            image: nft.nftId.urlFile,
             name: nft.nftId.name,
             hasOpenOffer: nft.nftId.hasOpenOffer,
             price: nft.nftId.price,
             fileType: nft.nftId.fileType,
             preview: nft.nftId.preview.v0,
+            nftContract: nft.nftId.collectionId.address,
             creator: nft.nftId.creator.userName,
             ownerId: nft.nftId.owner._id,
             tokenId: nft.nftId.tokenId,
@@ -225,7 +227,7 @@ const Home = (props) => {
                     )
                   }
                   onClick={() =>
-                    NavigateTo(`nft/${nftaddress}/${featuredNFTs[0]?.tokenId}`)
+                    NavigateTo(`nft/${featuredNFTs[0].nftContract}/${featuredNFTs[0]?.tokenId}`)
                   }
                 ></NewFeatured>
               </LayoutGroup>
@@ -251,7 +253,7 @@ const Home = (props) => {
                     )
                   }
                   onClick={() =>
-                    NavigateTo(`nft/${nftaddress}/${featuredNFTs[1]?.tokenId}`)
+                    NavigateTo(`nft/${featuredNFTs[1].nftContract}/${featuredNFTs[1]?.tokenId}`)
                   }
                 ></NewFeatured>
               </LayoutGroup>
@@ -277,7 +279,7 @@ const Home = (props) => {
                     )
                   }
                   onClick={() =>
-                    NavigateTo(`nft/${nftaddress}/${featuredNFTs[2]?.tokenId}`)
+                    NavigateTo(`nft/${featuredNFTs[2].nftContract}/${featuredNFTs[2]?.tokenId}`)
                   }
                 ></NewFeatured>
               </LayoutGroup>
@@ -303,7 +305,7 @@ const Home = (props) => {
                     )
                   }
                   onClick={() =>
-                    NavigateTo(`nft/${nftaddress}/${featuredNFTs[3]?.tokenId}`)
+                    NavigateTo(`nft/${featuredNFTs[3].nftContract}/${featuredNFTs[3]?.tokenId}`)
                   }
                 ></NewFeatured>
               </LayoutGroup>
@@ -343,7 +345,7 @@ const Home = (props) => {
                     }
                     onClick={() =>
                       NavigateTo(
-                        `nft/${nftaddress}/${featuredNFTs[0]?.tokenId}`
+                        `nft/${featuredNFTs[0].nftContract}/${featuredNFTs[0]?.tokenId}`
                       )
                     }
                   ></NewFeatured>
@@ -371,7 +373,7 @@ const Home = (props) => {
                     }
                     onClick={() =>
                       NavigateTo(
-                        `nft/${nftaddress}/${featuredNFTs[1]?.tokenId}`
+                        `nft/${featuredNFTs[1].nftContract}/${featuredNFTs[1]?.tokenId}`
                       )
                     }
                   ></NewFeatured>
@@ -400,7 +402,7 @@ const Home = (props) => {
                     }
                     onClick={() =>
                       NavigateTo(
-                        `nft/${nftaddress}/${featuredNFTs[2]?.tokenId}`
+                        `nft/${featuredNFTs[2].nftContract}/${featuredNFTs[2]?.tokenId}`
                       )
                     }
                   ></NewFeatured>
@@ -429,7 +431,7 @@ const Home = (props) => {
                     }
                     onClick={() =>
                       NavigateTo(
-                        `nft/${nftaddress}/${featuredNFTs[3]?.tokenId}`
+                        `nft/${featuredNFTs[3].nftContract}/${featuredNFTs[3]?.tokenId}`
                       )
                     }
                   ></NewFeatured>
@@ -578,7 +580,7 @@ const Home = (props) => {
                     itemNumber={item.name}
                     background={({ theme }) => theme.backElement}
                     onClick={() =>
-                      NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
+                      NavigateTo(`nft/${item.nftContract}/${item.tokenId}`)
                     }
                     onClickCreator={() =>
                       NavigateTo(`UserProfile/${item.ownerId}`)
@@ -608,7 +610,7 @@ const Home = (props) => {
                     itemNumber={item.name}
                     background={({ theme }) => theme.backElement}
                     onClick={() =>
-                      NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
+                      NavigateTo(`nft/${item.nftContract}/${item.tokenId}`)
                     }
                     onClickCreator={() =>
                       NavigateTo(`UserProfile/${item.ownerId}`)
@@ -637,7 +639,7 @@ const Home = (props) => {
                     itemNumber={item.name}
                     background={({ theme }) => theme.backElement}
                     onClick={() =>
-                      NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
+                      NavigateTo(`nft/${item.nftContract}/${item.tokenId}`)
                     }
                     onClickCreator={() =>
                       NavigateTo(`UserProfile/${item.ownerId}`)

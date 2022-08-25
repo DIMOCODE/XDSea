@@ -56,7 +56,8 @@ import {
   getCollection,
   getCollections,
 } from "../../API/Collection";
-import { createNFT } from "../../API/NFT";
+import { createNFT, getSignedURLNFT, updateNFT } from "../../API/NFT";
+import { isVideo } from "../../common";
 
 function CreateNft(props) {
   const history = useHistory();
@@ -422,6 +423,30 @@ function CreateNft(props) {
     } else return "";
   };
 
+  const addToS3 = async (nftId, ext) => {
+    const file = document.getElementById("upload-button").files[0];
+    try {
+      const signedData = await (await getSignedURLNFT(nftId, ext)).data;
+      const signedURL = signedData.signedUrl;
+      const s3URL = signedData.url;
+      axios.put(signedURL, file, {
+        headers: {
+          'Content-Type': nft.fileType
+        }
+      }).then(async (res) => {
+        if(res.status === 200) {
+          const updateData = await (await updateNFT(nftId, s3URL)).data;
+        }
+      });
+    } catch (error) {
+      console.log("Error uploading file:", error);
+    }
+  }
+
+  /**
+   * Check if the royalty percentage is set and if not the user is aware
+   * that 0% royalty will be charged
+   */
   const checkRoyalty = async () => {
     if (royalty === 0) {
       setRoyaltyAlert(true);
@@ -546,6 +571,7 @@ function CreateNft(props) {
       gasLimit = await xdc3.eth.estimateGas(tx2);
       tx2["gas"] = gasLimit;
       transaction = await SendTransaction(tx2);
+      var nftCreation = {};
       if (newCollection && !collectionExists) {
         const bannerUrl = await addToIPFSCollectionBanner();
         const logoUrl = await addToIPFSCollectionLogo();
@@ -562,7 +588,7 @@ function CreateNft(props) {
             websiteLink
           )
         ).data.collection;
-        const nftCreation = await (
+        nftCreation = await (
           await createNFT(
             collectionCreation._id,
             tokenId,
@@ -581,7 +607,7 @@ function CreateNft(props) {
         const collectionId = await (
           await getCollection(collectionNickName)
         ).data.collection._id;
-        const nftCreation = await (
+        nftCreation = await (
           await createNFT(
             collectionId,
             tokenId,
@@ -597,6 +623,9 @@ function CreateNft(props) {
           )
         ).data.nft;
       }
+      // if(isVideo(nft.fileType)) {
+      //   await addToS3(nftCreation._id, nft.fileType.split('/')[1]);
+      // }
       setMintButtonStatus(3);
       setMinted(true);
     } catch (error) {

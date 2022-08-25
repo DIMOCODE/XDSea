@@ -47,6 +47,7 @@ function FiltersButton(props) {
     isSearchPage,
     switched,
     maxPrice,
+    isCollectionPage
   } = props;
 
   const size = useWindowSize();
@@ -183,6 +184,13 @@ function FiltersButton(props) {
                   searchTerm: params.searchTerm,
                   page: 1,
                 });
+            } else if (isCollectionPage) {
+              onChange({
+                collectionId: params.collectionId,
+                page: 1,
+                sortBy: "publication",
+                sortDirection: -1,
+              });
             } else {
               if (isNftFilter)
                 onChange({

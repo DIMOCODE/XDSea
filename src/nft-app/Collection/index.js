@@ -46,7 +46,7 @@ import { SearchCollection } from "../../styles/SearchCollection";
 import { FiltersButton } from "../../styles/FiltersButton";
 import { SortButtonNFTS } from "../../styles/SortButtonNFTS";
 import noResult from "../../images/noResult.png";
-import { StickySectionHeader } from "@mayank1513/sticky-section-header";
+import { StickySectionHeader } from "../../CustomModules/sticky/StickySectionHeader.js";
 
 const CollectionDetails = (props) => {
   const history = useHistory();
@@ -123,13 +123,14 @@ const CollectionDetails = (props) => {
           let collectionNFT = {
             collectionName: nft.collectionId.name,
             creatorLogo: nft.owner.urlProfile,
-            image: nft.urlFile.v0,
+            image: nft.urlFile,
             name: nft.name,
             hasOpenOffer: nft.hasOpenOffer,
             price: nft.price,
             fileType: nft.fileType,
             preview: nft.preview.v0,
             owner: nft.owner.userName,
+            nftContract: nft.nftContract,
             ownerId: nft.owner._id,
             tokenId: nft.tokenId,
             saleType: nft.saleType.toLowerCase(),
@@ -166,13 +167,14 @@ const CollectionDetails = (props) => {
         let collectionNFT = {
           collectionName: nft.collectionId.name,
           creatorLogo: nft.owner.urlProfile,
-          image: nft.urlFile.v0,
+          image: nft.urlFile,
           name: nft.name,
           hasOpenOffer: nft.hasOpenOffer,
           price: nft.price,
           fileType: nft.fileType,
           preview: nft.preview.v0,
           owner: nft.owner.userName,
+          nftContract: nft.nftContract,
           ownerId: nft.owner._id,
           tokenId: nft.tokenId,
           saleType: nft.saleType.toLowerCase(),
@@ -205,13 +207,14 @@ const CollectionDetails = (props) => {
         let collectionNFT = {
           collectionName: nft.collectionId.name,
           creatorLogo: nft.owner.urlProfile,
-          image: nft.urlFile.v0,
+          image: nft.urlFile,
           name: nft.name,
           hasOpenOffer: nft.hasOpenOffer,
           price: nft.price,
           fileType: nft.fileType,
           preview: nft.preview.v0,
           owner: nft.owner.userName,
+          nftContract: nft.nftContract,
           ownerId: nft.owner._id,
           tokenId: nft.tokenId,
           saleType: nft.saleType.toLowerCase(),
@@ -698,6 +701,7 @@ const CollectionDetails = (props) => {
                 onChange={handleChangeFilterNFT}
                 params={params}
                 maxPrice={maxPrice}
+                isCollectionPage={true}
               ></FiltersButton>
               <Spacer></Spacer>
               <SortButtonNFTS
@@ -756,7 +760,7 @@ const CollectionDetails = (props) => {
                       fileType={item.fileType}
                       background={({ theme }) => theme.backElement}
                       onClick={() =>
-                        NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
+                        NavigateTo(`nft/${item.nftContract}/${item.tokenId}`)
                       }
                       onClickCreator={() =>
                         NavigateTo(`UserProfile/${item.ownerId}`)

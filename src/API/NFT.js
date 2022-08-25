@@ -38,8 +38,8 @@ export const getNFTs = ({searchBy, page, pageSize, userId, sortBy, sortDirection
  * @param {string} tokenId token Id of the NFT (soon to be replaced by NFT Contract and tokenId)
  * @returns HTTP GET request response with the requested NFT
  */
-export const getNFT = (tokenId) => {
-  return createRequest(HTTP_METHODS.get, `nft/byToken/${tokenId}`, null, null);
+export const getNFT = (collectionAddress,tokenId) => {
+  return createRequest(HTTP_METHODS.get, `nft/byToken/${collectionAddress}/${tokenId}`, null, null);
 };
 
 /**
@@ -212,3 +212,34 @@ export const withdrawOfferRequest = (offerId) => {
 export const acceptOfferRequest = (offerId) => {
   return createSignedRequest(HTTP_METHODS.post, `offer/${offerId}/accept`, null, null);
 }
+
+/**
+ * Post a User-authorized HTTP request to receive a signed URL for uploading assets to S3
+ * 
+ * @param {string} nftId the DB object ID of the NFT
+ * @param {string} ext the filetype extension of the video NFT asset
+ * @returns HTTP POST request response with the signed URL and S3 URL
+ */
+export const getSignedURLNFT = (nftId, ext) => {
+  const body = {
+    contentType: "video",
+    ext
+  };
+  return createSignedRequest(HTTP_METHODS.post, `signedURLProvider/nft/${nftId}/urlFile`, null, body);
+}
+
+/**
+ * Send a User-authorized HTTP request to update the S3 link for the NFT video asset
+ * 
+ * @param {string} nftId the DB object ID of the NFT
+ * @param {string} s3 URL of the uploaded S3 asset
+ * @returns HTTP PUT request response with the updated DB NFT object
+ */
+export const updateNFT = (nftId, s3) => {
+  const body = {
+    urlFile: {
+      s3
+    }
+  };
+  return createSignedRequest(HTTP_METHODS.put, `nft/${nftId}`, null, body);
+};

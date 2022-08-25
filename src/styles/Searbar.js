@@ -319,7 +319,7 @@ function Searchbar({
                         padding="6px"
                         border="6px"
                         onClick={() =>
-                          NavigateTo(`nft/${nftaddress}/${nft.tokenId}`)
+                          NavigateTo(`nft/${nft.nftContract}/${nft.tokenId}`)
                         }
                       >
                         <IconImg

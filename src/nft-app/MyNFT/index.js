@@ -99,9 +99,10 @@ const MyNFT = (props) => {
             nftData.nfts.map(async (item) => {
               let nft = {
                 tokenId: item.tokenId,
-                image: item.urlFile.v0,
+                image: item.urlFile,
                 preview: item.preview.v0,
                 name: item.name,
+                nftContract: item.nftContract,
                 logo: item.collectionId.logo.v0,
                 fileType: item.fileType,
                 hasOpenOffer: item.hasOpenOffer
@@ -128,9 +129,10 @@ const MyNFT = (props) => {
       nftData.nfts.map(async (item) => {
         let nft = {
           tokenId: item.tokenId,
-          image: item.urlFile.v0,
+          image: item.urlFile,
           preview: item.preview.v0,
           name: item.name,
+          nftContract: item.nftContract,
           logo: item.collectionId.logo.v0,
           fileType: item.fileType,
         };
@@ -404,7 +406,7 @@ const MyNFT = (props) => {
                             overflow="hidden"
                             whileHover={{ scale: 1.05 }}
                             onClick={() => {
-                              NavigateTo(`nft/${nftaddress}/${item.tokenId}`);
+                              NavigateTo(`nft/${item.nftContract}/${item.tokenId}`);
                             }}
                           >
                             <ZStack cursor={"pointer"}>
@@ -434,7 +436,7 @@ const MyNFT = (props) => {
                               >
                                 {isImage(item.fileType) ? (
                                   <IconImg
-                                    url={item.image}
+                                    url={item.image.v0}
                                     width="100%"
                                     height="100%"
                                     backsize="cover"
@@ -448,7 +450,7 @@ const MyNFT = (props) => {
                                     overflow="hidden"
                                   >
                                     <ReactPlayer
-                                      url={item.image}
+                                      url={item.image.s3}
                                       playing={true}
                                       volume={0}
                                       muted={true}
@@ -465,7 +467,7 @@ const MyNFT = (props) => {
                                     overflow="hidden"
                                   >
                                     <ReactPlayer
-                                      url={item?.image}
+                                      url={item?.image.v0}
                                       playing={false}
                                       muted={true}
                                       volume={0}
@@ -548,7 +550,7 @@ const MyNFT = (props) => {
                               whileHover={{ scale: 1.05 }}
                               overflow="hidden"
                               onClick={() => {
-                                NavigateTo(`nft/${nftaddress}/${nft.tokenId}`);
+                                NavigateTo(`nft/${nft.nftContract}/${nft.tokenId}`);
                               }}
                             >
                               <ZStack cursor={"pointer"}>
@@ -577,9 +579,7 @@ const MyNFT = (props) => {
                                       overflow="hidden"
                                     >
                                       <ReactPlayer
-                                        url={
-                                          nft.urlFile.v0
-                                        }
+                                        url={nft.urlFile.s3}
                                         playing={true}
                                         muted={true}
                                         loop={false}

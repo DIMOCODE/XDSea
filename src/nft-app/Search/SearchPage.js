@@ -36,7 +36,7 @@ import { nftaddress } from "../../config";
 import { LayoutGroup } from "framer-motion/dist/framer-motion";
 import { Collection } from "../../styles/Collection";
 import { isSafari } from "../../common/common";
-import { StickySectionHeader } from "@mayank1513/sticky-section-header";
+import { StickySectionHeader } from "../../CustomModules/sticky/StickySectionHeader.js";
 import { SearchCollection } from "../../styles/SearchCollection";
 
 function SearchPage(props) {
@@ -475,7 +475,7 @@ function SearchPage(props) {
                             hasOffers={item.hasOpenOffer}
                             creatorImage={item.owner.urlProfile}
                             itemImage={
-                              item.urlFile.v0
+                              item.urlFile
                             }
                             price={item.price}
                             collectionName={item.collectionId.name}
@@ -483,7 +483,7 @@ function SearchPage(props) {
                             fileType={item.fileType}
                             background={({ theme }) => theme.backElement}
                             onClick={() =>
-                              NavigateTo(`nft/${nftaddress}/${item.tokenId}`)
+                              NavigateTo(`nft/${item.nftContract}/${item.tokenId}`)
                             }
                             onClickCreator={() =>
                               NavigateTo(`UserProfile/${item.creator._id}`)
