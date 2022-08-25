@@ -745,7 +745,7 @@ const NFTDetails = (props) => {
 
   useEffect(() => {
     setWallet(props?.wallet);
-    getApproval(nft.marketAddress);
+    getApproval(nft?.marketAddress);
   }, [props?.wallet]);
 
   const webLink = `https://www.xdsea.com/${nftaddress}/${id}`;
