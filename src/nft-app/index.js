@@ -13,13 +13,17 @@ import MyNFT from "./MyNFT";
 import { CreateNft } from "./CreateNft";
 import Collection from "./Collection";
 import NFTPage from "./NFTPage";
+import { ModalAds } from "../ModalAds";
 import { HowToStart } from "../HowToStart";
+import starwarsYoda from "../images/Yoda4.gif";
+import starwarsVader from "../images/Vader1.gif";
 import alertWhite from "../images/alertWhite.png";
 import { nftaddress } from "../config";
 import { HStack, IconImg } from "../styles/Stacks";
 import { CaptionRegular } from "../styles/TextStyles";
 import useWindowSize from "../styles/useWindowSize";
 import { sizeWidth } from "@mui/system";
+import MenuContext from "../context/menuContext";
 import ReactGA from "react-ga";
 import { SearchPage } from "./Search/SearchPage";
 import { createRequest } from "../API";
@@ -29,33 +33,23 @@ ReactGA.initialize(TRACKING_ID);
 
 const NFTApp = () => {
   const history = useHistory();
-  const size = useWindowSize();
-
   const [wallet, setWallet] = useState({});
   const [theme, setTheme] = useState("light");
+  const [isModalAds, setIsModalAds] = useState(false);
+  const [randomNumber, setRandomNumber] = useState(0);
   const [isDevMode] = useState(false);
+  const size = useWindowSize();
   const [showMenu, setShowMenu] = useState(false);
   const [xdcPrice, setXdcPrice] = useState(0);
 
-  /**
-   * Toggle the theme from light to dark
-   */
   const themeToggler = () => {
     theme === "light" ? setTheme("dark") : setTheme("light");
   };
 
-  /**
-   * Update the state with the wallet information
-   * 
-   * @param {*} connectedWallet the wallet object
-   */
   const handleWallet = (connectedWallet) => {
     setWallet(connectedWallet);
   };
 
-  /**
-   * Get the USD Price for XDC
-   */
   const getXDCPrice = async () => {
     const price = await (
       await createRequest(HTTP_METHODS.get, "ping/xdcPrice", null, null)
@@ -63,118 +57,103 @@ const NFTApp = () => {
     setXdcPrice(price);
   };
 
-  /**
-   * Redirect the user to a specific path
-   * 
-   * @param {string} route path to redirect to
-   */
-   const NavigateTo = (route) => {
-    setShowMenu(false);
-    history.push(`/${route}`);
-  }
-
-  /**
-   * React Hook to initialise Google Analytics and get the USD prices
-   */
   useEffect(() => {
     ReactGA.pageview(window.location.pathname + window.location.search);
     getXDCPrice();
   }, []);
 
   return (
-    <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
-      <>
-        <GlobalStyles />
-        <HomeStack>
-          {isDevMode ? (
-            <DevMode>
-              <HStack padding="15px 21px" spacing="9px">
-                <IconImg
-                  url={alertWhite}
-                  width="21px"
-                  height="21px"
-                ></IconImg>
-                <CaptionRegular textcolor="white">
-                  <b>
-                    This Developer Page is for feature testing purposes. All
-                    transactions
-                  </b>
-                  &nbsp;made on the developer page
-                  <b>
-                    {" "}
-                    are executed on the test network. They will not affect
-                    your XDC balance.
-                  </b>
-                </CaptionRegular>
-              </HStack>
-            </DevMode>
-          ) : null}
-
-          {/* This is the main TopBar of the website */}
-          <TopBar
-            device={
-              size.width > 1024
-                ? "computer"
-                : size.width > 768
-                ? "tablet"
-                : size.width > 425
-                ? "phone"
-                : "phone"
-            }
-            onWalletChange={handleWallet}
-            devMode={!isDevMode}
-            themeToggler={themeToggler}
-            redirect={NavigateTo}
-            showMenu={showMenu}
-          ></TopBar>
-
-          {/* This is where all the content of the site is rendering */}
-
-          <ScrollView>
-            <Switch>
-              <Route
-                exact
-                path="/"
-                render={() => <Home xdc={xdcPrice} redirect={NavigateTo} showMenu={showMenu} />}
-              ></Route>
-              <Route
-                exact
-                path="/discover"
-                render={() => <Discover xdc={xdcPrice} redirect={NavigateTo} showMenu={showMenu} />}
-              ></Route>
-              <Route
-                exact
-                path="/SearchPage"
-                render={() => <SearchPage xdc={xdcPrice} redirect={NavigateTo} showMenu={showMenu} />}
-              ></Route>
-              <Route
-                exact
-                path="/UserProfile/:userId"
-                render={() => <MyNFT redirect={NavigateTo} showMenu={showMenu} />}
-              ></Route>
-              <Route
-                exact
-                path="/CreateNFT"
-                render={() => <CreateNft wallet={wallet} redirect={NavigateTo} showMenu={showMenu} />}
-              ></Route>
-              <Route
-                exact
-                path="/collection/:collectionNickName"
-                render={() => <Collection xdc={xdcPrice} redirect={NavigateTo} showMenu={showMenu} />}
-              ></Route>
-              <Route
-                exact
-                path="/nft/:nftaddress/:id"
-                render={() => <NFTPage wallet={wallet} xdc={xdcPrice} redirect={NavigateTo} showMenu={showMenu} />}
-              ></Route>
-              <Route exact path="/HowToStart" render={ () => <HowToStart redirect={NavigateTo} showMenu={showMenu} />}></Route>
-              <Route path="**" render={() => <Home redirect={NavigateTo} showMenu={showMenu} />}></Route>
-            </Switch>
-            <Footer redirect={NavigateTo} ></Footer>
-          </ScrollView>
-        </HomeStack>
-      </>
-    </ThemeProvider>
+    <MenuContext.Provider value={[showMenu, setShowMenu]}>
+      <ThemeProvider theme={theme === "light" ? lightTheme : darkTheme}>
+        <>
+          <GlobalStyles />
+          <HomeStack>
+            {isDevMode ? (
+              <DevMode>
+                <HStack padding="15px 21px" spacing="9px">
+                  <IconImg
+                    url={alertWhite}
+                    width="21px"
+                    height="21px"
+                  ></IconImg>
+                  <CaptionRegular textcolor="white">
+                    <b>
+                      This Developer Page is for feature testing purposes. All
+                      transactions
+                    </b>
+                    &nbsp;made on the developer page
+                    <b>
+                      {" "}
+                      are executed on the test network. They will not affect
+                      your XDC balance.
+                    </b>
+                  </CaptionRegular>
+                </HStack>
+              </DevMode>
+            ) : null}
+            {/* {size.width <  ? } */}
+            <TopBar
+              // isMobile={size.width < 768 ? true : false}
+              // device={size.width > 768 ? "tablet" : "phone"}
+              device={
+                size.width > 1024
+                  ? "computer"
+                  : size.width > 768
+                  ? "tablet"
+                  : size.width > 425
+                  ? "phone"
+                  : "phone"
+              }
+              onWalletChange={handleWallet}
+              devMode={!isDevMode}
+              themeToggler={themeToggler}
+            ></TopBar>
+            <ScrollView>
+              <Switch>
+                <Route
+                  exact
+                  path="/"
+                  render={() => <Home xdc={xdcPrice} />}
+                ></Route>
+                <Route
+                  exact
+                  path="/discover"
+                  render={() => <Discover xdc={xdcPrice} />}
+                ></Route>
+                <Route
+                  exact
+                  path="/SearchPage"
+                  render={() => <SearchPage xdc={xdcPrice} />}
+                ></Route>
+                <Route
+                  exact
+                  path="/UserProfile/:userId"
+                  component={MyNFT}
+                ></Route>
+                <Route
+                  exact
+                  path="/CreateNFT"
+                  render={() => <CreateNft wallet={wallet} />}
+                ></Route>
+                <Route
+                  exact
+                  path="/collection/:collectionNickName"
+                  render={() => <Collection xdc={xdcPrice} />}
+                ></Route>
+                <Route
+                  exact
+                  path="/nft/:nftaddress/:id"
+                  render={() => <NFTPage wallet={wallet} xdc={xdcPrice} />}
+                ></Route>
+                <Route exact path="/HowToStart" component={HowToStart}></Route>
+                <Route path="**" component={Home}></Route>
+              </Switch>
+              <Footer></Footer>
+            </ScrollView>
+          </HomeStack>
+        </>
+      </ThemeProvider>
+    </MenuContext.Provider>
   );
 };
 

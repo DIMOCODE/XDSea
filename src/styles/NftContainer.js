@@ -30,7 +30,7 @@ function NftContainer(props) {
     hasOffers,
     isVerified,
     usdPrice,
-    collectionVerified,
+    collectionVerified
   } = props;
 
   const scaleImage = {
@@ -50,7 +50,14 @@ function NftContainer(props) {
       opacity: 1,
     },
   };
-
+  // const moveContainer = {
+  //   initial: {
+  //     y: 69,
+  //   },
+  //   hover: {
+  //     y: 69,
+  //   },
+  // };
   const [isVisible, setIsVisible] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [nftStatus] = useState(iconStatus);
@@ -255,14 +262,17 @@ function NftContainer(props) {
                 >
                   {collectionName}
                 </CaptionBoldShort>
-                {collectionVerified ? (
-                  <IconImg
-                    url={verifiedBlue}
-                    width="15px"
-                    height="15px"
-                    border="120px"
-                  ></IconImg>
-                ) : null}
+                {collectionVerified
+                  ? (
+                    <IconImg
+                      url={verifiedBlue}
+                      width="15px"
+                      height="15px"
+                      border="120px"
+                    ></IconImg>
+                  )
+                  : null
+                }
                 <Spacer></Spacer>
               </HStack>
 
@@ -284,7 +294,11 @@ function NftContainer(props) {
               </HStack>
               <HStack spacing="3px" alignment="center" cursor={"pointer"}>
                 <IconImg url={miniXdcLogo} width="18px" height="18px"></IconImg>
-                <TitleBold18 textcolor={appStyle.colors.white}>
+                <TitleBold18
+                  // variants={fadeText}
+                  // animate={isVisible ? "hover" : "initial"}
+                  textcolor={appStyle.colors.white}
+                >
                   {Number(price) > 100000
                     ? Intl.NumberFormat("en-US", {
                         notation: "compact",

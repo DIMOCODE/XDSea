@@ -19,11 +19,9 @@ export const HEADER = {
   ],
 };
 
-{/* HTTP Provider for connecting to the blockchain */}
 export const DEFAULT_PROVIDER = HTTP_PROVIDER[50];
 export const NETWORK_NAME = NETWORK_DICT[50];
 
-{/* Local Storage Encrypted Cookie Storage */}
 export const LS = new SecureLS({
   encodingType: "rabbit",
   isCompression: true,
@@ -35,11 +33,4 @@ export const HTTP_METHODS = {
   get: "GET",
   put: "PUT",
   delete: "DELETE",
-};
-
-export const AWS_CONFIG = {
-  bucketName: process.env.REACT_APP_BUCKET_NAME,
-  region: process.env.REACT_APP_REGION,
-  accessKeyId: process.env.REACT_APP_ACCESS_ID,
-  secretAccessKey: process.env.REACT_APP_ACCESS_KEY
 };

@@ -18,7 +18,9 @@ import {
 
 import verifiedBlue from "../images/verifiedBlue.png";
 import xdcLogo from "../images/miniXdcLogo.png";
+import nonVerified from "../images/nonVerified.png";
 import filter from "../images/filter.png";
+import all from "../images/all.png";
 import notforsale from "../images/notforsale.png";
 import relist from "../images/relist.png";
 import sold from "../images/sold.png";
@@ -45,6 +47,7 @@ function FiltersButton(props) {
     isSearchPage,
     switched,
     maxPrice,
+    isCollectionPage
   } = props;
 
   const size = useWindowSize();
@@ -181,6 +184,13 @@ function FiltersButton(props) {
                   searchTerm: params.searchTerm,
                   page: 1,
                 });
+            } else if (isCollectionPage) {
+              onChange({
+                collectionId: params.collectionId,
+                page: 1,
+                sortBy: "publication",
+                sortDirection: -1,
+              });
             } else {
               if (isNftFilter)
                 onChange({

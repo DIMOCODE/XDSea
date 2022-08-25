@@ -1,11 +1,10 @@
-import React, { 
-  useEffect, 
-  useState 
-} from "react";
+import React, { useEffect, useMemo } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 import {
   VStack,
   HStack,
+  Spacer,
   ZItem,
   ZStack,
   IconImg,
@@ -14,43 +13,40 @@ import {
   BodyBold,
   BodyRegular,
   CaptionBoldShort,
+  TitleBold18,
   TitleBold27,
   TitleRegular27,
 } from "../../styles/TextStyles";
 import { appStyle } from "../../styles/AppStyles";
-import { 
-  AnimatePresence, 
-  motion 
-} from "framer-motion/dist/framer-motion";
+import { AnimatePresence, motion } from "framer-motion/dist/framer-motion";
 import DiscoverBar from "../../images/DiscoverBar.png";
 import { SortButtonCollections } from "../../styles/SortButtonCollections";
 import useWindowSize from "../../styles/useWindowSize";
 import { FiltersButton } from "../../styles/FiltersButton";
 import { SortButtonNFTS } from "../../styles/SortButtonNFTS";
 import noResult from "../../images/noResult.png";
-import { useLocation } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 import { getCollections } from "../../API/Collection";
 import { getNFTs } from "../../API/NFT";
 import { LoopLogo } from "../../styles/LoopLogo";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { NftContainer } from "../../styles/NftContainer";
+import banner1 from "../../images/Banner1.jpg";
 import { nftaddress } from "../../config";
 import { LayoutGroup } from "framer-motion/dist/framer-motion";
 import { Collection } from "../../styles/Collection";
 import { isSafari } from "../../common/common";
-import { StickySectionHeader } from "@mayank1513/sticky-section-header";
+import { StickySectionHeader } from "../../CustomModules/sticky/StickySectionHeader.js";
 import { SearchCollection } from "../../styles/SearchCollection";
 
 function SearchPage(props) {
   const size = useWindowSize();
+  const history = useHistory();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
-
   const [searchTerm, setSearchTerm] = useState(searchParams.get("searchTerm"));
   const [isSelected, setIsSelected] = useState(
-    searchParams.get("mode") === "nft" 
-      ? false 
-      : true
+    searchParams.get("mode") === "nft" ? false : true
   );
   const [collectionData, setCollectionData] = useState([]);
   const [totalCollections, setTotalCollections] = useState(0);
@@ -68,11 +64,6 @@ function SearchPage(props) {
   const [newResults, setNewResults] = useState(true);
   const [maxPrice, setMaxPrice] = useState(0);
 
-  /**
-   * Get a list of collections
-   * 
-   * @param {*} params the collection parameters for filtering
-   */
   const getCollectionData = async (params) => {
     const collectionResults = await (await getCollections(params)).data;
     setCollectionData(collectionResults.collections);
@@ -85,9 +76,6 @@ function SearchPage(props) {
     }));
   };
 
-  /**
-   * Get the next page of collections
-   */
   const fetchMoreCollections = async () => {
     const collectionResults = await (
       await getCollections(collectionParams)
@@ -109,11 +97,6 @@ function SearchPage(props) {
     updateCollections(params);
   };
 
-  /**
-   * Update the list of collections with the new parameters
-   * 
-   * @param {*} params the collection filter parameters
-   */
   const updateCollections = async (params) => {
     setLoading(true);
     const collectionResults = await (await getCollections(params)).data;
@@ -126,14 +109,8 @@ function SearchPage(props) {
     setLoading(false);
   };
 
-  /**
-   * Get a list of NFTs
-   * 
-   * @param {*} params the NFT parameters for filtering
-   */
   const getNFTData = async (params) => {
     const nftResults = await (await getNFTs(params)).data;
-
     setMaxPrice(nftResults.higherPrice);
     setNftData(nftResults.nfts);
     setTotalNFTs(nftResults.nftsAmount);
@@ -145,51 +122,36 @@ function SearchPage(props) {
     }));
   };
 
-  /**
-   * Get the next page of NFTs
-   */
   const fetchMoreNFTs = async () => {
     const nftResults = await (await getNFTs(nftParams)).data;
-
     setNftData([...nftData, ...nftResults.nfts]);
-    setNftParams({ 
-      ...nftParams, 
-      page: nftParams.page + 1 
-    });
+    setNftParams((prevState) => ({ ...prevState, page: prevState.page + 1 }));
   };
 
   /**
-   * Update NFT list based on the filters chosen by the user
-   * 
-   * @param {*} params parameters used to filter query results
+   * Update the state of the component and update the nft data
+   *
+   * @param {*} params - NFT Search Params
    */
   const handleChangeFilterNFT = (params) => {
-    setLoading(true);
     setNftParams(params);
     updateNFTs(params);
   };
 
-  /**
-   * Get the filtered list of NFTs
-   * 
-   * @param {*} params parameters used to filter query results
-   */
   const updateNFTs = async (params) => {
+    setLoading(true);
     const nftResults = await (await getNFTs(params)).data;
-
     setMaxPrice(nftResults.higherPrice);
     setNftData(nftResults.nfts);
-    setNftParams((prevState) => ({ 
-      ...prevState, 
-      page: prevState.page + 1 
-    }));
+    setNftParams((prevState) => ({ ...prevState, page: prevState.page + 1 }));
     setTotalNFTs(nftResults.nftsAmount);
     setLoading(false);
   };
 
-  /**
-   * React Hook to re-render the component when the search term is updated
-   */
+  function NavigateTo(route) {
+    history.push(`/${route}`);
+  }
+
   useEffect(async () => {
     setLoading(true);
     if (isSelected) {
@@ -230,7 +192,7 @@ function SearchPage(props) {
             >{`"${searchTerm}"`}</TitleBold27>
           </HStack>
 
-          {/* Toggle between NFTs and Collections */}
+          {/* Toggle */}
           <HStack
             background="rgb(0,0,0,0.3)"
             padding="3px"
@@ -314,7 +276,6 @@ function SearchPage(props) {
       </HStack>
 
       <ContentSearch id="scrollableDiv">
-        {/* Sticky bar with filters and sort for NFT and Collections */}
         <StickySectionHeader top="90">
           {isSelected ? (
             <HStack
@@ -385,8 +346,6 @@ function SearchPage(props) {
           )}
         </StickySectionHeader>
 
-        {/* Content results depending of search query */}
-
         {isSelected ? (
           <VStack style={{ zIndex: "20" }} spacing="30px" padding="30px 12px">
             {loading ? (
@@ -426,16 +385,16 @@ function SearchPage(props) {
                               keyContent={item.name}
                               keyID={item.creator._id}
                               collectionImage={
-                                isSafari ? item.banner.v1 : item.banner.v0
+                                item.banner.v0
                               }
                               creatorLogo={
-                                isSafari ? item.logo.v1 : item.logo.v0
+                                item.logo.v0
                               }
                               collectionName={item.name}
                               collectionDescription={item.description}
                               creatorName={item.creator.userName}
                               onClickCollection={() =>
-                                props.redirect(`collection/${item.nickName}`)
+                                NavigateTo(`collection/${item.nickName}`)
                               }
                               floorprice={item.floorPrice}
                               owners={item.owners}
@@ -450,7 +409,7 @@ function SearchPage(props) {
                                 collectionParams.sortBy === "volumeTrade"
                               }
                               onClickCreator={() =>
-                                props.redirect(`UserProfile/${item.creator._id}`)
+                                NavigateTo(`UserProfile/${item.creator._id}`)
                               }
                               xdc={props.xdc}
                             ></Collection>
@@ -516,7 +475,7 @@ function SearchPage(props) {
                             hasOffers={item.hasOpenOffer}
                             creatorImage={item.owner.urlProfile}
                             itemImage={
-                              isSafari ? item.urlFile.v1 : item.urlFile.v0
+                              item.urlFile.v0
                             }
                             price={item.price}
                             collectionName={item.collectionId.name}
@@ -524,10 +483,10 @@ function SearchPage(props) {
                             fileType={item.fileType}
                             background={({ theme }) => theme.backElement}
                             onClick={() =>
-                              props.redirect(`nft/${nftaddress}/${item.tokenId}`)
+                              NavigateTo(`nft/${item.nftContract}/${item.tokenId}`)
                             }
                             onClickCreator={() =>
-                              props.redirect(`UserProfile/${item.creator._id}`)
+                              NavigateTo(`UserProfile/${item.creator._id}`)
                             }
                             owner={true}
                             usdPrice={props.xdc}

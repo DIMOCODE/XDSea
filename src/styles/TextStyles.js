@@ -246,7 +246,6 @@ export const CaptionBoldShort = styled(motion.p).attrs((props) => ({
   align: props.align || "Left",
   padding: props.padding || "0px",
   cursor: props.cursor || "default",
-  marginBottom: props.marginBottom || "0px",
 }))`
   text-align: ${(props) => props.align};
   font-weight: 800;
@@ -255,7 +254,6 @@ export const CaptionBoldShort = styled(motion.p).attrs((props) => ({
   letter-spacing: -0.01em;
   padding: ${(props) => props.padding};
   color: ${(props) => props.textcolor};
-  margin-bottom: ${(props) => props.marginBottom};
   cursor: ${(props) => props.cursor};
   -webkit-user-select: none;
   -khtml-user-select: none;

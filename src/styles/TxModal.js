@@ -306,7 +306,48 @@ function TxModal(props) {
               </HStack>
             </>
           )}
-
+          {/* {isList && (
+            <>
+              <VStack flex="0" spacing="0px">
+                <IconImg url={listIcon} width="54px" height="54px"></IconImg>
+                <TitleBold21 textcolor={({ theme }) => theme.text}>
+                  List Confirmed{" "}
+                </TitleBold21>
+              </VStack>
+              <HStack padding="0 30px">
+                <BodyRegular
+                  textcolor={({ theme }) => theme.text}
+                  align="center"
+                >
+                  You listed <b>{ListedNftName}</b>, everyone can buy it now
+                </BodyRegular>
+              </HStack>
+              <IconImg
+                url={ListedImage}
+                backsize="cover"
+                border="9px"
+                width="100%"
+                height="260px"
+              ></IconImg>
+              <HStack>
+                <ButtonApp
+                  text="Cancel"
+                  textcolor={({ theme }) => theme.text}
+                  background={appStyle.colors.darkgrey10}
+                  width="100%"
+                  onClick={cancelBtnList}
+                  btnStatus={0}
+                ></ButtonApp>
+                <ButtonApp
+                  text="View NFT"
+                  width="100%"
+                  textcolor={appStyle.colors.white}
+                  onClick={confirmBtnList}
+                  btnStatus={0}
+                ></ButtonApp>
+              </HStack>
+            </>
+          )} */}
           {isTransfer && (
             <>
               <VStack flex="0" spacing="0px">

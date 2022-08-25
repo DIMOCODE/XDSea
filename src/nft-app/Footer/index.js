@@ -1,29 +1,23 @@
-import { 
-  HStack, 
-  IconImg, 
-  Spacer, 
-  VStack 
-} from "../../styles/Stacks";
+import { HStack, IconImg, Spacer, VStack } from "../../styles/Stacks";
 import XDSeaWhite from "../../images/logoXDSEAWhite.png";
 import twitter from "../../images/twitterLogoWhite.png";
 import instagram from "../../images/InstagramLogoWhite.png";
 import mail from "../../images/mailWhite.png";
-import { 
-  BodyRegular, 
-  TitleBold21, 
-  TitleBold27 
-} from "../../styles/TextStyles";
+import { BodyRegular, TitleBold21, TitleBold27 } from "../../styles/TextStyles";
 import { appStyle } from "../../styles/AppStyles";
-import { 
-  LayoutGroup, 
-  motion 
-} from "framer-motion/dist/framer-motion";
+import { LayoutGroup, motion } from "framer-motion/dist/framer-motion";
 import { Link } from "../../styles/Link";
 import useWindowSize from "../../styles/useWindowSize";
 import styled from "styled-components";
+import { useHistory } from "react-router-dom";
 
 function Footer(props) {
   const size = useWindowSize();
+  const history = useHistory();
+
+  function NavigateTo(route) {
+    history.push(`/${route}`);
+  }
 
   return (
     <FooterSection>
@@ -35,11 +29,10 @@ function Footer(props) {
               alignment="flex-start"
               padding={size.width < 768 ? "0 60px" : "0 30px"}
             >
-              {/* Footer Logo */}
               <VStack
                 alignment="flex-start"
                 spacing="6px"
-                onClick={() => props.redirect("")}
+                onClick={() => NavigateTo("")}
               >
                 <IconImg
                   url={XDSeaWhite}
@@ -55,8 +48,6 @@ function Footer(props) {
                 </BodyRegular>
                 <Spacer></Spacer>
               </VStack>
-
-              {/* Marketplace Quick Links */}
               <VStack alignment="flex-start">
                 <TitleBold21 textcolor={appStyle.colors.white}>
                   Marketplace
@@ -65,22 +56,21 @@ function Footer(props) {
                   <Link cursor={"pointer"} text="Home"></Link>
                   <Link cursor={"pointer"} text="Discover"></Link>
                   <Link cursor={"pointer"} text="How To Start"></Link>
+                  {/* <Link text="Terms of Service"></Link>
+                <Link text="Build on Xinfin"></Link> */}
                 </LayoutGroup>
                 <Spacer></Spacer>
               </VStack>
-
-              {/* Account Quick Links */}
               <VStack alignment="flex-start">
                 <TitleBold21 textcolor={appStyle.colors.white}>
                   Account
                 </TitleBold21>
-
+                {/* <Link text="Sync XDCPay"></Link> */}
                 <Link text="Create NFT"></Link>
-
+                {/* <Link text="User Profile"></Link> */}
+                {/* <Link text="Collections"></Link> */}
                 <Spacer></Spacer>
               </VStack>
-
-              {/* Social Links */}
               <VStack alignment="flex-start">
                 <TitleBold21 textcolor={appStyle.colors.white}>
                   Social
@@ -110,12 +100,11 @@ function Footer(props) {
                       cursor="pointer"
                     ></IconImg>
                   </a>
+                  {/* <IconImg url={discord} width="52px" height="52px"></IconImg> */}
                 </HStack>
                 <Spacer></Spacer>
               </VStack>
             </HStack>
-
-            {/* Copyright Information */}
             <VStack
               background={appStyle.colors.darkgrey30}
               padding="6px 6px"
@@ -142,5 +131,6 @@ const FooterSection = styled(motion.div)`
 
 const FooterContent = styled(motion.div)`
   max-width: 1200px;
+
   margin: 0 auto;
 `;

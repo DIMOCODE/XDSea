@@ -1,25 +1,25 @@
 .is-sticky {
-    position: sticky;
-    display: block;
-    top: 90px;
-    width: 100vw;
-    z-index: 999;
-    box-shadow: 0 2px 24px 0 rgb(0 0 0 / 15%);
-    background-color: red !important;
-    /* animation: 200ms ease-in-out 0s normal none 1 running fadeInDown; */
-    padding-top: 0px;
-    padding-bottom: 0px;
-    animation-name: example;
-    animation-duration: 1s;
+  position: sticky;
+  display: block;
+  top: 90px;
+  width: 100vw;
+  z-index: 999;
+  box-shadow: 0 2px 24px 0 rgb(0 0 0 / 15%);
+  background-color: red !important;
+  /* animation: 200ms ease-in-out 0s normal none 1 running fadeInDown; */
+  padding-top: 0px;
+  padding-bottom: 0px;
+  animation-name: example;
+  animation-duration: 1s;
 }
-  
+
 @keyframes example {
-    0% {
-        background-color: red;
-        top: 0px;
-    }
-    100% {
-        background-color: yellow;
-        top: 90px;
-    }
+  0% {
+    background-color: red;
+    top: 0px;
+  }
+  100% {
+    background-color: yellow;
+    top: 90px;
+  }
 }

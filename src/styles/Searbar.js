@@ -27,10 +27,13 @@ import verifiedMask from "../images/verifiedMask.png";
 import arrowRight from "../images/arrowRight.png";
 import { useClickAway } from "react-use";
 import { Icon } from "@mui/material";
+import dummyNFT from "../images/abstract1.jpg";
+import dummyUser from "../images/dummyuser.jpg";
+import dummyUser1 from "../images/dummyuser1.jpg";
 import { getCollections } from "../API/Collection";
 import { getNFTs } from "../API/NFT";
 import loadingIcon from "../images/loadingDots.gif";
-import { isSafari, truncateAddress } from "../common/common";
+import { isSafari } from "../common/common";
 import { nftaddress } from "../config";
 
 function Searchbar({
@@ -71,11 +74,12 @@ function Searchbar({
     setShowResults(false);
   };
 
-  /**
-   * Redirect the user to a specific path
-   * 
-   * @param {string} route path to be redirected to
-   */
+  const truncateAddress = (address) => {
+    return address
+      ? address.substring(0, 6) + "..." + address.substring(38)
+      : "undefined";
+  };
+
   function NavigateTo(route) {
     history.push(`/${route}`);
     setShowResults(false);
@@ -152,6 +156,7 @@ function Searchbar({
               boxShadow: "0px 15px 15px rgba(0, 0, 0, 0.15)",
             }}
             spacing="0px"
+            // background="pink"
             width={width}
           >
             {/* Title Results */}
@@ -184,6 +189,125 @@ function Searchbar({
               justify={isPhone ? "flex-start" : "center"}
               padding="15px 0 15px 0"
             >
+              {/* Creators */}
+              {/* <VStack alignment="flex-start">
+                <CaptionBoldShort>Creators</CaptionBoldShort>
+
+                <VStack spacing="9px">
+                  {filteredData.slice(0, 5).map((value, key) => {
+                    return (
+                      <HStack>
+                        {value.isVerified ? (
+                          <HStack
+                            whileHover={{ background: "rgb(0,0,0,0.06" }}
+                            padding="6px"
+                            border="6px"
+                          >
+                            <VStack maxwidth="45px">
+                              <ZStack>
+                                <ZItem>
+                                  <Mask img={verifiedMask}>
+                                    <IconImg
+                                      url={dummyUser1}
+                                      width="42px"
+                                      height="42px"
+                                      border="90px"
+                                      backsize="cover"
+                                    ></IconImg>
+                                  </Mask>
+                                </ZItem>
+
+                                <ZItem>
+                                  <IconImg
+                                    url={verifiedShape}
+                                    width="45px"
+                                    height="45px"
+                                    border="120px"
+                                    whileTap={clickVerifiedCretor}
+                                    backsize="cover"
+                                    cursor={"pointer"}
+                                    style={{
+                                      boxShadow:
+                                        "0px 4px 2px rgba(0, 0, 0, 0.15)",
+                                    }}
+                                  ></IconImg>
+                                  <AbsoluteVerified>
+                                    <IconImg
+                                      url={verifiedBlue}
+                                      width="21px"
+                                      height="21px"
+                                      border="120px"
+                                    ></IconImg>
+                                  </AbsoluteVerified>
+                                </ZItem>
+                              </ZStack>
+                            </VStack>
+
+                            <VStack
+                              alignment="flex-start"
+                              spacing="6px"
+                              cursor="pointer"
+                            >
+                              <BodyBold>{value.name}</BodyBold>
+                              <CaptionRegular>{value.address}</CaptionRegular>
+                            </VStack>
+                          </HStack>
+                        ) : (
+                          <HStack
+                            width="100%"
+                            whileHover={{ background: "rgb(0,0,0,0.06" }}
+                            padding="6px"
+                            border="6px"
+                          >
+                            <IconImg
+                              url={dummyUser}
+                              width="43px"
+                              height="43px"
+                              border="120px"
+                              bordersize="4px"
+                              bordercolor="white"
+                              whileTap={onClickCreator}
+                              backsize="cover"
+                              cursor={"pointer"}
+                              style={{
+                                boxShadow: "0px 4px 2px rgba(0, 0, 0, 0.15)",
+                              }}
+                            ></IconImg>
+
+                            <VStack
+                              alignment="flex-start"
+                              spacing="6px"
+                              cursor="pointer"
+                            >
+                              <BodyBold>{value.name}</BodyBold>
+                              <CaptionRegular>{value.address}</CaptionRegular>
+                            </VStack>
+                          </HStack>
+                        )}
+                      </HStack>
+                    );
+                  })}
+                </VStack>
+
+                <a>
+                  <HStack
+                    spacing="5px"
+                    background={({ theme }) => theme.faded}
+                    padding="5px 15px"
+                    border="9px"
+                    cursor="pointer"
+                  >
+                    <CaptionBoldShort>See all Creators</CaptionBoldShort>
+                    <IconImg
+                      url={arrowRight}
+                      width="26px"
+                      height="26px"
+                      cursor="pointer"
+                    ></IconImg>
+                  </HStack>
+                </a>
+              </VStack> */}
+
               {/* NFTs */}
               {filteredNFTData.length !== 0 && (
                 <VStack alignment="flex-start" spacing="9px">
@@ -195,11 +319,11 @@ function Searchbar({
                         padding="6px"
                         border="6px"
                         onClick={() =>
-                          NavigateTo(`nft/${nftaddress}/${nft.tokenId}`)
+                          NavigateTo(`nft/${nft.nftContract}/${nft.tokenId}`)
                         }
                       >
                         <IconImg
-                          url={isSafari ? nft.urlFile.v1 : nft.urlFile.v0}
+                          url={nft.urlFile.v0}
                           width="54px"
                           height="54px"
                           border="9px"
@@ -268,7 +392,7 @@ function Searchbar({
                     >
                       <IconImg
                         url={
-                          isSafari ? collection.banner.v1 : collection.banner.v0
+                          collection.banner.v0
                         }
                         width="100%"
                         height="60px"
@@ -279,7 +403,7 @@ function Searchbar({
                       <HStack>
                         <IconImg
                           url={
-                            isSafari ? collection.logo.v1 : collection.logo.v0
+                            collection.logo.v0
                           }
                           width="32px"
                           height="32px"

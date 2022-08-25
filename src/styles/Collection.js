@@ -15,7 +15,7 @@ import {
   CaptionRegular,
 } from "./TextStyles";
 import { motion, AnimatePresence } from "framer-motion/dist/framer-motion";
-import { fromXdc, isXdc, truncateAddress } from "../common/common";
+import { fromXdc, isXdc } from "../common/common";
 import styled from "styled-components";
 
 function Collection(props) {
@@ -82,6 +82,12 @@ function Collection(props) {
     },
   };
   const [isVisible, setIsVisible] = useState(false);
+
+  const truncateAddress = (address) => {
+    return address
+      ? address.substring(0, 6) + "..." + address.substring(38)
+      : "undefined";
+  };
 
   return (
     <VStack
@@ -419,6 +425,16 @@ function Collection(props) {
                             </VStack>
                           )}
                         </HStack>
+
+                        {/* <ButtonApp
+                          height="39px"
+                          background={appStyle.colors.blue}
+                          text="Visit Collection"
+                          textcolor={appStyle.colors.white}
+                          onClick={onClickCollection}
+                          cursor={"pointer"}
+                          btnStatus={0}
+                        ></ButtonApp> */}
                       </VStack>
                     </VStack>
                   </VStack>
