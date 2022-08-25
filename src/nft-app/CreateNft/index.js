@@ -3,6 +3,7 @@ import { create } from "ipfs-http-client";
 import { SendTransaction } from "xdc-connect";
 import Xdc3 from "xdc3";
 import {
+  AWS_CONFIG,
   DEFAULT_PROVIDER,
   HEADER,
   HTTP_METHODS,
@@ -57,6 +58,8 @@ import {
   getCollections,
 } from "../../API/Collection";
 import { createNFT } from "../../API/NFT";
+import { isVideo } from "../../common";
+import S3 from "react-aws-s3";
 
 function CreateNft(props) {
   const history = useHistory();
@@ -422,6 +425,33 @@ function CreateNft(props) {
     } else return "";
   };
 
+  const addToS3 = async (tokenId) => {
+    const file = document.getElementById("upload-button").files[0];
+    const newFileName = document.getElementById("upload-button").files[0].name;
+    try {
+      const config = {
+        dirName: tokenId,
+        ...AWS_CONFIG
+      };
+      const ReactS3Client = new S3(config);
+      ReactS3Client.uploadFile(file, newFileName).then(data => {
+        console.log(data);
+        if(data.status === 204) {
+          console.log("Success");
+        }
+        else {
+          console.log("Failure");
+        }
+      });
+    } catch (error) {
+      console.log("Error uploading file:", error);
+    }
+  }
+
+  /**
+   * Check if the royalty percentage is set and if not the user is aware
+   * that 0% royalty will be charged
+   */
   const checkRoyalty = async () => {
     if (royalty === 0) {
       setRoyaltyAlert(true);
@@ -546,6 +576,7 @@ function CreateNft(props) {
       gasLimit = await xdc3.eth.estimateGas(tx2);
       tx2["gas"] = gasLimit;
       transaction = await SendTransaction(tx2);
+      var s3URL = ""
       if (newCollection && !collectionExists) {
         const bannerUrl = await addToIPFSCollectionBanner();
         const logoUrl = await addToIPFSCollectionLogo();
@@ -596,6 +627,10 @@ function CreateNft(props) {
             filteredProperties
           )
         ).data.nft;
+      }
+      if(isVideo(nft.fileType)) {
+        //Get Signed URI, put on S3, update NFT
+        s3URL = await addToS3(tokenId)
       }
       setMintButtonStatus(3);
       setMinted(true);
