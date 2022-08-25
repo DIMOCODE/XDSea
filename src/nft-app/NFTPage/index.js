@@ -701,8 +701,11 @@ const NFTDetails = (props) => {
           }
         })
       );
+
+      return currentItem.marketAddress;
     } catch (error) {
       console.log(error);
+      return "";
     }
   };
 
@@ -712,7 +715,7 @@ const NFTDetails = (props) => {
       : "undefined";
   };
 
-  const getApproval = async () => {
+  const getApproval = async (marketAddress) => {
     const xdc3 = new Xdc3(
       new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER)
     );
@@ -723,7 +726,7 @@ const NFTDetails = (props) => {
           isXdc(props?.wallet?.address)
             ? fromXdc(props?.wallet?.address)
             : props?.wallet?.address,
-          nft.marketAddress
+          marketAddress
         )
         .call();
     setApproved(getVal);
@@ -736,13 +739,13 @@ const NFTDetails = (props) => {
   useEffect(() => {
     window.scrollTo(0, 0);
     setWallet(props?.wallet);
-    getData();
-    if (!approved) getApproval();
+    const address = getData();
+    if (!approved) getApproval(address);
   }, [id, actions]);
 
   useEffect(() => {
     setWallet(props?.wallet);
-    getApproval();
+    getApproval(nft.marketAddress);
   }, [props?.wallet]);
 
   const webLink = `https://www.xdsea.com/${nftaddress}/${id}`;
