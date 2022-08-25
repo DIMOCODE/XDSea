@@ -334,10 +334,7 @@ const MyNFT = (props) => {
                                     overflow="hidden"
                                   >
                                     <ReactPlayer
-                                      url={isSafari
-                                        ? item.urlFile.v1
-                                        : item.urlFile.v0
-                                      }
+                                      url={item.urlFile.s3}
                                       playing={true}
                                       volume={0}
                                       muted={true}
@@ -476,11 +473,7 @@ const MyNFT = (props) => {
                                       overflow="hidden"
                                     >
                                       <ReactPlayer
-                                        url={
-                                          isSafari
-                                            ? nft.urlFile.v1
-                                            : nft.urlFile.v0
-                                        }
+                                        url={nft.urlFile.s3}
                                         playing={true}
                                         muted={true}
                                         loop={false}

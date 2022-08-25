@@ -1004,10 +1004,7 @@ const NFTDetails = (props) => {
                           </AnimatePresence>
                         ) : null}
                         <ReactPlayer
-                          url={isSafari
-                            ? nft.urlFile.v1
-                            : nft.urlFile.v0
-                          }
+                          url={nft.urlFile.s3}
                           playing={true}
                           muted={true}
                           volume={0}
