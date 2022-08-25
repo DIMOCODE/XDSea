@@ -99,7 +99,7 @@ const MyNFT = (props) => {
             nftData.nfts.map(async (item) => {
               let nft = {
                 tokenId: item.tokenId,
-                image: item.urlFile.v0,
+                image: item.urlFile,
                 preview: item.preview.v0,
                 name: item.name,
                 nftContract: item.nftContract,
@@ -129,7 +129,7 @@ const MyNFT = (props) => {
       nftData.nfts.map(async (item) => {
         let nft = {
           tokenId: item.tokenId,
-          image: item.urlFile.v0,
+          image: item.urlFile,
           preview: item.preview.v0,
           name: item.name,
           nftContract: item.nftContract,
@@ -436,7 +436,7 @@ const MyNFT = (props) => {
                               >
                                 {isImage(item.fileType) ? (
                                   <IconImg
-                                    url={item.image}
+                                    url={item.image.v0}
                                     width="100%"
                                     height="100%"
                                     backsize="cover"
@@ -450,7 +450,7 @@ const MyNFT = (props) => {
                                     overflow="hidden"
                                   >
                                     <ReactPlayer
-                                      url={item.image}
+                                      url={item.image.s3}
                                       playing={true}
                                       volume={0}
                                       muted={true}
@@ -467,7 +467,7 @@ const MyNFT = (props) => {
                                     overflow="hidden"
                                   >
                                     <ReactPlayer
-                                      url={item?.image}
+                                      url={item?.image.v0}
                                       playing={false}
                                       muted={true}
                                       volume={0}
@@ -579,9 +579,7 @@ const MyNFT = (props) => {
                                       overflow="hidden"
                                     >
                                       <ReactPlayer
-                                        url={
-                                          nft.urlFile.v0
-                                        }
+                                        url={nft.urlFile.s3}
                                         playing={true}
                                         muted={true}
                                         loop={false}

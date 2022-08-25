@@ -522,7 +522,7 @@ const NFTDetails = (props) => {
         ownerId: nftData.nft.owner._id,
         collectionName: nftData.nft.collectionId.name,
         collectionLogo: nftData.nft.collectionId.logo.v0,
-        image: nftData.nft.urlFile.v0,
+        image: nftData.nft.urlFile,
         name: nftData.nft.name,
         marketAddress: nftData.nft.marketAddress,
         nftContract: nftData.nft.nftContract,
@@ -546,7 +546,7 @@ const NFTDetails = (props) => {
                 let item = {
                   collectionName: nft.collectionId.name,
                   creatorLogo: nft.owner.urlProfile,
-                  image: nft.urlFile.v0,
+                  image: nft.urlFile,
                   name: nft.name,
                   hasOpenOffer: nft.hasOpenOffer,
                   nftContract: nft.nftContract,
@@ -878,7 +878,7 @@ const NFTDetails = (props) => {
         <TxModal
           isPurchaised={true}
           PurchaisedNftName={nft?.name}
-          ListedImage={nft?.image}
+          ListedImage={nft?.image.v0}
           confirmBtnPurchaise={() =>
             NavigateTo(`UserProfile/${LS.get(LS_ROOT_KEY).user._id}`)
           }
@@ -1044,7 +1044,7 @@ const NFTDetails = (props) => {
                         ) : null}
 
                         <IconImg
-                          url={nft?.image}
+                          url={nft?.image.v0}
                           width="100%"
                           height="540px"
                           border="15px"
@@ -1112,7 +1112,7 @@ const NFTDetails = (props) => {
                           </AnimatePresence>
                         ) : null}
                         <ReactPlayer
-                          url={nft?.image}
+                          url={nft?.image.s3}
                           playing={true}
                           muted={true}
                           volume={0}
@@ -1121,7 +1121,6 @@ const NFTDetails = (props) => {
                           width="100%"
                           height="100%"
                         />
-                        {console.log(ReactPlayer.canPlay(nft?.image))}
                       </VStack>
                     ) : isAudio(nft?.fileType) ? (
                       <VStack
@@ -1180,7 +1179,7 @@ const NFTDetails = (props) => {
                           </AnimatePresence>
                         ) : null}
                         <ReactPlayer
-                          url={nft?.image}
+                          url={nft?.image.v0}
                           playing={true}
                           muted={true}
                           controls={true}
@@ -1972,7 +1971,7 @@ const NFTDetails = (props) => {
                       key={item.name}
                       fileType={item.fileType}
                       creatorImage={item.creatorLogo}
-                      itemImage={item.image}
+                      itemImage={item.image.v0}
                       price={item.price}
                       collectionName={item.collectionName}
                       itemNumber={item.name}

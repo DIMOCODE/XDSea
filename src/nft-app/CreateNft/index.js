@@ -3,7 +3,6 @@ import { create } from "ipfs-http-client";
 import { SendTransaction } from "xdc-connect";
 import Xdc3 from "xdc3";
 import {
-  AWS_CONFIG,
   DEFAULT_PROVIDER,
   HEADER,
   HTTP_METHODS,
@@ -57,9 +56,8 @@ import {
   getCollection,
   getCollections,
 } from "../../API/Collection";
-import { createNFT } from "../../API/NFT";
+import { createNFT, getSignedURLNFT, updateNFT } from "../../API/NFT";
 import { isVideo } from "../../common";
-import S3 from "react-aws-s3";
 
 function CreateNft(props) {
   const history = useHistory();
@@ -425,22 +423,19 @@ function CreateNft(props) {
     } else return "";
   };
 
-  const addToS3 = async (tokenId) => {
+  const addToS3 = async (nftId, ext) => {
     const file = document.getElementById("upload-button").files[0];
-    const newFileName = document.getElementById("upload-button").files[0].name;
     try {
-      const config = {
-        dirName: tokenId,
-        ...AWS_CONFIG
-      };
-      const ReactS3Client = new S3(config);
-      ReactS3Client.uploadFile(file, newFileName).then(data => {
-        console.log(data);
-        if(data.status === 204) {
-          console.log("Success");
+      const signedData = await (await getSignedURLNFT(nftId, ext)).data;
+      const signedURL = signedData.signedUrl;
+      const s3URL = signedData.url;
+      axios.put(signedURL, file, {
+        headers: {
+          'Content-Type': nft.fileType
         }
-        else {
-          console.log("Failure");
+      }).then(async (res) => {
+        if(res.status === 200) {
+          const updateData = await (await updateNFT(nftId, s3URL)).data;
         }
       });
     } catch (error) {
@@ -576,7 +571,7 @@ function CreateNft(props) {
       gasLimit = await xdc3.eth.estimateGas(tx2);
       tx2["gas"] = gasLimit;
       transaction = await SendTransaction(tx2);
-      var s3URL = ""
+      var nftCreation = {};
       if (newCollection && !collectionExists) {
         const bannerUrl = await addToIPFSCollectionBanner();
         const logoUrl = await addToIPFSCollectionLogo();
@@ -593,7 +588,7 @@ function CreateNft(props) {
             websiteLink
           )
         ).data.collection;
-        const nftCreation = await (
+        nftCreation = await (
           await createNFT(
             collectionCreation._id,
             tokenId,
@@ -612,7 +607,7 @@ function CreateNft(props) {
         const collectionId = await (
           await getCollection(collectionNickName)
         ).data.collection._id;
-        const nftCreation = await (
+        nftCreation = await (
           await createNFT(
             collectionId,
             tokenId,
@@ -629,8 +624,7 @@ function CreateNft(props) {
         ).data.nft;
       }
       if(isVideo(nft.fileType)) {
-        //Get Signed URI, put on S3, update NFT
-        s3URL = await addToS3(tokenId)
+        await addToS3(nftCreation.nft._id, nft.fileType.split('/')[1]);
       }
       setMintButtonStatus(3);
       setMinted(true);
