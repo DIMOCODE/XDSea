@@ -4,10 +4,10 @@ import { motion } from "framer-motion/dist/framer-motion";
 import { BodyRegular, TitleBold18, TitleBold27 } from "./styles/TextStyles";
 import backBar from "./images/DiscoverBar.png";
 import { appStyle } from "./styles/AppStyles";
-import Step1 from "./images/Step1v2.png";
-import Step2 from "./images/Step2v2.png";
-import Step3 from "./images/Step3v2.png";
-import Step4 from "./images/Step4v2.png";
+import Step1 from "./images/Step1v2Xuppi.png";
+import Step2 from "./images/Step2v2Xuppi.png";
+import Step3 from "./images/Step3v2Xuppi.png";
+import Step4 from "./images/Step4v2Xuppi.png";
 import useWindowSize from "./styles/useWindowSize";
 import { useEffect } from "react";
 

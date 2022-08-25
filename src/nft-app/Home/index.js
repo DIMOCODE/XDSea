@@ -23,8 +23,8 @@ import { TitleBold18, TitleBold27 } from "../../styles/TextStyles";
 import { LayoutGroup, motion } from "framer-motion/dist/framer-motion";
 import useWindowSize from "../../styles/useWindowSize";
 import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
-import logoXDSEA from "../../images/LogoXDSEA.png";
-import bannerXDC from "../../images/bannerXdc.png";
+import logoXuppi from "../../images/LogoXuppi.png";
+import bannerXuppi from "../../images/bannerXuppi.png";
 import menuContext from "../../context/menuContext";
 import { NewFeatured } from "../../styles/NewFeatured";
 import { borderColor } from "@mui/system";
@@ -179,7 +179,7 @@ const Home = (props) => {
           height={size.width > 768 ? "390px" : "260px"}
         >
           <IconImg
-            url={logoXDSEA}
+            url={logoXuppi}
             width={size.width > 768 ? "150px" : "90px"}
             height={size.width > 768 ? "150px" : "90px"}
           ></IconImg>
@@ -464,7 +464,7 @@ const Home = (props) => {
         <ZStack height="300px">
           <ZItem>
             <IconImg
-              url={bannerXDC}
+              url={bannerXuppi}
               width="100%"
               height="300px"
               border={size.width < 1200 ? "0px" : "15px"}

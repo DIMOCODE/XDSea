@@ -1,5 +1,5 @@
 import { HStack, IconImg, Spacer, VStack } from "../../styles/Stacks";
-import XDSeaWhite from "../../images/logoXDSEAWhite.png";
+import XuppiWhite from "../../images/logoXuppiWhite.png";
 import twitter from "../../images/twitterLogoWhite.png";
 import instagram from "../../images/InstagramLogoWhite.png";
 import mail from "../../images/mailWhite.png";
@@ -35,7 +35,7 @@ function Footer(props) {
                 onClick={() => NavigateTo("")}
               >
                 <IconImg
-                  url={XDSeaWhite}
+                  url={XuppiWhite}
                   width={size.width < 768 ? "60px" : "90px"}
                   height={size.width < 768 ? "60px" : "90px"}
                   cursor={"pointer"}

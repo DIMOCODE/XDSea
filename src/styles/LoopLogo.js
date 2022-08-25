@@ -1,6 +1,6 @@
 import React from "react";
 import { IconImg, VStack } from "./Stacks";
-import loaderLogo from "../images/logoLoading.png";
+import loaderLogo from "../images/logoLoadingXuppi.png";
 import curvedText from "../images/curvedText.png";
 import loadingCurved from "../images/loadingCurved.png";
 import styled from "styled-components";

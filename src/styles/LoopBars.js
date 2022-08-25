@@ -1,6 +1,6 @@
 import React from "react";
 import { HStack } from "./Stacks";
-import loaderLogo from "../images/logoLoading.png";
+import loaderLogo from "../images/logoLoadingXuppi.png";
 import styled from "styled-components";
 import {
   motion,
