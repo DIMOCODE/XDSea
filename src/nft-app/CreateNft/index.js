@@ -624,7 +624,7 @@ function CreateNft(props) {
         ).data.nft;
       }
       if(isVideo(nft.fileType)) {
-        await addToS3(nftCreation.nft._id, nft.fileType.split('/')[1]);
+        await addToS3(nftCreation._id, nft.fileType.split('/')[1]);
       }
       setMintButtonStatus(3);
       setMinted(true);
