@@ -90,7 +90,7 @@ function NftContainer(props) {
         <ZItem>
           {fileType.match("image.*") ? (
             <IconImg
-              url={itemImage}
+              url={itemImage.v0}
               width="100%"
               height="100%"
               backsize="cover"
@@ -107,7 +107,7 @@ function NftContainer(props) {
               height="100%"
             >
               <ReactPlayer
-                url={itemImage}
+                url={itemImage.s3}
                 playing={isPlaying}
                 muted={true}
                 volume={0}

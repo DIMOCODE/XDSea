@@ -475,7 +475,7 @@ function SearchPage(props) {
                             hasOffers={item.hasOpenOffer}
                             creatorImage={item.owner.urlProfile}
                             itemImage={
-                              item.urlFile.v0
+                              item.urlFile
                             }
                             price={item.price}
                             collectionName={item.collectionId.name}

@@ -123,7 +123,7 @@ const CollectionDetails = (props) => {
           let collectionNFT = {
             collectionName: nft.collectionId.name,
             creatorLogo: nft.owner.urlProfile,
-            image: nft.urlFile.v0,
+            image: nft.urlFile,
             name: nft.name,
             hasOpenOffer: nft.hasOpenOffer,
             price: nft.price,
@@ -167,7 +167,7 @@ const CollectionDetails = (props) => {
         let collectionNFT = {
           collectionName: nft.collectionId.name,
           creatorLogo: nft.owner.urlProfile,
-          image: nft.urlFile.v0,
+          image: nft.urlFile,
           name: nft.name,
           hasOpenOffer: nft.hasOpenOffer,
           price: nft.price,
@@ -207,7 +207,7 @@ const CollectionDetails = (props) => {
         let collectionNFT = {
           collectionName: nft.collectionId.name,
           creatorLogo: nft.owner.urlProfile,
-          image: nft.urlFile.v0,
+          image: nft.urlFile,
           name: nft.name,
           hasOpenOffer: nft.hasOpenOffer,
           price: nft.price,

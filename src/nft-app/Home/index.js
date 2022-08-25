@@ -112,7 +112,7 @@ const Home = (props) => {
             collectionName: nft.nftId.collectionId.name,
             collectionNickName: nft.nftId.collectionId.nickName,
             creatorLogo: nft.nftId.owner.urlProfile,
-            image: nft.nftId.urlFile.v0,
+            image: nft.nftId.urlFile,
             name: nft.nftId.name,
             hasOpenOffer: nft.nftId.hasOpenOffer,
             price: nft.nftId.price,

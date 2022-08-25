@@ -1974,7 +1974,7 @@ const NFTDetails = (props) => {
                       key={item.name}
                       fileType={item.fileType}
                       creatorImage={item.creatorLogo}
-                      itemImage={item.image.v0}
+                      itemImage={item.image}
                       price={item.price}
                       collectionName={item.collectionName}
                       itemNumber={item.name}
