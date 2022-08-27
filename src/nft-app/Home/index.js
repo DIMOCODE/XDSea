@@ -31,6 +31,7 @@ import { borderColor } from "@mui/system";
 import "./customstyles.css";
 import banner1 from "../../images/Banner1.jpg";
 import { isSafari } from "../../common/common";
+import { getXdcDomain } from "../../constant";
 
 const Home = (props) => {
   const history = useHistory();

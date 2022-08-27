@@ -35,6 +35,8 @@ import { getNFTs } from "../API/NFT";
 import loadingIcon from "../images/loadingDots.gif";
 import { isSafari } from "../common/common";
 import { nftaddress } from "../config";
+import { getXdcDomain } from "../constant";
+import {isXdc, toXdc} from "../common/common";
 
 function Searchbar({
   placeholder,
@@ -95,12 +97,44 @@ function Searchbar({
               const collectionResults = await (
                 await getCollections({ searchTerm: searchTerm })
               ).data;
-              setFilteredCollectionData(collectionResults.collections);
+              const collectionList = await Promise.all(
+                collectionResults.collections.map(async (collectionItem) => {
+                  let collection = {
+                    name: collectionItem.name,
+                    nickName: collectionItem.nickName,
+                    logo: collectionItem.logo.v0,
+                    isVerified: collectionItem.creator.isVerified,
+                    banner: collectionItem.banner.v0,
+                    creator: isXdc ? (await getXdcDomain(collectionItem.creator.userName)) : await getXdcDomain(toXdc(collectionItem.creator.userName)),
+                    creatorAddress: collectionItem.creator.userName
+                  };
+                  return collection;
+                })
+              );
+              setFilteredCollectionData(collectionList);
             } else {
               const nftResults = await (
                 await getNFTs({ page: 1, searchBy: searchTerm })
               ).data;
-              setFilteredNFTData(nftResults.nfts);
+              const nftList = await Promise.all(
+                nftResults.nfts.map(async (nft) => {
+                  let nftItem = {
+                    collectionName: nft.collectionId.name,
+                    image: nft.urlFile.v0,
+                    name: nft.name,
+                    fileType: nft.fileType,
+                    preview: nft.preview.v0,
+                    owner: isXdc ? (await getXdcDomain(nft.owner.userName)) : await getXdcDomain(toXdc(nft.owner.userName)),
+                    ownerAddress: nft.owner.userName,
+                    nftContract: nft.nftContract,
+                    tokenId: nft.tokenId,
+                    isVerified: nft.owner.isVerified,
+                    collectionVerified: nft.creator.isVerified,
+                  };
+                  return nftItem;
+                })
+              );
+              setFilteredNFTData(nftList);
             }
 
             setLoading(false);
@@ -323,7 +357,7 @@ function Searchbar({
                         }
                       >
                         <IconImg
-                          url={nft.urlFile.v0}
+                          url={nft.image}
                           width="54px"
                           height="54px"
                           border="9px"
@@ -337,10 +371,10 @@ function Searchbar({
                         >
                           <BodyBold>{nft.name}</BodyBold>
                           <CaptionRegular>
-                            {nft.collectionId.name}
+                            {nft.collectionName}
                           </CaptionRegular>
                           <CaptionRegular>
-                            {truncateAddress(nft.owner.userName)}
+                            {nft.owner === "" ? truncateAddress(nft.ownerAddress) : nft.owner}
                           </CaptionRegular>
                         </VStack>
                       </HStack>
@@ -392,7 +426,7 @@ function Searchbar({
                     >
                       <IconImg
                         url={
-                          collection.banner.v0
+                          collection.banner
                         }
                         width="100%"
                         height="60px"
@@ -403,7 +437,7 @@ function Searchbar({
                       <HStack>
                         <IconImg
                           url={
-                            collection.logo.v0
+                            collection.logo
                           }
                           width="32px"
                           height="32px"
@@ -418,7 +452,7 @@ function Searchbar({
                         >
                           <BodyBold>{collection.name}</BodyBold>
                           <CaptionRegular>
-                            {truncateAddress(collection.creator.userName)}
+                            {collection.creator === "" ? truncateAddress(collection.creatorAddress) : collection.creator}
                           </CaptionRegular>
                         </VStack>
                       </HStack>
