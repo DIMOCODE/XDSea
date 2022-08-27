@@ -62,18 +62,18 @@ export const VStack = styled(motion.div).attrs((props) => ({
   background-size: contain;
   border-color: ${(props) => props.bordercolor};
   border-width: ${(props) => props.bordersize};
-  -webkit-backface-visibility: hidden;
-  -moz-backface-visibility: hidden;
-  -webkit-transform: translate3d(0, 0, 0);
-  -moz-transform: translate3d(0, 0, 0);
+  // -webkit-backface-visibility: hidden;
+  // -moz-backface-visibility: hidden;
+  // -webkit-transform: translate3d(0, 0, 0);
+  // -moz-transform: translate3d(0, 0, 0);
   @media (max-width: 768px) {
     flex-direction: ${(props) => (props.responsive ? "row" : "column")};
   }
   margin-top: ${(props) => props.marginTop};
   cursor: ${(props) => props.cursor};
 
-  -webkit-backdrop-filter: blur(${(props) => props.blur}) !important;
-  backdrop-filter: blur(${(props) => props.blur}) !important;
+  backdrop-filter: blur(${(props) => props.blur});
+  -webkit-backdrop-filter: blur(${(props) => props.blur});
 
   *::-webkit-scrollbar {
     width: 4px;

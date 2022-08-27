@@ -9,12 +9,12 @@ function CircleButton(props) {
     <VStack
       maxwidth="48px"
       height="48px"
-      blur="30px"
       border="48px"
       background={({ theme }) => theme.faded}
       cursor="pointer"
       whileTap={{ scale: 0.92 }}
       onClick={onClick}
+      blur="30px"
     >
       <IconImg
         url={image}

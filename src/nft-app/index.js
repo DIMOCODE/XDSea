@@ -46,7 +46,7 @@ const NFTApp = () => {
 
   /**
    * Update the state with the wallet information
-   * 
+   *
    * @param {*} connectedWallet the wallet object
    */
   const handleWallet = (connectedWallet) => {
@@ -65,13 +65,13 @@ const NFTApp = () => {
 
   /**
    * Redirect the user to a specific path
-   * 
+   *
    * @param {string} route path to redirect to
    */
-   const NavigateTo = (route) => {
+  const NavigateTo = (route) => {
     setShowMenu(false);
     history.push(`/${route}`);
-  }
+  };
 
   /**
    * React Hook to initialise Google Analytics and get the USD prices
@@ -89,11 +89,7 @@ const NFTApp = () => {
           {isDevMode ? (
             <DevMode>
               <HStack padding="15px 21px" spacing="9px">
-                <IconImg
-                  url={alertWhite}
-                  width="21px"
-                  height="21px"
-                ></IconImg>
+                <IconImg url={alertWhite} width="21px" height="21px"></IconImg>
                 <CaptionRegular textcolor="white">
                   <b>
                     This Developer Page is for feature testing purposes. All
@@ -102,8 +98,8 @@ const NFTApp = () => {
                   &nbsp;made on the developer page
                   <b>
                     {" "}
-                    are executed on the test network. They will not affect
-                    your XDC balance.
+                    are executed on the test network. They will not affect your
+                    XDC balance.
                   </b>
                 </CaptionRegular>
               </HStack>
@@ -135,42 +131,92 @@ const NFTApp = () => {
               <Route
                 exact
                 path="/"
-                render={() => <Home xdc={xdcPrice} redirect={NavigateTo} showMenu={showMenu} />}
+                render={() => (
+                  <Home
+                    xdc={xdcPrice}
+                    redirect={NavigateTo}
+                    showMenu={showMenu}
+                  />
+                )}
               ></Route>
               <Route
                 exact
                 path="/discover"
-                render={() => <Discover xdc={xdcPrice} redirect={NavigateTo} showMenu={showMenu} />}
+                render={() => (
+                  <Discover
+                    xdc={xdcPrice}
+                    redirect={NavigateTo}
+                    showMenu={showMenu}
+                  />
+                )}
               ></Route>
               <Route
                 exact
                 path="/SearchPage"
-                render={() => <SearchPage xdc={xdcPrice} redirect={NavigateTo} showMenu={showMenu} />}
+                render={() => (
+                  <SearchPage
+                    xdc={xdcPrice}
+                    redirect={NavigateTo}
+                    showMenu={showMenu}
+                  />
+                )}
               ></Route>
               <Route
                 exact
                 path="/UserProfile/:userId"
-                render={() => <MyNFT redirect={NavigateTo} showMenu={showMenu} />}
+                render={() => (
+                  <MyNFT redirect={NavigateTo} showMenu={showMenu} />
+                )}
               ></Route>
               <Route
                 exact
                 path="/CreateNFT"
-                render={() => <CreateNft wallet={wallet} redirect={NavigateTo} showMenu={showMenu} />}
+                render={() => (
+                  <CreateNft
+                    wallet={wallet}
+                    redirect={NavigateTo}
+                    showMenu={showMenu}
+                  />
+                )}
               ></Route>
               <Route
                 exact
                 path="/collection/:collectionNickName"
-                render={() => <Collection xdc={xdcPrice} redirect={NavigateTo} showMenu={showMenu} />}
+                render={() => (
+                  <Collection
+                    xdc={xdcPrice}
+                    redirect={NavigateTo}
+                    showMenu={showMenu}
+                  />
+                )}
               ></Route>
               <Route
                 exact
                 path="/nft/:nftaddress/:id"
-                render={() => <NFTPage wallet={wallet} xdc={xdcPrice} redirect={NavigateTo} showMenu={showMenu} />}
+                render={() => (
+                  <NFTPage
+                    wallet={wallet}
+                    xdc={xdcPrice}
+                    redirect={NavigateTo}
+                    showMenu={showMenu}
+                  />
+                )}
               ></Route>
-              <Route exact path="/HowToStart" render={ () => <HowToStart redirect={NavigateTo} showMenu={showMenu} />}></Route>
-              <Route path="**" render={() => <Home redirect={NavigateTo} showMenu={showMenu} />}></Route>
+              <Route
+                exact
+                path="/HowToStart"
+                render={() => (
+                  <HowToStart redirect={NavigateTo} showMenu={showMenu} />
+                )}
+              ></Route>
+              <Route
+                path="**"
+                render={() => (
+                  <Home redirect={NavigateTo} showMenu={showMenu} />
+                )}
+              ></Route>
             </Switch>
-            <Footer redirect={NavigateTo} ></Footer>
+            <Footer redirect={NavigateTo}></Footer>
           </ScrollView>
         </HomeStack>
       </>

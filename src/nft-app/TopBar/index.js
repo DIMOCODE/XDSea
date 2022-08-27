@@ -1,11 +1,5 @@
-import React, { 
-  useState, 
-  useEffect, 
-  useRef 
-} from "react";
-import { 
-  useLocation 
-} from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import {
   HStack,
@@ -29,10 +23,7 @@ import { XdcConnect, Disconnect } from "xdc-connect";
 import XDSealogo from "../../images/LogoXDSEA.png";
 import { WalletButton } from "../../styles/walletButton";
 import { SwitchButton } from "../../styles/SwitchButton";
-import { 
-  motion, 
-  AnimatePresence 
-} from "framer-motion/dist/framer-motion";
+import { motion, AnimatePresence } from "framer-motion/dist/framer-motion";
 import { UserMenuButton } from "./UserMenuButton";
 import { appStyle } from "../../styles/AppStyles";
 import "../../styles/App.css";
@@ -49,22 +40,11 @@ import dcentWallet from "../../images/dcent.png";
 import { useClickAway } from "react-use";
 import { Searchbar } from "../../styles/Searbar";
 import { anonymousLogin, logout } from "../../API/access";
-import { 
-  LS, 
-  LS_ROOT_KEY 
-} from "../../constant";
-import { 
-  Divider, 
-  Icon 
-} from "@mui/material";
+import { LS, LS_ROOT_KEY } from "../../constant";
+import { Divider, Icon } from "@mui/material";
 
 function TopBar(props) {
-  const { 
-    device, 
-    themeToggler, 
-    devMode, 
-    onWalletChange 
-  } = props;
+  const { device, themeToggler, devMode, onWalletChange } = props;
   const location = useLocation();
   const ref = useRef(null);
 
@@ -82,29 +62,29 @@ function TopBar(props) {
   const [searchPhone, setSearchPhone] = useState(false);
 
   const variant1 = {
-    open: { 
-      rotate: 0, 
-      y: 0 
+    open: {
+      rotate: 0,
+      y: 0,
     },
-    closed: { 
-      rotate: 45, 
-      y: 6 
+    closed: {
+      rotate: 45,
+      y: 6,
     },
   };
   const variant2 = {
-    open: { 
-      rotate: 0, 
-      y: 0 
+    open: {
+      rotate: 0,
+      y: 0,
     },
-    closed: { 
-      rotate: -45, 
-      y: -6 
+    closed: {
+      rotate: -45,
+      y: -6,
     },
   };
 
   /**
    * Change the searchbar design
-   * 
+   *
    * @param {boolean} status the status of the searchbar
    */
   function handleBarStatus(status) {
@@ -295,7 +275,7 @@ function TopBar(props) {
   /**
    * Close the drop down menu when the outside is clicked
    */
-   useClickAway(ref, () => {
+  useClickAway(ref, () => {
     setShowMenu(false);
   });
 
@@ -312,7 +292,7 @@ function TopBar(props) {
   return (
     <ContentBar>
       {/* Top bar organized by Phone Tablet and Computer, each case of the switch have the content of the bar */}
-      <HStack height="90px" width="100%" justify="center">
+      <HStack height="90px" width="100%" justify="center" blur="30px">
         {(() => {
           switch (deviceSize) {
             case "phone":
@@ -391,7 +371,10 @@ function TopBar(props) {
                             clickOnSwitch={themeToggler}
                           ></SwitchButton>
                           {wallet?.connected ? (
-                            <UserMenuButton wallet={wallet} redirect={props.redirect}></UserMenuButton>
+                            <UserMenuButton
+                              wallet={wallet}
+                              redirect={props.redirect}
+                            ></UserMenuButton>
                           ) : null}
 
                           <a href="https://www.instagram.com/xdsea.nft/">
@@ -456,7 +439,10 @@ function TopBar(props) {
                       padding="0 12px"
                       style={{ position: "relative" }}
                     >
-                      <HStack onClick={() => props.redirect("")} cursor={"pointer"}>
+                      <HStack
+                        onClick={() => props.redirect("")}
+                        cursor={"pointer"}
+                      >
                         <IconImg
                           url={XDSealogo}
                           width="52px"
@@ -622,7 +608,10 @@ function TopBar(props) {
                     padding="0 26px"
                     style={{ position: "relative" }}
                   >
-                    <HStack onClick={() => props.redirect("")} cursor={"pointer"}>
+                    <HStack
+                      onClick={() => props.redirect("")}
+                      cursor={"pointer"}
+                    >
                       <IconImg
                         url={XDSealogo}
                         width="52px"
@@ -693,7 +682,10 @@ function TopBar(props) {
 
                     <SwitchButton clickOnSwitch={themeToggler}></SwitchButton>
                     {wallet?.connected ? (
-                      <UserMenuButton wallet={wallet} redirect={props.redirect}></UserMenuButton>
+                      <UserMenuButton
+                        wallet={wallet}
+                        redirect={props.redirect}
+                      ></UserMenuButton>
                     ) : null}
 
                     <VStack
@@ -731,7 +723,10 @@ function TopBar(props) {
               return (
                 <>
                   <HStack width="1200px">
-                    <HStack onClick={() => props.redirect("")} cursor={"pointer"}>
+                    <HStack
+                      onClick={() => props.redirect("")}
+                      cursor={"pointer"}
+                    >
                       <IconImg
                         url={XDSealogo}
                         width="66px"
@@ -844,7 +839,10 @@ function TopBar(props) {
 
                     <SwitchButton clickOnSwitch={themeToggler}></SwitchButton>
                     {wallet?.connected ? (
-                      <UserMenuButton wallet={wallet} redirect={props.redirect}></UserMenuButton>
+                      <UserMenuButton
+                        wallet={wallet}
+                        redirect={props.redirect}
+                      ></UserMenuButton>
                     ) : null}
                   </HStack>
                 </>
@@ -1338,7 +1336,7 @@ const ContentBar = styled(motion.div)`
   justify-content: center;
   top: 0;
   left: 0;
-  background: ${({ theme }) => theme.backElement};
+  background: ${({ theme }) => theme.faded};
   width: 100%;
   z-index: 10;
 `;
