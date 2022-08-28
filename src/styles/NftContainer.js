@@ -107,7 +107,7 @@ function NftContainer(props) {
               height="100%"
             >
               <ReactPlayer
-                url={itemImage.s3}
+                url={itemImage.v0}
                 playing={isPlaying}
                 muted={true}
                 volume={0}
