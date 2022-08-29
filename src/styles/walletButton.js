@@ -93,10 +93,10 @@ function WalletButton(props) {
           padding={isMobile ? "0 30px" : "0"}
         >
           <HStack
-            height={isMobile ? "auto" : "49px"}
-            width={status ? "auto" : "180px"}
-            background={({ theme }) => theme.walletButton}
-            border="9px"
+            height={isMobile ? "auto" : "42px"}
+            width={status ? "auto" : "120px"}
+            background=" linear-gradient(1.75deg, #11101C 12.32%, #302F43 86.61%, #504E66 99.83%)"
+            border="6px"
             spacing="9px"
             cursor="pointer"
             alignment="flex-start"
@@ -302,9 +302,13 @@ function WalletButton(props) {
                   animate="hover"
                   exit="initial"
                 >
-                  <BodyBold textcolor={({ theme }) => theme.walletText}>
-                    Connect Wallet
-                  </BodyBold>
+                  <CaptionBoldShort
+                    textcolor=" #FFFFFF4D
+"
+                  >
+                    CONNECT
+                  </CaptionBoldShort>
+                  <BodyBold textcolor="white">Wallet</BodyBold>
                 </motion.div>
               )}
             </VStack>

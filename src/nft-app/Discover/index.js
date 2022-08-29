@@ -244,7 +244,7 @@ const Discover = (props) => {
   return (
     <DiscoverSection id="scrollableDiv" style={{ zIndex: 10 }}>
       {/* Discover top Section with toggle*/}
-      <HStack backgroundimage={DiscoverBar}>
+      <HStack backgroundimage={DiscoverBar} padding="60px 0 0 0">
         <HStack width="1200px" height="157px" padding="0px 9px">
           <TitleBold27 textcolor={appStyle.colors.white}>Discover</TitleBold27>
           <Spacer></Spacer>
@@ -314,7 +314,7 @@ const Discover = (props) => {
       </HStack>
       {/*Sticky bar for collections or for NFTs  */}
 
-      <StickySectionHeader top="90">
+      <StickySectionHeader top="69">
         {isSelected ? (
           <HStack
             background="rgb(0,0,0, 0.06)"
@@ -557,7 +557,7 @@ const Discover = (props) => {
 export { Discover };
 
 const DiscoverSection = styled(motion.div)`
-  padding: 90px 0;
+  padding: 0px 0;
   width: 100%;
   background: rgba(0, 0, 0, 0.06);
 `;

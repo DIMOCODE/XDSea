@@ -21,6 +21,7 @@ import {
 } from "../../styles/TextStyles";
 import { XdcConnect, Disconnect } from "xdc-connect";
 import XDSealogo from "../../images/LogoXDSEA.png";
+import mountain from "../../images/mountain.jpg";
 import { WalletButton } from "../../styles/walletButton";
 import { SwitchButton } from "../../styles/SwitchButton";
 import { motion, AnimatePresence } from "framer-motion/dist/framer-motion";
@@ -292,7 +293,7 @@ function TopBar(props) {
   return (
     <ContentBar>
       {/* Top bar organized by Phone Tablet and Computer, each case of the switch have the content of the bar */}
-      <HStack height="90px" width="100%" justify="center" blur="30px">
+      <HStack height="69px" width="100%" justify="center" blur="30px">
         {(() => {
           switch (deviceSize) {
             case "phone":
@@ -724,13 +725,14 @@ function TopBar(props) {
                 <>
                   <HStack width="1200px">
                     <HStack
+                      spacing="9px"
                       onClick={() => props.redirect("")}
                       cursor={"pointer"}
                     >
                       <IconImg
                         url={XDSealogo}
-                        width="66px"
-                        height="66px"
+                        width="52px"
+                        height="52px"
                         cursor={"pointer"}
                       ></IconImg>
                       <VStack
@@ -739,12 +741,17 @@ function TopBar(props) {
                         alignment="flex-start"
                         width="80px"
                       >
-                        <BodyBold textcolor={({ theme }) => theme.text}>
-                          XDSea
+                        <BodyBold
+                          animate={{ opacity: 0.6 }}
+                          textcolor={({ theme }) => theme.backElement}
+                        >
+                          Beta
                         </BodyBold>
                         {devMode ? (
-                          <BodyBold textcolor={({ theme }) => theme.blue}>
-                            βeta v1.6.3
+                          <BodyBold
+                            textcolor={({ theme }) => theme.backElement}
+                          >
+                            Basilisk
                           </BodyBold>
                         ) : (
                           <HStack
@@ -760,90 +767,110 @@ function TopBar(props) {
                         )}
                       </VStack>
                     </HStack>
-                    <Spacer></Spacer>
+
                     {/* Search  */}
                     {location.pathname === "/SearchPage" ? null : (
                       <Searchbar
                         top="54px"
                         left="0px"
                         placeholder="Search for NFTs and Collections"
-                        widthInput={isSearch ? "741px" : "310px"}
+                        // widthInput={isSearch ? "741px" : "310px"}
+                        widthInput={"580px"}
                         width="741px"
                         switchBarStatus={handleBarStatus}
                       ></Searchbar>
                     )}
 
-                    <AnimatePresence>
-                      {!isSearch && (
-                        <HStack
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          spacing="3px"
-                        >
-                          <ButtonApp
-                            background="rgba(255, 255, 255, 0)"
-                            textcolor={({ theme }) => theme.text}
-                            text="Discover"
-                            cursor="pointer"
-                            onClick={() => props.redirect("Discover")}
-                            btnStatus={0}
-                          ></ButtonApp>
-                          <ButtonApp
-                            background="rgba(255, 255, 255, 0)"
-                            textcolor={({ theme }) => theme.text}
-                            text="How To Start"
-                            cursor="pointer"
-                            onClick={() => props.redirect("HowToStart")}
-                            btnStatus={0}
-                            width="150px"
-                            padding="0px"
-                          ></ButtonApp>
-                          <ButtonApp
-                            background="rgba(255, 255, 255, 0)"
-                            textcolor={({ theme }) => theme.blue}
-                            text="Create an NFT"
-                            cursor="pointer"
-                            onClick={() => props.redirect("CreateNFT")}
-                            btnStatus={0}
-                            width="150px"
-                            padding="0px"
-                          ></ButtonApp>
-                        </HStack>
-                      )}
-                    </AnimatePresence>
-
                     <Spacer></Spacer>
-                    <VStack maxwidth="180px">
-                      <ZStack>
-                        <ZItem>
-                          <WalletButton
-                            logout={
-                              isMetamask
-                                ? disconnectMetamask
-                                : isXdcPay
-                                ? disconnectXdcPay
-                                : disconnectDcent
-                            }
-                            status={wallet?.connected}
-                            wallet={wallet}
-                            onClickMetamask={() => setShowMetamask(true)}
-                            isMetamask={isMetamask}
-                            isDcent={isDcent}
-                            isXdcPay={isXdcPay}
-                            hasAlert={showError > 0}
-                            clickAlert={() => setShowInfo(true)}
-                          ></WalletButton>
-                        </ZItem>
-                      </ZStack>
-                    </VStack>
+                    <HStack
+                      background={({ theme }) => theme.backElement}
+                      self="none"
+                      height="42px"
+                      padding="0 15px"
+                      border="6px"
+                      whiteTap={{ scale: 0.9 }}
+                      cursor="pointer"
+                      onClick={() => props.redirect("Discover")}
+                    >
+                      <BodyBold cursor="pointer">Discover</BodyBold>
+                    </HStack>
 
-                    <SwitchButton clickOnSwitch={themeToggler}></SwitchButton>
-                    {wallet?.connected ? (
-                      <UserMenuButton
-                        wallet={wallet}
-                        redirect={props.redirect}
-                      ></UserMenuButton>
-                    ) : null}
+                    <HStack
+                      background={
+                        "linear-gradient(166.99deg, #2868F4 37.6%, #0E27C1 115.6%)"
+                      }
+                      self="none"
+                      height="42px"
+                      padding="0 16px"
+                      border="6px"
+                      minwidth="300px"
+                      whiteTap={{ scale: 0.9 }}
+                      cursor="pointer"
+                      onClick={() => props.redirect("CreateNFT")}
+                    >
+                      <BodyBold cursor="pointer" textcolor="white">
+                        Create NFT
+                      </BodyBold>
+                    </HStack>
+
+                    <HStack>
+                      <VStack maxwidth="160px">
+                        <ZStack>
+                          <ZItem>
+                            <WalletButton
+                              logout={
+                                isMetamask
+                                  ? disconnectMetamask
+                                  : isXdcPay
+                                  ? disconnectXdcPay
+                                  : disconnectDcent
+                              }
+                              status={wallet?.connected}
+                              wallet={wallet}
+                              onClickMetamask={() => setShowMetamask(true)}
+                              isMetamask={isMetamask}
+                              isDcent={isDcent}
+                              isXdcPay={isXdcPay}
+                              hasAlert={showError > 0}
+                              clickAlert={() => setShowInfo(true)}
+                            ></WalletButton>
+                          </ZItem>
+                        </ZStack>
+                      </VStack>
+
+                      {/* <SwitchButton clickOnSwitch={themeToggler}></SwitchButton>
+                       */}
+
+                      <HStack self="none" minwith="52px" height="52px">
+                        <IconImg
+                          url={mountain}
+                          width="52px"
+                          height="52px"
+                          border="42px"
+                          bordersize="3px"
+                          bordercolor="white"
+                          backsize="cover"
+                          whileTap={{ scale: 0.96 }}
+                        ></IconImg>
+                        <RedBubble>
+                          <VStack
+                            background="red"
+                            width="26px"
+                            height="26px"
+                            border="9px"
+                          >
+                            <CaptionBold textcolor="white">1</CaptionBold>
+                          </VStack>
+                        </RedBubble>
+                      </HStack>
+
+                      {wallet?.connected ? (
+                        <UserMenuButton
+                          wallet={wallet}
+                          redirect={props.redirect}
+                        ></UserMenuButton>
+                      ) : null}
+                    </HStack>
                   </HStack>
                 </>
               );
@@ -1366,4 +1393,10 @@ const MetamaskSteps = styled(motion.div)`
   width: 100vw;
   height: 100vh;
   z-index: 100;
+`;
+
+const RedBubble = styled(motion.div)`
+  position: absolute;
+  right: -6px;
+  top: 0px;
 `;

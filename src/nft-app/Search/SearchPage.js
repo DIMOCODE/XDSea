@@ -1,15 +1,6 @@
-import React, { 
-  useEffect, 
-  useState 
-} from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import {
-  VStack,
-  HStack,
-  ZItem,
-  ZStack,
-  IconImg,
-} from "../../styles/Stacks";
+import { VStack, HStack, ZItem, ZStack, IconImg } from "../../styles/Stacks";
 import {
   BodyBold,
   BodyRegular,
@@ -18,10 +9,7 @@ import {
   TitleRegular27,
 } from "../../styles/TextStyles";
 import { appStyle } from "../../styles/AppStyles";
-import { 
-  AnimatePresence, 
-  motion 
-} from "framer-motion/dist/framer-motion";
+import { AnimatePresence, motion } from "framer-motion/dist/framer-motion";
 import DiscoverBar from "../../images/DiscoverBar.png";
 import { SortButtonCollections } from "../../styles/SortButtonCollections";
 import useWindowSize from "../../styles/useWindowSize";
@@ -47,9 +35,7 @@ function SearchPage(props) {
 
   const [searchTerm, setSearchTerm] = useState(searchParams.get("searchTerm"));
   const [isSelected, setIsSelected] = useState(
-    searchParams.get("mode") === "nft" 
-      ? false 
-      : true
+    searchParams.get("mode") === "nft" ? false : true
   );
   const [collectionData, setCollectionData] = useState([]);
   const [totalCollections, setTotalCollections] = useState(0);
@@ -69,7 +55,7 @@ function SearchPage(props) {
 
   /**
    * Get a list of collections
-   * 
+   *
    * @param {*} params the collection parameters for filtering
    */
   const getCollectionData = async (params) => {
@@ -110,7 +96,7 @@ function SearchPage(props) {
 
   /**
    * Update the list of collections with the new parameters
-   * 
+   *
    * @param {*} params the collection filter parameters
    */
   const updateCollections = async (params) => {
@@ -127,7 +113,7 @@ function SearchPage(props) {
 
   /**
    * Get a list of NFTs
-   * 
+   *
    * @param {*} params the NFT parameters for filtering
    */
   const getNFTData = async (params) => {
@@ -151,15 +137,15 @@ function SearchPage(props) {
     const nftResults = await (await getNFTs(nftParams)).data;
 
     setNftData([...nftData, ...nftResults.nfts]);
-    setNftParams({ 
-      ...nftParams, 
-      page: nftParams.page + 1 
+    setNftParams({
+      ...nftParams,
+      page: nftParams.page + 1,
     });
   };
 
   /**
    * Update NFT list based on the filters chosen by the user
-   * 
+   *
    * @param {*} params parameters used to filter query results
    */
   const handleChangeFilterNFT = (params) => {
@@ -170,7 +156,7 @@ function SearchPage(props) {
 
   /**
    * Get the filtered list of NFTs
-   * 
+   *
    * @param {*} params parameters used to filter query results
    */
   const updateNFTs = async (params) => {
@@ -178,9 +164,9 @@ function SearchPage(props) {
 
     setMaxPrice(nftResults.higherPrice);
     setNftData(nftResults.nfts);
-    setNftParams((prevState) => ({ 
-      ...prevState, 
-      page: prevState.page + 1 
+    setNftParams((prevState) => ({
+      ...prevState,
+      page: prevState.page + 1,
     }));
     setTotalNFTs(nftResults.nftsAmount);
     setLoading(false);
@@ -209,11 +195,11 @@ function SearchPage(props) {
   return (
     <SearchSection id="scrollableDiv">
       {/* Top Banner */}
-      <HStack backgroundimage={DiscoverBar}>
+      <HStack padding="30px 0 0 0 " backgroundimage={DiscoverBar}>
         <HStack
           width="1200px"
-          height="157px"
-          padding="0px 30px"
+          height="226px"
+          padding="0 30px"
           alignment="center"
           responsive="true"
         >
@@ -424,12 +410,8 @@ function SearchPage(props) {
                               isVerified={item.creator.isVerified}
                               keyContent={item.name}
                               keyID={item.creator._id}
-                              collectionImage={
-                                item.banner.v0
-                              }
-                              creatorLogo={
-                                item.logo.v0
-                              }
+                              collectionImage={item.banner.v0}
+                              creatorLogo={item.logo.v0}
                               collectionName={item.name}
                               collectionDescription={item.description}
                               creatorName={item.creator.userName}
@@ -449,7 +431,9 @@ function SearchPage(props) {
                                 collectionParams.sortBy === "volumeTrade"
                               }
                               onClickCreator={() =>
-                                props.redirect(`UserProfile/${item.creator._id}`)
+                                props.redirect(
+                                  `UserProfile/${item.creator._id}`
+                                )
                               }
                               xdc={props.xdc}
                             ></Collection>
@@ -514,9 +498,7 @@ function SearchPage(props) {
                             iconStatus={item.saleType.toLowerCase()}
                             hasOffers={item.hasOpenOffer}
                             creatorImage={item.owner.urlProfile}
-                            itemImage={
-                              item.urlFile.v0
-                            }
+                            itemImage={item.urlFile.v0}
                             itemPreview={item.preview.v0}
                             price={item.price}
                             collectionName={item.collectionId.name}
@@ -524,7 +506,9 @@ function SearchPage(props) {
                             fileType={item.fileType}
                             background={({ theme }) => theme.backElement}
                             onClick={() =>
-                              props.redirect(`nft/${nftaddress}/${item.tokenId}`)
+                              props.redirect(
+                                `nft/${nftaddress}/${item.tokenId}`
+                              )
                             }
                             onClickCreator={() =>
                               props.redirect(`UserProfile/${item.creator._id}`)
@@ -567,7 +551,7 @@ function SearchPage(props) {
 export { SearchPage };
 
 const SearchSection = styled(motion.div)`
-  padding: 90px 0;
+  padding: 0px 0;
   width: 100%;
   background: rgba(0, 0, 0, 0.06);
 `;

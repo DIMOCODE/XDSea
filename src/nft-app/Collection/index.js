@@ -1,16 +1,8 @@
-import React, { 
-  useEffect, 
-  useState
-} from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { nftaddress } from "../../config";
 import ButtonApp from "../../styles/Buttons";
-import { 
-  HStack, 
-  IconImg, 
-  Spacer, 
-  VStack 
-} from "../../styles/Stacks";
+import { HStack, IconImg, Spacer, VStack } from "../../styles/Stacks";
 import {
   BodyRegular,
   BodyBold,
@@ -45,10 +37,7 @@ import {
   TelegramShareButton,
   WhatsappShareButton,
 } from "react-share";
-import { 
-  getCollection, 
-  getCollectionNFTs 
-} from "../../API/Collection";
+import { getCollection, getCollectionNFTs } from "../../API/Collection";
 import { truncateAddress } from "../../common/common";
 import { SearchCollection } from "../../styles/SearchCollection";
 import { FiltersButton } from "../../styles/FiltersButton";
@@ -59,7 +48,7 @@ import { StickySectionHeader } from "@mayank1513/sticky-section-header";
 const CollectionPage = (props) => {
   const size = useWindowSize();
   const { collectionNickName } = useParams();
-  
+
   const [nfts, setNfts] = useState([]);
   const [loadingState, setLoadingState] = useState("not-loaded");
   const [collection, setCollection] = useState({});
@@ -84,7 +73,7 @@ const CollectionPage = (props) => {
     searchBy: searchTerm,
   });
   const [copied, setCopied] = useState(false);
-  
+
   const webLink = `https://www.xdsea.com/collection/${collectionNickName}`;
 
   /**
@@ -98,12 +87,14 @@ const CollectionPage = (props) => {
 
   /**
    * Get collection NFT data for the first page
-   * 
+   *
    * @param {string} searchBy search word to filter NFT results
    */
   const getData = async (searchBy) => {
     try {
-      const collectionData = await ( await getCollection(collectionNickName)).data;
+      const collectionData = await (
+        await getCollection(collectionNickName)
+      ).data;
       let collection = {
         _id: collectionData.collection._id,
         banner: collectionData.collection.banner.v0,
@@ -122,12 +113,14 @@ const CollectionPage = (props) => {
         nftsCount: collectionData.metrics.nftsCount,
         owners: collectionData.metrics.owners,
       };
-      const collectionNFTData = await ( await getCollectionNFTs({
-        ...params,
-        page: 1,
-        collectionId: collectionData.collection._id,
-        searchBy: searchBy,
-      })).data;
+      const collectionNFTData = await (
+        await getCollectionNFTs({
+          ...params,
+          page: 1,
+          collectionId: collectionData.collection._id,
+          searchBy: searchBy,
+        })
+      ).data;
 
       setMaxPrice(collectionNFTData.higherPrice);
       setParams({
@@ -149,16 +142,16 @@ const CollectionPage = (props) => {
   const fetchMoreNFTs = async () => {
     const collectionNFTData = await (await getCollectionNFTs(params)).data.nfts;
 
-    setParams({ 
-      ...params, 
-      page: params.page + 1 
+    setParams({
+      ...params,
+      page: params.page + 1,
     });
     setNfts([...nfts, ...collectionNFTData]);
   };
 
   /**
    * Update NFT list based on the filters chosen by the user
-   * 
+   *
    * @param {*} params parameters used to filter query results
    */
   const handleChangeFilterNFT = (params) => {
@@ -169,16 +162,16 @@ const CollectionPage = (props) => {
 
   /**
    * Get the filtered list of collection NFTs
-   * 
+   *
    * @param {*} params parameters used to filter query results
    */
   const updateNFTs = async (params) => {
     const collectionNFTData = await (await getCollectionNFTs(params)).data;
 
     setMaxPrice(collectionNFTData.higherPrice);
-    setParams({ 
-      ...params, 
-      page: params.page + 1 
+    setParams({
+      ...params,
+      page: params.page + 1,
     });
     setNfts(collectionNFTData.nfts);
     setCollection(collection);
@@ -200,7 +193,7 @@ const CollectionPage = (props) => {
         <IconImg
           url={collection.banner}
           width="100%"
-          height="355px"
+          height="424px"
           backsize="cover"
           key="imageBanner"
           initial={{ opacity: 0 }}
@@ -210,9 +203,7 @@ const CollectionPage = (props) => {
       </BannerAbsolute>
       <HStack style={{ zIndex: 1 }}>
         <VStack
-          padding={
-            size.width < 768 ? "260px 30px 30px 30px" : "260px 30px 30px 30px"
-          }
+          padding="330px 0 0 0"
           spacing="15px"
           maxwidth="1200px"
           cursor={"pointer"}
@@ -221,7 +212,9 @@ const CollectionPage = (props) => {
           {/* Creator Tag */}
           <CreatorAbsolute>
             <HStack
-              onClick={() => props.redirect(`UserProfile/${collection.creatorId}`)}
+              onClick={() =>
+                props.redirect(`UserProfile/${collection.creatorId}`)
+              }
               border="30px"
               padding="6px 15px"
               style={{
@@ -760,7 +753,7 @@ const CollectionContent = styled(motion.div)`
 `;
 
 const CollectionSection = styled(motion.div)`
-  padding: 90px 0;
+  padding: 0px 0;
   width: 100%;
   background: rgba(0, 0, 0, 0.04);
   position: relative;
@@ -773,12 +766,12 @@ const BannerAbsolute = styled(motion.div)`
 
 const CreatorAbsolute = styled(motion.div)`
   position: absolute;
-  top: 15px;
+  top: 85px;
   left: 15px;
 `;
 
 const SocialAbsolute = styled(motion.div)`
   position: absolute;
-  top: 15px;
+  top: 85px;
   right: 15px;
 `;
