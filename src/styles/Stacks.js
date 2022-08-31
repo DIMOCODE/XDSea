@@ -48,6 +48,9 @@ export const VStack = styled(motion.div).attrs((props) => ({
   gap: ${(props) => props.spacing};
   background: ${(props) => props.background};
   background-image: url(${(props) => props.backgroundimage});
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
   padding: ${(props) => props.padding};
   max-width: ${(props) => props.maxwidth};
   min-width: ${(props) => props.minwidth};
@@ -59,7 +62,7 @@ export const VStack = styled(motion.div).attrs((props) => ({
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   border-style: solid;
-  background-size: contain;
+
   border-color: ${(props) => props.bordercolor};
   border-width: ${(props) => props.bordersize};
   // -webkit-backface-visibility: hidden;

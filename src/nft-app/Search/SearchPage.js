@@ -25,7 +25,7 @@ import { NftContainer } from "../../styles/NftContainer";
 import { nftaddress } from "../../config";
 import { LayoutGroup } from "framer-motion/dist/framer-motion";
 import { Collection } from "../../styles/Collection";
-import { StickySectionHeader } from "@mayank1513/sticky-section-header";
+import { StickySectionHeader } from "../../CustomModules/sticky/StickySectionHeader.js";
 import { SearchCollection } from "../../styles/SearchCollection";
 
 function SearchPage(props) {
@@ -300,7 +300,7 @@ function SearchPage(props) {
 
       <ContentSearch id="scrollableDiv">
         {/* Sticky bar with filters and sort for NFT and Collections */}
-        <StickySectionHeader top="90">
+        <StickySectionHeader top="69">
           {isSelected ? (
             <HStack
               background="rgb(0,0,0, 0.06)"

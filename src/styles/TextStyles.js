@@ -4,12 +4,14 @@ import { motion } from "framer-motion/dist/framer-motion";
 
 export const TitleBold60 = styled(motion.h1).attrs((props) => ({
   textcolor: props.textcolor || props.theme.text,
+  align: props.align || "left",
 }))`
   font-style: normal;
   font-weight: 600;
   font-size: 66px;
   line-height: 100%;
   letter-spacing: -0.06em;
+  text-align: ${(props) => props.align};
   color: ${(props) => props.textcolor};
 `;
 

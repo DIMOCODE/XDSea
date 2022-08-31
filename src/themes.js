@@ -16,7 +16,7 @@ export const lightTheme = {
   hover: "#E3E3E3",
   walletButton: "#20222D",
   walletText: "#FFF",
-  faded: "rgba(0, 0, 0, 0.3)",
+  faded: "rgba(0, 0, 0, 0.03)",
   backgroundModal: "rgba(214, 214, 219, 0.84)",
   menu: "#5C6976",
   fadedlocked: "rgba(30, 32, 42, 1)",
