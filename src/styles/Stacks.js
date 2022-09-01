@@ -62,7 +62,7 @@ export const VStack = styled(motion.div).attrs((props) => ({
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   border-style: solid;
-
+  position: relative;
   border-color: ${(props) => props.bordercolor};
   border-width: ${(props) => props.bordersize};
   // -webkit-backface-visibility: hidden;
@@ -154,19 +154,33 @@ export const ZStack = styled(motion.div).attrs((props) => ({
   background: props.background || "rgba(255, 255, 255, 0)",
   padding: props.padding || "0",
   height: props.height || "100%",
-  overflow: props.overflow || "visible",
+  width: props.width || "100%",
+  maxwidth: props.maxwidth || "auto",
+  minwidth: props.minwidth || "auto",
+  maxheight: props.maxheight || "auto",
+  minheight: props.minheight || "auto",
+  overflow: props.overflow || "hidden",
+  overflowx: props.overflowx || "hidden",
+  overflowy: props.overflowy || "hidden",
+
   border: props.border || "0",
   cursor: props.cursor || "default",
 }))`
   position: relative;
   display: grid;
   overflow: ${(props) => props.overflow};
+  overflow-x: ${(props) => props.overflowx};
+  overflow-y: ${(props) => props.overflowy};
   justify-items: strech;
   align-items: strech;
-  width: 100%;
-  height: 100%;
+
   background: ${(props) => props.background};
+  max-width: ${(props) => props.maxwidth};
+  min-width: ${(props) => props.minwidth};
+  width: ${(props) => props.width};
   height: ${(props) => props.height};
+  max-height: ${(props) => props.maxheight};
+  min-height: ${(props) => props.minheight};
   padding: ${(props) => props.padding}px;
   border-radius: ${(props) => props.border};
   cursor: ${(props) => props.cursor};
@@ -177,6 +191,7 @@ export const ZStack = styled(motion.div).attrs((props) => ({
 export const ZItem = styled(motion.div).attrs((props) => ({
   zindex: props.zindex || "0",
   cursor: props.cursor || "default",
+  background: props.background || "rgba(255, 255, 255, 0)",
   backgroundimage: props.backgroundimage || "rgba(255, 255, 255, 0)",
   // heigth: props.height || "auto",
   // width: props.width || "auto",
@@ -186,6 +201,7 @@ export const ZItem = styled(motion.div).attrs((props) => ({
   height: 100%;
   z-index: ${(props) => props.zindex};
   cursor: ${(props) => props.cursor};
+  background: ${(props) => props.background};
   background-image: url(${(props) => props.backgroundimage});
 `;
 
