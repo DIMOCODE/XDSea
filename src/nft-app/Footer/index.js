@@ -41,7 +41,7 @@ function Footer(props) {
                   cursor={"pointer"}
                 ></IconImg>
                 <TitleBold27 textcolor={appStyle.colors.white}>
-                  XDSea
+                  Xuppi
                 </TitleBold27>
                 <BodyRegular textcolor={appStyle.colors.white}>
                   NFT Marketplace

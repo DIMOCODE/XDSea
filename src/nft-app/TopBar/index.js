@@ -454,7 +454,7 @@ function TopBar(props) {
                           alignment="flex-start"
                         >
                           <BodyBold textcolor={({ theme }) => theme.text}>
-                            XDSea
+                            Xuppi
                           </BodyBold>
                           {devMode ? (
                             <BodyBold textcolor={({ theme }) => theme.blue}>
@@ -621,7 +621,7 @@ function TopBar(props) {
                         alignment="flex-start"
                       >
                         <BodyBold textcolor={({ theme }) => theme.text}>
-                          XDSea
+                          Xuppi
                         </BodyBold>
                         {devMode ? (
                           <BodyBold textcolor={({ theme }) => theme.blue}>
@@ -741,7 +741,7 @@ function TopBar(props) {
                         width="80px"
                       >
                         <BodyBold textcolor={({ theme }) => theme.text}>
-                          XDSea
+                          Xuppi
                         </BodyBold>
                         {devMode ? (
                           <BodyBold textcolor={({ theme }) => theme.blue}>
