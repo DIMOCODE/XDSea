@@ -21,6 +21,7 @@ import { AnimatePresence } from "framer-motion/dist/framer-motion";
 import ButtonApp from "./Buttons";
 import { LayoutGroup } from "framer-motion/dist/framer-motion";
 import { fromXdc, isXdc } from "../common/common";
+import { LS, LS_ROOT_KEY } from "../constant";
 
 function WalletButton(props) {
   const {
@@ -34,6 +35,7 @@ function WalletButton(props) {
     hasAlert,
     clickAlert,
     isDcent,
+    redirect
   } = props;
 
   const [isVisible, setIsVisible] = useState(false);
@@ -121,6 +123,10 @@ function WalletButton(props) {
                         spacing="6px"
                         cursor={"pointer"}
                         padding="6px"
+                        onClick={async () => {
+                          const userId = await LS.get(LS_ROOT_KEY).user._id;
+                          redirect(`UserProfile/${userId}`);
+                        }}
                       >
                         <LedStatus
                           key="led"

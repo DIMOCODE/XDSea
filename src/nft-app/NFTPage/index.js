@@ -1115,7 +1115,7 @@ const NFTDetails = (props) => {
                           </AnimatePresence>
                         ) : null}
                         <ReactPlayer
-                          url={nft?.image.s3}
+                          url={nft?.image.v0}
                           playing={true}
                           muted={true}
                           volume={0}

@@ -366,6 +366,7 @@ function TopBar(props) {
                             isMobile={true}
                             hasAlert={showError > 0}
                             clickAlert={() => setShowInfo(true)}
+                            redirect={NavigateTo}
                           ></WalletButton>
                         </VStack>
                         <Spacer></Spacer>
