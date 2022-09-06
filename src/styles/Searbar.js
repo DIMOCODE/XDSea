@@ -82,6 +82,10 @@ function Searchbar({
       : "undefined";
   };
 
+  const truncate = (str, n) => {
+    return str?.length > n ? str.substr(0, n - 1) + "..." : str;
+  };
+
   function NavigateTo(route) {
     history.push(`/${route}`);
     setShowResults(false);
@@ -105,7 +109,7 @@ function Searchbar({
                     logo: collectionItem.logo.v0,
                     isVerified: collectionItem.creator.isVerified,
                     banner: collectionItem.banner.v0,
-                    creator: isXdc ? (await getXdcDomain(collectionItem.creator.userName)) : await getXdcDomain(toXdc(collectionItem.creator.userName)),
+                    creator: isXdc ? truncate(await getXdcDomain(collectionItem.creator.userName), 13) : truncate(await getXdcDomain(toXdc(collectionItem.creator.userName)), 13),
                     creatorAddress: collectionItem.creator.userName
                   };
                   return collection;

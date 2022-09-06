@@ -30,7 +30,7 @@ import { NewFeatured } from "../../styles/NewFeatured";
 import { borderColor } from "@mui/system";
 import "./customstyles.css";
 import banner1 from "../../images/Banner1.jpg";
-import { isSafari } from "../../common/common";
+import { isSafari, isXdc, toXdc, fromXdc } from "../../common/common";
 import { getXdcDomain } from "../../constant";
 
 const Home = (props) => {
@@ -82,7 +82,8 @@ const Home = (props) => {
             fileType: nft.nftId.fileType,
             nftContract: nft.nftId.collectionId.address,
             preview: nft.nftId.preview.v0,
-            creator: nft.nftId.creator.userName,
+            creator: truncate(await getXdcDomainAddress(nft.nftId.creator.userName), 13),
+            creatorAddress: truncateAddress(nft.nftId.creator.userName),
             creatorId: nft.nftId.creator._id,
             tokenId: nft.nftId.tokenId,
             isVerified: nft.nftId.creator.isVerified,
@@ -144,6 +145,17 @@ const Home = (props) => {
     return address
       ? address.substring(0, 6) + "..." + address.substring(38)
       : "undefined";
+  };
+
+  const getXdcDomainAddress = async (address) => {
+    const xdcDomainName = isXdc(address)
+      ? (await getXdcDomain(address))
+      : (await getXdcDomain(toXdc(address)))
+    return xdcDomainName;
+  };
+
+  const truncate = (str, n) => {
+    return str?.length > n ? str.substr(0, n - 1) + "..." : str;
   };
 
   function NavigateTo(route) {
@@ -219,7 +231,7 @@ const Home = (props) => {
                   creatorImage={featuredNFTs[0]?.collectionLogo}
                   itemImage={featuredNFTs[0]?.image}
                   collectionName={featuredNFTs[0]?.collectionName}
-                  creatorName={truncateAddress(featuredNFTs[0]?.creator)}
+                  creatorName={featuredNFTs[0]?.creator === "" ? featuredNFTs[0]?.creatorAddress : featuredNFTs[0]?.creator}
                   itemNumber={featuredNFTs[0]?.name}
                   fileType={featuredNFTs[0]?.fileType}
                   onClickCreator={() =>
@@ -245,7 +257,7 @@ const Home = (props) => {
                   creatorImage={featuredNFTs[1]?.collectionLogo}
                   itemImage={featuredNFTs[1]?.image}
                   collectionName={featuredNFTs[1]?.collectionName}
-                  creatorName={truncateAddress(featuredNFTs[1]?.creator)}
+                  creatorName={featuredNFTs[1]?.creator === "" ? featuredNFTs[1]?.creatorAddress : featuredNFTs[1]?.creator}
                   itemNumber={featuredNFTs[1]?.name}
                   fileType={featuredNFTs[1]?.fileType}
                   onClickCreator={() =>
@@ -271,7 +283,7 @@ const Home = (props) => {
                   creatorImage={featuredNFTs[2]?.collectionLogo}
                   itemImage={featuredNFTs[2]?.image}
                   collectionName={featuredNFTs[2]?.collectionName}
-                  creatorName={truncateAddress(featuredNFTs[2]?.creator)}
+                  creatorName={featuredNFTs[2]?.creator === "" ? featuredNFTs[2]?.creatorAddress : featuredNFTs[2]?.creator}
                   itemNumber={featuredNFTs[2]?.name}
                   fileType={featuredNFTs[2]?.fileType}
                   onClickCreator={() =>
@@ -297,7 +309,7 @@ const Home = (props) => {
                   creatorImage={featuredNFTs[3]?.collectionLogo}
                   itemImage={featuredNFTs[3]?.image}
                   collectionName={featuredNFTs[3]?.collectionName}
-                  creatorName={truncateAddress(featuredNFTs[3]?.creator)}
+                  creatorName={featuredNFTs[3]?.creator === "" ? featuredNFTs[3]?.creatorAddress : featuredNFTs[3]?.creator}
                   itemNumber={featuredNFTs[3]?.name}
                   fileType={featuredNFTs[3]?.fileType}
                   onClickCreator={() =>
@@ -336,7 +348,7 @@ const Home = (props) => {
                     creatorImage={featuredNFTs[0]?.collectionLogo}
                     itemImage={featuredNFTs[0]?.image}
                     collectionName={featuredNFTs[0]?.collectionName}
-                    creatorName={truncateAddress(featuredNFTs[0]?.creator)}
+                    creatorName={featuredNFTs[0]?.creator === "" ? featuredNFTs[0]?.creatorAddress : featuredNFTs[0]?.creator}
                     itemNumber={featuredNFTs[0]?.name}
                     fileType={featuredNFTs[0]?.fileType}
                     onClickCreator={() =>
@@ -364,7 +376,7 @@ const Home = (props) => {
                     creatorImage={featuredNFTs[1]?.collectionLogo}
                     itemImage={featuredNFTs[1]?.image}
                     collectionName={featuredNFTs[1]?.collectionName}
-                    creatorName={truncateAddress(featuredNFTs[1]?.creator)}
+                    creatorName={featuredNFTs[1]?.creator === "" ? featuredNFTs[1]?.creatorAddress : featuredNFTs[1]?.creator}
                     itemNumber={featuredNFTs[1]?.name}
                     fileType={featuredNFTs[1]?.fileType}
                     onClickCreator={() =>
@@ -393,7 +405,7 @@ const Home = (props) => {
                     creatorImage={featuredNFTs[2]?.collectionLogo}
                     itemImage={featuredNFTs[2]?.image}
                     collectionName={featuredNFTs[2]?.collectionName}
-                    creatorName={truncateAddress(featuredNFTs[2]?.creator)}
+                    creatorName={featuredNFTs[2]?.creator === "" ? featuredNFTs[2]?.creatorAddress : featuredNFTs[2]?.creator}
                     itemNumber={featuredNFTs[2]?.name}
                     fileType={featuredNFTs[2]?.fileType}
                     onClickCreator={() =>
@@ -422,7 +434,7 @@ const Home = (props) => {
                     creatorImage={featuredNFTs[3]?.collectionLogo}
                     itemImage={featuredNFTs[3]?.image}
                     collectionName={featuredNFTs[3]?.collectionName}
-                    creatorName={truncateAddress(featuredNFTs[3]?.creator)}
+                    creatorName={featuredNFTs[3]?.creator === "" ? featuredNFTs[3]?.creatorAddress : featuredNFTs[3]?.creator}
                     itemNumber={featuredNFTs[3]?.name}
                     fileType={featuredNFTs[3]?.fileType}
                     onClickCreator={() =>
