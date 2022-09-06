@@ -212,9 +212,7 @@ function Collection(props) {
                       cursor={"pointer"}
                       textcolor={appStyle.colors.white}
                     >
-                      {truncateAddress(
-                        isXdc(creatorName) ? fromXdc(creatorName) : creatorName
-                      )}
+                      {creatorName}
                     </CaptionBoldShort>
                     <TitleBold21
                       overflow={"hidden"}

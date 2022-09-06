@@ -35,9 +35,10 @@ import banner1 from "../../images/Banner1.jpg";
 import { nftaddress } from "../../config";
 import { LayoutGroup } from "framer-motion/dist/framer-motion";
 import { Collection } from "../../styles/Collection";
-import { isSafari } from "../../common/common";
+import { isSafari, isXdc, fromXdc, toXdc } from "../../common/common";
 import { StickySectionHeader } from "../../CustomModules/sticky/StickySectionHeader.js";
 import { SearchCollection } from "../../styles/SearchCollection";
+import { getXdcDomain } from "../../constant";
 
 function SearchPage(props) {
   const size = useWindowSize();
@@ -66,7 +67,29 @@ function SearchPage(props) {
 
   const getCollectionData = async (params) => {
     const collectionResults = await (await getCollections(params)).data;
-    setCollectionData(collectionResults.collections);
+    const collectionList = await Promise.all(
+      collectionResults.collections.map(async (collectionItem) => {
+        let collection = {
+          name: collectionItem.name,
+          nickName: collectionItem.nickName,
+          description: collectionItem.description,
+          logo: collectionItem.logo.v0,
+          isVerified: collectionItem.creator.isVerified,
+          banner: collectionItem.banner.v0,
+          creator: truncate(await getXdcDomainAddress(collectionItem.creator.userName), 13),
+          creatorAddress: truncateAddress(isXdc(collectionItem.creator.userName) 
+            ? fromXdc(collectionItem.creator.userName) 
+            : collectionItem.creator.userName),
+          creatorId: collectionItem.creator._id,
+          floorPrice: collectionItem.floorPrice,
+          totalNfts: collectionItem.totalNfts,
+          owners: collectionItem.owners,
+          volumeTrade: collectionItem.volumeTrade,
+        };
+        return collection;
+      })
+    );
+    setCollectionData(collectionList);
     setTotalCollections(collectionResults.collectionsAmount);
     setLoading(false);
     setCollectionParams((prevState) => ({
@@ -80,7 +103,29 @@ function SearchPage(props) {
     const collectionResults = await (
       await getCollections(collectionParams)
     ).data;
-    setCollectionData([...collectionData, ...collectionResults.collections]);
+    const collectionList = await Promise.all(
+      collectionResults.collections.map(async (collectionItem) => {
+        let collection = {
+          name: collectionItem.name,
+          nickName: collectionItem.nickName,
+          description: collectionItem.description,
+          logo: collectionItem.logo.v0,
+          isVerified: collectionItem.creator.isVerified,
+          banner: collectionItem.banner.v0,
+          creator: truncate(await getXdcDomainAddress(collectionItem.creator.userName), 13),
+          creatorAddress: truncateAddress(isXdc(collectionItem.creator.userName) 
+            ? fromXdc(collectionItem.creator.userName) 
+            : collectionItem.creator.userName),
+          creatorId: collectionItem.creator._id,
+          floorPrice: collectionItem.floorPrice,
+          totalNfts: collectionItem.totalNfts,
+          owners: collectionItem.owners,
+          volumeTrade: collectionItem.volumeTrade,
+        };
+        return collection;
+      })
+    );
+    setCollectionData([...collectionData, ...collectionList]);
     setCollectionParams((prevState) => ({
       ...prevState,
       page: prevState.page + 1,
@@ -100,7 +145,29 @@ function SearchPage(props) {
   const updateCollections = async (params) => {
     setLoading(true);
     const collectionResults = await (await getCollections(params)).data;
-    setCollectionData(collectionResults.collections);
+    const collectionList = await Promise.all(
+      collectionResults.collections.map(async (collectionItem) => {
+        let collection = {
+          name: collectionItem.name,
+          nickName: collectionItem.nickName,
+          description: collectionItem.description,
+          logo: collectionItem.logo.v0,
+          isVerified: collectionItem.creator.isVerified,
+          banner: collectionItem.banner.v0,
+          creator: truncate(await getXdcDomainAddress(collectionItem.creator.userName), 13),
+          creatorAddress: truncateAddress(isXdc(collectionItem.creator.userName) 
+            ? fromXdc(collectionItem.creator.userName) 
+            : collectionItem.creator.userName),
+          creatorId: collectionItem.creator._id,
+          floorPrice: collectionItem.floorPrice,
+          totalNfts: collectionItem.totalNfts,
+          owners: collectionItem.owners,
+          volumeTrade: collectionItem.volumeTrade,
+        };
+        return collection;
+      })
+    );
+    setCollectionData(collectionList);
     setCollectionParams((prevState) => ({
       ...prevState,
       page: prevState.page + 1,
@@ -151,6 +218,23 @@ function SearchPage(props) {
   function NavigateTo(route) {
     history.push(`/${route}`);
   }
+
+  const getXdcDomainAddress = async (address) => {
+    const xdcDomainName = isXdc(address)
+      ? (await getXdcDomain(address))
+      : (await getXdcDomain(toXdc(address)))
+    return xdcDomainName;
+  };
+
+  const truncateAddress = (address) => {
+    return address
+      ? address.substring(0, 6) + "..." + address.substring(38)
+      : "undefined";
+  };
+
+  const truncate = (str, n) => {
+    return str?.length > n ? str.substr(0, n - 1) + "..." : str;
+  };
 
   useEffect(async () => {
     setLoading(true);
@@ -381,18 +465,18 @@ function SearchPage(props) {
                           <VStack width="326px" height="440px">
                             <Collection
                               key={item.name}
-                              isVerified={item.creator.isVerified}
+                              isVerified={item.isVerified}
                               keyContent={item.name}
-                              keyID={item.creator._id}
+                              keyID={item.creatorId}
                               collectionImage={
-                                item.banner.v0
+                                item.banner
                               }
                               creatorLogo={
-                                item.logo.v0
+                                item.logo
                               }
                               collectionName={item.name}
                               collectionDescription={item.description}
-                              creatorName={item.creator.userName}
+                              creatorName={item.creator === "" ? item.creatorAddress : item.creator}
                               onClickCollection={() =>
                                 NavigateTo(`collection/${item.nickName}`)
                               }
@@ -409,7 +493,7 @@ function SearchPage(props) {
                                 collectionParams.sortBy === "volumeTrade"
                               }
                               onClickCreator={() =>
-                                NavigateTo(`UserProfile/${item.creator._id}`)
+                                NavigateTo(`UserProfile/${item.creatorId}`)
                               }
                               xdc={props.xdc}
                             ></Collection>

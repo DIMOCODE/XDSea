@@ -39,7 +39,7 @@ import {
   nftmarketlayeraddress,
 } from "../../config";
 import { NftContainer } from "../../styles/NftContainer";
-import { isSafari } from "../../common/common";
+import { isSafari, isXdc, toXdc, fromXdc } from "../../common/common";
 import noResult from "../../images/noResult.png";
 import { untitledCollections, verifiedProfiles } from "../../blacklist";
 import CID from "cids";
@@ -53,7 +53,7 @@ import Xdc3 from "xdc3";
 import NFT from "../../abis/NFT.json";
 import NFTMarket from "../../abis/NFTMarket.json";
 import axios from "axios";
-import { DEFAULT_PROVIDER, HEADER } from "../../constant";
+import { DEFAULT_PROVIDER, HEADER, getXdcDomain } from "../../constant";
 import NFTMarketLayer1 from "../../abis/NFTMarketLayer1.json";
 import { StickySectionHeader } from "../../CustomModules/sticky/StickySectionHeader.js";
 
@@ -132,7 +132,10 @@ const Discover = (props) => {
             logo: collectionItem.logo.v0,
             isVerified: collectionItem.creator.isVerified,
             banner: collectionItem.banner.v0,
-            creator: collectionItem.creator.userName,
+            creator: truncate(await getXdcDomainAddress(collectionItem.creator.userName), 13),
+            creatorAddress: truncateAddress(isXdc(collectionItem.creator.userName) 
+              ? fromXdc(collectionItem.creator.userName) 
+              : collectionItem.creator.userName),
             creatorId: collectionItem.creator._id,
             floorPrice: collectionItem.floorPrice,
             nfts: collectionItem.totalNfts,
@@ -301,7 +304,10 @@ const Discover = (props) => {
           logo: collectionItem.logo.v0,
           isVerified: collectionItem.creator.isVerified,
           banner: collectionItem.banner.v0,
-          creator: collectionItem.creator.userName,
+          creator: truncate(await getXdcDomainAddress(collectionItem.creator.userName), 13),
+            creatorAddress: truncateAddress(isXdc(collectionItem.creator.userName) 
+              ? fromXdc(collectionItem.creator.userName) 
+              : collectionItem.creator.userName),
           creatorId: collectionItem.creator._id,
           floorPrice: collectionItem.floorPrice,
           nfts: collectionItem.totalNfts,
@@ -346,7 +352,10 @@ const Discover = (props) => {
           logo: collectionItem.logo.v0,
           isVerified: collectionItem.creator.isVerified,
           banner: collectionItem.banner.v0,
-          creator: collectionItem.creator.userName,
+          creator: truncate(await getXdcDomainAddress(collectionItem.creator.userName), 13),
+            creatorAddress: truncateAddress(isXdc(collectionItem.creator.userName) 
+              ? fromXdc(collectionItem.creator.userName) 
+              : collectionItem.creator.userName),
           creatorId: collectionItem.creator._id,
           floorPrice: collectionItem.floorPrice,
           nfts: collectionItem.totalNfts,
@@ -489,6 +498,23 @@ const Discover = (props) => {
       page: prevState.page + 1,
     }));
     setLoading(false);
+  };
+
+  const getXdcDomainAddress = async (address) => {
+    const xdcDomainName = isXdc(address)
+      ? (await getXdcDomain(address))
+      : (await getXdcDomain(toXdc(address)))
+    return xdcDomainName;
+  };
+
+  const truncateAddress = (address) => {
+    return address
+      ? address.substring(0, 6) + "..." + address.substring(38)
+      : "undefined";
+  };
+
+  const truncate = (str, n) => {
+    return str?.length > n ? str.substr(0, n - 1) + "..." : str;
   };
 
   function NavigateTo(route) {
@@ -690,7 +716,7 @@ const Discover = (props) => {
                           creatorLogo={item.logo}
                           collectionName={item.name}
                           collectionDescription={item.description}
-                          creatorName={item.creator}
+                          creatorName={item.creator === "" ? item.creatorAddress : item.creator}
                           onClickCollection={() =>
                             NavigateTo(`collection/${item.nickName}`)
                           }
