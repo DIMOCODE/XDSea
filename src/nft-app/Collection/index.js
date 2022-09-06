@@ -41,12 +41,13 @@ import {
   WhatsappShareButton,
 } from "react-share";
 import { getCollection, getCollectionNFTs } from "../../API/Collection";
-import { isSafari } from "../../common/common";
+import { isSafari, isXdc, toXdc, fromXdc } from "../../common/common";
 import { SearchCollection } from "../../styles/SearchCollection";
 import { FiltersButton } from "../../styles/FiltersButton";
 import { SortButtonNFTS } from "../../styles/SortButtonNFTS";
 import noResult from "../../images/noResult.png";
 import { StickySectionHeader } from "../../CustomModules/sticky/StickySectionHeader.js";
+import { getXdcDomain } from "../../constant";
 
 const CollectionDetails = (props) => {
   const history = useHistory();
@@ -95,7 +96,8 @@ const CollectionDetails = (props) => {
       let collection = {
         _id: collectionData.collection._id,
         banner: collectionData.collection.banner.v0,
-        creator: collectionData.collection.addressCreator,
+        creator: truncate(await getXdcDomainAddress(collectionData.collection.addressCreator), 13),
+        creatorAddress: collectionData.collection.addressCreator,
         creatorId: collectionData.collection.creator._id,
         isVerified: collectionData.collection.creator.isVerified,
         description: collectionData.collection.description,
@@ -154,10 +156,21 @@ const CollectionDetails = (props) => {
     }
   };
 
+  const getXdcDomainAddress = async (address) => {
+    const xdcDomainName = isXdc(address)
+      ? (await getXdcDomain(address))
+      : (await getXdcDomain(toXdc(address)))
+    return xdcDomainName;
+  };
+
   const truncateAddress = (address) => {
     return address
       ? address.substring(0, 6) + "..." + address.substring(38)
       : "undefined";
+  };
+
+  const truncate = (str, n) => {
+    return str?.length > n ? str.substr(0, n - 1) + "..." : str;
   };
 
   const fetchMoreNFTs = async () => {
@@ -296,9 +309,9 @@ const CollectionDetails = (props) => {
                   CREATOR
                 </CaptionBold>
                 {collection.creator ? (
-                  <Tooltip title={nfts[0]?.collectionCreator}>
+                  <Tooltip title={collection.creatorAddress}>
                     <CaptionBold textcolor={({ theme }) => theme.text}>
-                      {truncateAddress(collection.creator)}
+                      {collection.creator === "" ? truncateAddress(collection.creatorAddress) : collection.creator}
                     </CaptionBold>
                   </Tooltip>
                 ) : (
