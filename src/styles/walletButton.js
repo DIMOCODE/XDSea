@@ -20,17 +20,20 @@ import { motion } from "framer-motion/dist/framer-motion";
 import { AnimatePresence } from "framer-motion/dist/framer-motion";
 import ButtonApp from "./Buttons";
 import { LayoutGroup } from "framer-motion/dist/framer-motion";
-import { fromXdc, isXdc } from "../common/common";
+import { fromXdc, isXdc, toXdc } from "../common/common";
+import { getXdcDomain } from "../constant";
 
 function WalletButton(props) {
   const {
     status,
     wallet,
+    walletAddress,
     logout,
     onClickMetamask,
     isMetamask,
     isXdcPay,
     isMobile,
+    isDomain,
     hasAlert,
     clickAlert,
     isDcent,
@@ -71,6 +74,14 @@ function WalletButton(props) {
     },
   };
 
+  const truncateAddress = (address) => {
+    return address.substring(0, 6) + "..." + address.substring(38);
+  };
+
+  const truncate = (str, n) => {
+    return str?.length > n ? str.substr(0, n - 1) + "..." : str;
+  };
+
   const [showAlert, setShowAlert] = useState(false);
   useEffect(() => {
     let timeout;
@@ -79,10 +90,6 @@ function WalletButton(props) {
     }
     return () => clearTimeout(timeout);
   }, [showAlert]);
-
-  const truncateAddress = (address) => {
-    return address.substring(0, 7) + "..." + address.substring(38);
-  };
 
   return (
     <LayoutGroup id="WalletButton">
@@ -145,9 +152,7 @@ function WalletButton(props) {
                         >
                           {showAlert
                             ? "Address Copied"
-                            : isXdc(wallet?.address)
-                            ? fromXdc(wallet?.address?.toLowerCase())
-                            : wallet?.address?.toLowerCase()}
+                            : walletAddress}
                         </CaptionBoldShort>
                       </HStack>
                       <HStack>
@@ -165,8 +170,8 @@ function WalletButton(props) {
                             setShowAlert(true);
                             navigator.clipboard.writeText(
                               isXdc(wallet?.address)
-                                ? fromXdc(wallet?.address?.toLowerCase())
-                                : wallet?.address?.toLowerCase()
+                                ? fromXdc(wallet?.address).toLowerCase()
+                                : wallet?.address.toLowerCase()
                             );
                           }}
                           btnStatus={0}
@@ -241,9 +246,7 @@ function WalletButton(props) {
                                 >
                                   {showAlert
                                     ? "Address Copied"
-                                    : isXdc(wallet?.address)
-                                    ? fromXdc(wallet?.address?.toLowerCase())
-                                    : wallet?.address?.toLowerCase()}
+                                    : walletAddress}
                                 </BodyRegular>
                                 <IconImg
                                   url={showAlert ? checkIcon : copyIcon}
@@ -253,10 +256,8 @@ function WalletButton(props) {
                                   onClick={() => {
                                     navigator.clipboard.writeText(
                                       isXdc(wallet?.address)
-                                        ? fromXdc(
-                                            wallet?.address?.toLowerCase()
-                                          )
-                                        : wallet?.address?.toLowerCase()
+                                        ? fromXdc(wallet?.address).toLowerCase()
+                                        : wallet?.address.toLowerCase()
                                     );
                                   }}
                                 ></IconImg>
@@ -288,11 +289,11 @@ function WalletButton(props) {
                         <BodyRegular
                           textcolor={({ theme }) => theme.walletText}
                         >
-                          {truncateAddress(
-                            isXdc(wallet?.address)
-                              ? fromXdc(wallet?.address)
-                              : wallet?.address
-                          )}
+                          {
+                            isDomain 
+                              ? truncate(walletAddress, 10)
+                              : truncateAddress(walletAddress)
+                          }
                         </BodyRegular>
                       </ZItem>
                     </ZStack>

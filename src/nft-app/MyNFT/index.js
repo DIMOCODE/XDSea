@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 import { useHistory, useParams } from "react-router-dom";
 import Xdc3 from "xdc3";
 import { nftaddress, nftmarketlayeraddress } from "../../config";
-import { DEFAULT_PROVIDER, HEADER, LS_ROOT_KEY, LS } from "../../constant";
+import { DEFAULT_PROVIDER, HEADER, LS_ROOT_KEY, LS, getXdcDomain } from "../../constant";
 import NFT from "../../abis/NFT.json";
 import { AnimatePresence } from "framer-motion/dist/framer-motion";
 import { LoopLogo } from "../../styles/LoopLogo";
@@ -48,6 +48,7 @@ import { getNFTs } from "../../API/NFT";
 import { getCollections } from "../../API/Collection";
 import { isSafari } from "../../common/common";
 import { getUser } from "../../API/User";
+import { isXdc, fromXdc, toXdc } from "../../common/common";
 
 const MyNFT = (props) => {
   const { userId } = useParams();
@@ -59,6 +60,8 @@ const MyNFT = (props) => {
   const [loading, setLoading] = useState(false);
   const [loadingCollection, setLoadingCollection] = useState(false);
   const [user, setUser] = useState({});
+  const [walletAddress, setWalletAddress] = useState("");
+  const [isDomain, setIsDomain] = useState(false);
 
   const getCreatedCollections = async () => {
     setLoadingCollection(true);
@@ -90,6 +93,7 @@ const MyNFT = (props) => {
         if (i === 1) {
           let userData = await (await getUser(userId)).data.user;
           setUser(userData);
+          setWalletAddress(await getXdcDomainAddress(userData.XDCWallets[0]));
           return userData;
         } else {
           let nftData = await (
@@ -143,6 +147,23 @@ const MyNFT = (props) => {
 
     setNfts((prevState) => [...prevState, ...nftList]);
     setPage(page + 1);
+  };
+
+  const getXdcDomainAddress = async (address) => {
+    const xdcDomainName = isXdc(address)
+      ? (await getXdcDomain(address))
+      : (await getXdcDomain(toXdc(address)))
+    if(xdcDomainName === "") {
+      setIsDomain(false);
+    }
+    else{
+      setIsDomain(true);
+    }
+    return xdcDomainName === "" 
+      ? isXdc(address) 
+        ? fromXdc(address) 
+        : address 
+      : xdcDomainName;
   };
 
   const isImage = (fileType) => {
@@ -228,6 +249,8 @@ const MyNFT = (props) => {
                 </CaptionBold>
                 <BubbleCopied
                   logo={xdcLogo}
+                  domain={walletAddress}
+                  isDomain={isDomain}
                   address={user.XDCWallets ? user.XDCWallets[0] : ""}
                   icon={copyIcon}
                 ></BubbleCopied>

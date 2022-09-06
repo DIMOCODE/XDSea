@@ -52,6 +52,5 @@ const xdcSdk = domainjs.SDK(xdcDomainConfig);
 
 export const getXdcDomain = async (address) => {
   const xdcDomain = await xdcSdk.getDomain(address);
-  console.log(xdcDomain)
   return xdcDomain;
 };

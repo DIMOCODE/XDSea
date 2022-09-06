@@ -30,7 +30,7 @@ function TableOffersNft(props) {
 
   const truncateAddress = (address) => {
     return address
-      ? address.substring(0, 7) + "..." + address.substring(38)
+      ? address.substring(0, 6) + "..." + address.substring(38)
       : "undefined";
   };
 

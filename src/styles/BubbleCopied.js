@@ -10,7 +10,7 @@ import { motion } from "framer-motion/dist/framer-motion";
 import { Tooltip } from "@mui/material";
 
 function BubbleCopied(props) {
-  const { logo, address, icon } = props;
+  const { logo, domain, isDomain, address, icon } = props;
 
   const [showAlertLink, setShowAlertLink] = useState(false);
 
@@ -41,9 +41,9 @@ function BubbleCopied(props) {
       >
         <IconImg url={logo} width="21px" height="21px"></IconImg>
         <Spacer></Spacer>
-        <Tooltip title={address}>
+        <Tooltip title={isDomain ? domain : address}>
           <CaptionBoldShort textcolor={({ theme }) => theme.text}>
-            {truncateAddress(address)}
+            {isDomain ? domain : truncateAddress(address)}
           </CaptionBoldShort>
         </Tooltip>
         <Spacer></Spacer>
