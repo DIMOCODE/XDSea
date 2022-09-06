@@ -18,7 +18,7 @@ import {
   WithdrawOffer,
   AcceptOffer,
 } from "../../common";
-import { fromXdc, isSafari, isXdc } from "../../common/common";
+import { fromXdc, isSafari, isXdc, toXdc } from "../../common/common";
 import NFTMarketLayer1 from "../../abis/NFTMarketLayer1.json";
 import {
   permaBlacklist,
@@ -109,6 +109,7 @@ import {
   withdrawListingNFTRequest,
   withdrawOfferRequest,
 } from "../../API/NFT";
+import { getXdcDomain } from "../../constant";
 
 const NFTDetails = (props) => {
   const webLocation = useLocation();
@@ -514,10 +515,12 @@ const NFTDetails = (props) => {
         price: nftData.nft.price,
         tokenId: id,
         itemId: nftData.nft.itemId,
-        creator: nftData.nft.creator.userName,
+        creator: await getXdcDomainAddress(nftData.nft.creator.userName),
+        creatorAddress: nftData.nft.creator.userName,
         creatorProfile: nftData.nft.creator.urlProfile,
         creatorId: nftData.nft.creator._id,
-        owner: nftData.nft.owner.userName,
+        owner: await getXdcDomainAddress(nftData.nft.owner.userName),
+        ownerAddress: nftData.nft.owner.userName,
         ownerProfile: nftData.nft.owner.urlProfile,
         ownerId: nftData.nft.owner._id,
         collectionName: nftData.nft.collectionId.name,
@@ -579,7 +582,8 @@ const NFTDetails = (props) => {
                 let offerItem = {
                   _id: offer._id,
                   userProfile: offer.userId.urlProfile,
-                  from: offer.fromAddress,
+                  from: truncate(await getXdcDomainAddress(offer.fromAddress), 13),
+                  fromAddress: truncateAddress(offer.fromAddress),
                   isAccepted: offer.isAccepted,
                   isWithdrawn: offer.isWithdraw,
                   price: offer.price,
@@ -688,8 +692,10 @@ const NFTDetails = (props) => {
                       </HStack>
                     ),
                   price: item.price,
-                  from: item.fromAddress,
-                  to: item.toAddress,
+                  from: truncate(await getXdcDomainAddress(item.fromAddress), 13),
+                  fromAddress: item.fromAddress,
+                  to: truncate(await getXdcDomainAddress(item.toAddress), 13),
+                  toAddress: item.toAddress,
                   date: item.timestamp,
                 };
                 return event;
@@ -709,10 +715,21 @@ const NFTDetails = (props) => {
     }
   };
 
+  const getXdcDomainAddress = async (address) => {
+    const xdcDomainName = isXdc(address)
+      ? (await getXdcDomain(address))
+      : (await getXdcDomain(toXdc(address)))
+    return xdcDomainName;
+  };
+
   const truncateAddress = (address) => {
     return address
       ? address.substring(0, 6) + "..." + address.substring(38)
       : "undefined";
+  };
+
+  const truncate = (str, n) => {
+    return str?.length > n ? str.substr(0, n - 1) + "..." : str;
   };
 
   const getApproval = async (marketAddress) => {
@@ -1231,7 +1248,7 @@ const NFTDetails = (props) => {
                   {nft?.owner ? (
                     <Tooltip title={nft?.owner ? nft.owner : "-"}>
                       <BodyBold cursor={"pointer"}>
-                        {truncateAddress(nft?.owner)}
+                        {nft?.owner === "" ? truncateAddress(nft?.ownerAddress) : truncate(nft?.owner, 13)}
                       </BodyBold>
                     </Tooltip>
                   ) : (
@@ -1426,8 +1443,8 @@ const NFTDetails = (props) => {
                       backsize="cover"
                     ></IconImg>
 
-                    <Tooltip title={nft?.creator ? nft.creator : "-"}>
-                      <BodyBold>{truncateAddress(nft?.creator)}</BodyBold>
+                    <Tooltip title={nft?.creatorAddress ? nft.creatorAddress : "-"}>
+                      <BodyBold>{nft?.creator === "" ? truncateAddress(nft?.creatorAddress) : truncate(nft?.creator, 13)}</BodyBold>
                     </Tooltip>
                   </HStack>
                 ) : (
@@ -1852,7 +1869,7 @@ const NFTDetails = (props) => {
                       <TableOffersNft
                         key={i}
                         imageBuyer={item.userProfile}
-                        offerBy={item.from}
+                        offerBy={item.from === "" ? item.fromAddress : item.from}
                         offerUser={item.userId}
                         wallet={wallet}
                         owner={item.to}

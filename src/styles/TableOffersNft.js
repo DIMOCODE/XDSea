@@ -67,7 +67,7 @@ function TableOffersNft(props) {
                 cursor="pointer"
               ></IconImg>
               <CaptionBoldShort cursor="pointer">
-                {truncateAddress(offerBy)}
+                {offerBy}
               </CaptionBoldShort>
             </HStack>
           </VStack>
