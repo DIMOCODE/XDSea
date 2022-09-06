@@ -41,10 +41,10 @@ import BlueBanner from "../../images/multicolorblur1.png";
 import nftIdea from "../../images/nftIdea.jpg";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { TypeAnimation } from "react-type-animation";
+import svgpattern from "../../images/scales22.jpg";
 
-import Particles from "react-particles";
-import { loadFull } from "tsparticles";
 import { useCallback } from "react";
+
 const Home = (props) => {
   const [featuredNFTs, setFeaturedNFTs] = useState([]);
   const [topCollections, setTopCollections] = useState([]);
@@ -110,422 +110,139 @@ const Home = (props) => {
 
   useEffect(() => {}, [scrolling]);
 
-  const particlesInit = useCallback(async (engine) => {
-    console.log(engine);
-    // you can initiate the tsParticles instance (engine) here, adding custom shapes or presets
-    // this loads the tsparticles package bundle, it's the easiest method for getting everything ready
-    // starting from v2 you can add only the features you need reducing the bundle size
-    await loadFull(engine);
-  }, []);
-
-  const particlesLoaded = useCallback(async (container) => {
-    await console.log(container);
-  }, []);
-
   return (
     <Content>
-      <VStack
-        width="100%"
-        backgroundimage={BlueBanner}
-        padding="90px 30px 21px 30px"
-        overflowx="hidden"
-      >
-        {/* Particles effect inside the top banner */}
-        <Blend>
-          <Particles
-            id="tsparticles"
-            init={particlesInit}
-            loaded={particlesLoaded}
-            options={{
-              interactivity: {
-                events: {
-                  onClick: {
-                    enable: true,
-                    mode: "repulse",
-                  },
-                  onHover: {
-                    enable: true,
-                    mode: "bubble",
-                  },
-                },
-                modes: {
-                  attract: {
-                    distance: 200,
-                    duration: 0.4,
-                    easing: "ease-out-quad",
-                    factor: 1,
-                    maxSpeed: 50,
-                    speed: 1,
-                  },
-                  bounce: {
-                    distance: 200,
-                  },
-                  bubble: {
-                    distance: 250,
-                    duration: 2,
-                    mix: false,
-                    opacity: 0,
-                    size: 0,
-                    divs: {
-                      distance: 200,
-                      duration: 0.4,
-                      mix: false,
-                      selectors: [],
-                    },
-                  },
-                  connect: {
-                    distance: 80,
-                    links: {
-                      opacity: 0.5,
-                    },
-                    radius: 60,
-                  },
-                  grab: {
-                    distance: 400,
-                    links: {
-                      blink: false,
-                      consent: false,
-                      opacity: 1,
-                    },
-                  },
-                  push: {
-                    default: true,
-                    groups: [],
-                    quantity: 4,
-                  },
-                  remove: {
-                    quantity: 2,
-                  },
-                  repulse: {
-                    distance: 400,
-                    duration: 0.4,
-                    factor: 100,
-                    speed: 1,
-                    maxSpeed: 50,
-                    easing: "ease-out-quad",
-                    divs: {
-                      distance: 200,
-                      duration: 0.4,
-                      factor: 100,
-                      speed: 1,
-                      maxSpeed: 50,
-                      easing: "ease-out-quad",
-                      selectors: [],
-                    },
-                  },
-                  trail: {
-                    delay: 1,
-                    pauseOnStop: false,
-                    quantity: 1,
-                  },
-                  light: {
-                    area: {
-                      gradient: {
-                        start: {
-                          value: "#ffffff",
-                        },
-                        stop: {
-                          value: "#000000",
-                        },
-                      },
-                      radius: 1000,
-                    },
-                    shadow: {
-                      color: {
-                        value: "#000000",
-                      },
-                      length: 2000,
-                    },
-                  },
-                },
-              },
-              particles: {
-                color: {
-                  value: "#ffffff",
-                },
-                move: {
-                  attract: {
-                    rotate: {
-                      x: 600,
-                      y: 600,
-                    },
-                  },
-                  enable: true,
-                  outModes: {
-                    bottom: "out",
-                    left: "out",
-                    right: "out",
-                    top: "out",
-                  },
-                  random: true,
-                  speed: 1,
-                },
-                number: {
-                  density: {
-                    enable: true,
-                  },
-                  value: 300,
-                },
-                opacity: {
-                  random: {
-                    enable: true,
-                  },
-                  value: {
-                    min: 0,
-                    max: 1,
-                  },
-                  animation: {
-                    enable: true,
-                    speed: 1,
-                    minimumValue: 0,
-                  },
-                },
-                size: {
-                  random: {
-                    enable: true,
-                  },
-                  value: {
-                    min: 1,
-                    max: 90,
-                  },
-                  animation: {
-                    speed: 4,
-                    minimumValue: 0.3,
-                  },
-                },
-                life: {
-                  count: 0,
-                  delay: {
-                    random: {
-                      enable: false,
-                      minimumValue: 0,
-                    },
-                    value: 0,
-                    sync: false,
-                  },
-                  duration: {
-                    random: {
-                      enable: false,
-                      minimumValue: 0.0001,
-                    },
-                    value: 0,
-                    sync: false,
-                  },
-                },
-                roll: {
-                  darken: {
-                    enable: false,
-                    value: 0,
-                  },
-                  enable: false,
-                  enlighten: {
-                    enable: false,
-                    value: 0,
-                  },
-                  mode: "vertical",
-                  speed: 25,
-                },
-                tilt: {
-                  random: {
-                    enable: false,
-                    minimumValue: 0,
-                  },
-                  value: 0,
-                  animation: {
-                    enable: false,
-                    speed: 0,
-                    decay: 0,
-                    sync: false,
-                  },
-                  direction: "clockwise",
-                  enable: false,
-                },
-                twinkle: {
-                  lines: {
-                    enable: false,
-                    frequency: 0.05,
-                    opacity: 1,
-                  },
-                  particles: {
-                    enable: false,
-                    frequency: 0.05,
-                    opacity: 1,
-                  },
-                },
-                wobble: {
-                  distance: 5,
-                  enable: false,
-                  speed: {
-                    angle: 50,
-                    move: 10,
-                  },
-                },
-                orbit: {
-                  animation: {
-                    count: 0,
-                    enable: false,
-                    speed: 1,
-                    decay: 0,
-                    sync: false,
-                  },
-                  enable: false,
-                  opacity: 1,
-                  rotation: {
-                    random: {
-                      enable: false,
-                      minimumValue: 0,
-                    },
-                    value: 45,
-                  },
-                  width: 1,
-                },
-                links: {
-                  blink: false,
-                  color: {
-                    value: "#ffffff",
-                  },
-                  consent: false,
-                  distance: 150,
-                  enable: false,
-                  frequency: 1,
-                  opacity: 0.4,
-                  shadow: {
-                    blur: 5,
-                    color: {
-                      value: "#000",
-                    },
-                    enable: false,
-                  },
-                  triangles: {
-                    enable: false,
-                    frequency: 1,
-                  },
-                  width: 1,
-                  warp: false,
-                },
-                repulse: {
-                  random: {
-                    enable: false,
-                    minimumValue: 0,
-                  },
-                  value: 0,
-                  enabled: false,
-                  distance: 1,
-                  duration: 1,
-                  factor: 1,
-                  speed: 1,
-                },
-              },
-            }}
-          />
-        </Blend>
-
-        <IconImg
-          url={outlinesXDSEA}
-          width={size.width > 768 ? "240px" : "150px"}
-          height={size.width > 768 ? "240px" : "150px"}
-        ></IconImg>
-
-        <TypeAnimation
-          sequence={[
-            "Exploring",
-            600,
-            "Exploring Collecting",
-            600,
-            "Exploring Collecting and Selling NFT's",
-            600,
-          ]}
-          //  Replacing previous Text
-          style={{
-            fontSize: "66px",
-            fontWeight: "600",
-            letterSpacing: "-0.06em",
-            color: "white",
-          }}
-          wrapper="h1"
-          repeat={0}
-        />
-
-        <HStack
-          blur="30px"
-          self="none"
-          padding="12px 30px"
-          border="6px"
-          background="rgba(0,0,0,0.3)"
+      <ZStack width="100%">
+        <VStack
+          width="100%"
+          //           background="radial-gradient(at 31% 41%, hsla(308, 89%, 66%, 1) 0, hsla(308, 89%, 66%, 0) 50%),
+          // radial-gradient(at 60% 100%, hsla(295, 95%, 50%, 1) 0, hsla(295, 95%, 50%, 0) 50%),
+          // radial-gradient(at 0% 46%, hsla(259, 93%, 70%, 1) 0, hsla(259, 93%, 70%, 0) 50%),
+          // radial-gradient(at 5% 100%, hsla(118, 95%, 60%, 1) 0, hsla(118, 95%, 60%, 0) 50%),
+          // radial-gradient(at 48% 52%, hsla(77, 95%, 60%, 1) 0, hsla(77, 95%, 60%, 0) 50%),
+          // radial-gradient(at 72% 62%, hsla(5, 88%, 53%, 1) 0, hsla(5, 88%, 53%, 0) 50%),
+          // radial-gradient(at 55% 56%, hsla(24, 93%, 60%, 1) 0, hsla(24, 93%, 60%, 0) 50%);"
+          padding="90px 30px 21px 30px"
+          overflowx="hidden"
         >
+          <SvgTexture>
+            <VStack
+              backgroundimage={svgpattern}
+              backsize="500px"
+              backrepeat="repeat"
+              width="100%"
+              height="100vh"
+            >
+              <Spacer></Spacer>
+            </VStack>
+          </SvgTexture>
+
+          <IconImg
+            url={outlinesXDSEA}
+            width={size.width > 768 ? "240px" : "150px"}
+            height={size.width > 768 ? "240px" : "150px"}
+          ></IconImg>
+
           <TypeAnimation
             sequence={[
-              "",
-              6000,
-              "Has now",
-              300,
-              "Has now become",
-              300,
-              "Has now become, simpler and faster ",
-              300,
+              "Exploring",
+              600,
+              "Exploring Collecting",
+              600,
+              "Exploring Collecting and Selling NFT's",
+              600,
             ]}
             //  Replacing previous Text
             style={{
-              fontSize: "21px",
+              fontSize: "66px",
               fontWeight: "600",
               letterSpacing: "-0.06em",
               color: "white",
-              textAlign: "center",
             }}
-            wrapper="h2"
+            wrapper="h1"
             repeat={0}
-            cursor={false}
           />
-        </HStack>
 
-        <VStack minwidth="1200px">
-          <Masonry columnsCount={3} gutter="10px">
-            <IconImg
-              url={nftIdea}
-              backsize="cover"
-              width="100%"
-              height="372px"
-              border="6px"
-            ></IconImg>
-            <IconImg
-              url={nftIdea}
-              width="100%px"
-              height="435px"
-              backsize="cover"
-              border="6px"
-            ></IconImg>
-            <IconImg
-              url={nftIdea}
-              width="100%"
-              height="306px"
-              backsize="cover"
-              border="6px"
-            ></IconImg>
-            <IconImg
-              url={nftIdea}
-              width="100%"
-              height="401px"
-              backsize="cover"
-              border="6px"
-            ></IconImg>
-            <IconImg
-              url={nftIdea}
-              width="100%"
-              height="338px"
-              backsize="cover"
-              border="6px"
-            ></IconImg>
-            <IconImg
-              url={nftIdea}
-              width="100%"
-              height="469px"
-              backsize="cover"
-              border="6px"
-            ></IconImg>
-          </Masonry>
-        </VStack>
+          <HStack
+            blur="30px"
+            self="none"
+            padding="12px 30px"
+            border="6px"
+            background="rgba(0,0,0,0.3)"
+          >
+            <TypeAnimation
+              sequence={[
+                "",
+                6000,
+                "Has now",
+                300,
+                "Has now become",
+                300,
+                "Has now become, simpler and faster ",
+                300,
+              ]}
+              //  Replacing previous Text
+              style={{
+                fontSize: "21px",
+                fontWeight: "600",
+                letterSpacing: "-0.06em",
+                color: "white",
+                textAlign: "center",
+              }}
+              wrapper="h2"
+              repeat={0}
+              cursor={false}
+            />
+          </HStack>
 
-        {/* <GridNfts>
+          <VStack minwidth="1200px">
+            <Masonry columnsCount={3} gutter="10px">
+              <IconImg
+                url={nftIdea}
+                backsize="cover"
+                width="100%"
+                height="372px"
+                border="6px"
+              ></IconImg>
+              <IconImg
+                url={nftIdea}
+                width="100%px"
+                height="435px"
+                backsize="cover"
+                border="6px"
+              ></IconImg>
+              <IconImg
+                url={nftIdea}
+                width="100%"
+                height="306px"
+                backsize="cover"
+                border="6px"
+              ></IconImg>
+              <IconImg
+                url={nftIdea}
+                width="100%"
+                height="401px"
+                backsize="cover"
+                border="6px"
+              ></IconImg>
+              <IconImg
+                url={nftIdea}
+                width="100%"
+                height="338px"
+                backsize="cover"
+                border="6px"
+              ></IconImg>
+              <IconImg
+                url={nftIdea}
+                width="100%"
+                height="469px"
+                backsize="cover"
+                border="6px"
+              ></IconImg>
+            </Masonry>
+          </VStack>
+
+          {/* <GridNfts>
           <Masonry columnsCount={3} gutter="10px">
             <IconImg
               url={nftIdea}
@@ -565,7 +282,8 @@ const Home = (props) => {
             ></IconImg>
           </Masonry>
         </GridNfts> */}
-      </VStack>
+        </VStack>
+      </ZStack>
 
       <ContentCentered>
         {/* Top Section in Home */}
@@ -887,7 +605,7 @@ const Home = (props) => {
         {/* How to get started Banner */}
         <VStack width="100%" padding="60px 0">
           <ZStack height="300px">
-            <ZItem>
+            {/* <ZItem>
               <IconImg
                 url={BlueBanner}
                 width="100%"
@@ -895,14 +613,18 @@ const Home = (props) => {
                 border={size.width < 1200 ? "0px" : "15px"}
                 backsize="cover"
               ></IconImg>
-            </ZItem>
+            </ZItem> */}
 
             <ZItem>
               <VStack
+                backgroundimage={svgpattern}
+                backsize="500px"
+                backrepeat="repeat"
                 width="100%"
                 height="100%"
                 whileHover={{ scale: 1.05 }}
                 onClick={() => props.redirect("HowToStart")}
+                border="9px"
               >
                 <TitleBold27 textcolor={appStyle.colors.white}>
                   Want to Get Started?
@@ -1133,4 +855,13 @@ const GridNfts = styled(motion.div)`
 
 const Blend = styled(motion.div)`
   mix-blend-mode: overlay;
+  width: 100%;
+`;
+
+const SvgTexture = styled(motion.div)`
+  position: absolute;
+  top: 0;
+  width: 100vw;
+  heigth: 100vh;
+  z-index: -1;
 `;

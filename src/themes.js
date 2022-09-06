@@ -17,9 +17,12 @@ export const lightTheme = {
   walletButton: "#20222D",
   walletText: "#FFF",
   faded: "rgba(0, 0, 0, 0.03)",
+  topbar:
+    "linear-gradient(180deg, rgba(21, 35, 51, 0.78) 0%, rgba(24, 33, 44, 0) 267.5%)",
   backgroundModal: "rgba(214, 214, 219, 0.84)",
   menu: "#5C6976",
   fadedlocked: "rgba(30, 32, 42, 1)",
+  searchInput: "rgba(0,0,0,0.3)",
 };
 
 export const darkTheme = {
@@ -33,8 +36,10 @@ export const darkTheme = {
   walletText: "#20222D",
   backElement: "#292D41",
   hover: "#292D41",
+  topbar: "rgba(0, 0, 0, 0.06)",
   faded: "rgba(255, 255, 255, 0.09)",
   backgroundModal: "rgba(18, 18, 18, 1)",
   menu: "white",
   fadedlocked: "rgba(41, 45, 65, 1)",
+  searchInput: "rgba(0,0,0,0.8)",
 };

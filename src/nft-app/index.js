@@ -216,10 +216,7 @@ const NFTApp = () => {
                 )}
               ></Route>
             </Switch>
-            <Footer
-              style={{ zIndex: -400, background: "pink" }}
-              redirect={NavigateTo}
-            ></Footer>
+            <Footer style={{ zIndex: -400 }} redirect={NavigateTo}></Footer>
           </ScrollView>
         </HomeStack>
       </>

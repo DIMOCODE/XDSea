@@ -129,8 +129,12 @@ const Input = styled.input.attrs((props) => ({
   letter-spacing: -0.01em;
   text-transform: ${(props) => props.texttransform};
   color:${(props) => props.textcolor};
+  
+   -webkit-backdrop-filter: blur(30px);
+  backdrop-filter: blur(30px);
   &:focus {
     outline: none;
     border-color: rgba(153, 162, 175, 0.36);
+
   }
 `;

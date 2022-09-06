@@ -1363,7 +1363,7 @@ const ContentBar = styled(motion.div)`
   justify-content: center;
   top: 0;
   left: 0;
-  background: ${({ theme }) => theme.faded};
+  background: ${({ theme }) => theme.topbar};
   width: 100%;
   z-index: 10;
 `;

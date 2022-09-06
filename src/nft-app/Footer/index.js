@@ -1,23 +1,11 @@
-import { 
-  HStack, 
-  IconImg, 
-  Spacer, 
-  VStack 
-} from "../../styles/Stacks";
+import { HStack, IconImg, Spacer, VStack } from "../../styles/Stacks";
 import XDSeaWhite from "../../images/logoXDSEAWhite.png";
 import twitter from "../../images/twitterLogoWhite.png";
 import instagram from "../../images/InstagramLogoWhite.png";
 import mail from "../../images/mailWhite.png";
-import { 
-  BodyRegular, 
-  TitleBold21, 
-  TitleBold27 
-} from "../../styles/TextStyles";
+import { BodyRegular, TitleBold21, TitleBold27 } from "../../styles/TextStyles";
 import { appStyle } from "../../styles/AppStyles";
-import { 
-  LayoutGroup, 
-  motion 
-} from "framer-motion/dist/framer-motion";
+import { LayoutGroup, motion } from "framer-motion/dist/framer-motion";
 import { Link } from "../../styles/Link";
 import useWindowSize from "../../styles/useWindowSize";
 import styled from "styled-components";
@@ -137,7 +125,7 @@ export { Footer };
 const FooterSection = styled(motion.div)`
   padding: 90px 0;
   width: 100%;
-  background: #20222d;
+  background: linear-gradient(180deg, #182c3d 0%, #0c1823 100%); ;
 `;
 
 const FooterContent = styled(motion.div)`

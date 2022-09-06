@@ -34,6 +34,8 @@ export const VStack = styled(motion.div).attrs((props) => ({
   flex: props.flex || "1",
   cursor: props.cursor || "default",
   blur: props.blur || "0px",
+  backsize: props.backsize || "cover",
+  backrepeat: props.backrepeat || "no-repeat",
 }))`
   display: flex;
   flex: ${(props) => props.flex};
@@ -49,8 +51,8 @@ export const VStack = styled(motion.div).attrs((props) => ({
   background: ${(props) => props.background};
   background-image: url(${(props) => props.backgroundimage});
   background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
+  background-repeat: ${(props) => props.backrepeat};
+  background-size: ${(props) => props.backsize};
   padding: ${(props) => props.padding};
   max-width: ${(props) => props.maxwidth};
   min-width: ${(props) => props.minwidth};

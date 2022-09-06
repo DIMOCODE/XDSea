@@ -73,7 +73,7 @@ function Searchbar({
 
   /**
    * Redirect the user to a specific path
-   * 
+   *
    * @param {string} route path to be redirected to
    */
   function NavigateTo(route) {
@@ -120,8 +120,9 @@ function Searchbar({
     <VStack height="42px" minwidth={widthInput || "300px"}>
       <InputStyled
         type="text"
+        textcolor="white"
         placeholder={placeholder}
-        background={({ theme }) => theme.faded}
+        background={({ theme }) => theme.searchInput}
         icon={loading ? loadingIcon : search}
         onChange={(e) => {
           setSearchTerm(e.target.value);
@@ -267,9 +268,7 @@ function Searchbar({
                       }
                     >
                       <IconImg
-                        url={
-                          collection.banner.v0
-                        }
+                        url={collection.banner.v0}
                         width="100%"
                         height="60px"
                         border="6px"
@@ -278,9 +277,7 @@ function Searchbar({
                       ></IconImg>
                       <HStack>
                         <IconImg
-                          url={
-                            collection.logo.v0
-                          }
+                          url={collection.logo.v0}
                           width="32px"
                           height="32px"
                           border="15px"
