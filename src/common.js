@@ -357,9 +357,7 @@ export const TransferNFT = async (approved, transferNFT, transferAddress, wallet
     // let tokenOwner = await contract2.methods.getOwnerOfToken(nftaddress, sellData.tokenId).call()
     // console.log(tokenOwner)
     let data = contract2.methods
-      .transferNFT(nftaddress, transferNFT.tokenId, isXdc(transferAddress)
-        ? fromXdc(transferAddress)
-        : transferAddress)
+      .transferNFT(nftaddress, transferNFT.tokenId, transferAddress)
       .encodeABI();
 
     // console.log(data);

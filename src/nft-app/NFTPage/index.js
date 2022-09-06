@@ -353,12 +353,17 @@ const NFTDetails = (props) => {
   const transferNFT = async () => {
     setIsProcessingTransferring(true);
     setTransferring(false);
+    var address = transferAddress.split('.')[1] !== undefined
+      ? toXdc(await getXdcOwner(transferAddress))
+      : isXdc(transferAddress)
+        ? fromXdc(transferAddress)
+        : transferAddress;
     var success = false;
     if (!nft.inBlacklist) {
       success = await TransferNFT(
         approved,
         nft,
-        transferAddress,
+        address,
         wallet.address,
         nftaddress
       );
@@ -366,7 +371,7 @@ const NFTDetails = (props) => {
     if (success) {
       setTransferButtonStatus(3);
       const transferData = await (
-        await transferNFTRequest(wallet?.address, transferAddress, nft._id)
+        await transferNFTRequest(wallet?.address, address, nft._id)
       ).data;
     } else {
       setTransferButtonStatus(4);

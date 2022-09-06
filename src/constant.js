@@ -54,3 +54,8 @@ export const getXdcDomain = async (address) => {
   const xdcDomain = await xdcSdk.getDomain(address);
   return xdcDomain;
 };
+
+export const getXdcOwner = async (domain) => {
+  const xdcAddress = await xdcSdk.getOwner(domain, false);
+  return xdcAddress;
+}
