@@ -109,7 +109,7 @@ import {
   withdrawListingNFTRequest,
   withdrawOfferRequest,
 } from "../../API/NFT";
-import { getXdcDomain } from "../../constant";
+import { getXdcDomain, getXdcOwner } from "../../constant";
 
 const NFTDetails = (props) => {
   const webLocation = useLocation();
@@ -354,7 +354,7 @@ const NFTDetails = (props) => {
     setIsProcessingTransferring(true);
     setTransferring(false);
     var address = transferAddress.split('.')[1] !== undefined
-      ? toXdc(await getXdcOwner(transferAddress))
+      ? (await getXdcOwner(transferAddress)).owner0x
       : isXdc(transferAddress)
         ? fromXdc(transferAddress)
         : transferAddress;
@@ -1025,7 +1025,7 @@ const NFTDetails = (props) => {
                         {(isXdc(wallet?.address)
                           ? fromXdc(wallet?.address?.toLowerCase())
                           : wallet?.address?.toLowerCase()) ===
-                          nft?.owner?.toLowerCase() &&
+                          nft?.ownerAddress?.toLowerCase() &&
                         nft?.unlockableContent !== undefined &&
                         nft?.unlockableContent !== "" ? (
                           <AnimatePresence>
@@ -1094,7 +1094,7 @@ const NFTDetails = (props) => {
                         {(isXdc(wallet?.address)
                           ? fromXdc(wallet?.address?.toLowerCase())
                           : wallet?.address?.toLowerCase()) ===
-                          nft?.owner?.toLowerCase() &&
+                          nft?.ownerAddress?.toLowerCase() &&
                         nft?.unlockableContent !== undefined &&
                         nft?.unlockableContent !== "" ? (
                           <AnimatePresence>
@@ -1161,7 +1161,7 @@ const NFTDetails = (props) => {
                         {(isXdc(wallet?.address)
                           ? fromXdc(wallet?.address?.toLowerCase())
                           : wallet?.address?.toLowerCase()) ===
-                          nft?.owner?.toLowerCase() &&
+                          nft?.ownerAddress?.toLowerCase() &&
                         nft?.unlockableContent !== undefined &&
                         nft?.unlockableContent !== "" ? (
                           <AnimatePresence>
@@ -1250,8 +1250,8 @@ const NFTDetails = (props) => {
                     backsize="cover"
                     border="18px"
                   ></IconImg>
-                  {nft?.owner ? (
-                    <Tooltip title={nft?.owner ? nft.owner : "-"}>
+                  {nft?.owner !== undefined ? (
+                    <Tooltip title={nft?.ownerAddress ? nft.ownerAddress : "-"}>
                       <BodyBold cursor={"pointer"}>
                         {nft?.owner === "" ? truncateAddress(nft?.ownerAddress) : truncate(nft?.owner, 13)}
                       </BodyBold>
@@ -1432,7 +1432,7 @@ const NFTDetails = (props) => {
                 <CaptionBoldShort>CREATOR</CaptionBoldShort>
                 <Spacer></Spacer>
 
-                {nft?.creator ? (
+                {nft?.creator !== undefined ? (
                   <HStack
                     spacing="6px"
                     cursor={"pointer"}
@@ -1641,7 +1641,7 @@ const NFTDetails = (props) => {
               <HStack>
                 {wallet?.connected ? (
                   nft?.isListed ? (
-                    nft?.owner.toLowerCase() ===
+                    nft?.ownerAddress.toLowerCase() ===
                     (isXdc(wallet?.address)
                       ? fromXdc(wallet?.address.toLowerCase())
                       : wallet?.address.toLowerCase()) ? (
@@ -1717,7 +1717,7 @@ const NFTDetails = (props) => {
                         ></ButtonApp>
                       </>
                     )
-                  ) : nft?.inBlacklist ? null : nft?.owner.toLowerCase() ===
+                  ) : nft?.inBlacklist ? null : nft?.ownerAddress.toLowerCase() ===
                     (isXdc(wallet?.address)
                       ? fromXdc(wallet?.address.toLowerCase())
                       : wallet?.address.toLowerCase()) ? (
