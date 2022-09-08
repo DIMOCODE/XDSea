@@ -41,7 +41,7 @@ function BubbleCopied(props) {
       >
         <IconImg url={logo} width="21px" height="21px"></IconImg>
         <Spacer></Spacer>
-        <Tooltip title={isDomain ? domain : address}>
+        <Tooltip title={address}>
           <CaptionBoldShort textcolor={({ theme }) => theme.text}>
             {isDomain ? domain : truncateAddress(address)}
           </CaptionBoldShort>
