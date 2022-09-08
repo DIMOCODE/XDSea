@@ -24,6 +24,7 @@ import {
   TitleBold18,
   TitleRegular27,
 } from "../../styles/TextStyles";
+import { XdcConnect, Disconnect } from "xdc-connect";
 import XDSealogo from "../../images/LogoXDSEA.png";
 import { WalletButton } from "../../styles/walletButton";
 import { fromXdc, isXdc } from "../../common/common";

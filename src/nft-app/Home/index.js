@@ -254,7 +254,6 @@ const Home = (props) => {
                   }
                   onClick={() =>
                     NavigateTo(`nft/${featuredNFTs[1].nftContract}/${featuredNFTs[1]?.tokenId}`)
-                  }
                 ></NewFeatured>
               </LayoutGroup>
             </VStack>
