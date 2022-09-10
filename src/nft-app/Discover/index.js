@@ -36,6 +36,7 @@ import { SortButtonNFTS } from "../../styles/SortButtonNFTS";
 import { FiltersButton } from "../../styles/FiltersButton";
 import { SortButtonCollections } from "../../styles/SortButtonCollections";
 import { StickySectionHeader } from "../../CustomModules/sticky/StickySectionHeader.js";
+import seamless from "../../images/scales22.jpg";
 
 import "./customstyles.css";
 import { positions } from "@mui/system";
@@ -244,7 +245,7 @@ const Discover = (props) => {
   return (
     <DiscoverSection id="scrollableDiv" style={{ zIndex: 10 }}>
       {/* Discover top Section with toggle*/}
-      <HStack backgroundimage={DiscoverBar} padding="60px 0 0 0">
+      <HStack backgroundimage={seamless} padding="60px 0 0 0">
         <HStack width="1200px" height="157px" padding="0px 9px">
           <TitleBold27 textcolor={appStyle.colors.white}>Discover</TitleBold27>
           <Spacer></Spacer>

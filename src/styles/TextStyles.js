@@ -15,6 +15,19 @@ export const TitleBold60 = styled(motion.h1).attrs((props) => ({
   color: ${(props) => props.textcolor};
 `;
 
+export const TitleBold51 = styled(motion.h1).attrs((props) => ({
+  textcolor: props.textcolor || props.theme.text,
+  align: props.align || "left",
+}))`
+  font-style: normal;
+  font-weight: 600;
+  font-size: 51px;
+  line-height: 100%;
+  letter-spacing: -0.06em;
+  text-align: ${(props) => props.align};
+  color: ${(props) => props.textcolor};
+`;
+
 export const TitleBold54 = styled(motion.h1).attrs((props) => ({
   textcolor: props.textcolor || props.theme.text,
   align: props.align || "left",
@@ -26,6 +39,32 @@ export const TitleBold54 = styled(motion.h1).attrs((props) => ({
   letter-spacing: -0.06em;
   color: ${(props) => props.textcolor};
   text-align: ${(props) => props.align};
+`;
+
+export const TitleBold42 = styled(motion.h1).attrs((props) => ({
+  textcolor: props.textcolor || props.theme.text,
+  align: props.align || "left",
+}))`
+  font-style: normal;
+  font-weight: 600;
+  font-size: 42px;
+  line-height: 100%;
+  letter-spacing: -0.06em;
+  text-align: ${(props) => props.align};
+  color: ${(props) => props.textcolor};
+`;
+
+export const TitleRegular36 = styled(motion.h1).attrs((props) => ({
+  textcolor: props.textcolor || props.theme.text,
+  align: props.align || "left",
+}))`
+  font-style: normal;
+  font-weight: 400;
+  font-size: 36px;
+  line-height: 100%;
+  letter-spacing: -0.06em;
+  text-align: ${(props) => props.align};
+  color: ${(props) => props.textcolor};
 `;
 
 export const TitleBold30 = styled(motion.h1).attrs((props) => ({
@@ -122,6 +161,7 @@ export const TitleRegular21 = styled(motion.h2).attrs((props) => ({
   font-style: normal;
   font-weight: normal;
   font-size: 21px;
+  letter-spacing: -0.05em;
   color: ${(props) => props.textcolor};
   display: ${(props) => props.display};
   -webkit-line-clamp: ${(props) => props.clamp};
@@ -162,6 +202,21 @@ export const TitleRegular18 = styled(motion.h3).attrs((props) => ({
   font-weight: 600;
   font-size: 18px;
   letter-spacing: -0.04em;
+  line-height: 30px;
+  text-align: ${(props) => props.align};
+  width: ${(props) => props.width};
+  color: ${(props) => props.textcolor};
+`;
+
+export const SubtTitleRegular18 = styled(motion.h3).attrs((props) => ({
+  textcolor: props.textcolor || props.theme.text,
+  width: props.width || "auto",
+  align: props.align || "left",
+}))`
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  letter-spacing: -0.03em;
   line-height: 30px;
   text-align: ${(props) => props.align};
   width: ${(props) => props.width};

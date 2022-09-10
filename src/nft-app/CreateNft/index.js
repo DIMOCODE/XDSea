@@ -53,6 +53,7 @@ import {
   getCollections,
 } from "../../API/Collection";
 import { createNFT } from "../../API/NFT";
+import seamless from "../../images/scales22.jpg";
 
 function CreateNft(props) {
   const size = useWindowSize();
@@ -851,7 +852,7 @@ function CreateNft(props) {
       <HStack
         id={"creation-banner"}
         padding="69px 0 0 0 "
-        backgroundimage={CreationBar}
+        backgroundimage={seamless}
       >
         <HStack width="1200px" height="157px" padding="0px 30px">
           <TitleBold27 textcolor={appStyle.colors.white}>

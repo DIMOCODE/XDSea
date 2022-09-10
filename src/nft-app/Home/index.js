@@ -11,6 +11,8 @@ import { NftContainer } from "../../styles/NftContainer";
 import { appStyle } from "../../styles/AppStyles";
 import ButtonApp from "../../styles/Buttons";
 import Carousel from "react-elastic-carousel";
+import { Swiper, SwiperSlide } from "swiper/react";
+
 import {
   HStack,
   IconImg,
@@ -20,12 +22,19 @@ import {
   ZStack,
 } from "../../styles/Stacks";
 import {
+  BodyRegular,
+  SubtTitleRegular18,
   TitleBold18,
   TitleBold21,
   TitleBold27,
   TitleBold30,
+  TitleBold42,
+  TitleBold51,
   TitleBold60,
+  TitleRegular18,
   TitleRegular21,
+  TitleRegular36,
+  TitleRegular42,
 } from "../../styles/TextStyles";
 import { LayoutGroup, motion } from "framer-motion/dist/framer-motion";
 import useWindowSize from "../../styles/useWindowSize";
@@ -33,6 +42,11 @@ import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
 import logoXDSEA from "../../images/LogoXDSEA.png";
 import outlinesXDSEA from "../../images/XDSeaOutlines.png";
 import bannerXDC from "../../images/bannerXdc.png";
+
+import logoWhiteX from "../../images/logoWhiteX.png";
+import newBlue from "../../images/newBlue.jpg";
+import CristalHeart from "../../images/CristalHeart.png";
+
 import { NewFeatured } from "../../styles/NewFeatured";
 import { borderColor } from "@mui/system";
 import "./customstyles.css";
@@ -42,8 +56,17 @@ import nftIdea from "../../images/nftIdea.jpg";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { TypeAnimation } from "react-type-animation";
 import svgpattern from "../../images/scales22.jpg";
-
+import { Grid, FreeMode, Navigation, Thumbs, Pagination } from "swiper";
+import rocket3D from "../../images/Rocket3D.png";
+import Star3D from "../../images/Star3D.png";
+import firstPlaces from "../../images/firstplaces.png";
 import { useCallback } from "react";
+import { red } from "@mui/material/colors";
+import { SubtitleBubble } from "../../styles/SubtitleBubble";
+import { PricePosition } from "../../styles/PricePosition";
+import { CollectionPosition } from "../../styles/CollectionPosition";
+import goldSphere from "../../images/GoldSphere.png";
+import { BigButton } from "../../styles/BigButton";
 
 const Home = (props) => {
   const [featuredNFTs, setFeaturedNFTs] = useState([]);
@@ -110,539 +133,380 @@ const Home = (props) => {
 
   useEffect(() => {}, [scrolling]);
 
+  const [thumbsSwiper, setThumbsSwiper] = useState(null);
+
   return (
     <Content>
-      <ZStack width="100%">
-        <VStack
-          width="100%"
-          //           background="radial-gradient(at 31% 41%, hsla(308, 89%, 66%, 1) 0, hsla(308, 89%, 66%, 0) 50%),
-          // radial-gradient(at 60% 100%, hsla(295, 95%, 50%, 1) 0, hsla(295, 95%, 50%, 0) 50%),
-          // radial-gradient(at 0% 46%, hsla(259, 93%, 70%, 1) 0, hsla(259, 93%, 70%, 0) 50%),
-          // radial-gradient(at 5% 100%, hsla(118, 95%, 60%, 1) 0, hsla(118, 95%, 60%, 0) 50%),
-          // radial-gradient(at 48% 52%, hsla(77, 95%, 60%, 1) 0, hsla(77, 95%, 60%, 0) 50%),
-          // radial-gradient(at 72% 62%, hsla(5, 88%, 53%, 1) 0, hsla(5, 88%, 53%, 0) 50%),
-          // radial-gradient(at 55% 56%, hsla(24, 93%, 60%, 1) 0, hsla(24, 93%, 60%, 0) 50%);"
-          padding="90px 30px 21px 30px"
-          overflowx="hidden"
-        >
-          <SvgTexture>
-            <VStack
-              backgroundimage={svgpattern}
-              backsize="500px"
-              backrepeat="repeat"
-              width="100%"
-              height="100vh"
-            >
-              <Spacer></Spacer>
-            </VStack>
-          </SvgTexture>
+      <VStack
+        width="100%"
+        backgroundimage={newBlue}
+        padding="90px 0px 21px 00px"
+        overflowx="hidden"
+        spacing="30px"
+      >
+        {/* Logo marketplace */}
+        <IconImg
+          url={outlinesXDSEA}
+          width={size.width > 768 ? "190px" : "150px"}
+          height={size.width > 768 ? "190px" : "150px"}
+        ></IconImg>
+        <TitleBold42 textcolor="white" align="center">
+          Exploring Collecting and <br></br> Selling NFT's
+        </TitleBold42>
 
-          <IconImg
-            url={outlinesXDSEA}
-            width={size.width > 768 ? "240px" : "150px"}
-            height={size.width > 768 ? "240px" : "150px"}
-          ></IconImg>
+        {/* Marketplace subtitle */}
 
-          <TypeAnimation
-            sequence={[
-              "Exploring",
-              600,
-              "Exploring Collecting",
-              600,
-              "Exploring Collecting and Selling NFT's",
-              600,
-            ]}
-            //  Replacing previous Text
+        <SubtitleBubble
+          text={"Has now become, simpler and faster"}
+        ></SubtitleBubble>
+
+        {/* Featured Section */}
+        <VStack spacing="6px" width="100%">
+          {/* Big Tiles */}
+          <Swiper
+            slidesPerView={size.width > 414 ? "2" : "1"}
+            spaceBetween={9}
+            centeredSlides={true}
             style={{
-              fontSize: "66px",
-              fontWeight: "600",
-              letterSpacing: "-0.06em",
-              color: "white",
+              "--swiper-navigation-color": "#fff",
+              "--swiper-pagination-color": "#fff",
+              height: "420px",
             }}
-            wrapper="h1"
-            repeat={0}
-          />
-
-          <HStack
-            blur="30px"
-            self="none"
-            padding="12px 30px"
-            border="6px"
-            background="rgba(0,0,0,0.3)"
+            navigation={true}
+            thumbs={{ swiper: thumbsSwiper }}
+            modules={[FreeMode, Navigation, Thumbs]}
+            onSwiper={(swiper) => console.log(swiper)}
+            onSlideChange={() => console.log("slide change")}
+            className="mySwiper2"
           >
-            <TypeAnimation
-              sequence={[
-                "",
-                6000,
-                "Has now",
-                300,
-                "Has now become",
-                300,
-                "Has now become, simpler and faster ",
-                300,
-              ]}
-              //  Replacing previous Text
-              style={{
-                fontSize: "21px",
-                fontWeight: "600",
-                letterSpacing: "-0.06em",
-                color: "white",
-                textAlign: "center",
-              }}
-              wrapper="h2"
-              repeat={0}
-              cursor={false}
-            />
-          </HStack>
-
-          <VStack minwidth="1200px">
-            <Masonry columnsCount={3} gutter="10px">
+            <SwiperSlide>
               <IconImg
                 url={nftIdea}
                 backsize="cover"
-                width="100%"
-                height="372px"
-                border="6px"
-              ></IconImg>
-              <IconImg
-                url={nftIdea}
-                width="100%px"
-                height="435px"
-                backsize="cover"
-                border="6px"
-              ></IconImg>
-              <IconImg
-                url={nftIdea}
-                width="100%"
-                height="306px"
-                backsize="cover"
-                border="6px"
-              ></IconImg>
-              <IconImg
-                url={nftIdea}
-                width="100%"
-                height="401px"
-                backsize="cover"
-                border="6px"
-              ></IconImg>
-              <IconImg
-                url={nftIdea}
-                width="100%"
-                height="338px"
-                backsize="cover"
-                border="6px"
-              ></IconImg>
-              <IconImg
-                url={nftIdea}
-                width="100%"
-                height="469px"
-                backsize="cover"
-                border="6px"
-              ></IconImg>
-            </Masonry>
-          </VStack>
-
-          {/* <GridNfts>
-          <Masonry columnsCount={3} gutter="10px">
-            <IconImg
-              url={nftIdea}
-              backsize="cover"
-              width="100%"
-              height="372px"
-            ></IconImg>
-            <IconImg
-              url={nftIdea}
-              width="100%px"
-              height="435px"
-              backsize="cover"
-            ></IconImg>
-            <IconImg
-              url={nftIdea}
-              width="100%"
-              height="306px"
-              backsize="cover"
-            ></IconImg>
-            <IconImg
-              url={nftIdea}
-              width="100%"
-              height="401px"
-              backsize="cover"
-            ></IconImg>
-            <IconImg
-              url={nftIdea}
-              width="100%"
-              height="341px"
-              backsize="cover"
-            ></IconImg>
-            <IconImg
-              url={nftIdea}
-              width="100%"
-              height="469px"
-              backsize="cover"
-            ></IconImg>
-          </Masonry>
-        </GridNfts> */}
-        </VStack>
-      </ZStack>
-
-      <ContentCentered>
-        {/* Top Section in Home */}
-
-        <HStack width="100%" height="auto" flexwrap="wrap" spacing="9px">
-          {/* Main Logo Square */}
-
-          {/* <VStack
-            background={({ theme }) => theme.faded}
-            minwidth={size.width > 768 ? "30%" : "100%"}
-            border="9px"
-            height={size.width > 768 ? "390px" : "260px"}
-          >
-            <IconImg
-              url={logoXDSEA}
-              width={size.width > 768 ? "150px" : "90px"}
-              height={size.width > 768 ? "150px" : "90px"}
-            ></IconImg>
-            <HStack padding="0 21px">
-              <TitleBold27 align="center">
-                Exploring, Collecting <br></br> and Selling
-              </TitleBold27>
-            </HStack>
-
-            <HStack>
-              <Spacer></Spacer>
-              <HStack
-                background={({ theme }) => theme.blue}
-                border="9px"
-                padding="12px 30px"
-              >
-                <TitleBold18 textcolor={appStyle.colors.white}>
-                  Exclusive NFTs
-                </TitleBold18>
-              </HStack>
-              <Spacer></Spacer>
-            </HStack>
-          </VStack> */}
-
-          {size.width > 728 ? (
-            <>
-              {/* First NFT Featured */}
-              {/* <VStack
-                minwidth={
-                  size.width > 768 ? "30%" : size.width > 425 ? "39%" : "100%"
-                }
-                height="390px"
-              >
-                <LayoutGroup id="number1">
-                  <NewFeatured
-                    creatorImage={featuredNFTs[0]?.nftId.collectionId.logo.v0}
-                    itemImage={featuredNFTs[0]?.nftId.urlFile.v0}
-                    collectionName={featuredNFTs[0]?.nftId.collectionId.name}
-                    creatorName={truncateAddress(
-                      featuredNFTs[0]?.nftId.creator.userName
-                    )}
-                    itemNumber={featuredNFTs[0]?.nftId.name}
-                    fileType={featuredNFTs[0]?.nftId.fileType}
-                    onClickCreator={() =>
-                      props.redirect(
-                        `collection/${featuredNFTs[0]?.nftId.collectionId.nickName}`
-                      )
-                    }
-                    onClick={() =>
-                      props.redirect(
-                        `nft/${nftaddress}/${featuredNFTs[0]?.nftId.tokenId}`
-                      )
-                    }
-                  ></NewFeatured>
-                </LayoutGroup>
-              </VStack> */}
-              {/* Second NFT Featured */}
-              {/* <VStack
-                minwidth={
-                  size.width > 768 ? "30%" : size.width > 425 ? "39%" : "100%"
-                }
-                height="390px"
-              >
-                <LayoutGroup id="number2">
-                  <NewFeatured
-                    creatorImage={featuredNFTs[1]?.nftId.collectionId.logo.v0}
-                    itemImage={featuredNFTs[1]?.nftId.urlFile.v0}
-                    collectionName={featuredNFTs[1]?.nftId.collectionId.name}
-                    creatorName={truncateAddress(
-                      featuredNFTs[1]?.nftId.creator.userName
-                    )}
-                    itemNumber={featuredNFTs[1]?.nftId.name}
-                    fileType={featuredNFTs[1]?.nftId.fileType}
-                    onClickCreator={() =>
-                      props.redirect(
-                        `collection/${featuredNFTs[1]?.nftId.collectionId.nickName}`
-                      )
-                    }
-                    onClick={() =>
-                      props.redirect(
-                        `nft/${nftaddress}/${featuredNFTs[1]?.nftId.tokenId}`
-                      )
-                    }
-                  ></NewFeatured>
-                </LayoutGroup>
-              </VStack> */}
-              {/* Third NFT Featured */}
-              {/* <VStack
-                minwidth={
-                  size.width > 768 ? "30%" : size.width > 425 ? "39%" : "100%"
-                }
-                height="390px"
-              >
-                <LayoutGroup id="number3">
-                  <NewFeatured
-                    creatorImage={featuredNFTs[2]?.nftId.collectionId.logo.v0}
-                    itemImage={featuredNFTs[2]?.nftId.urlFile.v0}
-                    collectionName={featuredNFTs[2]?.nftId.collectionId.name}
-                    creatorName={truncateAddress(
-                      featuredNFTs[2]?.nftId.creator.userName
-                    )}
-                    itemNumber={featuredNFTs[2]?.nftId.name}
-                    fileType={featuredNFTs[2]?.nftId.fileType}
-                    onClickCreator={() =>
-                      props.redirect(
-                        `collection/${featuredNFTs[2]?.nftId.collectionId.nickName}`
-                      )
-                    }
-                    onClick={() =>
-                      props.redirect(
-                        `nft/${nftaddress}/${featuredNFTs[2]?.nftId.tokenId}`
-                      )
-                    }
-                  ></NewFeatured>
-                </LayoutGroup>
-              </VStack> */}
-              {/* Four NFT Featured */}
-              {/* <VStack
-                minwidth={
-                  size.width > 768 ? "30%" : size.width > 425 ? "39%" : "100%"
-                }
-                height="390px"
-              >
-                <LayoutGroup id="number4">
-                  <NewFeatured
-                    creatorImage={featuredNFTs[3]?.nftId.collectionId.logo.v0}
-                    itemImage={featuredNFTs[3]?.nftId.urlFile.v0}
-                    collectionName={featuredNFTs[3]?.nftId.collectionId.name}
-                    creatorName={truncateAddress(
-                      featuredNFTs[3]?.nftId.creator.userName
-                    )}
-                    itemNumber={featuredNFTs[3]?.nftId.name}
-                    fileType={featuredNFTs[3]?.nftId.fileType}
-                    onClickCreator={() =>
-                      props.redirect(
-                        `collection/${featuredNFTs[3]?.nftId.collectionId.nickName}`
-                      )
-                    }
-                    onClick={() =>
-                      props.redirect(
-                        `nft/${nftaddress}/${featuredNFTs[3]?.nftId.tokenId}`
-                      )
-                    }
-                  ></NewFeatured>
-                </LayoutGroup>
-              </VStack> */}
-            </>
-          ) : (
-            // Doc from Carousel https://sag1v.github.io/react-elastic-carousel/
-
-            <VStack className="bigblue">
-              <Carousel
-                itemsToShow={1}
-                // enableAutoPlay={true}
-                // autoPlaySpeed={3000}
-                showArrows={false}
-                pagination={true}
-                enableTilt={true}
-              >
-                {/* First NFT Featured */}
-                <VStack
-                  minwidth={
-                    size.width > 768 ? "30%" : size.width > 425 ? "39%" : "100%"
-                  }
-                  height="390px"
-                >
-                  <LayoutGroup id="number1">
-                    <NewFeatured
-                      creatorImage={featuredNFTs[0]?.nftId.collectionId.logo.v0}
-                      itemImage={featuredNFTs[0]?.nftId.urlFile.v0}
-                      collectionName={featuredNFTs[0]?.nftId.collectionId.name}
-                      creatorName={truncateAddress(
-                        featuredNFTs[0]?.nftId.creator.userName
-                      )}
-                      itemNumber={featuredNFTs[0]?.nftId.name}
-                      fileType={featuredNFTs[0]?.nftId.fileType}
-                      onClickCreator={() =>
-                        props.redirect(
-                          `collection/${featuredNFTs[0]?.nftId.collectionId.nickName}`
-                        )
-                      }
-                      onClick={() =>
-                        props.redirect(
-                          `nft/${nftaddress}/${featuredNFTs[0]?.nftId.tokenId}`
-                        )
-                      }
-                    ></NewFeatured>
-                  </LayoutGroup>
-                </VStack>
-                {/* Second NFT Featured */}
-                <VStack
-                  minwidth={
-                    size.width > 768 ? "30%" : size.width > 425 ? "39%" : "100%"
-                  }
-                  height="390px"
-                >
-                  <LayoutGroup id="number2">
-                    <NewFeatured
-                      creatorImage={featuredNFTs[1]?.nftId.collectionId.logo.v0}
-                      itemImage={featuredNFTs[1]?.nftId.urlFile.v0}
-                      collectionName={featuredNFTs[1]?.nftId.collectionId.name}
-                      creatorName={truncateAddress(
-                        featuredNFTs[1]?.nftId.creator.userName
-                      )}
-                      itemNumber={featuredNFTs[1]?.nftId.name}
-                      fileType={featuredNFTs[1]?.nftId.fileType}
-                      onClickCreator={() =>
-                        props.redirect(
-                          `collection/${featuredNFTs[1]?.nftId.collectionId.nickName}`
-                        )
-                      }
-                      onClick={() =>
-                        props.redirect(
-                          `nft/${nftaddress}/${featuredNFTs[1]?.nftId.tokenId}`
-                        )
-                      }
-                    ></NewFeatured>
-                  </LayoutGroup>
-                </VStack>
-
-                {/* Third NFT Featured */}
-                <VStack
-                  minwidth={
-                    size.width > 768 ? "30%" : size.width > 425 ? "39%" : "100%"
-                  }
-                  height="390px"
-                >
-                  <LayoutGroup id="number3">
-                    <NewFeatured
-                      creatorImage={featuredNFTs[2]?.nftId.collectionId.logo.v0}
-                      itemImage={featuredNFTs[2]?.nftId.urlFile.v0}
-                      collectionName={featuredNFTs[2]?.nftId.collectionId.name}
-                      creatorName={truncateAddress(
-                        featuredNFTs[2]?.nftId.creator.userName
-                      )}
-                      itemNumber={featuredNFTs[2]?.nftId.name}
-                      fileType={featuredNFTs[2]?.nftId.fileType}
-                      onClickCreator={() =>
-                        props.redirect(
-                          `collection/${featuredNFTs[2]?.nftId.collectionId.nickName}`
-                        )
-                      }
-                      onClick={() =>
-                        props.redirect(
-                          `nft/${nftaddress}/${featuredNFTs[2]?.nftId.tokenId}`
-                        )
-                      }
-                    ></NewFeatured>
-                  </LayoutGroup>
-                </VStack>
-
-                {/* Four NFT Featured */}
-                <VStack
-                  minwidth={
-                    size.width > 768 ? "30%" : size.width > 425 ? "39%" : "100%"
-                  }
-                  height="390px"
-                >
-                  <LayoutGroup id="number4">
-                    <NewFeatured
-                      creatorImage={featuredNFTs[3]?.nftId.collectionId.logo.v0}
-                      itemImage={featuredNFTs[3]?.nftId.urlFile.v0}
-                      collectionName={featuredNFTs[3]?.nftId.collectionId.name}
-                      creatorName={truncateAddress(
-                        featuredNFTs[3]?.nftId.creator.userName
-                      )}
-                      itemNumber={featuredNFTs[3]?.nftId.name}
-                      fileType={featuredNFTs[3]?.nftId.fileType}
-                      onClickCreator={() =>
-                        props.redirect(
-                          `collection/${featuredNFTs[3]?.nftId.collectionId.nickName}`
-                        )
-                      }
-                      onClick={() =>
-                        props.redirect(
-                          `nft/${nftaddress}/${featuredNFTs[3]?.nftId.tokenId}`
-                        )
-                      }
-                    ></NewFeatured>
-                  </LayoutGroup>
-                </VStack>
-              </Carousel>
-            </VStack>
-          )}
-
-          {/* Simpler & Faster Block */}
-          {/* <VStack
-            background={appStyle.colors.darkgrey10}
-            minwidth={size.width > 768 ? "30%" : "100%"}
-            height={size.width > 768 ? "390px" : "210px"}
-            border="9px"
-          >
-            <VStack padding="0 21px" spacing="3px">
-              <TitleBold27 align="center">
-                has now <br></br> become
-              </TitleBold27>
-              <TitleBold27 align="center" textcolor={({ theme }) => theme.blue}>
-                simpler & <br></br>faster.
-              </TitleBold27>
-            </VStack>
-          </VStack> */}
-        </HStack>
-
-        {/* How to get started Banner */}
-        <VStack width="100%" padding="60px 0">
-          <ZStack height="300px">
-            {/* <ZItem>
-              <IconImg
-                url={BlueBanner}
-                width="100%"
-                height="300px"
-                border={size.width < 1200 ? "0px" : "15px"}
-                backsize="cover"
-              ></IconImg>
-            </ZItem> */}
-
-            <ZItem>
-              <VStack
-                backgroundimage={svgpattern}
-                backsize="500px"
-                backrepeat="repeat"
                 width="100%"
                 height="100%"
-                whileHover={{ scale: 1.05 }}
-                onClick={() => props.redirect("HowToStart")}
-                border="9px"
+                border="6px"
+              ></IconImg>
+            </SwiperSlide>
+
+            <SwiperSlide>
+              <IconImg
+                url={nftIdea}
+                backsize="cover"
+                width="100%"
+                height="100%"
+                border="6px"
+              ></IconImg>
+            </SwiperSlide>
+            <SwiperSlide>
+              <IconImg
+                url={nftIdea}
+                backsize="cover"
+                width="100%"
+                height="100%"
+                border="6px"
+              ></IconImg>
+            </SwiperSlide>
+            <SwiperSlide>
+              <IconImg
+                url={nftIdea}
+                backsize="cover"
+                width="100%"
+                height="100%"
+                border="6px"
+              ></IconImg>
+            </SwiperSlide>
+            <SwiperSlide>
+              <IconImg
+                url={nftIdea}
+                backsize="cover"
+                width="100%"
+                height="100%"
+                border="6px"
+              ></IconImg>
+            </SwiperSlide>
+            <SwiperSlide>
+              <IconImg
+                url={nftIdea}
+                backsize="cover"
+                width="100%"
+                height="100%"
+                border="6px"
+              ></IconImg>
+            </SwiperSlide>
+          </Swiper>
+          {/* Thumbnails */}
+          <Swiper
+            onSwiper={setThumbsSwiper}
+            spaceBetween={9}
+            slidesPerView={6}
+            watchSlidesProgress={true}
+            modules={[FreeMode, Navigation, Thumbs]}
+            style={{
+              height: size.width > 414 ? "90px" : "60px",
+              width: size.width > 414 ? "680px" : "100%",
+            }}
+            className="mySwiperThumb"
+          >
+            <SwiperSlide>
+              <IconImg
+                url={nftIdea}
+                backsize="cover"
+                width="100%"
+                height="100%"
+                border="6px"
+              ></IconImg>
+            </SwiperSlide>
+            <SwiperSlide>
+              <IconImg
+                url={nftIdea}
+                backsize="cover"
+                width="100%"
+                height="100%"
+                border="6px"
+              ></IconImg>
+            </SwiperSlide>{" "}
+            <SwiperSlide>
+              <IconImg
+                url={nftIdea}
+                backsize="cover"
+                width="100%"
+                height="100%"
+                border="6px"
+              ></IconImg>
+            </SwiperSlide>{" "}
+            <SwiperSlide>
+              <IconImg
+                url={nftIdea}
+                backsize="cover"
+                width="100%"
+                height="100%"
+                border="6px"
+              ></IconImg>
+            </SwiperSlide>{" "}
+            <SwiperSlide>
+              <IconImg
+                url={nftIdea}
+                backsize="cover"
+                width="100%"
+                height="100%"
+                border="6px"
+              ></IconImg>
+            </SwiperSlide>{" "}
+            <SwiperSlide>
+              <IconImg
+                url={nftIdea}
+                backsize="cover"
+                width="100%"
+                height="100%"
+                border="6px"
+              ></IconImg>
+            </SwiperSlide>
+          </Swiper>
+        </VStack>
+      </VStack>
+
+      <ContentCentered>
+        {/* TOP COLLECTION SECTION              */}
+
+        <VStack alignment="center">
+          <VStack padding="90px 0 0 0 ">
+            <IconImg
+              url={rocket3D}
+              width="150px"
+              height="150px"
+              backsize="cover"
+            ></IconImg>
+
+            <SubtitleBubble text={"DISCOVER WHATS HOT NOW"}></SubtitleBubble>
+
+            <TitleRegular36>Top Collections</TitleRegular36>
+          </VStack>
+          {/* First 3 Places  */}
+          <HStack width="100%" padding="120px 0 0 0">
+            <VStack maxwidth="600px" height="360px">
+              <IconImg url={firstPlaces} width="100%" height="100%"></IconImg>
+
+              <Gold
+                animate={{ scale: size.width > 414 ? 1 : 0.81 }}
+                top="-49px"
               >
-                <TitleBold27 textcolor={appStyle.colors.white}>
-                  Want to Get Started?
-                </TitleBold27>
-                <ButtonApp
-                  text="Here is How"
-                  textcolor={appStyle.colors.black}
-                  background={appStyle.colors.white}
-                  width="180px"
-                  cursor="pointer"
-                ></ButtonApp>
-              </VStack>
-            </ZItem>
-          </ZStack>
+                <PricePosition
+                  creator={"Gold Creator"}
+                  amount="10M"
+                ></PricePosition>
+              </Gold>
+
+              <Silver
+                animate={{ scale: size.width > 414 ? 1 : 0.81 }}
+                left={size.width > 414 ? "33px" : "0"}
+                top="52px"
+              >
+                <PricePosition
+                  creator={"Silver Creator"}
+                  amount="9M"
+                ></PricePosition>
+              </Silver>
+              <Cooper
+                animate={{ scale: size.width > 414 ? 1 : 0.81 }}
+                top={size.width > 414 ? "100px" : "90px"}
+                right={size.width > 414 ? "26px" : 0}
+              >
+                <PricePosition
+                  creator={"Cooper Creator"}
+                  amount="8M"
+                ></PricePosition>
+              </Cooper>
+            </VStack>
+          </HStack>
+          {/* Rest 7 Places                 */}
+          <HStack>
+            <VStack maxwidth="600px">
+              <CollectionPosition
+                rank="4"
+                creator={newBlue}
+                name="Creator Example"
+                amount="300k"
+                percent="90%"
+              ></CollectionPosition>
+            </VStack>
+          </HStack>
+
+          <HStack>
+            <BigButton text="Explore All Collections"></BigButton>
+          </HStack>
         </VStack>
 
-        {/* Top Collections Section */}
-        <VStack
+        {/* TRENDING NFT SECTION              */}
+        <VStack alignment="center" padding="90px 0 ">
+          <VStack padding="90px 0 0 0 ">
+            <IconImg
+              url={CristalHeart}
+              width="150px"
+              height="150px"
+              backsize="cover"
+            ></IconImg>
+
+            <SubtitleBubble text={"WHAT USERS LOVES MOST"}></SubtitleBubble>
+
+            <TitleRegular36>Trending NFTs</TitleRegular36>
+          </VStack>
+
+          <HStack flexwrap="wrap">
+            <IconImg
+              url={nftIdea}
+              backsize="cover"
+              width="48%"
+              height="360px"
+              border="6px"
+            ></IconImg>
+            <IconImg
+              url={nftIdea}
+              backsize="cover"
+              width="48%"
+              height="360px"
+              border="6px"
+            ></IconImg>
+            <IconImg
+              url={nftIdea}
+              backsize="cover"
+              width="48%"
+              height="360px"
+              border="6px"
+            ></IconImg>
+            <IconImg
+              url={nftIdea}
+              backsize="cover"
+              width="48%"
+              height="360px"
+              border="6px"
+            ></IconImg>
+          </HStack>
+
+          <HStack>
+            <BigButton text="Discover All Trending NFTs"></BigButton>
+          </HStack>
+        </VStack>
+
+        {/* NEW NFT SECTION              */}
+        <VStack alignment="center" padding="60px 0 ">
+          <VStack padding="90px 0 0 0 ">
+            <IconImg
+              url={Star3D}
+              width="150px"
+              height="150px"
+              backsize="cover"
+            ></IconImg>
+
+            <SubtitleBubble
+              text={"NEW TALENTS ON THE MARKETPLACE"}
+            ></SubtitleBubble>
+
+            <TitleRegular36>New NFTs</TitleRegular36>
+          </VStack>
+
+          <Swiper
+            slidesPerView={size.width > 414 ? "3" : "1"}
+            spaceBetween={9}
+            centeredSlides={false}
+            style={{
+              "--swiper-navigation-color": "#fff",
+              "--swiper-pagination-color": "#fff",
+              height: "390px",
+            }}
+            navigation={true}
+            modules={[Grid, FreeMode, Navigation, Thumbs]}
+            onSwiper={(swiper) => console.log(swiper)}
+            onSlideChange={() => console.log("slide change")}
+            className="mySwiper2"
+          >
+            <SwiperSlide>
+              <IconImg
+                url={nftIdea}
+                backsize="cover"
+                width="100%"
+                height="100%"
+                border="6px"
+              ></IconImg>
+            </SwiperSlide>
+
+            <SwiperSlide>
+              <IconImg
+                url={nftIdea}
+                backsize="cover"
+                width="100%"
+                height="100%"
+                border="6px"
+              ></IconImg>
+            </SwiperSlide>
+
+            <SwiperSlide>
+              <IconImg
+                url={nftIdea}
+                backsize="cover"
+                width="100%"
+                height="100%"
+                border="6px"
+              ></IconImg>
+            </SwiperSlide>
+
+            <SwiperSlide>
+              <IconImg
+                url={nftIdea}
+                backsize="cover"
+                width="100%"
+                height="100%"
+                border="6px"
+              ></IconImg>
+            </SwiperSlide>
+          </Swiper>
+
+          <HStack>
+            <BigButton text="Discover All Trending NFTs"></BigButton>
+          </HStack>
+        </VStack>
+
+        {/* <VStack
           height={size.width < 1200 ? "auto" : "740px"}
           width="100%"
           spacing="30px"
@@ -650,16 +514,6 @@ const Home = (props) => {
           marginTop="60px"
           id="spotlightCollections"
         >
-          <HStack>
-            <IconImg
-              url={rocketCollection}
-              width="45px"
-              height="45px"
-            ></IconImg>
-            <TitleBold27 textcolor={({ theme }) => theme.text}>
-              Top Collections
-            </TitleBold27>
-          </HStack>
           <HStack responsive={true} padding="0 12px">
             <VStack
               flexwrap={size.width < 1200 ? "nowrap" : "wrap"}
@@ -695,10 +549,10 @@ const Home = (props) => {
                   ))}
             </VStack>
           </HStack>
-        </VStack>
+        </VStack> */}
 
         {/* Trending NFTs Section */}
-        <VStack height="auto" width="100%" id="trendingNFTs">
+        {/* <VStack height="auto" width="100%" id="trendingNFTs">
           <HStack>
             <IconImg url={iconTrending} width="45px" height="45px"></IconImg>
             <TitleBold27>Trending NFTs</TitleBold27>
@@ -823,8 +677,51 @@ const Home = (props) => {
             btnStatus={0}
             background={({ theme }) => theme.blue}
           ></ButtonApp>
-        </VStack>
+        </VStack> */}
       </ContentCentered>
+
+      {/* How to get started Banner */}
+      <VStack padding="150px 0">
+        <Sphere>
+          <IconImg
+            url={goldSphere}
+            width="390px"
+            height="390px"
+            backsize="contain"
+          ></IconImg>
+        </Sphere>
+
+        <VStack
+          minheight="210px"
+          background="rgba(11, 26, 163, 0.85)"
+          width="100%"
+          className="blend"
+        >
+          <VStack height="100%">
+            <BodyRegular textcolor="rgba(255,122,0,100)">
+              WANT TO GET STARTED
+            </BodyRegular>
+            <TitleRegular36 textcolor="rgba(251,195,75, 100)">
+              Create and sell your NFTs
+            </TitleRegular36>
+
+            <HStack
+              self="none"
+              padding="0 15px"
+              height="42px"
+              border="30px"
+              background="white"
+              cursor="pointer"
+              whileTap={{ scale: 0.98 }}
+              onClick={() => props.redirect("HowToStart")}
+            >
+              <SubtTitleRegular18 cursor="pointer">
+                Here is how
+              </SubtTitleRegular18>
+            </HStack>
+          </VStack>
+        </VStack>
+      </VStack>
     </Content>
   );
 };
@@ -832,11 +729,19 @@ const Home = (props) => {
 export { Home };
 
 const Content = styled(motion.div)`
-  padding: 0;
+  padding: 0 0 120px 0;
   widht: 100%;
 
   box-sizing: border-box;
-  background: ${({ theme }) => theme.background};
+  background: linear-gradient(
+    180deg,
+    #f1eff0 20.8%,
+    #efeff1 32.39%,
+    #dce0ef 51.62%,
+    #c7d0d7 64.26%,
+    #dce3e8 85.56%,
+    #f8fbfd 100%
+  );
 `;
 
 const ContentCentered = styled(motion.div)`
@@ -854,7 +759,7 @@ const GridNfts = styled(motion.div)`
 `;
 
 const Blend = styled(motion.div)`
-  mix-blend-mode: overlay;
+  mix-blend-mode: difference;
   width: 100%;
 `;
 
@@ -864,4 +769,30 @@ const SvgTexture = styled(motion.div)`
   width: 100vw;
   heigth: 100vh;
   z-index: -1;
+`;
+
+const Gold = styled(motion.div)`
+  position: absolute;
+
+  top: ${(props) => props.top};
+
+  z-index: 10;
+`;
+
+const Silver = styled(motion.div)`
+  position: absolute;
+  left: ${(props) => props.left};
+  top: ${(props) => props.top};
+  // left: 33px;
+  // top: 52px;
+`;
+
+const Cooper = styled(motion.div)`
+  position: absolute;
+  top: ${(props) => props.top};
+  right: ${(props) => props.right};
+`;
+
+const Sphere = styled(motion.div)`
+  position: absolute;
 `;
