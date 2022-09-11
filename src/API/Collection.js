@@ -42,10 +42,15 @@ export const getCollections = ({
  */
 export const getCollection = (nickName) => {
   return createRequest(
+    
     HTTP_METHODS.get,
+   
     `collection/byNickName/${nickName}`,
+   
     null,
+   
     null
+  
   );
 };
 
@@ -99,10 +104,15 @@ export const getCollectionNFTs = ({
     }`;
   params = params.substring(0, params.length - 1);
   return createRequest(
+    
     HTTP_METHODS.get,
+   
     `collection/nft/${collectionId}/${page}${params}`,
+   
     null,
+   
     null
+  
   );
 };
 
@@ -160,4 +170,13 @@ export const checkCollectionExistsRequest = (name) => {
     name,
   };
   return createRequest(HTTP_METHODS.get, "collection/exist", params, null);
+};
+
+export const updateCollection = (collectionId, body) => {
+  return createSignedRequest(
+    HTTP_METHODS.put,
+    `collection/${collectionId}`,
+    null,
+    body
+  );
 };

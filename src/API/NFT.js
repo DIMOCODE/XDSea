@@ -284,3 +284,34 @@ export const acceptOfferRequest = (offerId) => {
     null
   );
 };
+
+/**
+ * Post a User-authorized HTTP request to receive a signed URL for uploading assets to S3
+ *
+ * @param {string} nftId the DB object ID of the NFT
+ * @param {string} ext the filetype extension of the video NFT asset
+ * @returns HTTP POST request response with the signed URL and S3 URL
+ */
+export const getSignedURLNFT = (nftId, ext) => {
+  const body = {
+    contentType: "video",
+    ext,
+  };
+  return createSignedRequest(
+    HTTP_METHODS.post,
+    `signedURLProvider/nft/${nftId}/urlFile`,
+    null,
+    body
+  );
+};
+
+/**
+ * Send a User-authorized HTTP request to update the S3 link for the NFT video asset
+ *
+ * @param {string} nftId the DB object ID of the NFT
+ * @param {string} s3 URL of the uploaded S3 asset
+ * @returns HTTP PUT request response with the updated DB NFT object
+ */
+export const updateNFT = (nftId, body) => {
+  return createSignedRequest(HTTP_METHODS.put, `nft/${nftId}`, null, body);
+};

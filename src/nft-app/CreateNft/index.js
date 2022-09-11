@@ -52,7 +52,9 @@ import {
   getCollection,
   getCollections,
 } from "../../API/Collection";
-import { createNFT } from "../../API/NFT";
+import { createNFT, getSignedURLNFT, updateNFT } from "../../API/NFT";
+import { isVideo } from "../../common";
+import { uploadFileInS3Bucket } from "../../helpers/fileUploader";
 import seamless from "../../images/newBlue.webp";
 
 function CreateNft(props) {
@@ -495,6 +497,28 @@ function CreateNft(props) {
     } else return "";
   };
 
+  const addToS3 = async (nftId, ext) => {
+    const file = document.getElementById("upload-button").files[0];
+    try {
+      const signedData = await (await getSignedURLNFT(nftId, ext)).data;
+      const signedURL = signedData.signedUrl;
+      const s3URL = signedData.url;
+      axios
+        .put(signedURL, file, {
+          headers: {
+            "Content-Type": nft.fileType,
+          },
+        })
+        .then(async (res) => {
+          if (res.status === 200) {
+            const updateData = await (await updateNFT(nftId, s3URL)).data;
+          }
+        });
+    } catch (error) {
+      console.log("Error uploading file:", error);
+    }
+  };
+
   /**
    * Check if the royalty percentage is set and if not the user is aware
    * that 0% royalty will be charged
@@ -685,6 +709,15 @@ function CreateNft(props) {
             filteredProperties
           )
         ).data.nft;
+      }
+      if (isVideo(nft.fileType)) {
+        const success = await uploadFileInS3Bucket(
+          nft.raw,
+          "nft",
+          "urlFile",
+          nftCreation._id
+        );
+        console.log("update s3 result: ", success, nftCreation._id);
       }
       setMintButtonStatus(3);
       setMinted(true);
