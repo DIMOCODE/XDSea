@@ -44,7 +44,7 @@ import outlinesXDSEA from "../../images/XDSeaOutlines.png";
 import bannerXDC from "../../images/bannerXdc.png";
 
 import logoWhiteX from "../../images/logoWhiteX.png";
-import newBlue from "../../images/newBlue.jpg";
+import newBlue from "../../images/newBlue.webp";
 import CristalHeart from "../../images/CristalHeart.png";
 
 import { NewFeatured } from "../../styles/NewFeatured";
