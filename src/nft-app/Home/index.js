@@ -393,33 +393,36 @@ const Home = (props) => {
             <TitleRegular36>Trending NFTs</TitleRegular36>
           </VStack>
 
-          <HStack flexwrap="wrap">
+          <HStack
+            flexwrap="wrap"
+            padding={size.width > 414 ? "0 12px 0 12px" : "0 12px 0 12px"}
+          >
             <IconImg
               url={nftIdea}
               backsize="cover"
               width="48%"
-              height="360px"
+              height={size.width > 414 ? "360px" : "180px"}
               border="6px"
             ></IconImg>
             <IconImg
               url={nftIdea}
               backsize="cover"
               width="48%"
-              height="360px"
+              height={size.width > 414 ? "360px" : "180px"}
               border="6px"
             ></IconImg>
             <IconImg
               url={nftIdea}
               backsize="cover"
               width="48%"
-              height="360px"
+              height={size.width > 414 ? "360px" : "180px"}
               border="6px"
             ></IconImg>
             <IconImg
               url={nftIdea}
               backsize="cover"
               width="48%"
-              height="360px"
+              height={size.width > 414 ? "360px" : "180px"}
               border="6px"
             ></IconImg>
           </HStack>
