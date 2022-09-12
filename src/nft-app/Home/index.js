@@ -50,6 +50,7 @@ import CristalHeart from "../../images/CristalHeart.png";
 import { NewFeatured } from "../../styles/NewFeatured";
 import { borderColor } from "@mui/system";
 import "./customstyles.css";
+
 import { truncateAddress } from "../../common/common";
 import BlueBanner from "../../images/multicolorblur1.png";
 import nftIdea from "../../images/nftIdea.jpg";
