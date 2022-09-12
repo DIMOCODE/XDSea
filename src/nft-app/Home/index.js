@@ -40,12 +40,12 @@ import { LayoutGroup, motion } from "framer-motion/dist/framer-motion";
 import useWindowSize from "../../styles/useWindowSize";
 import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
 import logoXDSEA from "../../images/LogoXDSEA.png";
-import outlinesXDSEA from "../../images/XDSeaOutlines.png";
+import outlinesXDSEA from "../../images/XDSeaOutlines.webp";
 import bannerXDC from "../../images/bannerXdc.png";
 
 import logoWhiteX from "../../images/logoWhiteX.png";
 import newBlue from "../../images/newBlue.webp";
-import CristalHeart from "../../images/CristalHeart.png";
+import CristalHeart from "../../images/CristalHeart.webp";
 
 import { NewFeatured } from "../../styles/NewFeatured";
 import { borderColor } from "@mui/system";
@@ -58,15 +58,15 @@ import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import { TypeAnimation } from "react-type-animation";
 import svgpattern from "../../images/scales22.jpg";
 import { Grid, FreeMode, Navigation, Thumbs, Pagination } from "swiper";
-import rocket3D from "../../images/Rocket3D.png";
-import Star3D from "../../images/Star3D.png";
-import firstPlaces from "../../images/firstplaces.png";
+import rocket3D from "../../images/Rocket3D.webp";
+import Star3D from "../../images/Star3D.webp";
+import firstPlaces from "../../images/firstplaces.webp";
 import { useCallback } from "react";
 import { red } from "@mui/material/colors";
 import { SubtitleBubble } from "../../styles/SubtitleBubble";
 import { PricePosition } from "../../styles/PricePosition";
 import { CollectionPosition } from "../../styles/CollectionPosition";
-import goldSphere from "../../images/GoldSphere.png";
+import goldSphere from "../../images/GoldSphere.webp";
 import { BigButton } from "../../styles/BigButton";
 
 const Home = (props) => {
