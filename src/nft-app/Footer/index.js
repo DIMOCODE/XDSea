@@ -3,21 +3,32 @@ import XDSeaWhite from "../../images/logoXDSEAWhite.png";
 import twitter from "../../images/twitterLogoWhite.png";
 import instagram from "../../images/InstagramLogoWhite.png";
 import mail from "../../images/mailWhite.png";
-import { BodyRegular, TitleBold21, TitleBold27 } from "../../styles/TextStyles";
+import {
+  BodyRegular,
+  TitleRegular21,
+  TitleRegular18,
+  CaptionBoldShort,
+  CaptionBold,
+} from "../../styles/TextStyles";
 import { appStyle } from "../../styles/AppStyles";
 import { LayoutGroup, motion } from "framer-motion/dist/framer-motion";
 import { Link } from "../../styles/Link";
 import useWindowSize from "../../styles/useWindowSize";
 import styled from "styled-components";
+import footerBanner from "../../images/FooterImage.webp";
+import logoOutline from "../../images/XDSeaOutlines.webp";
+import instaIcon from "../../images/instaIconFooter.png";
+import twitterIcon from "../../images/twitterIconFooter.png";
+import mailIcon from "../../images/mailIconFooter.png";
 
 function Footer(props) {
   const size = useWindowSize();
 
   return (
-    <FooterSection>
+    <FooterSection size={size.width > 414 ? "contain" : "cover"}>
       <FooterContent>
         <LayoutGroup id="footer">
-          <VStack>
+          <VStack spacing="30px">
             <HStack
               responsive={true}
               alignment="flex-start"
@@ -30,38 +41,31 @@ function Footer(props) {
                 onClick={() => props.redirect("")}
               >
                 <IconImg
-                  url={XDSeaWhite}
-                  width={size.width < 768 ? "60px" : "90px"}
-                  height={size.width < 768 ? "60px" : "90px"}
+                  url={logoOutline}
+                  width={size.width < 768 ? "120px" : "180px"}
+                  height={size.width < 768 ? "120px" : "180px"}
                   cursor={"pointer"}
                 ></IconImg>
-                <TitleBold27 textcolor={appStyle.colors.white}>
-                  XDSea
-                </TitleBold27>
-                <BodyRegular textcolor={appStyle.colors.white}>
-                  NFT Marketplace
-                </BodyRegular>
-                <Spacer></Spacer>
               </VStack>
 
               {/* Marketplace Quick Links */}
               <VStack alignment="flex-start">
-                <TitleBold21 textcolor={appStyle.colors.white}>
+                <TitleRegular21 textcolor={appStyle.colors.white}>
                   Marketplace
-                </TitleBold21>
-                <LayoutGroup id="MarketPlaceLink">
-                  <Link cursor={"pointer"} text="Home"></Link>
-                  <Link cursor={"pointer"} text="Discover"></Link>
-                  <Link cursor={"pointer"} text="How To Start"></Link>
-                </LayoutGroup>
+                </TitleRegular21>
+
+                <Link cursor={"pointer"} text="Home"></Link>
+                <Link cursor={"pointer"} text="Discover"></Link>
+                <Link cursor={"pointer"} text="How To Start"></Link>
+
                 <Spacer></Spacer>
               </VStack>
 
               {/* Account Quick Links */}
               <VStack alignment="flex-start">
-                <TitleBold21 textcolor={appStyle.colors.white}>
+                <TitleRegular21 textcolor={appStyle.colors.white}>
                   Account
-                </TitleBold21>
+                </TitleRegular21>
 
                 <Link text="Create NFT"></Link>
 
@@ -70,49 +74,103 @@ function Footer(props) {
 
               {/* Social Links */}
               <VStack alignment="flex-start">
-                <TitleBold21 textcolor={appStyle.colors.white}>
+                <TitleRegular21 textcolor={appStyle.colors.white}>
                   Social
-                </TitleBold21>
-                <HStack justify="flex-start">
-                  <a href="https://www.instagram.com/xdsea.nft/">
+                </TitleRegular21>
+
+                <a href="https://twitter.com/XDSeaNFT">
+                  <HStack
+                    background="white"
+                    border="6px"
+                    height="52px"
+                    padding="0 12px"
+                    self="none"
+                    cursor="pointer"
+                  >
                     <IconImg
-                      url={instagram}
-                      width="52px"
-                      height="52px"
+                      url={twitterIcon}
+                      width="30px"
+                      height="30px"
                       cursor="pointer"
                     ></IconImg>
-                  </a>
-                  <a href="https://twitter.com/XDSeaNFT">
+                    <VStack spacing="0px" alignment="3px" cursor="pointer">
+                      <TitleRegular18 cursor="pointer">
+                        @XDSeaNFT
+                      </TitleRegular18>
+                      <CaptionBold textcolor="#0471C0" cursor="pointer">
+                        12,7 K FOLLOWERS
+                      </CaptionBold>
+                    </VStack>
+                  </HStack>
+                </a>
+
+                <a href="https://www.instagram.com/xdsea.nft/">
+                  <HStack
+                    background="white"
+                    border="6px"
+                    height="52px"
+                    padding="0 12px"
+                    self="none"
+                    cursor="pointer"
+                  >
                     <IconImg
-                      url={twitter}
-                      width="52px"
-                      height="52px"
+                      url={instaIcon}
+                      width="30px"
+                      height="30px"
                       cursor="pointer"
                     ></IconImg>
-                  </a>
-                  <a href="mailto:support@xdsea.com">
+                    <VStack spacing="0px" alignment="3px" cursor="pointer">
+                      <TitleRegular18 cursor="pointer">
+                        @xdsea.nft
+                      </TitleRegular18>
+                      <CaptionBold textcolor="#DD4280" cursor="pointer">
+                        4,3 K FOLLOWERS
+                      </CaptionBold>
+                    </VStack>
+                  </HStack>
+                </a>
+
+                <a href="mailto:support@xdsea.com">
+                  <HStack
+                    background="white"
+                    border="6px"
+                    height="52px"
+                    padding="0 12px"
+                    self="none"
+                    cursor="pointer"
+                  >
                     <IconImg
-                      url={mail}
-                      width="52px"
-                      height="52px"
+                      url={mailIcon}
+                      width="30px"
+                      height="30px"
                       cursor="pointer"
                     ></IconImg>
-                  </a>
-                </HStack>
+                    <VStack spacing="0px" alignment="3px" cursor="pointer">
+                      <TitleRegular18 cursor="pointer">
+                        support@xdsea.com
+                      </TitleRegular18>
+                    </VStack>
+                  </HStack>
+                </a>
+
                 <Spacer></Spacer>
               </VStack>
             </HStack>
 
             {/* Copyright Information */}
-            <VStack
-              background={appStyle.colors.darkgrey30}
-              padding="6px 6px"
-              border="6px"
-            >
-              <BodyRegular textcolor="white" align="center">
-                Copyright © 2022 XDSea All Rights Reserved
-              </BodyRegular>
-            </VStack>
+            <HStack padding="0 30px">
+              <HStack
+                background={appStyle.colors.darkgrey30}
+                padding="6px 6px"
+                border="6px"
+                height="42px"
+                width="100%"
+              >
+                <BodyRegular textcolor="white" align="center">
+                  Copyright © 2022 XDSea All Rights Reserved
+                </BodyRegular>
+              </HStack>
+            </HStack>
           </VStack>
         </LayoutGroup>
       </FooterContent>
@@ -123,9 +181,11 @@ function Footer(props) {
 export { Footer };
 
 const FooterSection = styled(motion.div)`
-  padding: 90px 0;
+  padding: 150px 0 90px 0;
   width: 100%;
-  background: linear-gradient(180deg, #182c3d 0%, #0c1823 100%); ;
+
+  background-image: url(${footerBanner});
+  background-size: ${(props) => props.size};
 `;
 
 const FooterContent = styled(motion.div)`

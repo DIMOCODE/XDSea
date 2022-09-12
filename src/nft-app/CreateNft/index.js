@@ -53,7 +53,7 @@ import {
   getCollections,
 } from "../../API/Collection";
 import { createNFT } from "../../API/NFT";
-import seamless from "../../images/scales22.jpg";
+import seamless from "../../images/newBlue.webp";
 
 function CreateNft(props) {
   const size = useWindowSize();
@@ -1640,7 +1640,6 @@ const ImageCollection = styled(motion.div)`
 const CreationSection = styled(motion.div)`
   padding: 0px 0;
   width: 100%;
-  background: rgba(0, 0, 0, 0.04);
 `;
 
 const ContentCreation = styled(motion.div)`

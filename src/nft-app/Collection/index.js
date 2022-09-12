@@ -755,7 +755,7 @@ const CollectionContent = styled(motion.div)`
 const CollectionSection = styled(motion.div)`
   padding: 0px 0;
   width: 100%;
-  background: rgba(0, 0, 0, 0.04);
+
   position: relative;
 `;
 

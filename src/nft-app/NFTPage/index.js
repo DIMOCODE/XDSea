@@ -1911,7 +1911,6 @@ const LockedContent = styled(motion.div)`
 const NFTPage = styled(motion.div)`
   padding: 30px 0;
   width: 100%;
-  background: rgba(0, 0, 0, 0.06);
 `;
 
 const ContentNftPage = styled(motion.div)`

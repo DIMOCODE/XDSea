@@ -2,7 +2,7 @@ import { VStack, HStack, Spacer, IconImg } from "./styles/Stacks";
 import styled from "styled-components";
 import { motion } from "framer-motion/dist/framer-motion";
 import { BodyRegular, TitleBold18, TitleBold27 } from "./styles/TextStyles";
-import backBar from "./images/DiscoverBar.png";
+import backBar from "./images/newBlue.webp";
 import { appStyle } from "./styles/AppStyles";
 import Step1 from "./images/Step1v2.png";
 import Step2 from "./images/Step2v2.png";
@@ -21,7 +21,7 @@ function HowToStart() {
   return (
     <HowToSection>
       <HStack backgroundimage={backBar}>
-        <HStack width="1200px" height="157px" padding="0px 30px">
+        <HStack width="1200px" height="258px" padding="90px 0 0 0 ">
           <VStack>
             <TitleBold27 textcolor={appStyle.colors.white}>
               Want to Get Started?
@@ -34,7 +34,6 @@ function HowToStart() {
       </HStack>
       <ContentHowTo>
         <VStack padding="30px 30px">
-
           {/* Step 1 */}
           <HStack
             spacing="0px"
@@ -232,9 +231,8 @@ function HowToStart() {
 export { HowToStart };
 
 const HowToSection = styled(motion.div)`
-  padding: 90px 0;
+  padding: 0px 0;
   width: 100%;
-  background: rgba(0, 0, 0, 0.06);
 `;
 
 const ContentHowTo = styled(motion.div)`

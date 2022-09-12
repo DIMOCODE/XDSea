@@ -715,15 +715,6 @@ const Content = styled(motion.div)`
   widht: 100%;
 
   box-sizing: border-box;
-  background: linear-gradient(
-    180deg,
-    #f1eff0 20.8%,
-    #efeff1 32.39%,
-    #dce0ef 51.62%,
-    #c7d0d7 64.26%,
-    #dce3e8 85.56%,
-    #f8fbfd 100%
-  );
 `;
 
 const ContentCentered = styled(motion.div)`

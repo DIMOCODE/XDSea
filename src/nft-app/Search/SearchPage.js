@@ -10,7 +10,7 @@ import {
 } from "../../styles/TextStyles";
 import { appStyle } from "../../styles/AppStyles";
 import { AnimatePresence, motion } from "framer-motion/dist/framer-motion";
-import DiscoverBar from "../../images/DiscoverBar.png";
+import DiscoverBar from "../../images/newBlue.webp";
 import { SortButtonCollections } from "../../styles/SortButtonCollections";
 import useWindowSize from "../../styles/useWindowSize";
 import { FiltersButton } from "../../styles/FiltersButton";
@@ -553,7 +553,6 @@ export { SearchPage };
 const SearchSection = styled(motion.div)`
   padding: 0px 0;
   width: 100%;
-  background: rgba(0, 0, 0, 0.06);
 `;
 
 const ContentSearch = styled(motion.div)`
