@@ -1,72 +1,50 @@
 import React, { useEffect, useState, useContext } from "react";
+import { useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import { nftaddress } from "../../config";
 import { getHomeData } from "../../API/Home";
-import rocketCollection from "../../images/rocketCollection.png";
+
 import { LoadingSpot } from "../../styles/LoadingSpot";
-import { TopCollectionItem } from "../../styles/TopCollectionItem";
+
 import styled from "styled-components";
-import iconTrending from "../../images/trendingNFT.png";
+
 import { NftContainer } from "../../styles/NftContainer";
 import { appStyle } from "../../styles/AppStyles";
 import ButtonApp from "../../styles/Buttons";
-import Carousel from "react-elastic-carousel";
+
 import { Swiper, SwiperSlide } from "swiper/react";
 
-import {
-  HStack,
-  IconImg,
-  Spacer,
-  VStack,
-  ZItem,
-  ZStack,
-} from "../../styles/Stacks";
+import { HStack, IconImg, VStack } from "../../styles/Stacks";
 import {
   BodyRegular,
   SubtTitleRegular18,
-  TitleBold18,
-  TitleBold21,
-  TitleBold27,
-  TitleBold30,
   TitleBold42,
-  TitleBold51,
-  TitleBold60,
-  TitleRegular18,
-  TitleRegular21,
   TitleRegular36,
-  TitleRegular42,
 } from "../../styles/TextStyles";
-import { LayoutGroup, motion } from "framer-motion/dist/framer-motion";
+import { motion } from "framer-motion/dist/framer-motion";
 import useWindowSize from "../../styles/useWindowSize";
 import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
-import logoXDSEA from "../../images/LogoXDSEA.png";
-import outlinesXDSEA from "../../images/XDSeaOutlines.webp";
-import bannerXDC from "../../images/bannerXdc.png";
 
-import logoWhiteX from "../../images/logoWhiteX.png";
-import newBlue from "../../images/newBlue.webp";
-import CristalHeart from "../../images/CristalHeart.webp";
-
-import { NewFeatured } from "../../styles/NewFeatured";
-import { borderColor } from "@mui/system";
 import Swipper from "../Home/Swiper.css";
 
 import { truncateAddress } from "../../common/common";
-import BlueBanner from "../../images/multicolorblur1.png";
-import nftIdea from "../../images/nftIdea.jpg";
+
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
-import { TypeAnimation } from "react-type-animation";
-import svgpattern from "../../images/scales22.jpg";
+
 import { Grid, FreeMode, Navigation, Thumbs, Pagination } from "swiper";
+
+import goldSphere from "../../images/GoldSphere.webp";
 import rocket3D from "../../images/Rocket3D.webp";
 import Star3D from "../../images/Star3D.webp";
 import firstPlaces from "../../images/firstplaces.webp";
-import { useCallback } from "react";
-import { red } from "@mui/material/colors";
+import nftIdea from "../../images/nftIdea.webp";
+import outlinesXDSEA from "../../images/XDSeaOutlines.webp";
+import newBlue from "../../images/newBlue.webp";
+import CristalHeart from "../../images/CristalHeart.webp";
+
 import { SubtitleBubble } from "../../styles/SubtitleBubble";
 import { PricePosition } from "../../styles/PricePosition";
 import { CollectionPosition } from "../../styles/CollectionPosition";
-import goldSphere from "../../images/GoldSphere.webp";
 import { BigButton } from "../../styles/BigButton";
 
 const Home = (props) => {
