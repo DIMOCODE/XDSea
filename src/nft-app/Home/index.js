@@ -49,7 +49,7 @@ import CristalHeart from "../../images/CristalHeart.png";
 
 import { NewFeatured } from "../../styles/NewFeatured";
 import { borderColor } from "@mui/system";
-import "./customstyles.css";
+import Swipper from "../Home/Swiper.css";
 
 import { truncateAddress } from "../../common/common";
 import BlueBanner from "../../images/multicolorblur1.png";
