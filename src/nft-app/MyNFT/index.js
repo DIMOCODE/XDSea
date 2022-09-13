@@ -45,6 +45,7 @@ import webColor from "../../images/webColor.png";
 import walletBlue from "../../images/walletBlue.png";
 import useWindowSize from "../../styles/useWindowSize";
 import ButtonApp from "../../styles/Buttons";
+import newBlue from "../../images/newBlue.webp";
 
 import { appStyle } from "../../styles/AppStyles";
 import { BubbleCopied } from "../../styles/BubbleCopied";
@@ -69,6 +70,7 @@ import { InputStyled } from "../../styles/InputStyled";
 
 import { UploadMultimedia } from "../../styles/UploadMultimedia";
 import { Activity } from "./Activity";
+import { CollectionTab } from "./CollectionTab";
 
 const MyNFT = (props) => {
   const { userId } = useParams();
@@ -99,6 +101,10 @@ const MyNFT = (props) => {
   const [isDarkUI, setIsDarkUI] = useState(false);
   const [isAdjust, setIsAdjust] = useState(false);
   const [newMessage, setNewMessage] = useState(false);
+
+  const heights = [100, 590, 300];
+
+  let position = Math.round(Math.random() * 2);
 
   /**
    * Get the owned collections of the user
@@ -277,55 +283,6 @@ const MyNFT = (props) => {
                   width="100%"
                   height="100%"
                 ></IconImg>
-
-                {/* {isAdjust && (
-                <Controls>
-                  <HStack width="100%" padding="0 12px">
-                    <HStack
-                      height="42px"
-                      background="white"
-                      border="30px"
-                      padding="3px 16px"
-                      cursor="pointer"
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => setIsAdjust(false)}
-                    >
-                      <BodyBold cursor="pointer">Go Back</BodyBold>
-                    </HStack>
-
-                    <Spacer></Spacer>
-
-                    <HStack
-                      height="42px"
-                      background="white"
-                      border="30px"
-                      padding="3px 16px"
-                      cursor="pointer"
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => setIsAdjust(false)}
-                    >
-                      <BodyBold cursor="pointer">Save Banner</BodyBold>
-                    </HStack>
-                  </HStack>
-                </Controls>
-              )}
-
-              <Draggable>
-                <Resizable
-                  size={{ width, height }}
-                  onResizeStop={(e, direction, ref, d) => {
-                    setWidth(width + d.width);
-                    setHeight(height + d.height);
-                  }}
-                >
-                  <IconImg
-                    url={mountain}
-                    backsize="cover"
-                    width="100%"
-                    height="100%"
-                  ></IconImg>
-                </Resizable>
-              </Draggable> */}
               </VStack>
             </VStack>
           </ZItem>
@@ -786,10 +743,15 @@ const MyNFT = (props) => {
                 <HStack
                   spacing="0px"
                   width="100%"
-                  height="900px"
+                  height="390px"
                   padding="90px 0 0 0"
                 >
-                  <VStack spacing="30px" minwidth="70%" padding="12px 0 0 12px">
+                  <VStack
+                    spacing="30px"
+                    minwidth="70%"
+                    padding="12px 0 0 12px"
+                    justify="flex-start"
+                  >
                     {/* User Image, Name and Social Networks */}
 
                     <HStack>
@@ -850,7 +812,7 @@ const MyNFT = (props) => {
                 ></BubbleCopied>
               </VStack> */}
 
-                    {/* User Content */}
+                    {/* Filter Buttons */}
 
                     <HStack spacing="30px">
                       {/* Collections Button */}
@@ -902,269 +864,408 @@ const MyNFT = (props) => {
                       <Spacer></Spacer>
                     </HStack>
 
-                    <VStack
-                      width="100%"
-                      overflowy="scroll"
-                      justify="flex-start"
-                      className="fadeScroll"
-                      padding="12px 0 0px 0"
-                    >
-                      {/* Content of result of filtering Owned or Created Collections */}
+                    {subMenu === 0 && (
+                      <HStack justify="flex-start" spacing="9px">
+                        <CollectionTab name="Tab 1"></CollectionTab>
+                        <CollectionTab name="Tab 2"></CollectionTab>
+                        <CollectionTab name="Tab 3"> </CollectionTab>
+                      </HStack>
+                    )}
+                  </VStack>
 
-                      <ZStack
-                        height="auto"
-                        width="100%"
-                        overflow="visible"
-                        overflowx="visible"
-                        overflowy="scroll"
-                        padding="0 0 12px 0"
+                  {/* Sidebar Content         */}
+                  <VStack
+                    minwidth="30%"
+                    height="100%"
+                    padding="12px 12px 30px 0"
+                    alignment="flex-end"
+                    justify="flex-start"
+                    spacing="21px"
+                  >
+                    {/* Edit button  */}
+                    <HStack
+                      background="white"
+                      border="30px"
+                      cursor="pointer"
+                      minheight="42px"
+                      self="none"
+                      spacing="6px"
+                      padding="0 6px 0 9px"
+                      onClick={() => setIsEditing(true)}
+                    >
+                      <BodyRegular cursor="pointer">Edit Profile</BodyRegular>
+                      <IconImg
+                        cursor="pointer"
+                        url={editProfile}
+                        width="30px"
+                        height="30px"
+                      ></IconImg>
+                    </HStack>
+
+                    <HStack>
+                      <VStack
+                        background={({ theme }) => theme.faded}
+                        alignment="flex-start"
+                        padding="18px 18px 12px 18px"
+                        border="6px"
+                        maxheight="auto"
+                        blur="30px"
                       >
-                        {subMenu === 0 && (
-                          <VStack
-                            width="100%"
-                            key={"Created"}
-                            initial={{ opacity: 0, y: 15 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: 15 }}
-                            id={"scrollableDiv"}
-                          >
-                            {loading ? (
-                              <VStack padding="120px">
+                        {newMessage ? (
+                          <VStack>
+                            <BodyRegular textcolor="white">
+                              We are launching a new collection in couple mins
+                              stays tuned 🤩
+                            </BodyRegular>
+                            <HStack>
+                              <CaptionSmallRegular textcolor="white">
+                                10 MINS AGO
+                              </CaptionSmallRegular>
+
+                              <Spacer></Spacer>
+
+                              <HStack
+                                background="white"
+                                padding="6px 12px"
+                                border="6px"
+                                cursor="pointer"
+                                whileTap={{ scale: 0.96 }}
+                                onClick={() => setNewMessage(false)}
+                              >
+                                <CaptionSmallRegular cursor="pointer">
+                                  NEW
+                                </CaptionSmallRegular>
+                              </HStack>
+                            </HStack>
+                          </VStack>
+                        ) : (
+                          <InputStyled
+                            background="transparent"
+                            textcolor="white"
+                            placeholder="Leave a new message here"
+                          ></InputStyled>
+                        )}
+                      </VStack>
+                    </HStack>
+
+                    {newMessage ? (
+                      <HStack
+                        minheight="42px"
+                        background="linear-gradient(166.99deg, #2868F4 37.6%, #0E27C1 115.6%)"
+                        border="6px"
+                        cursor="pointer"
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        <BodyRegular textcolor="white" cursor="pointer">
+                          Follow Creator
+                        </BodyRegular>
+                      </HStack>
+                    ) : (
+                      <HStack width="100%">
+                        <HStack
+                          width="100%"
+                          minheight="42px"
+                          background={({ theme }) => theme.backElement}
+                          border="6px"
+                          cursor="pointer"
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => setNewMessage(true)}
+                        >
+                          <BodyRegular cursor="pointer">Cancel</BodyRegular>
+                        </HStack>
+                        <HStack
+                          width="100%"
+                          minheight="42px"
+                          background="linear-gradient(166.99deg, #2868F4 37.6%, #0E27C1 115.6%)"
+                          border="6px"
+                          cursor="pointer"
+                          whileTap={{ scale: 0.98 }}
+                        >
+                          <BodyRegular textcolor="white" cursor="pointer">
+                            Publish New
+                          </BodyRegular>
+                        </HStack>
+                      </HStack>
+                    )}
+
+                    {/* <Activity></Activity> */}
+                  </VStack>
+                </HStack>
+
+                {console.log(heights[position])}
+                {/* Collection or NFT Purchased  */}
+                <HStack>
+                  <ZStack height="auto" width="100%" padding="0 0 12px 0">
+                    {/* <HStack background="green" padding="30px">
+                      <VStack
+                        width="100%"
+                        height={heights[position] + "px"}
+                        background="pink"
+                      >
+                        Test sizes
+                      </VStack>
+                      <VStack
+                        height={heights[position] + "px"}
+                        width="100%"
+                        background="pink"
+                      >
+                        Test sizes
+                      </VStack>
+                      <VStack
+                        height={heights[position] + "px"}
+                        width="100%"
+                        background="pink"
+                      >
+                        Test sizes
+                      </VStack>
+                    </HStack> */}
+
+                    {subMenu === 0 && (
+                      <VStack
+                        width="100%"
+                        key={"Created"}
+                        initial={{ opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 15 }}
+                        id={"scrollableDiv"}
+                      >
+                        {loading ? (
+                          <VStack padding="120px">
+                            <LoopLogo></LoopLogo>
+                          </VStack>
+                        ) : nfts.length !== 0 ? (
+                          <InfiniteScroll
+                            dataLength={nfts.length}
+                            next={fetchMoreNFTs}
+                            hasMore={nfts.length < totalNfts}
+                            scrollThreshold={0.6}
+                            loader={
+                              <HStack
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                height="190px"
+                              >
                                 <LoopLogo></LoopLogo>
-                              </VStack>
-                            ) : nfts.length !== 0 ? (
-                              <InfiniteScroll
-                                dataLength={nfts.length}
-                                next={fetchMoreNFTs}
-                                hasMore={nfts.length < totalNfts}
-                                scrollThreshold={0.6}
-                                loader={
-                                  <HStack
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    height="190px"
-                                  >
-                                    <LoopLogo></LoopLogo>
-                                  </HStack>
-                                }
-                                scrollableTarget="#scrollableDiv"
-                                style={{ overflow: "hidden" }}
-                              >
-                                <HStack
-                                  flexwrap="wrap"
-                                  width="100%"
-                                  justify="flex-start"
-                                  spacing="9px"
+                              </HStack>
+                            }
+                            scrollableTarget="#scrollableDiv"
+                            style={{ overflow: "hidden" }}
+                          >
+                            <HStack
+                              flexwrap="wrap"
+                              width="100%"
+                              justify="flex-start"
+                              spacing="6px"
+                              padding="12px"
+                            >
+                              {nfts.map((item, i) => (
+                                <VStack
+                                  minwidth="23%"
+                                  width="23%"
+                                  height="300px"
+                                  border="15px"
+                                  cursor="pointer"
+                                  overflow="hidden"
+                                  whileHover={{ scale: 1.009 }}
+                                  onClick={() => {
+                                    props.redirect(
+                                      `nft/${nftaddress}/${item.tokenId}`
+                                    );
+                                  }}
                                 >
-                                  {nfts.map((item, i) => (
-                                    <VStack
-                                      minwidth={
-                                        size.width < 1112 ? "166px" : "240px"
-                                      }
-                                      maxwidth={
-                                        size.width < 1112 ? "166px" : "240px"
-                                      }
-                                      height={
-                                        size.width < 1112 ? "166px" : "240px"
-                                      }
-                                      border="15px"
-                                      cursor="pointer"
-                                      overflow="hidden"
-                                      whileHover={{ scale: 1.01 }}
-                                      onClick={() => {
-                                        props.redirect(
-                                          `nft/${nftaddress}/${item.tokenId}`
-                                        );
-                                      }}
-                                    >
-                                      <ZStack cursor={"pointer"}>
-                                        {item.hasOpenOffer ? (
-                                          <BubbleOffers>
-                                            <HStack
-                                              background="linear-gradient(180deg, #FF5A5A 0%, rgba(255, 90, 90, 0.88) 100%)"
-                                              width="26px"
-                                              height="26px"
-                                              border="300px"
-                                              padding="0 6px"
-                                              spacing="6px"
-                                            >
-                                              <CaptionBoldShort textcolor="white">
-                                                !
-                                              </CaptionBoldShort>
-                                            </HStack>
-                                          </BubbleOffers>
-                                        ) : null}
-                                        <ZItem>
-                                          {isImage(item.fileType) ? (
-                                            <IconImg
-                                              url={item.urlFile.v0}
-                                              width="100%"
-                                              height="100%"
-                                              backsize="cover"
-                                              border="15px"
-                                            ></IconImg>
-                                          ) : isVideo(item.fileType) ? (
-                                            <VStack
-                                              width="186px"
-                                              height="186px"
-                                              border="9px"
-                                              overflow="hidden"
-                                            >
-                                              <ReactPlayer
-                                                url={item.urlFile.v0}
-                                                playing={true}
-                                                volume={0}
-                                                muted={true}
-                                                loop={false}
-                                                width="100%"
-                                                height="160%"
-                                              />
-                                            </VStack>
-                                          ) : isAudio(item.fileType) ? (
-                                            <IconImg
-                                              url={item.preview.v0}
-                                              width="100%"
-                                              height="100%"
-                                              backsize="cover"
-                                              border="15px"
-                                            ></IconImg>
-                                          ) : null}
-                                        </ZItem>
-                                        <ZItem>
-                                          <VStack
-                                            padding="15px"
-                                            background="linear-gradient(180deg, rgba(0, 0, 0, 0) 54.41%, #000000 91.67%)"
-                                            border="9px"
-                                          >
-                                            <Spacer></Spacer>
-                                            <BodyRegular
-                                              textcolor={appStyle.colors.white}
-                                            >
-                                              {item.name}
-                                            </BodyRegular>
-                                          </VStack>
-                                        </ZItem>
-                                      </ZStack>
-                                    </VStack>
-                                  ))}
-                                </HStack>
-                              </InfiniteScroll>
-                            ) : (
-                              <VStack
-                                border="15px"
-                                width="100%"
-                                minheight="300px"
-                                background={({ theme }) => theme.backElement}
-                              >
-                                <IconImg
-                                  url={emptyNFT}
-                                  width="60px"
-                                  height="60px"
-                                ></IconImg>
-                                <BodyRegular>
-                                  This creator does not have any NFT yet
-                                </BodyRegular>
-                              </VStack>
-                            )}
+                                  <ZStack cursor={"pointer"}>
+                                    {item.hasOpenOffer ? (
+                                      <BubbleOffers>
+                                        <HStack
+                                          background="linear-gradient(180deg, #FF5A5A 0%, rgba(255, 90, 90, 0.88) 100%)"
+                                          width="26px"
+                                          height="26px"
+                                          border="300px"
+                                          padding="0 6px"
+                                          spacing="6px"
+                                        >
+                                          <CaptionBoldShort textcolor="white">
+                                            !
+                                          </CaptionBoldShort>
+                                        </HStack>
+                                      </BubbleOffers>
+                                    ) : null}
+                                    <ZItem>
+                                      {isImage(item.fileType) ? (
+                                        <IconImg
+                                          url={item.urlFile.v0}
+                                          width="100%"
+                                          height="100%"
+                                          backsize="cover"
+                                          border="15px"
+                                        ></IconImg>
+                                      ) : isVideo(item.fileType) ? (
+                                        <VStack
+                                          width="186px"
+                                          height="186px"
+                                          border="9px"
+                                          overflow="hidden"
+                                        >
+                                          <ReactPlayer
+                                            url={item.urlFile.v0}
+                                            playing={true}
+                                            volume={0}
+                                            muted={true}
+                                            loop={false}
+                                            width="100%"
+                                            height="160%"
+                                          />
+                                        </VStack>
+                                      ) : isAudio(item.fileType) ? (
+                                        <IconImg
+                                          url={item.preview.v0}
+                                          width="100%"
+                                          height="100%"
+                                          backsize="cover"
+                                          border="15px"
+                                        ></IconImg>
+                                      ) : null}
+                                    </ZItem>
+                                    <ZItem>
+                                      <VStack
+                                        padding="15px"
+                                        background="linear-gradient(180deg, rgba(0, 0, 0, 0) 54.41%, #000000 91.67%)"
+                                        border="9px"
+                                      >
+                                        <Spacer></Spacer>
+                                        <BodyRegular
+                                          textcolor={appStyle.colors.white}
+                                        >
+                                          {item.name}
+                                        </BodyRegular>
+                                      </VStack>
+                                    </ZItem>
+                                  </ZStack>
+                                </VStack>
+                              ))}
+                            </HStack>
+                          </InfiniteScroll>
+                        ) : (
+                          <VStack
+                            border="15px"
+                            width="100%"
+                            minheight="300px"
+                            background={({ theme }) => theme.backElement}
+                          >
+                            <IconImg
+                              url={emptyNFT}
+                              width="60px"
+                              height="60px"
+                            ></IconImg>
+                            <BodyRegular>
+                              This creator does not have any NFT yet
+                            </BodyRegular>
                           </VStack>
                         )}
-                        {subMenu === 1 && (
-                          <HStack flexwrap="wrap" justify="flex-start">
-                            <ZStack
-                              width="48%"
-                              height={size.width < 1112 ? "320px" : "400px"}
+                      </VStack>
+                    )}
+                    {subMenu === 1 && (
+                      <HStack
+                        flexwrap="wrap"
+                        justify="flex-start"
+                        padding="12px"
+                      >
+                        <ZStack
+                          maxwidth="49%"
+                          height={size.width < 1112 ? "320px" : "490px"}
+                          border="9px"
+                          padding="12px"
+                          overflow="hidden"
+                        >
+                          <ZItem>
+                            <IconImg
+                              url={mountain}
+                              width="100%"
+                              height="100%"
+                              backsize="cover"
                               border="9px"
-                              padding="12px"
-                              overflow="hidden"
-                            >
-                              <ZItem>
-                                <IconImg
-                                  url={mountain}
-                                  width="100%"
-                                  height="100%"
-                                  backsize="cover"
-                                  border="9px"
-                                ></IconImg>
-                              </ZItem>
-                              <ZItem>
-                                <VStack
-                                  background="linear-gradient(180deg, rgba(0, 0, 0, 0) 54.41%, #000000 91.67%)"
-                                  width="100%"
-                                  height="100%"
-                                  border="12px"
-                                  padding="12px"
-                                >
-                                  <Spacer></Spacer>
-                                  <BodyRegular textcolor="white">
-                                    Collection Name Example
-                                  </BodyRegular>
-                                </VStack>
-                              </ZItem>
-                            </ZStack>
-
-                            <ZStack
-                              width="48%"
-                              height={size.width < 1112 ? "320px" : "400px"}
-                              border="9px"
+                            ></IconImg>
+                          </ZItem>
+                          <ZItem>
+                            <VStack
+                              background="linear-gradient(180deg, rgba(0, 0, 0, 0) 54.41%, #000000 91.67%)"
+                              width="100%"
+                              height="100%"
+                              border="12px"
                               padding="12px"
                             >
-                              <ZItem>
-                                <IconImg
-                                  url={mountain}
-                                  width="100%"
-                                  height="100%"
-                                  backsize="cover"
-                                  border="9px"
-                                ></IconImg>
-                              </ZItem>
-                              <ZItem>
-                                <VStack
-                                  background="linear-gradient(180deg, rgba(0, 0, 0, 0) 54.41%, #000000 91.67%)"
-                                  width="100%"
-                                  height="100%"
-                                  border="12px"
-                                  padding="12px"
-                                >
-                                  <Spacer></Spacer>
-                                  <BodyRegular textcolor="white">
-                                    Collection Name Example
-                                  </BodyRegular>
-                                </VStack>
-                              </ZItem>
-                            </ZStack>
-
-                            <ZStack
-                              width="48%"
-                              height={size.width < 1112 ? "320px" : "400px"}
+                              <Spacer></Spacer>
+                              <BodyRegular textcolor="white">
+                                Collection Name Example
+                              </BodyRegular>
+                            </VStack>
+                          </ZItem>
+                        </ZStack>
+                        <ZStack
+                          maxwidth="49%"
+                          height={size.width < 1112 ? "320px" : "490px"}
+                          border="9px"
+                          padding="12px"
+                          overflow="hidden"
+                        >
+                          <ZItem>
+                            <IconImg
+                              url={mountain}
+                              width="100%"
+                              height="100%"
+                              backsize="cover"
                               border="9px"
+                            ></IconImg>
+                          </ZItem>
+                          <ZItem>
+                            <VStack
+                              background="linear-gradient(180deg, rgba(0, 0, 0, 0) 54.41%, #000000 91.67%)"
+                              width="100%"
+                              height="100%"
+                              border="12px"
                               padding="12px"
                             >
-                              <ZItem>
-                                <IconImg
-                                  url={mountain}
-                                  width="100%"
-                                  height="100%"
-                                  backsize="cover"
-                                  border="9px"
-                                ></IconImg>
-                              </ZItem>
-                              <ZItem>
-                                <VStack
-                                  background="linear-gradient(180deg, rgba(0, 0, 0, 0) 54.41%, #000000 91.67%)"
-                                  width="100%"
-                                  height="100%"
-                                  border="12px"
-                                  padding="12px"
-                                >
-                                  <Spacer></Spacer>
-                                  <BodyRegular textcolor="white">
-                                    Collection Name Example
-                                  </BodyRegular>
-                                </VStack>
-                              </ZItem>
-                            </ZStack>
+                              <Spacer></Spacer>
+                              <BodyRegular textcolor="white">
+                                Collection Name Example
+                              </BodyRegular>
+                            </VStack>
+                          </ZItem>
+                        </ZStack>
 
-                            {/* {loadingCollection ? (
+                        <ZStack
+                          maxwidth="49%"
+                          height={size.width < 1112 ? "320px" : "490px"}
+                          border="9px"
+                          padding="12px"
+                          overflow="hidden"
+                        >
+                          <ZItem>
+                            <IconImg
+                              url={mountain}
+                              width="100%"
+                              height="100%"
+                              backsize="cover"
+                              border="9px"
+                            ></IconImg>
+                          </ZItem>
+                          <ZItem>
+                            <VStack
+                              background="linear-gradient(180deg, rgba(0, 0, 0, 0) 54.41%, #000000 91.67%)"
+                              width="100%"
+                              height="100%"
+                              border="12px"
+                              padding="12px"
+                            >
+                              <Spacer></Spacer>
+                              <BodyRegular textcolor="white">
+                                Collection Name Example
+                              </BodyRegular>
+                            </VStack>
+                          </ZItem>
+                        </ZStack>
+
+                        {/* {loadingCollection ? (
                           <VStack padding="120px">
                             <LoopLogo></LoopLogo>
                           </VStack>
@@ -1283,129 +1384,9 @@ const MyNFT = (props) => {
                             </BodyRegular>
                           </VStack>
                         )} */}
-                          </HStack>
-                        )}
-                      </ZStack>
-                    </VStack>
-                  </VStack>
-
-                  {/* Sidebar Content         */}
-                  <VStack
-                    minwidth="30%"
-                    height="100%"
-                    padding="12px 12px 30px 0"
-                    alignment="flex-end"
-                  >
-                    {/* Edit button  */}
-                    <HStack
-                      background="white"
-                      border="30px"
-                      cursor="pointer"
-                      minheight="42px"
-                      self="none"
-                      spacing="6px"
-                      padding="0 6px 0 9px"
-                      onClick={() => setIsEditing(true)}
-                    >
-                      <BodyRegular cursor="pointer">Edit Profile</BodyRegular>
-                      <IconImg
-                        cursor="pointer"
-                        url={editProfile}
-                        width="30px"
-                        height="30px"
-                      ></IconImg>
-                    </HStack>
-
-                    <Spacer></Spacer>
-
-                    <HStack>
-                      <VStack
-                        background={({ theme }) => theme.faded}
-                        alignment="flex-start"
-                        padding="18px 18px 12px 18px"
-                        border="6px"
-                        maxheight="auto"
-                        blur="30px"
-                      >
-                        {newMessage ? (
-                          <VStack>
-                            <BodyRegular textcolor="white">
-                              We are launching a new collection in couple mins
-                              stays tuned 🤩
-                            </BodyRegular>
-                            <HStack>
-                              <CaptionSmallRegular textcolor="white">
-                                10 MINS AGO
-                              </CaptionSmallRegular>
-
-                              <Spacer></Spacer>
-
-                              <HStack
-                                background="white"
-                                padding="6px 12px"
-                                border="6px"
-                                cursor="pointer"
-                                whileTap={{ scale: 0.96 }}
-                                onClick={() => setNewMessage(false)}
-                              >
-                                <CaptionSmallRegular cursor="pointer">
-                                  NEW
-                                </CaptionSmallRegular>
-                              </HStack>
-                            </HStack>
-                          </VStack>
-                        ) : (
-                          <InputStyled
-                            background="transparent"
-                            textcolor="white"
-                            placeholder="Leave a new message here"
-                          ></InputStyled>
-                        )}
-                      </VStack>
-                    </HStack>
-
-                    {newMessage ? (
-                      <HStack
-                        minheight="42px"
-                        background="linear-gradient(166.99deg, #2868F4 37.6%, #0E27C1 115.6%)"
-                        border="6px"
-                        cursor="pointer"
-                        whileTap={{ scale: 0.98 }}
-                      >
-                        <BodyRegular textcolor="white" cursor="pointer">
-                          Follow Creator
-                        </BodyRegular>
-                      </HStack>
-                    ) : (
-                      <HStack width="100%">
-                        <HStack
-                          width="100%"
-                          minheight="42px"
-                          background={({ theme }) => theme.backElement}
-                          border="6px"
-                          cursor="pointer"
-                          whileTap={{ scale: 0.98 }}
-                          onClick={() => setNewMessage(true)}
-                        >
-                          <BodyRegular cursor="pointer">Cancel</BodyRegular>
-                        </HStack>
-                        <HStack
-                          width="100%"
-                          minheight="42px"
-                          background="linear-gradient(166.99deg, #2868F4 37.6%, #0E27C1 115.6%)"
-                          border="6px"
-                          cursor="pointer"
-                          whileTap={{ scale: 0.98 }}
-                        >
-                          <BodyRegular textcolor="white" cursor="pointer">
-                            Publish New
-                          </BodyRegular>
-                        </HStack>
                       </HStack>
                     )}
-
-                    <Activity></Activity>
-                  </VStack>
+                  </ZStack>
                 </HStack>
               </Content>
             </ZItem>
