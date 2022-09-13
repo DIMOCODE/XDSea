@@ -58,6 +58,7 @@ import {
 } from "../../API/Collection";
 import { createNFT, getSignedURLNFT, updateNFT } from "../../API/NFT";
 import { isVideo } from "../../common";
+import { uploadFileInS3Bucket } from "../../helpers/fileUploader";
 
 function CreateNft(props) {
   const history = useHistory();
@@ -269,7 +270,7 @@ function CreateNft(props) {
     const collectionData = await (
       await checkCollectionExistsRequest(collectionName)
     ).data;
-    if(collectionData.alreadyExist) {
+    if (collectionData.alreadyExist) {
       if (collectionData.collection.creator._id === user.user._id) {
         setCollectionExists(false);
         setCollectionValid(true);
@@ -284,8 +285,7 @@ function CreateNft(props) {
       setLoadingIcon(empty);
       setCollectionNickName(collectionNickName);
       return true;
-    }
-    else {
+    } else {
       setCollectionAllowed(true);
       setCollectionExists(false);
       setCollectionValid(false);
@@ -376,7 +376,7 @@ function CreateNft(props) {
 
   const addToIPFSCollectionBanner = async () => {
     setUploadBannerStatus(true);
-    if(collectionBanner.raw !== "") {
+    if (collectionBanner.raw !== "") {
       const file = document.getElementById("upload-button-collection").files[0];
       try {
         const added = await client.add(file);
@@ -392,7 +392,7 @@ function CreateNft(props) {
 
   const addToIPFSCollectionLogo = async () => {
     setUploadLogoStatus(true);
-    if(collectionLogo.raw !== "") {
+    if (collectionLogo.raw !== "") {
       const file = document.getElementById("upload-button-logo").files[0];
       try {
         const added = await client.add(file);
@@ -403,8 +403,7 @@ function CreateNft(props) {
       } catch (error) {
         console.log("Error uploading file:", error);
       }
-    }
-    else return "";
+    } else return "";
   };
 
   const addToIPFSPreview = async () => {
@@ -429,19 +428,21 @@ function CreateNft(props) {
       const signedData = await (await getSignedURLNFT(nftId, ext)).data;
       const signedURL = signedData.signedUrl;
       const s3URL = signedData.url;
-      axios.put(signedURL, file, {
-        headers: {
-          'Content-Type': nft.fileType
-        }
-      }).then(async (res) => {
-        if(res.status === 200) {
-          const updateData = await (await updateNFT(nftId, s3URL)).data;
-        }
-      });
+      axios
+        .put(signedURL, file, {
+          headers: {
+            "Content-Type": nft.fileType,
+          },
+        })
+        .then(async (res) => {
+          if (res.status === 200) {
+            const updateData = await (await updateNFT(nftId, s3URL)).data;
+          }
+        });
     } catch (error) {
       console.log("Error uploading file:", error);
     }
-  }
+  };
 
   /**
    * Check if the royalty percentage is set and if not the user is aware
@@ -623,9 +624,15 @@ function CreateNft(props) {
           )
         ).data.nft;
       }
-      // if(isVideo(nft.fileType)) {
-      //   await addToS3(nftCreation._id, nft.fileType.split('/')[1]);
-      // }
+      if (isVideo(nft.fileType)) {
+        const success = await uploadFileInS3Bucket(
+          nft.raw,
+          "nft",
+          "urlFile",
+          nftCreation._id
+        );
+        console.log("update s3 result: ", success, nftCreation._id);
+      }
       setMintButtonStatus(3);
       setMinted(true);
     } catch (error) {
@@ -1405,9 +1412,7 @@ function CreateNft(props) {
                             setCollectionValid(false);
                             setLoadingIcon(empty);
                           } else {
-                            checkCollectionExists(
-                              collectionName
-                            );
+                            checkCollectionExists(collectionName);
                           }
                         }}
                       ></InputStyled>
@@ -1456,9 +1461,7 @@ function CreateNft(props) {
                           padding="6px 15px"
                           border="6px"
                         >
-                          <CaptionRegular
-                            textcolor={appStyle.colors.darkGreen}
-                          >
+                          <CaptionRegular textcolor={appStyle.colors.darkGreen}>
                             This collection name is available.
                           </CaptionRegular>
                         </HStack>
