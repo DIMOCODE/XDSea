@@ -10,7 +10,7 @@
     "@mayank1513/sticky-section-header": "0.0.9",
     "@metamask/detect-provider": "^1.2.0",
     "@mui/material": "^5.6.3",
-    "@openzeppelin/contracts": "^4.4.2",
+    "@openzeppelin/contracts": "^4.7.3",
     "@popmotion/popcorn": "^0.4.4",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
@@ -23,10 +23,11 @@
     "crypto": "^1.0.1",
     "dotenv": "^14.2.0",
     "framer-motion": "^6.3.0",
-    "hardhat": "^2.8.3",
+    "hardhat": "^2.11.1",
     "ipfs-http-client": "^55.0.0",
     "multiformats": "^9.6.5",
     "ng": "^0.0.0",
+    "node-gyp-build": "^4.5.0",
     "react": "^17.0.2",
     "react-aws-s3": "^1.5.0",
     "react-cookie": "^4.1.1",
@@ -79,7 +80,7 @@
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.0",
     "@nomiclabs/hardhat-waffle": "^2.0.0",
-    "chai": "^4.2.0",
+    "chai": "^4.3.6",
     "ethereum-waffle": "^3.0.0",
     "ethers": "^5.0.0"
   }
