@@ -3,7 +3,7 @@ import { useCallback } from "react";
 import { useHistory } from "react-router-dom";
 import { nftaddress } from "../../config";
 import { getHomeData } from "../../API/Home";
-
+import { isImage, isVideo, isAudio } from "../../common";
 import { LoadingSpot } from "../../styles/LoadingSpot";
 
 import styled from "styled-components";
@@ -46,11 +46,15 @@ import { SubtitleBubble } from "../../styles/SubtitleBubble";
 import { PricePosition } from "../../styles/PricePosition";
 import { CollectionPosition } from "../../styles/CollectionPosition";
 import { BigButton } from "../../styles/BigButton";
+import ReactPlayer from "react-player";
 
 const Home = (props) => {
+
+  /** State Variables */
   const [featuredNFTs, setFeaturedNFTs] = useState([]);
   const [topCollections, setTopCollections] = useState([]);
   const [trendingNFTs, setTrendingNFTs] = useState([]);
+  
   const [loading, setLoading] = useState(false);
   const [loadingCollections] = useState([
     { id: 1, name: "Collection 1" },
@@ -129,18 +133,21 @@ const Home = (props) => {
           width={size.width > 768 ? "190px" : "150px"}
           height={size.width > 768 ? "190px" : "150px"}
         ></IconImg>
+
+        {/* Slogan */}
         <TitleBold42 textcolor="white" align="center">
-          Exploring Collecting and <br></br> Selling NFT's
+          Exploring, Collecting, and <br></br> Selling NFTs
         </TitleBold42>
 
         {/* Marketplace subtitle */}
 
         <SubtitleBubble
-          text={"Has now become, simpler and faster"}
+          text={"Has now become simpler and faster"}
         ></SubtitleBubble>
 
         {/* Featured Section */}
         <VStack spacing="6px" width="100%">
+
           {/* Big Tiles */}
           <Swiper
             slidesPerView={size.width > 414 ? "2" : "1"}
@@ -149,71 +156,47 @@ const Home = (props) => {
             style={{
               "--swiper-navigation-color": "#fff",
               "--swiper-pagination-color": "#fff",
-              height: "420px",
+              height: "720px",
             }}
             navigation={true}
             thumbs={{ swiper: thumbsSwiper }}
             modules={[FreeMode, Navigation, Thumbs]}
-            onSwiper={(swiper) => console.log(swiper)}
-            onSlideChange={() => console.log("slide change")}
-            className="mySwiper2"
+            onSwiper={() => {}}
+            onSlideChange={(event) => {}}
+            className="featuredBig"
           >
-            <SwiperSlide>
-              <IconImg
-                url={nftIdea}
-                backsize="cover"
-                width="100%"
-                height="100%"
-                border="6px"
-              ></IconImg>
-            </SwiperSlide>
-
-            <SwiperSlide>
-              <IconImg
-                url={nftIdea}
-                backsize="cover"
-                width="100%"
-                height="100%"
-                border="6px"
-              ></IconImg>
-            </SwiperSlide>
-            <SwiperSlide>
-              <IconImg
-                url={nftIdea}
-                backsize="cover"
-                width="100%"
-                height="100%"
-                border="6px"
-              ></IconImg>
-            </SwiperSlide>
-            <SwiperSlide>
-              <IconImg
-                url={nftIdea}
-                backsize="cover"
-                width="100%"
-                height="100%"
-                border="6px"
-              ></IconImg>
-            </SwiperSlide>
-            <SwiperSlide>
-              <IconImg
-                url={nftIdea}
-                backsize="cover"
-                width="100%"
-                height="100%"
-                border="6px"
-              ></IconImg>
-            </SwiperSlide>
-            <SwiperSlide>
-              <IconImg
-                url={nftIdea}
-                backsize="cover"
-                width="100%"
-                height="100%"
-                border="6px"
-              ></IconImg>
-            </SwiperSlide>
+            {featuredNFTs.length !== 0
+              ? featuredNFTs?.map((item) => (
+                <SwiperSlide
+                  onClick={() => props.redirect(`nft/${item.nftId.nftContract}/${item.nftId.tokenId}`)}
+                  style={{
+                    "cursor":"pointer"
+                  }}
+                >
+                  {isImage(item.nftId.fileType)
+                    ? <IconImg
+                      url={item.nftId.urlFile.v0}
+                      backsize="cover"
+                      width="100%"
+                      height="100%"
+                      border="6px"
+                    ></IconImg>
+                    : <ReactPlayer
+                      url={item.nftId.urlFile.v0}
+                      playing={true}
+                      volume={0}
+                      muted={true}
+                      loop={true}
+                      width="100%"
+                      height="100%"
+                    ></ReactPlayer>
+                  }
+                </SwiperSlide>
+              ))
+              : null
+            }
           </Swiper>
+
           {/* Thumbnails */}
           <Swiper
             onSwiper={setThumbsSwiper}
@@ -227,69 +210,40 @@ const Home = (props) => {
             }}
             className="mySwiperThumb"
           >
-            <SwiperSlide>
-              <IconImg
-                url={nftIdea}
-                backsize="cover"
-                width="100%"
-                height="100%"
-                border="6px"
-              ></IconImg>
-            </SwiperSlide>
-            <SwiperSlide>
-              <IconImg
-                url={nftIdea}
-                backsize="cover"
-                width="100%"
-                height="100%"
-                border="6px"
-              ></IconImg>
-            </SwiperSlide>{" "}
-            <SwiperSlide>
-              <IconImg
-                url={nftIdea}
-                backsize="cover"
-                width="100%"
-                height="100%"
-                border="6px"
-              ></IconImg>
-            </SwiperSlide>{" "}
-            <SwiperSlide>
-              <IconImg
-                url={nftIdea}
-                backsize="cover"
-                width="100%"
-                height="100%"
-                border="6px"
-              ></IconImg>
-            </SwiperSlide>{" "}
-            <SwiperSlide>
-              <IconImg
-                url={nftIdea}
-                backsize="cover"
-                width="100%"
-                height="100%"
-                border="6px"
-              ></IconImg>
-            </SwiperSlide>{" "}
-            <SwiperSlide>
-              <IconImg
-                url={nftIdea}
-                backsize="cover"
-                width="100%"
-                height="100%"
-                border="6px"
-              ></IconImg>
-            </SwiperSlide>
+            {featuredNFTs.length !== 0
+              ? featuredNFTs?.map((item) => (
+                <SwiperSlide>
+                  {isImage(item.nftId.fileType)
+                    ? <IconImg
+                      url={item.nftId.urlFile.v0}
+                      backsize="cover"
+                      width="100%"
+                      height="100%"
+                      border="6px"
+                    ></IconImg>
+                    : <ReactPlayer
+                      url={item.nftId.urlFile.v0}
+                      playing={false}
+                      volume={0}
+                      muted={true}
+                      loop={true}
+                      width="100%"
+                      height="100%"
+                    ></ReactPlayer>
+                  }
+                </SwiperSlide>
+              ))
+              : null
+            }
           </Swiper>
         </VStack>
       </VStack>
 
       <ContentCentered>
-        {/* TOP COLLECTION SECTION              */}
 
+        {/* TOP COLLECTION SECTION */}
         <VStack alignment="center">
-          <VStack padding="90px 0 0 0 ">
+          <VStack padding="40px 0 0 0 ">
             <IconImg
               url={rocket3D}
               width="150px"
@@ -297,68 +251,127 @@ const Home = (props) => {
               backsize="cover"
             ></IconImg>
 
-            <SubtitleBubble text={"DISCOVER WHATS HOT NOW"}></SubtitleBubble>
+            {/* Top collection Subtitle */}
+            <SubtitleBubble text={"DISCOVER WHAT'S HOT NOW"}></SubtitleBubble>
 
+            {/* Top collection Title */}
             <TitleRegular36>Top Collections</TitleRegular36>
           </VStack>
+          
           {/* First 3 Places  */}
           <HStack width="100%" padding="120px 0 0 0">
             <VStack maxwidth="600px" height="360px">
               <IconImg url={firstPlaces} width="100%" height="100%"></IconImg>
 
+              {/* 1st Place */}
               <Gold
                 animate={{ scale: size.width > 414 ? 1 : 0.81 }}
                 top="-49px"
               >
                 <PricePosition
-                  creator={"Gold Creator"}
-                  amount="10M"
+                  position = {1}
+                  creator={topCollections[0]?.name}
+                  image={topCollections[0]?.logo.v0}
+                  amount={Number(topCollections[0]?.volumeTrade) > 100000
+                    ? Intl.NumberFormat("en-US", {
+                        notation: "compact",
+                        maximumFractionDigits: 2,
+                      }).format(Number(topCollections[0]?.volumeTrade))
+                    : Number(topCollections[0]?.volumeTrade).toLocaleString(undefined, {
+                        maximumFractionDigits: 2,
+                      }) || "0"}
+                  nickName={topCollections[0]?.nickName}
+                  redirect={props.redirect}
                 ></PricePosition>
               </Gold>
 
+              {/* 2nd Place */}
               <Silver
                 animate={{ scale: size.width > 414 ? 1 : 0.81 }}
                 left={size.width > 414 ? "33px" : "0"}
                 top="52px"
               >
                 <PricePosition
-                  creator={"Silver Creator"}
-                  amount="9M"
+                  position = {2}
+                  creator={topCollections[1]?.name}
+                  image={topCollections[1]?.logo.v0}
+                  amount={Number(topCollections[1]?.volumeTrade) > 100000
+                    ? Intl.NumberFormat("en-US", {
+                        notation: "compact",
+                        maximumFractionDigits: 2,
+                      }).format(Number(topCollections[1]?.volumeTrade))
+                    : Number(topCollections[1]?.volumeTrade).toLocaleString(undefined, {
+                        maximumFractionDigits: 2,
+                      }) || "0"}
+                  nickName={topCollections[1]?.nickName}
+                  redirect={props.redirect}
                 ></PricePosition>
               </Silver>
+
+              {/* 3rd Place */}
               <Cooper
                 animate={{ scale: size.width > 414 ? 1 : 0.81 }}
                 top={size.width > 414 ? "100px" : "90px"}
                 right={size.width > 414 ? "26px" : 0}
               >
                 <PricePosition
-                  creator={"Cooper Creator"}
-                  amount="8M"
+                  position = {3}
+                  creator={topCollections[2]?.name}
+                  image={topCollections[2]?.logo.v0}
+                  amount={Number(topCollections[2]?.volumeTrade) > 100000
+                    ? Intl.NumberFormat("en-US", {
+                        notation: "compact",
+                        maximumFractionDigits: 2,
+                      }).format(Number(topCollections[2]?.volumeTrade))
+                    : Number(topCollections[2]?.volumeTrade).toLocaleString(undefined, {
+                        maximumFractionDigits: 2,
+                      }) || "0"}
+                  nickName={topCollections[2]?.nickName}
+                  redirect={props.redirect}
                 ></PricePosition>
               </Cooper>
-            </VStack>
-          </HStack>
-          {/* Rest 7 Places                 */}
-          <HStack>
-            <VStack maxwidth="600px">
-              <CollectionPosition
-                rank="4"
-                creator={newBlue}
-                name="Creator Example"
-                amount="300k"
-                percent="90%"
-              ></CollectionPosition>
+
             </VStack>
           </HStack>
 
+          {/* Rest of the 7 Places */}
           <HStack>
-            <BigButton text="Explore All Collections"></BigButton>
+            <VStack maxwidth="600px">
+              {topCollections.length !== 0
+                ? topCollections.slice(3,).map((item, i) => (
+                  <CollectionPosition
+                    rank={i + 4}
+                    creator={item.logo.v0}
+                    name={item.name}
+                    amount={Number(item.volumeTrade) > 100000
+                      ? Intl.NumberFormat("en-US", {
+                          notation: "compact",
+                          maximumFractionDigits: 2,
+                        }).format(Number(item.volumeTrade))
+                      : Number(item.volumeTrade).toLocaleString(undefined, {
+                          maximumFractionDigits: 2,
+                        }) || "0"}
+                    percent={(Number(item.volumeTrade) / 2500).toLocaleString(undefined, {
+                        maximumFractionDigits: 2,
+                      }) + "%"}
+                    nickName={item.nickName}
+                    redirect={props.redirect}
+                  ></CollectionPosition>
+                ))
+                : null
+              }
+            </VStack>
+          </HStack>
+
+          {/* Explore button */}
+          <HStack>
+            <BigButton text="Explore All Collections" onClick={() => props.redirect("discover/collections")}></BigButton>
           </HStack>
         </VStack>
 
-        {/* TRENDING NFT SECTION              */}
-        <VStack alignment="center" padding="90px 0 ">
-          <VStack padding="90px 0 0 0 ">
+        {/* TRENDING NFT SECTION */}
+        <VStack alignment="center" padding="40px 0 ">
+          <VStack padding="0 0 0 0 ">
             <IconImg
               url={CristalHeart}
               width="150px"
@@ -366,53 +379,53 @@ const Home = (props) => {
               backsize="cover"
             ></IconImg>
 
-            <SubtitleBubble text={"WHAT USERS LOVES MOST"}></SubtitleBubble>
+            {/* Trending NFT Subtitle */}
+            <SubtitleBubble text={"WHAT USERS LOVE MOST"}></SubtitleBubble>
 
+            {/* Trending NFT Title */}
             <TitleRegular36>Trending NFTs</TitleRegular36>
           </VStack>
 
+          {/* Trending NFT Cards */}
           <HStack
             flexwrap="wrap"
             padding={size.width > 414 ? "0 12px 0 12px" : "0 12px 0 12px"}
           >
-            <IconImg
-              url={nftIdea}
-              backsize="cover"
-              width="48%"
-              height={size.width > 414 ? "360px" : "180px"}
-              border="6px"
-            ></IconImg>
-            <IconImg
-              url={nftIdea}
-              backsize="cover"
-              width="48%"
-              height={size.width > 414 ? "360px" : "180px"}
-              border="6px"
-            ></IconImg>
-            <IconImg
-              url={nftIdea}
-              backsize="cover"
-              width="48%"
-              height={size.width > 414 ? "360px" : "180px"}
-              border="6px"
-            ></IconImg>
-            <IconImg
-              url={nftIdea}
-              backsize="cover"
-              width="48%"
-              height={size.width > 414 ? "360px" : "180px"}
-              border="6px"
-            ></IconImg>
+            {trendingNFTs.length !== 0
+              ? trendingNFTs.slice(0, 4).map((item) => (
+                isImage(item.nftId.fileType)
+                  ? <IconImg
+                    url={item.nftId.urlFile.v0}
+                    backsize="cover"
+                    width="48%"
+                    height={size.width > 414 ? "360px" : "180px"}
+                    border="6px"
+                    cursor="pointer"
+                    onClick={() => props.redirect(`nft/${item.nftId.nftContract}/${item.nftId.tokenId}`)}
+                  ></IconImg>
+                  : <ReactPlayer
+                    url={item.nftId.urlFile.v0}
+                    playing={true}
+                    volume={0}
+                    muted={true}
+                    loop={true}
+                    width="48%"
+                    height={size.width > 414 ? "360px" : "180px"}
+                  ></ReactPlayer>
+              ))
+              : null
+            }
           </HStack>
 
+          {/* Discover Button */}
           <HStack>
-            <BigButton text="Discover All Trending NFTs"></BigButton>
+            <BigButton text="Discover All NFTs" onClick={() => props.redirect("discover/nfts")}></BigButton>
           </HStack>
         </VStack>
 
-        {/* NEW NFT SECTION              */}
-        <VStack alignment="center" padding="60px 0 ">
-          <VStack padding="90px 0 0 0 ">
+        {/* NEW NFT SECTION */}
+        <VStack alignment="center" padding="40px 0 ">
+          <VStack padding="0 0 0 0 ">
             <IconImg
               url={Star3D}
               width="150px"
@@ -420,10 +433,12 @@ const Home = (props) => {
               backsize="cover"
             ></IconImg>
 
+            {/* New Nfts Subtitle */}
             <SubtitleBubble
               text={"NEW TALENTS ON THE MARKETPLACE"}
             ></SubtitleBubble>
 
+            {/* New Nfts Title */}
             <TitleRegular36>New NFTs</TitleRegular36>
           </VStack>
 
@@ -438,228 +453,42 @@ const Home = (props) => {
             }}
             navigation={true}
             modules={[Grid, FreeMode, Navigation, Thumbs]}
-            onSwiper={(swiper) => console.log(swiper)}
-            onSlideChange={() => console.log("slide change")}
+            onSwiper={(swiper) => {}}
+            onSlideChange={() => {}}
             className="mySwiper2"
           >
-            <SwiperSlide>
-              <IconImg
-                url={nftIdea}
-                backsize="cover"
-                width="100%"
-                height="100%"
-                border="6px"
-              ></IconImg>
-            </SwiperSlide>
-
-            <SwiperSlide>
-              <IconImg
-                url={nftIdea}
-                backsize="cover"
-                width="100%"
-                height="100%"
-                border="6px"
-              ></IconImg>
-            </SwiperSlide>
-
-            <SwiperSlide>
-              <IconImg
-                url={nftIdea}
-                backsize="cover"
-                width="100%"
-                height="100%"
-                border="6px"
-              ></IconImg>
-            </SwiperSlide>
-
-            <SwiperSlide>
-              <IconImg
-                url={nftIdea}
-                backsize="cover"
-                width="100%"
-                height="100%"
-                border="6px"
-              ></IconImg>
-            </SwiperSlide>
+              {trendingNFTs.length !== 0
+                ? trendingNFTs.slice(0, 4).map((item) => (
+                  <SwiperSlide style={{"cursor":"pointer"}} onClick={() => props.redirect(`nft/${item.nftId.nftContract}/${item.nftId.tokenId}`)}>
+                    {isImage(item.nftId.fileType)
+                      ? <IconImg
+                        url={item.nftId.urlFile.v0}
+                        backsize="cover"
+                        width="100%"
+                        height="100%"
+                        border="6px"
+                      ></IconImg>
+                      : <ReactPlayer
+                        url={item.nftId.urlFile.v0}
+                        playing={true}
+                        volume={0}
+                        muted={true}
+                        loop={true}
+                        width="100%"
+                        height="100%"
+                      ></ReactPlayer>
+                    }
+                  </SwiperSlide>
+                ))
+                : null
+              }
           </Swiper>
 
+          {/* Discover Button */}
           <HStack>
-            <BigButton text="Discover All Trending NFTs"></BigButton>
+            <BigButton text="Discover The Latest NFTs" onClick={() => props.redirect("discover/nfts")}></BigButton>
           </HStack>
         </VStack>
-
-        {/* <VStack
-          height={size.width < 1200 ? "auto" : "740px"}
-          width="100%"
-          spacing="30px"
-          padding="60px 0"
-          marginTop="60px"
-          id="spotlightCollections"
-        >
-          <HStack responsive={true} padding="0 12px">
-            <VStack
-              flexwrap={size.width < 1200 ? "nowrap" : "wrap"}
-              height={size.width < 1200 ? "auto" : "600px"}
-              spacing="15px"
-              padding={size.width > 728 ? "0 150px" : 0}
-            >
-              {loading
-                ? loadingCollections.map((item) => (
-                    <LoadingSpot
-                      key={item.name}
-                      width={size.width < 1200 ? "100%" : "580px"}
-                    ></LoadingSpot>
-                  ))
-                : topCollections.map((item, i) => (
-                    <LayoutGroup id={i + 1}>
-                      <TopCollectionItem
-                        key={i + 1}
-                        width={size.width < 1200 ? "100%" : "580px"}
-                        imageCreator={item?.logo.v0}
-                        collectionName={item?.name}
-                        position={i + 1}
-                        floorprice={item?.floorPrice}
-                        owners={item?.owners}
-                        nfts={item?.totalNfts}
-                        volumetraded={item?.volumeTrade}
-                        textcolor={({ theme }) => theme.text}
-                        onClick={() =>
-                          props.redirect(`collection/${item?.nickName}`)
-                        }
-                      ></TopCollectionItem>
-                    </LayoutGroup>
-                  ))}
-            </VStack>
-          </HStack>
-        </VStack> */}
-
-        {/* Trending NFTs Section */}
-        {/* <VStack height="auto" width="100%" id="trendingNFTs">
-          <HStack>
-            <IconImg url={iconTrending} width="45px" height="45px"></IconImg>
-            <TitleBold27>Trending NFTs</TitleBold27>
-          </HStack>
-          <HStack flexwrap="wrap" padding="0 30px">
-            {loading
-              ? loadingNFTs.map((item) => (
-                  <VStack
-                    minwidth={size.width < 768 ? "230px" : "280px"}
-                    height="450px"
-                    key={item.id}
-                  >
-                    <LoadingNftContainer></LoadingNftContainer>
-                  </VStack>
-                ))
-              : size.width > 728
-              ? trendingNFTs.map((item, i) => (
-                  <VStack
-                    minwidth={size.width < 768 ? "300px" : "280px"}
-                    height="450px"
-                    key={i}
-                  >
-                    <NftContainer
-                      isVerified={item.nftId.owner.isVerified}
-                      iconStatus={item.nftId.saleType.toLowerCase()}
-                      hasOffers={item.nftId.hasOpenOffer}
-                      fileType={item.nftId.fileType}
-                      creatorImage={item.nftId.owner.urlProfile}
-                      itemImage={item.nftId.urlFile.v0}
-                      itemPreview={item.preview.v0}
-                      price={item.nftId.price}
-                      collectionName={item.nftId.collectionId.name}
-                      itemNumber={item.nftId.name}
-                      background={({ theme }) => theme.backElement}
-                      onClick={() =>
-                        props.redirect(
-                          `nft/${nftaddress}/${item.nftId.tokenId}`
-                        )
-                      }
-                      onClickCreator={() =>
-                        props.redirect(`UserProfile/${item.nftId.owner._id}`)
-                      }
-                      owner={true}
-                      usdPrice={props.xdc}
-                      collectionVerified={item.nftId.creator.isVerified}
-                    ></NftContainer>
-                  </VStack>
-                ))
-              : size.width > 692
-              ? trendingNFTs.slice(0, 4).map((item, i) => (
-                  <VStack
-                    minwidth={size.width < 768 ? "300px" : "280px"}
-                    height="450px"
-                    key={i}
-                  >
-                    <NftContainer
-                      isVerified={item.nftId.owner.isVerified}
-                      iconStatus={item.nftId.saleType.toLowerCase()}
-                      hasOffers={item.nftId.hasOpenOffer}
-                      fileType={item.nftId.fileType}
-                      creatorImage={item.nftId.owner.urlProfile}
-                      itemImage={item.nftId.urlFile.v0}
-                      itemPreview={item.preview.v0}
-                      price={item.nftId.price}
-                      collectionName={item.nftId.collectionId.name}
-                      itemNumber={item.nftId.name}
-                      background={({ theme }) => theme.backElement}
-                      onClick={() =>
-                        props.redirect(
-                          `nft/${nftaddress}/${item.nftId.tokenId}`
-                        )
-                      }
-                      onClickCreator={() =>
-                        props.redirect(`UserProfile/${item.nftId.owner._id}`)
-                      }
-                      owner={true}
-                      usdPrice={props.xdc}
-                      collectionVerified={item.nftId.creator.isVerified}
-                    ></NftContainer>
-                  </VStack>
-                ))
-              : trendingNFTs.slice(0, 3).map((item, i) => (
-                  <VStack
-                    minwidth={size.width < 768 ? "300px" : "280px"}
-                    height="450px"
-                    key={i}
-                  >
-                    <NftContainer
-                      isVerified={item.nftId.owner.isVerified}
-                      iconStatus={item.nftId.saleType.toLowerCase()}
-                      hasOffers={item.nftId.hasOpenOffer}
-                      fileType={item.nftId.fileType}
-                      creatorImage={item.nftId.owner.urlProfile}
-                      itemImage={item.nftId.urlFile.v0}
-                      itemPreview={item.preview.v0}
-                      price={item.nftId.price}
-                      collectionName={item.nftId.collectionId.name}
-                      itemNumber={item.nftId.name}
-                      background={({ theme }) => theme.backElement}
-                      onClick={() =>
-                        props.redirect(
-                          `nft/${nftaddress}/${item.nftId.tokenId}`
-                        )
-                      }
-                      onClickCreator={() =>
-                        props.redirect(`UserProfile/${item.nftId.owner._id}`)
-                      }
-                      owner={true}
-                      usdPrice={props.xdc}
-                      collectionVerified={item.nftId.creator.isVerified}
-                    ></NftContainer>
-                  </VStack>
-                ))}
-          </HStack>
-          <ButtonApp
-            height="39px"
-            width="300px"
-            text="Discover More"
-            textcolor={appStyle.colors.white}
-            onClick={() => props.redirect(`discover`)}
-            cursor="pointer"
-            btnStatus={0}
-            background={({ theme }) => theme.blue}
-          ></ButtonApp>
-        </VStack> */}
       </ContentCentered>
 
       {/* How to get started Banner */}
@@ -681,7 +510,7 @@ const Home = (props) => {
         >
           <VStack height="100%">
             <BodyRegular textcolor="rgba(255,122,0,100)">
-              WANT TO GET STARTED
+              WANT TO GET STARTED?
             </BodyRegular>
             <TitleRegular36 textcolor="rgba(251,195,75, 100)">
               Create and sell your NFTs

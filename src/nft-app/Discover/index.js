@@ -41,8 +41,11 @@ import seamless from "../../images/newBlue.webp";
 import "./customstyles.css";
 import { positions } from "@mui/system";
 import zIndex from "@mui/material/styles/zIndex";
+import { useParams } from "react-router-dom";
 
 const Discover = (props) => {
+  const { mode } = useParams();
+
   const size = useWindowSize();
 
   const [collections, setCollections] = useState([]);
@@ -97,9 +100,9 @@ const Discover = (props) => {
   /**
    * Get the collections and NFT data for the first page
    */
-  const getData = async () => {
+  const getData = async (mode) => {
     try {
-      if (isSelected) {
+      if (mode === "collections") {
         if (collections.length == 0) {
           const collectionData = await (
             await getCollections(collectionParams)
@@ -112,6 +115,7 @@ const Discover = (props) => {
             page: prevState.page + 1,
           }));
         }
+        setIsSelected(true);
         setLoading(false);
       } else {
         if (nfts.length === 0) {
@@ -125,6 +129,7 @@ const Discover = (props) => {
             page: prevState.page + 1,
           }));
         }
+        setIsSelected(false);
         setLoading(false);
       }
     } catch (error) {
@@ -223,7 +228,7 @@ const Discover = (props) => {
   useEffect(() => {
     window.scrollTo(0, 0);
     setLoading(true);
-    getData();
+    getData(mode === "collections" ? "collections" : "nfts");
   }, [isSelected]);
 
   /**

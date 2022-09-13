@@ -12,8 +12,7 @@ import cooperPrice from "../images/cooperPrice.png";
 import styled from "styled-components";
 
 function PricePosition(props) {
-  const { creator, amount, image } = props;
-  const [position, setPosition] = useState(1);
+  const { creator, amount, image, position, nickName, redirect } = props;
   return (
     <VStack width="160px">
       <Crown>
@@ -50,6 +49,8 @@ function PricePosition(props) {
         bordersize="3px"
         bordercolor="white"
         backsize="cover"
+        cursor="pointer"
+        onClick={() => redirect(`collection/${nickName}`)}
       ></IconImg>
       <VStack spacing="9px">
         <TitleRegular21 textcolor="black" align="center">

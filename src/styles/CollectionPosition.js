@@ -11,7 +11,7 @@ import logoWhiteX from "../images/logoWhiteX.png";
 import newBlue from "../images/newBlue.jpg";
 
 function CollectionPosition(props) {
-  const { rank, name, amount, creator, percent } = props;
+  const { rank, name, amount, creator, percent, nickName, redirect } = props;
   return (
     <HStack
       background="linear-gradient(204.15deg, rgba(255, 255, 255, 0.49) 12.72%, rgba(255, 255, 255, 0) 116.77%)"
@@ -28,6 +28,8 @@ function CollectionPosition(props) {
         border="66px"
         bordersize="3px"
         bordercolor="white"
+        cursor={"pointer"}
+        onClick={() => redirect(`collection/${nickName}`)}
       ></IconImg>
 
       <VStack spacing="9px">
@@ -51,7 +53,7 @@ function CollectionPosition(props) {
 
           <ZItem>
             <HStack
-              width={percent || "80%"}
+              width={percent || "30%"}
               background="linear-gradient(269.98deg, #42F4FF -2.6%, #14D4E0 21.21%, #0769FB 103.73%)"
               height="6px"
               border="6px"
