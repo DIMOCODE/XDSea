@@ -12,6 +12,7 @@ function BigButton(props) {
       cursor="pointer"
       whileTap={{ scale: 0.98 }}
       background="linear-gradient(342.17deg, #0905C4 24.4%, #2D28FF 39.63%, #59E1FF 103.94%, #71FCF4 132.7%)"
+      onClick={onClick}
     >
       <BodyRegular cursor="pointer" textcolor="white">
         {text || " Button Text"}

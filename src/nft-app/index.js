@@ -141,7 +141,7 @@ const NFTApp = () => {
               ></Route>
               <Route
                 exact
-                path="/discover"
+                path="/discover/:mode"
                 render={() => (
                   <Discover
                     xdc={xdcPrice}
