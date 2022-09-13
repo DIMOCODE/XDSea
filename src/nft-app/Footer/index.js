@@ -25,7 +25,7 @@ function Footer(props) {
   const size = useWindowSize();
 
   return (
-    <FooterSection size={size.width > 414 ? "contain" : "cover"}>
+    <FooterSection size={"cover"}>
       <FooterContent>
         <LayoutGroup id="footer">
           <VStack spacing="30px">
@@ -186,6 +186,7 @@ const FooterSection = styled(motion.div)`
 
   background-image: url(${footerBanner});
   background-size: ${(props) => props.size};
+  background-repeat: no-repeat;
 `;
 
 const FooterContent = styled(motion.div)`

@@ -38,7 +38,7 @@ import rocket3D from "../../images/Rocket3D.webp";
 import Star3D from "../../images/Star3D.webp";
 import firstPlaces from "../../images/firstplaces.webp";
 import nftIdea from "../../images/nftIdea.webp";
-import outlinesXDSEA from "../../images/XDSeaOutlines.webp";
+import outlinesXDSEA from "../../images/logoShield.webp";
 import newBlue from "../../images/newBlue.webp";
 import CristalHeart from "../../images/CristalHeart.webp";
 

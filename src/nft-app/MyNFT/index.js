@@ -66,11 +66,7 @@ import "swiper/swiper.min.css";
 import "./styles.css";
 
 import { InputStyled } from "../../styles/InputStyled";
-import Cropper from "react-easy-crop";
-import { Rnd } from "react-rnd";
-import Draggable from "react-draggable";
-import { Resizable } from "re-resizable";
-import Moveable from "react-moveable";
+
 import { UploadMultimedia } from "../../styles/UploadMultimedia";
 import { Activity } from "./Activity";
 
