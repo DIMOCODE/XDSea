@@ -394,14 +394,14 @@ const Discover = (props) => {
             >
               <HStack spacing="12px" flexwrap="wrap" justify="flex-start">
                 {loading ? (
-                  loadingCollections.map((item) => (
-                    <VStack key={item.name} minwidth="326px" height="440px">
+                  loadingCollections.map((item, i) => (
+                    <VStack key={i} minwidth="326px" height="440px">
                       <LoadingNftContainer></LoadingNftContainer>
                     </VStack>
                   ))
                 ) : collections.length !== 0 ? (
                   collections.map((item) => (
-                    <LayoutGroup id="collection" key={item.name}>
+                    <LayoutGroup id="collection" key={item._id}>
                       <VStack
                         width="326px"
                         height="440px"
@@ -490,20 +490,19 @@ const Discover = (props) => {
                       width="100%"
                     >
                       {loading ? (
-                        loadingNFTs.map((item) => (
-                          <VStack
-                            minwidth="240px"
-                            height="390px"
-                            key={item.name}
-                          >
+                        loadingNFTs.map((item, i) => (
+                          <VStack minwidth="240px" height="390px" key={i}>
                             <LoadingNftContainer></LoadingNftContainer>
                           </VStack>
                         ))
                       ) : nfts.length !== 0 ? (
                         nfts.map((item, i) => (
-                          <VStack minwidth="240px" height="390px">
+                          <VStack
+                            key={item._id}
+                            minwidth="240px"
+                            height="390px"
+                          >
                             <NftContainer
-                              key={i}
                               isVerified={item.owner.isVerified}
                               iconStatus={item.saleType.toLowerCase()}
                               hasOffers={item.hasOpenOffer}

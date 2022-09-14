@@ -41,6 +41,8 @@
 .swiper-slide {
   background-size: cover;
   background-position: center;
+  background-color: rgba(0, 0, 0, 1);
+  border-radius: 6px;
 }
 
 .mySwiper2 {
@@ -72,4 +74,30 @@
 .blend {
   opacity: 1;
   mix-blend-mode: multiply;
+}
+
+.swiper-button-next {
+  background-image: url(../../images/arrowCircleLeft.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  min-width: 60px;
+  min-height: 60px;
+}
+
+.swiper-button-next::after {
+  display: none;
+}
+
+.swiper-button-prev {
+  background-image: url(../../images/arrowCircleRight.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: center;
+  min-width: 60px;
+  min-height: 60px;
+}
+
+.swiper-button-prev::after {
+  display: none;
 }

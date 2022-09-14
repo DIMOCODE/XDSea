@@ -3,7 +3,12 @@ import { useState } from "react";
 import { VStack, HStack, IconImg } from "./Stacks";
 import newBlue from "../images/newBlue.png";
 import logoWhiteX from "../images/logoWhiteX.png";
-import { TitleRegular21, TitleRegular18 } from "./TextStyles";
+import {
+  TitleRegular21,
+  TitleRegular18,
+  TitleRegular15,
+  BodyRegular,
+} from "./TextStyles";
 import { LayoutGroup, motion } from "framer-motion/dist/framer-motion";
 import goldPrice from "../images/goldPrice.png";
 import silverPrice from "../images/silverPrice.png";
@@ -14,7 +19,7 @@ import styled from "styled-components";
 function PricePosition(props) {
   const { creator, amount, image, position, nickName, redirect } = props;
   return (
-    <VStack width="160px">
+    <VStack width="160px" spacing="3px">
       <Crown>
         {position === 1 && (
           <IconImg
@@ -53,19 +58,23 @@ function PricePosition(props) {
         onClick={() => redirect(`collection/${nickName}`)}
       ></IconImg>
       <VStack spacing="9px">
-        <TitleRegular21 textcolor="black" align="center">
+        <TitleRegular18
+          textcolor="black"
+          style={{ lineHeight: "1.2" }}
+          align="center"
+        >
           {creator || "Creator Name"}
-        </TitleRegular21>
+        </TitleRegular18>
 
         <HStack
           self="none"
-          height="36px"
+          height="33px"
           border="30px"
           padding="0 15px "
           spacing="9px"
           background="linear-gradient(317.1deg, #0905C4 16.98%, #2D28FF 32.68%, #59E1FF 98.99%, #71FCF4 128.65%)"
         >
-          <TitleRegular18 textcolor="white">{amount || "0"}</TitleRegular18>
+          <BodyRegular textcolor="white">{amount || "0"}</BodyRegular>
           <IconImg url={logoWhiteX} width="18px" height="18px"></IconImg>
         </HStack>
       </VStack>

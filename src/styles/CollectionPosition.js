@@ -14,10 +14,11 @@ function CollectionPosition(props) {
   const { rank, name, amount, creator, percent, nickName, redirect } = props;
   return (
     <HStack
-      background="linear-gradient(204.15deg, rgba(255, 255, 255, 0.49) 12.72%, rgba(255, 255, 255, 0) 116.77%)"
+      background="linear-gradient(204.15deg, rgba(255, 255, 255, 0.69) 12.72%, rgba(255, 255, 255, 0) 116.77%)"
       height="136px"
       border="6px"
       padding="0 21px"
+      style={{ boxShadow: "0px 6px 9px 0px rgba(0, 0, 0, 0.06)" }}
     >
       <TitleRegular27>{rank || 0}</TitleRegular27>
       <IconImg
@@ -34,9 +35,9 @@ function CollectionPosition(props) {
 
       <VStack spacing="9px">
         <HStack>
-          <TitleRegular21 textcolor="black">
+          <TitleRegular18 textcolor="black">
             {name || "Collection Name"}
-          </TitleRegular21>
+          </TitleRegular18>
           <Spacer></Spacer>
         </HStack>
 
