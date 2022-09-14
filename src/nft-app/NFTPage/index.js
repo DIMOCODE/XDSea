@@ -477,7 +477,7 @@ const NFTDetails = (props) => {
    */
   const getData = async () => {
     try {
-      const nftData = await (await getNFT(id)).data;
+      const nftData = await (await getNFT(nftaddress, id)).data;
 
       await Promise.all(
         [1, 2].map(async (i) => {
@@ -769,7 +769,7 @@ const NFTDetails = (props) => {
           PurchaisedNftName={nft.name}
           ListedImage={nft.urlFile.v0}
           confirmBtnPurchaise={() =>
-            props.redirect(`UserProfile/${LS.get(LS_ROOT_KEY).user._id}`)
+            props.redirect(`user/${LS.get(LS_ROOT_KEY).user._id}`)
           }
         ></TxModal>
       ) : null}
@@ -1105,7 +1105,7 @@ const NFTDetails = (props) => {
                 <HStack
                   spacing="6px"
                   cursor="pointer"
-                  onClick={() => props.redirect(`UserProfile/${nft.owner._id}`)}
+                  onClick={() => props.redirect(`user/${nft.owner._id}`)}
                 >
                   <IconImg
                     url={nft?.owner.userProfile}
@@ -1289,7 +1289,7 @@ const NFTDetails = (props) => {
                     cursor={"pointer"}
                     width="auto"
                     onClick={() =>
-                      props.redirect(`UserProfile/${nft.creator._id}`)
+                      props.redirect(`user/${nft.creator._id}`)
                     }
                   >
                     <IconImg
@@ -1860,7 +1860,7 @@ const NFTDetails = (props) => {
                         props.redirect(`nft/${nftaddress}/${item.tokenId}`);
                       }}
                       onClickCreator={() =>
-                        props.redirect(`UserProfile/${item.owner._id}`)
+                        props.redirect(`user/${item.owner._id}`)
                       }
                       usdPrice={props.xdc}
                       owner={true}

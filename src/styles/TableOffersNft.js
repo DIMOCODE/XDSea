@@ -45,7 +45,7 @@ function TableOffersNft(props) {
             <HStack
               justify="flex-start"
               spacing="6px"
-              onClick={() => props.redirect(`UserProfile/${offerUser}`)}
+              onClick={() => props.redirect(`user/${offerUser}`)}
             >
               <IconImg
                 url={imageBuyer}

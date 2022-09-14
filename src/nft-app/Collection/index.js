@@ -213,7 +213,7 @@ const CollectionPage = (props) => {
           <CreatorAbsolute>
             <HStack
               onClick={() =>
-                props.redirect(`UserProfile/${collection.creatorId}`)
+                props.redirect(`user/${collection.creatorId}`)
               }
               border="30px"
               padding="6px 15px"
@@ -702,7 +702,7 @@ const CollectionPage = (props) => {
                         props.redirect(`nft/${nftaddress}/${item.tokenId}`)
                       }
                       onClickCreator={() =>
-                        props.redirect(`UserProfile/${item.owner._id}`)
+                        props.redirect(`user/${item.owner._id}`)
                       }
                       owner={true}
                       usdPrice={props.xdc}

@@ -700,6 +700,7 @@ function CreateNft(props) {
    * React Hook to re-render component when the wallet connection is updated
    */
   useEffect(async () => {
+    window.scrollTo(0, 0);
     setWallet(props?.wallet);
     await getUser();
   }, [props?.wallet]);

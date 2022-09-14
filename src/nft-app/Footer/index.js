@@ -20,9 +20,26 @@ import logoOutline from "../../images/XDSeaOutlines.webp";
 import instaIcon from "../../images/instaIconFooter.png";
 import twitterIcon from "../../images/twitterIconFooter.png";
 import mailIcon from "../../images/mailIconFooter.png";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 function Footer(props) {
   const size = useWindowSize();
+  const [twitterFollowers, setTwitterFollowers] = useState(0);
+  const [instagramFollowers, setInstagramFollowers] = useState(0);
+
+  const getTwitterData = async () => {
+    
+  }
+
+  const getInstagramData = async () => {
+    
+  }
+
+  useEffect(() => {
+    getTwitterData();
+    getInstagramData();
+  }, [])
 
   return (
     <FooterSection size={"cover"}>
@@ -98,7 +115,17 @@ function Footer(props) {
                         @XDSeaNFT
                       </TitleRegular18>
                       <CaptionBold textcolor="#0471C0" cursor="pointer">
-                        12,7 K FOLLOWERS
+                        {Number(twitterFollowers) > 1000
+                          ? Intl.NumberFormat("en-US", {
+                              notation: "compact",
+                              maximumFractionDigits: 1,
+                            }).format(Number(twitterFollowers))
+                          : Number(twitterFollowers).toLocaleString(
+                              undefined,
+                              {
+                                maximumFractionDigits: 1,
+                              }
+                            ) || "0"} FOLLOWERS
                       </CaptionBold>
                     </VStack>
                   </HStack>
@@ -124,7 +151,17 @@ function Footer(props) {
                         @xdsea.nft
                       </TitleRegular18>
                       <CaptionBold textcolor="#DD4280" cursor="pointer">
-                        4,3 K FOLLOWERS
+                        {Number(instagramFollowers) > 1000
+                          ? Intl.NumberFormat("en-US", {
+                              notation: "compact",
+                              maximumFractionDigits: 1,
+                            }).format(Number(instagramFollowers))
+                          : Number(instagramFollowers).toLocaleString(
+                              undefined,
+                              {
+                                maximumFractionDigits: 1,
+                              }
+                            ) || "0"} FOLLOWERS
                       </CaptionBold>
                     </VStack>
                   </HStack>

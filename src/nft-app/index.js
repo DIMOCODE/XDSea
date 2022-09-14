@@ -163,14 +163,20 @@ const NFTApp = () => {
               ></Route>
               <Route
                 exact
-                path="/UserProfile/:userId"
+                path="/user/:userId"
                 render={() => (
-                  <MyNFT redirect={NavigateTo} showMenu={showMenu} />
+                  <MyNFT
+                    redirect={NavigateTo}
+                    showMenu={showMenu}
+                    wallet={wallet}
+                    themeToggler={themeToggler}
+                    theme={theme}
+                  />
                 )}
               ></Route>
               <Route
                 exact
-                path="/CreateNFT"
+                path="/create-nft"
                 render={() => (
                   <CreateNft
                     wallet={wallet}
@@ -204,7 +210,7 @@ const NFTApp = () => {
               ></Route>
               <Route
                 exact
-                path="/HowToStart"
+                path="/how-to-start"
                 render={() => (
                   <HowToStart redirect={NavigateTo} showMenu={showMenu} />
                 )}

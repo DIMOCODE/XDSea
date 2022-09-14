@@ -432,7 +432,7 @@ function SearchPage(props) {
                               }
                               onClickCreator={() =>
                                 props.redirect(
-                                  `UserProfile/${item.creator._id}`
+                                  `user/${item.creator._id}`
                                 )
                               }
                               xdc={props.xdc}
@@ -511,7 +511,7 @@ function SearchPage(props) {
                               )
                             }
                             onClickCreator={() =>
-                              props.redirect(`UserProfile/${item.creator._id}`)
+                              props.redirect(`user/${item.creator._id}`)
                             }
                             owner={true}
                             usdPrice={props.xdc}

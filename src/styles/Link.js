@@ -26,8 +26,9 @@ function Link(props) {
    */
   function NavigateTo(route) {
     if (route === "Home") history.push("/");
-    else if (route === "Create NFT") history.push("/CreateNFT");
-    else if (route === "How To Start") history.push("/HowToStart");
+    else if (route === "Discover") history.push("/discover/collections");
+    else if (route === "Create NFT") history.push("/create-nft");
+    else if (route === "How To Start") history.push("/how-to-start");
     else history.push(`/${route}`);
   }
 

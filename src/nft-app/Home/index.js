@@ -168,16 +168,16 @@ const Home = (props) => {
                   <SwiperSlide
                     onClick={() =>
                       props.redirect(
-                        `nft/${item.nftId.nftContract}/${item.nftId.tokenId}`
+                        `nft/${item.nftContract}/${item.tokenId}`
                       )
                     }
                     style={{
                       cursor: "pointer",
                     }}
                   >
-                    {isImage(item.nftId.fileType) ? (
+                    {isImage(item.fileType) ? (
                       <IconImg
-                        url={item.nftId.urlFile.v0}
+                        url={item.urlFile.v0}
                         backsize="cover"
                         width="100%"
                         height="100%"
@@ -185,7 +185,7 @@ const Home = (props) => {
                       ></IconImg>
                     ) : (
                       <ReactPlayer
-                        url={item.nftId.urlFile.v0}
+                        url={item.urlFile.v0}
                         playing={true}
                         volume={0}
                         muted={true}
@@ -215,9 +215,9 @@ const Home = (props) => {
             {featuredNFTs.length !== 0
               ? featuredNFTs?.map((item) => (
                   <SwiperSlide>
-                    {isImage(item.nftId.fileType) ? (
+                    {isImage(item.fileType) ? (
                       <IconImg
-                        url={item.nftId.urlFile.v0}
+                        url={item.urlFile.v0}
                         backsize="cover"
                         width="100%"
                         height="100%"
@@ -225,7 +225,7 @@ const Home = (props) => {
                       ></IconImg>
                     ) : (
                       <ReactPlayer
-                        url={item.nftId.urlFile.v0}
+                        url={item.urlFile.v0}
                         playing={false}
                         volume={0}
                         muted={true}
@@ -414,9 +414,9 @@ const Home = (props) => {
           <HStack flexwrap="wrap" padding="0 12px 0 12px">
             {trendingNFTs.length !== 0
               ? trendingNFTs.slice(0, 4).map((item) =>
-                  isImage(item.nftId.fileType) ? (
+                  isImage(item.fileType) ? (
                     <IconImg
-                      url={item.nftId.urlFile.v0}
+                      url={item.urlFile.v0}
                       backsize="cover"
                       width="48%"
                       height={size.width > 414 ? "360px" : "180px"}
@@ -424,7 +424,7 @@ const Home = (props) => {
                       cursor="pointer"
                       onClick={() =>
                         props.redirect(
-                          `nft/${item.nftId.nftContract}/${item.nftId.tokenId}`
+                          `nft/${item.nftContract}/${item.tokenId}`
                         )
                       }
                     ></IconImg>
@@ -436,7 +436,7 @@ const Home = (props) => {
                       border="6px"
                     >
                       <ReactPlayer
-                        url={item.nftId.urlFile.v0}
+                        url={item.urlFile.v0}
                         playing={true}
                         volume={0}
                         muted={true}
@@ -499,15 +499,15 @@ const Home = (props) => {
                     style={{ cursor: "pointer" }}
                     onClick={() =>
                       props.redirect(
-                        `nft/${item.nftId.nftContract}/${item.nftId.tokenId}`
+                        `nft/${item.nftContract}/${item.tokenId}`
                       )
                     }
                   >
                     <ZStack background="black" width="100%" border="6px">
                       <ZItem>
-                        {isImage(item.nftId.fileType) ? (
+                        {isImage(item.fileType) ? (
                           <IconImg
-                            url={item.nftId.urlFile.v0}
+                            url={item.urlFile.v0}
                             backsize="cover"
                             width="100%"
                             height="100%"
@@ -515,7 +515,7 @@ const Home = (props) => {
                           ></IconImg>
                         ) : (
                           <ReactPlayer
-                            url={item.nftId.urlFile.v0}
+                            url={item.urlFile.v0}
                             playing={true}
                             volume={0}
                             muted={true}

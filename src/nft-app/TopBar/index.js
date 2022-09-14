@@ -327,26 +327,28 @@ function TopBar(props) {
                             Home
                           </TitleBold21>
                           <TitleBold21
-                            onClick={() => props.redirect("Discover")}
+                            onClick={() =>
+                              props.redirect("discover/collections")
+                            }
                             textcolor={({ theme }) => theme.text}
                           >
                             Discover
                           </TitleBold21>
                           <TitleBold21
                             textcolor={({ theme }) => theme.text}
-                            onClick={() => props.redirect("HowToStart")}
+                            onClick={() => props.redirect("how-to-start")}
                           >
                             How to Start
                           </TitleBold21>
                           <TitleBold21
                             textcolor={({ theme }) => theme.text}
-                            onClick={() => props.redirect("CreateNFT")}
+                            onClick={() => props.redirect("create-nft")}
                           >
                             Create an NFT
                           </TitleBold21>
                         </VStack>
 
-                        <VStack style={{ zIndex: -100 }}>
+                        {/* <VStack style={{ zIndex: -100 }}>
                           <WalletButton
                             logout={
                               isMetamask
@@ -365,7 +367,7 @@ function TopBar(props) {
                             hasAlert={showError > 0}
                             clickAlert={() => setShowInfo(true)}
                           ></WalletButton>
-                        </VStack>
+                        </VStack> */}
                         <Spacer></Spacer>
                         <HStack style={{ zIndex: -100 }}>
                           <SwitchButton
@@ -556,20 +558,22 @@ function TopBar(props) {
                             Home
                           </TitleBold21>
                           <TitleBold21
-                            onClick={() => props.redirect("Discover")}
+                            onClick={() =>
+                              props.redirect("discover/collections")
+                            }
                             textcolor={({ theme }) => theme.text}
                           >
                             Discover
                           </TitleBold21>
                           <TitleBold21
                             textcolor={({ theme }) => theme.text}
-                            onClick={() => props.redirect("HowToStart")}
+                            onClick={() => props.redirect("how-to-start")}
                           >
                             How to Start
                           </TitleBold21>
                           <TitleBold21
                             textcolor={({ theme }) => theme.text}
-                            onClick={() => props.redirect("CreateNFT")}
+                            onClick={() => props.redirect("create-nft")}
                           >
                             Create an NFT
                           </TitleBold21>
@@ -657,7 +661,7 @@ function TopBar(props) {
                     ></Searchbar>
                     <Spacer></Spacer>
 
-                    <VStack maxwidth="180px">
+                    {/* <VStack maxwidth="180px">
                       <ZStack>
                         <ZItem>
                           <WalletButton
@@ -679,7 +683,7 @@ function TopBar(props) {
                           ></WalletButton>
                         </ZItem>
                       </ZStack>
-                    </VStack>
+                    </VStack> */}
 
                     <SwitchButton clickOnSwitch={themeToggler}></SwitchButton>
                     {wallet?.connected ? (
@@ -790,7 +794,7 @@ function TopBar(props) {
                       border="6px"
                       whiteTap={{ scale: 0.9 }}
                       cursor="pointer"
-                      onClick={() => props.redirect("Discover")}
+                      onClick={() => props.redirect("discover/collections")}
                     >
                       <BodyBold cursor="pointer">Discover</BodyBold>
                     </HStack>
@@ -806,7 +810,7 @@ function TopBar(props) {
                       minwidth="300px"
                       whiteTap={{ scale: 0.9 }}
                       cursor="pointer"
-                      onClick={() => props.redirect("CreateNFT")}
+                      onClick={() => props.redirect("create-nft")}
                     >
                       <BodyBold cursor="pointer" textcolor="white">
                         Create NFT
@@ -814,7 +818,7 @@ function TopBar(props) {
                     </HStack>
 
                     <HStack>
-                      <VStack maxwidth="160px">
+                      {/* <VStack maxwidth="160px">
                         <ZStack>
                           <ZItem>
                             <WalletButton
@@ -836,7 +840,7 @@ function TopBar(props) {
                             ></WalletButton>
                           </ZItem>
                         </ZStack>
-                      </VStack>
+                      </VStack> */}
 
                       {/* <SwitchButton clickOnSwitch={themeToggler}></SwitchButton>
                        */}

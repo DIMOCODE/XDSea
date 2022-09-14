@@ -41,17 +41,20 @@ import seamless from "../../images/newBlue.webp";
 import "./customstyles.css";
 import { positions } from "@mui/system";
 import zIndex from "@mui/material/styles/zIndex";
-import { useParams } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 
 const Discover = (props) => {
   const { mode } = useParams();
 
   const size = useWindowSize();
+  const location = useLocation();
 
   const [collections, setCollections] = useState([]);
   const [nfts, setNfts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [isSelected, setIsSelected] = useState(true);
+  const [isSelected, setIsSelected] = useState(
+    mode === "collections" ? true : false
+  );
   const [loadingCollections] = useState([
     { id: 1, name: "Collection 1" },
     { id: 2, name: "Collection 2" },
@@ -100,9 +103,9 @@ const Discover = (props) => {
   /**
    * Get the collections and NFT data for the first page
    */
-  const getData = async (mode) => {
+  const getData = async (params) => {
     try {
-      if (mode === "collections") {
+      if (params === "collections") {
         if (collections.length == 0) {
           const collectionData = await (
             await getCollections(collectionParams)
@@ -228,7 +231,13 @@ const Discover = (props) => {
   useEffect(() => {
     window.scrollTo(0, 0);
     setLoading(true);
-    getData(mode === "collections" ? "collections" : "nfts");
+    if (isSelected) {
+      window.history.replaceState({ path: "/discover/collections" }, "", "/discover/collections");
+      getData("collections");
+    } else {
+      window.history.replaceState({ path: "/discover/nfts" }, "", "/discover/nfts");
+      getData("nfts");
+    }
   }, [isSelected]);
 
   /**
@@ -426,7 +435,7 @@ const Discover = (props) => {
                           nfts={item.totalNfts}
                           volumetraded={item.volumeTrade}
                           onClickCreator={() =>
-                            props.redirect(`UserProfile/${item.creator._id}`)
+                            props.redirect(`user/${item.creator._id}`)
                           }
                           sortFloor={collectionParams.sortBy === "floorPrice"}
                           sortOwners={collectionParams.sortBy === "owners"}
@@ -520,7 +529,7 @@ const Discover = (props) => {
                                 )
                               }
                               onClickCreator={() =>
-                                props.redirect(`UserProfile/${item.owner._id}`)
+                                props.redirect(`user/${item.owner._id}`)
                               }
                               owner={true}
                               usdPrice={props.xdc}
