@@ -73,18 +73,18 @@ const Home = (props) => {
       const featuredNFTList = await Promise.all(
         homeData.featuredNfts.map(async (nft) => {
           let featuredNFT = {
-            collectionName: nft.nftId.collectionId.name,
-            collectionNickName: nft.nftId.collectionId.nickName,
-            collectionLogo: nft.nftId.collectionId.logo.v0,
-            image: nft.nftId.urlFile.v0,
-            name: nft.nftId.name,
-            fileType: nft.nftId.fileType,
-            nftContract: nft.nftId.collectionId.address,
-            preview: nft.nftId.preview.v0,
-            creator: nft.nftId.creator.userName,
-            creatorId: nft.nftId.creator._id,
-            tokenId: nft.nftId.tokenId,
-            isVerified: nft.nftId.creator.isVerified,
+            collectionName: nft.collectionId.name,
+            collectionNickName: nft.collectionId.nickName,
+            collectionLogo: nft.collectionId.logo.v0,
+            image: nft.urlFile.v0,
+            name: nft.name,
+            fileType: nft.fileType,
+            nftContract: nft.collectionId.address,
+            preview: nft.preview.v0,
+            creator: nft.creator.userName,
+            creatorId: nft.creator._id,
+            tokenId: nft.tokenId,
+            isVerified: nft.creator.isVerified,
           };
           return featuredNFT;
         })
@@ -109,22 +109,22 @@ const Home = (props) => {
       const trendingNFTList = await Promise.all(
         homeData.trendingNfts.map(async (nft) => {
           let trendingNFT = {
-            collectionName: nft.nftId.collectionId.name,
-            collectionNickName: nft.nftId.collectionId.nickName,
-            creatorLogo: nft.nftId.owner.urlProfile,
-            image: nft.nftId.urlFile,
-            name: nft.nftId.name,
-            hasOpenOffer: nft.nftId.hasOpenOffer,
-            price: nft.nftId.price,
-            fileType: nft.nftId.fileType,
-            preview: nft.nftId.preview.v0,
-            nftContract: nft.nftId.collectionId.address,
-            creator: nft.nftId.creator.userName,
-            ownerId: nft.nftId.owner._id,
-            tokenId: nft.nftId.tokenId,
-            saleType: nft.nftId.saleType.toLowerCase(),
-            isVerified: nft.nftId.owner.isVerified,
-            collectionVerified: nft.nftId.creator.isVerified,
+            collectionName: nft.collectionId.name,
+            collectionNickName: nft.collectionId.nickName,
+            creatorLogo: nft.owner.urlProfile,
+            image: nft.urlFile,
+            name: nft.name,
+            hasOpenOffer: nft.hasOpenOffer,
+            price: nft.price,
+            fileType: nft.fileType,
+            preview: nft.preview.v0,
+            nftContract: nft.collectionId.address,
+            creator: nft.creator.userName,
+            ownerId: nft.owner._id,
+            tokenId: nft.tokenId,
+            saleType: nft.saleType.toLowerCase(),
+            isVerified: nft.owner.isVerified,
+            collectionVerified: nft.creator.isVerified,
           };
           return trendingNFT;
         })
