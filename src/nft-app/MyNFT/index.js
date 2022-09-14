@@ -133,7 +133,12 @@ const MyNFT = (props) => {
         } else {
           let nftData = await (await getNFTs(nftParams)).data;
 
-          setNfts(nftData.nfts);
+          let nftHeights = nftData.nfts.map((item) => ({
+            ...item,
+            height: heights[Math.round(Math.random() * 2)],
+          }));
+
+          setNfts(nftHeights);
           setTotalNfts(nftData.nftsAmount);
         }
       })
@@ -152,7 +157,12 @@ const MyNFT = (props) => {
   const fetchMoreNFTs = async () => {
     const nftData = await (await getNFTs(nftParams)).data;
 
-    setNfts([...nfts, ...nftData.nfts]);
+    let nftHeights = nftData.nfts.map((item) => ({
+      ...item,
+      height: heights[Math.round(Math.random() * 2)],
+    }));
+
+    setNfts([...nfts, ...nftHeights]);
     setNftParams({
       ...nftParams,
       page: nftParams.page + 1,
@@ -1071,34 +1081,9 @@ const MyNFT = (props) => {
                   </VStack>
                 </HStack>
 
-                {console.log(heights[position])}
                 {/* Collection or NFT Purchased  */}
                 <HStack>
                   <ZStack height="auto" width="100%" padding="0 0 12px 0">
-                    {/* <HStack background="green" padding="30px">
-                      <VStack
-                        width="100%"
-                        height={heights[position] + "px"}
-                        background="pink"
-                      >
-                        Test sizes
-                      </VStack>
-                      <VStack
-                        height={heights[position] + "px"}
-                        width="100%"
-                        background="pink"
-                      >
-                        Test sizes
-                      </VStack>
-                      <VStack
-                        height={heights[position] + "px"}
-                        width="100%"
-                        background="pink"
-                      >
-                        Test sizes
-                      </VStack>
-                    </HStack> */}
-
                     {subMenu === 0 && (
                       <VStack
                         width="100%"
@@ -1139,9 +1124,10 @@ const MyNFT = (props) => {
                             >
                               {nfts.map((item, i) => (
                                 <VStack
+                                  key={item._id}
                                   minwidth="23%"
                                   width="23%"
-                                  height="300px"
+                                  height={item.height + "px"}
                                   border="15px"
                                   cursor="pointer"
                                   overflow="hidden"
