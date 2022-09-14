@@ -154,7 +154,7 @@ const Home = (props) => {
             style={{
               "--swiper-navigation-color": "#fff",
               "--swiper-pagination-color": "#fff",
-              height: "380px",
+              height: "680px",
             }}
             navigation={true}
             thumbs={{ swiper: thumbsSwiper }}
@@ -166,6 +166,7 @@ const Home = (props) => {
             {featuredNFTs.length !== 0
               ? featuredNFTs?.map((item) => (
                   <SwiperSlide
+                    key={"featured_" + item._id}
                     onClick={() =>
                       props.redirect(
                         `nft/${item.nftId.nftContract}/${item.nftId.tokenId}`
@@ -214,7 +215,7 @@ const Home = (props) => {
           >
             {featuredNFTs.length !== 0
               ? featuredNFTs?.map((item) => (
-                  <SwiperSlide>
+                  <SwiperSlide key={"thumbnail_" + item._id}>
                     {isImage(item.nftId.fileType) ? (
                       <IconImg
                         url={item.nftId.urlFile.v0}
@@ -355,6 +356,7 @@ const Home = (props) => {
               {topCollections.length !== 0
                 ? topCollections.slice(3).map((item, i) => (
                     <CollectionPosition
+                      key={item._id}
                       rank={i + 4}
                       creator={item.logo.v0}
                       name={item.name}
@@ -416,6 +418,7 @@ const Home = (props) => {
               ? trendingNFTs.slice(0, 4).map((item) =>
                   isImage(item.nftId.fileType) ? (
                     <IconImg
+                      key={item._id}
                       url={item.nftId.urlFile.v0}
                       backsize="cover"
                       width="48%"
@@ -430,6 +433,7 @@ const Home = (props) => {
                     ></IconImg>
                   ) : (
                     <HStack
+                      key={item._id}
                       background="black"
                       width="48%"
                       height={size.width > 414 ? "360px" : "180px"}
@@ -496,6 +500,7 @@ const Home = (props) => {
             {trendingNFTs.length !== 0
               ? trendingNFTs.slice(0, 4).map((item) => (
                   <SwiperSlide
+                    key={item._id}
                     style={{ cursor: "pointer" }}
                     onClick={() =>
                       props.redirect(
