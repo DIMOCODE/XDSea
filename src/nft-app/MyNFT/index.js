@@ -31,10 +31,14 @@ import {
   TitleRegular18,
 } from "../../styles/TextStyles";
 import xdcLogo from "../../images/miniXdcLogo.png";
-
+import gradientBase from "../../images/gradientBase.jpg";
+import { SortButtonNFTS } from "../../styles/SortButtonNFTS";
+import { FiltersButton } from "../../styles/FiltersButton";
 import uploadIcon from "../../images/uploadiconwhite.png";
 import addIcon from "../../images/addIcon.png";
 import crossIcon from "../../images/crossIcon.png";
+import crossWhite from "../../images/crossWhite.png";
+import doneIcon from "../../images/doneIcon.png";
 import minusIcon from "../../images/minusIcon.png";
 import editProfile from "../../images/editProfile.png";
 import mountain from "../../images/mountain.jpg";
@@ -58,8 +62,11 @@ import { isImage, isVideo, isAudio } from "../../common";
 import { CircleButton } from "../../styles/CircleButton";
 
 import { Navigation, Pagination, Scrollbar, A11y } from "swiper";
+import { StickySectionHeader } from "../../CustomModules/sticky/StickySectionHeader.js";
 
 import { Swiper, SwiperSlide } from "swiper/react";
+import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
+import editPencil from "../../images/editPencil.png";
 
 // Import Swiper styles
 import "swiper/swiper-bundle.min.css";
@@ -107,7 +114,7 @@ const MyNFT = (props) => {
   const [newTwitterUsername, setNewTwitterUsername] = useState("");
   const [newWebsite, setNewWebsite] = useState("");
 
-  const heights = [100, 590, 300];
+  const heights = [260, 360, 300];
 
   let position = Math.round(Math.random() * 2);
 
@@ -295,6 +302,7 @@ const MyNFT = (props) => {
                 minwidth="100%"
                 maxheight="522px"
                 overflowx="hidden"
+                backgroundimage={gradientBase}
               >
                 <IconImg
                   url={
@@ -336,12 +344,14 @@ const MyNFT = (props) => {
                           maxwidth="96px"
                           maxheight="96px"
                           cursor="pointer"
+                          overflow="visible"
+                          spacing="17px"
                         >
                           <ZStack
                             cursor="pointer"
                             width="90px"
-                            minheight="90px"
-                            overflow="auto"
+                            minheight="96px"
+                            overflow="visible"
                           >
                             <ZItem>
                               <HStack
@@ -452,7 +462,7 @@ const MyNFT = (props) => {
                       </HStack>
 
                       <Spacer></Spacer>
-                      <VStack width="300px">
+                      <VStack width="360px">
                         {/* Add instagram input */}
 
                         <HStack>
@@ -485,28 +495,46 @@ const MyNFT = (props) => {
                               onClick={() => setIsInstaAdded(false)}
                             >
                               <IconImg
-                                url={minusIcon}
+                                url={editPencil}
                                 width="18px"
                                 height="18px"
                                 cursor="pointer"
                               ></IconImg>
                             </HStack>
                           ) : (
-                            <HStack
-                              width="42px"
-                              height="36px"
-                              border="36px"
-                              background="white"
-                              cursor="pointer"
-                              whileTap={{ scale: 0.96 }}
-                              onClick={() => setIsInstaAdded(true)}
-                            >
-                              <IconImg
-                                url={addIcon}
-                                width="18px"
-                                height="18px"
+                            <HStack spacing="6px">
+                              <HStack
+                                width="36px"
+                                height="36px"
+                                border="36px"
+                                background="white"
                                 cursor="pointer"
-                              ></IconImg>
+                                whileTap={{ scale: 0.96 }}
+                                onClick={() => setIsInstaAdded(true)}
+                              >
+                                <IconImg
+                                  url={doneIcon}
+                                  width="18px"
+                                  height="18px"
+                                  cursor="pointer"
+                                ></IconImg>
+                              </HStack>{" "}
+                              <HStack
+                                width="36px"
+                                height="36px"
+                                border="36px"
+                                background="rgba(0,0,0,0.3)"
+                                cursor="pointer"
+                                whileTap={{ scale: 0.96 }}
+                                onClick={() => setIsInstaAdded(true)}
+                              >
+                                <IconImg
+                                  url={crossWhite}
+                                  width="18px"
+                                  height="18px"
+                                  cursor="pointer"
+                                ></IconImg>
+                              </HStack>
                             </HStack>
                           )}
                         </HStack>
@@ -543,28 +571,47 @@ const MyNFT = (props) => {
                               onClick={() => setIsTweetAdded(false)}
                             >
                               <IconImg
-                                url={minusIcon}
+                                url={editPencil}
                                 width="18px"
                                 height="18px"
                                 cursor="pointer"
                               ></IconImg>
                             </HStack>
                           ) : (
-                            <HStack
-                              width="42px"
-                              height="36px"
-                              border="36px"
-                              background="white"
-                              cursor="pointer"
-                              whileTap={{ scale: 0.96 }}
-                              onClick={() => setIsTweetAdded(true)}
-                            >
-                              <IconImg
-                                url={addIcon}
-                                width="18px"
-                                height="18px"
+                            <HStack spacing="6px">
+                              <HStack
+                                width="36px"
+                                height="36px"
+                                border="36px"
+                                background="white"
                                 cursor="pointer"
-                              ></IconImg>
+                                whileTap={{ scale: 0.96 }}
+                                onClick={() => setIsTweetAdded(true)}
+                              >
+                                <IconImg
+                                  url={doneIcon}
+                                  width="18px"
+                                  height="18px"
+                                  cursor="pointer"
+                                ></IconImg>
+                              </HStack>
+
+                              <HStack
+                                width="36px"
+                                height="36px"
+                                border="36px"
+                                background="rgba(0,0,0,0.3)"
+                                cursor="pointer"
+                                whileTap={{ scale: 0.96 }}
+                                onClick={() => setIsTweetAdded(true)}
+                              >
+                                <IconImg
+                                  url={crossWhite}
+                                  width="18px"
+                                  height="18px"
+                                  cursor="pointer"
+                                ></IconImg>
+                              </HStack>
                             </HStack>
                           )}
                         </HStack>
@@ -598,28 +645,46 @@ const MyNFT = (props) => {
                               onClick={() => setIsWebAdded(false)}
                             >
                               <IconImg
-                                url={minusIcon}
+                                url={editPencil}
                                 width="18px"
                                 height="18px"
                                 cursor="pointer"
                               ></IconImg>
                             </HStack>
                           ) : (
-                            <HStack
-                              width="42px"
-                              height="36px"
-                              border="36px"
-                              background="white"
-                              cursor="pointer"
-                              whileTap={{ scale: 0.96 }}
-                              onClick={() => setIsWebAdded(true)}
-                            >
-                              <IconImg
-                                url={addIcon}
-                                width="18px"
-                                height="18px"
+                            <HStack spacing="6px">
+                              <HStack
+                                width="36px"
+                                height="36px"
+                                border="36px"
+                                background="white"
                                 cursor="pointer"
-                              ></IconImg>
+                                whileTap={{ scale: 0.96 }}
+                                onClick={() => setIsWebAdded(true)}
+                              >
+                                <IconImg
+                                  url={doneIcon}
+                                  width="18px"
+                                  height="18px"
+                                  cursor="pointer"
+                                ></IconImg>
+                              </HStack>
+                              <HStack
+                                width="36px"
+                                height="36px"
+                                border="36px"
+                                background="rgba(0,0,0,0.3)"
+                                cursor="pointer"
+                                whileTap={{ scale: 0.96 }}
+                                onClick={() => setIsWebAdded(true)}
+                              >
+                                <IconImg
+                                  url={crossWhite}
+                                  width="18px"
+                                  height="18px"
+                                  cursor="pointer"
+                                ></IconImg>
+                              </HStack>
                             </HStack>
                           )}
                         </HStack>
@@ -820,309 +885,436 @@ const MyNFT = (props) => {
           ) : (
             <ZItem>
               <Content>
-                <HStack
-                  spacing="0px"
-                  width="100%"
-                  height="390px"
-                  padding="90px 0 0 0"
-                >
-                  <VStack
-                    spacing="30px"
-                    minwidth="70%"
-                    padding="12px 0 0 12px"
-                    justify="flex-start"
+                <VStack>
+                  <HStack
+                    spacing="0px"
+                    width="100%"
+                    height="390px"
+                    padding="90px 0 0 0"
                   >
-                    {/* User Image, Name and Social Networks */}
+                    <VStack
+                      spacing="30px"
+                      minwidth="70%"
+                      padding="12px 0 0 12px"
+                      justify="flex-start"
+                    >
+                      {/* User Image, Name and Social Networks */}
 
-                    <HStack>
-                      {/* User image */}
-                      <VStack maxwidth="96px" height="96px">
-                        {user.isVerified ? (
-                          <VerifiedIcon>
-                            <IconImg
-                              url={verified}
-                              width="30px"
-                              height="30px"
-                            ></IconImg>
-                          </VerifiedIcon>
-                        ) : null}
-                        <IconImg
-                          url={user.urlProfile}
-                          width="90px"
-                          height="90px"
-                          border="90px"
-                          backsize="cover"
-                          bordercolor="white"
-                          bordersize="3px"
-                          style={{
-                            boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.3)",
+                      <HStack>
+                        {/* User image */}
+                        <VStack maxwidth="96px" height="96px">
+                          {user.isVerified ? (
+                            <VerifiedIcon>
+                              <IconImg
+                                url={verified}
+                                width="30px"
+                                height="30px"
+                              ></IconImg>
+                            </VerifiedIcon>
+                          ) : null}
+                          <IconImg
+                            url={user.urlProfile}
+                            width="90px"
+                            height="90px"
+                            border="90px"
+                            backsize="cover"
+                            bordercolor="white"
+                            bordersize="3px"
+                            style={{
+                              boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.3)",
+                            }}
+                          ></IconImg>
+                        </VStack>
+
+                        {/* Username and social networks    */}
+                        <VStack alignment="flex-start">
+                          <TitleSemi21 textcolor="white">
+                            XDSea Creator #{userId}
+                          </TitleSemi21>
+                          <HStack spacing="12px" justify="flex-start">
+                            {/* Instagram Button */}
+                            {user?.instagramUrl ? (
+                              <CircleButton
+                                image={instagramColor}
+                              ></CircleButton>
+                            ) : null}
+
+                            {/* Twitter Button  */}
+                            {user?.twitterUrl ? (
+                              <CircleButton image={twitterColor}></CircleButton>
+                            ) : null}
+
+                            {/* Web Icon  */}
+                            {user?.websiteUrl ? (
+                              <CircleButton image={webColor}></CircleButton>
+                            ) : null}
+
+                            {/* Wallet button  */}
+                            {user?.XDCWallets?.length !== 0 ? (
+                              // <CircleButton
+                              //   image={walletBlue}
+                              //   onClick={() => {
+                              //     navigator.clipboard.writeText(
+                              //       user.XDCWallets[0]
+                              //     );
+                              //   }}
+                              // ></CircleButton>
+                              <BubbleCopied
+                                logo={walletBlue}
+                                address={
+                                  user.XDCWallets ? user.XDCWallets[0] : ""
+                                }
+                                icon={copyIcon}
+                              ></BubbleCopied>
+                            ) : null}
+                          </HStack>
+                        </VStack>
+                      </HStack>
+
+                      {/* Filter Buttons */}
+
+                      <HStack spacing="30px">
+                        {/* Collections Button */}
+                        <HStack
+                          onClick={() => {
+                            setSubMenu(1);
+                            setLoadingCollection(true);
                           }}
-                        ></IconImg>
-                      </VStack>
-
-                      {/* Username and social networks    */}
-                      <VStack alignment="flex-start">
-                        <TitleSemi21 textcolor="white">
-                          XDSea Creator #{userId}
-                        </TitleSemi21>
-                        <HStack spacing="12px" justify="flex-start">
-                          {/* Instagram Button */}
-                          {user?.instagramUrl ? (
-                            <CircleButton image={instagramColor}></CircleButton>
-                          ) : null}
-
-                          {/* Twitter Button  */}
-                          {user?.twitterUrl ? (
-                            <CircleButton image={twitterColor}></CircleButton>
-                          ) : null}
-
-                          {/* Web Icon  */}
-                          {user?.websiteUrl ? (
-                            <CircleButton image={webColor}></CircleButton>
-                          ) : null}
-
-                          {/* Wallet button  */}
-                          {user?.XDCWallets?.length !== 0 ? (
-                            <CircleButton
-                              image={walletBlue}
-                              onClick={() => {
-                                navigator.clipboard.writeText(
-                                  user.XDCWallets[0]
-                                );
-                              }}
-                            ></CircleButton>
-                          ) : null}
+                          cursor={"pointer"}
+                          variants={selection}
+                          animate={subMenu === 1 ? "active" : "faded"}
+                        >
+                          <TitleSemi18 cursor="pointer" textcolor="white">
+                            Collections
+                          </TitleSemi18>
+                          <VStack
+                            width="26px"
+                            height="26px"
+                            border="30px"
+                            background={({ theme }) => theme.backElement}
+                            cursor="pointer"
+                          >
+                            <BodyRegular>{collections?.length}</BodyRegular>
+                          </VStack>
                         </HStack>
-                      </VStack>
-                    </HStack>
 
-                    {/* <VStack spacing="9px" direction="column">
-                <CaptionBold textcolor={({ theme }) => theme.text}>
-                  CREATOR
-                </CaptionBold>
-                <BubbleCopied
-                  logo={xdcLogo}
-                  address={user.XDCWallets ? user.XDCWallets[0] : ""}
-                  icon={copyIcon}
-                ></BubbleCopied>
-              </VStack> */}
-
-                    {/* Filter Buttons */}
-
-                    <HStack spacing="30px">
-                      {/* Collections Button */}
-                      <HStack
-                        onClick={() => {
-                          setSubMenu(1);
-                          setLoadingCollection(true);
-                        }}
-                        cursor={"pointer"}
-                        variants={selection}
-                        animate={subMenu === 1 ? "active" : "faded"}
-                      >
-                        <TitleSemi18 cursor="pointer" textcolor="white">
-                          Collections
-                        </TitleSemi18>
-                        <VStack
-                          width="26px"
-                          height="26px"
-                          border="30px"
-                          background={({ theme }) => theme.backElement}
-                          cursor="pointer"
+                        {/* Nft Button */}
+                        <HStack
+                          onClick={() => setSubMenu(0)}
+                          cursor={"pointer"}
+                          variants={selection}
+                          animate={subMenu === 0 ? "active" : "faded"}
                         >
-                          <BodyRegular>{collections?.length}</BodyRegular>
-                        </VStack>
+                          <TitleSemi18 cursor="pointer" textcolor="white">
+                            NFTs Owned
+                          </TitleSemi18>
+                          <VStack
+                            width="auto"
+                            height="26px"
+                            border="30px"
+                            background={({ theme }) => theme.backElement}
+                            cursor="pointer"
+                            padding="0px 9px"
+                          >
+                            <BodyRegular>{totalNfts}</BodyRegular>
+                          </VStack>
+                        </HStack>
+
+                        <Spacer></Spacer>
                       </HStack>
 
-                      {/* Nft Button */}
-                      <HStack
-                        onClick={() => setSubMenu(0)}
-                        cursor={"pointer"}
-                        variants={selection}
-                        animate={subMenu === 0 ? "active" : "faded"}
-                      >
-                        <TitleSemi18 cursor="pointer" textcolor="white">
-                          NFTs Owned
-                        </TitleSemi18>
-                        <VStack
-                          width="26px"
-                          height="26px"
+                      {subMenu === 0 && (
+                        <HStack justify="flex-start" spacing="9px">
+                          <CollectionTab name="Tab 1"></CollectionTab>
+                          <CollectionTab name="Tab 2"></CollectionTab>
+                          <CollectionTab name="Tab 3"> </CollectionTab>
+                        </HStack>
+                      )}
+                    </VStack>
+
+                    {/* Sidebar Content */}
+                    <VStack
+                      minwidth="30%"
+                      height="100%"
+                      padding="12px 12px 30px 0"
+                      alignment="flex-end"
+                      justify="flex-start"
+                      spacing="21px"
+                    >
+                      {/* Edit button for the logged-in user */}
+                      {!isLoggedIn ? (
+                        <HStack
+                          background="white"
                           border="30px"
-                          background={({ theme }) => theme.backElement}
                           cursor="pointer"
+                          minheight="42px"
+                          self="none"
+                          spacing="6px"
+                          padding="0 6px 0 9px"
+                          onClick={() => setIsEditing(true)}
                         >
-                          <BodyRegular>{totalNfts}</BodyRegular>
-                        </VStack>
-                      </HStack>
+                          <BodyRegular cursor="pointer">
+                            Edit Profile
+                          </BodyRegular>
+                          <IconImg
+                            cursor="pointer"
+                            url={editProfile}
+                            width="30px"
+                            height="30px"
+                          ></IconImg>
+                        </HStack>
+                      ) : null}
 
-                      <Spacer></Spacer>
-                    </HStack>
-
-                    {subMenu === 0 && (
-                      <HStack justify="flex-start" spacing="9px">
-                        <CollectionTab name="Tab 1"></CollectionTab>
-                        <CollectionTab name="Tab 2"></CollectionTab>
-                        <CollectionTab name="Tab 3"> </CollectionTab>
-                      </HStack>
-                    )}
-                  </VStack>
-
-                  {/* Sidebar Content */}
-                  <VStack
-                    minwidth="30%"
-                    height="100%"
-                    padding="12px 12px 30px 0"
-                    alignment="flex-end"
-                    justify="flex-start"
-                    spacing="21px"
-                  >
-                    {/* Edit button for the logged-in user */}
-                    {!isLoggedIn ? (
-                      <HStack
-                        background="white"
-                        border="30px"
-                        cursor="pointer"
-                        minheight="42px"
-                        self="none"
-                        spacing="6px"
-                        padding="0 6px 0 9px"
-                        onClick={() => setIsEditing(true)}
-                      >
-                        <BodyRegular cursor="pointer">Edit Profile</BodyRegular>
-                        <IconImg
-                          cursor="pointer"
-                          url={editProfile}
-                          width="30px"
-                          height="30px"
-                        ></IconImg>
-                      </HStack>
-                    ) : null}
-
-                    <HStack>
-                      <VStack
-                        background={({ theme }) => theme.faded}
-                        alignment="flex-start"
-                        padding="18px 18px 12px 18px"
-                        border="6px"
-                        maxheight="auto"
-                        blur="30px"
-                      >
-                        {newMessage ? (
-                          <InputStyled
-                            background="transparent"
-                            textcolor="white"
-                            placeholder="We just joined the XDSea NFT Marketplace 🤩"
-                          ></InputStyled>
-                        ) : (
-                          <VStack>
-                            <BodyRegular textcolor="white">
-                              We just joined the XDSea NFT Marketplace 🤩
-                            </BodyRegular>
-                            <HStack>
-                              <CaptionSmallRegular textcolor="white">
-                                10 MINS AGO
-                              </CaptionSmallRegular>
-
-                              <Spacer></Spacer>
-
-                              {!isLoggedIn
-                                ? <HStack
+                      <HStack>
+                        <VStack
+                          background={({ theme }) => theme.faded30}
+                          alignment="flex-start"
+                          padding="26px 18px 26px 18px"
+                          border="6px"
+                          maxheight="auto"
+                          blur="30px"
+                        >
+                          {newMessage ? (
+                            <InputStyled
+                              background="transparent"
+                              textcolor="white"
+                              placeholder="We just joined the XDSea NFT Marketplace 🤩"
+                            ></InputStyled>
+                          ) : (
+                            <VStack>
+                              <TitleSemi21 textcolor="white">
+                                We just joined the XDSea NFT Marketplace 🤩
+                              </TitleSemi21>
+                              <HStack>
+                                <CaptionSmallRegular textcolor="white">
+                                  10 MINS AGO
+                                </CaptionSmallRegular>
+                                <Spacer></Spacer>
+                              </HStack>
+                              {!isLoggedIn ? (
+                                <HStack
                                   background="white"
                                   padding="6px 12px"
                                   border="6px"
+                                  height="39px"
                                   cursor="pointer"
                                   whileTap={{ scale: 0.96 }}
                                   onClick={() => setNewMessage(true)}
                                 >
-                                  <CaptionSmallRegular cursor="pointer">
-                                    NEW
-                                  </CaptionSmallRegular>
-                                </HStack>
-                                : null
-                              }
-                              
-                            </HStack>
-                          </VStack>
-                        )}
-                      </VStack>
-                    </HStack>
+                                  <BodyRegular cursor="pointer">
+                                    New Status
+                                  </BodyRegular>
 
-                    {newMessage
-                      ? <HStack width="100%">
-                        <HStack
-                          width="100%"
-                          minheight="42px"
-                          background={({ theme }) => theme.backElement}
-                          border="6px"
-                          cursor="pointer"
-                          whileTap={{ scale: 0.98 }}
-                          onClick={() => setNewMessage(false)}
-                        >
-                          <BodyRegular cursor="pointer">Cancel</BodyRegular>
-                        </HStack>
-                        <HStack
-                          width="100%"
-                          minheight="42px"
-                          background="linear-gradient(166.99deg, #2868F4 37.6%, #0E27C1 115.6%)"
-                          border="6px"
-                          cursor="pointer"
-                          whileTap={{ scale: 0.98 }}
-                          onClick={() => setNewMessage(false)}
-                        >
-                          <BodyRegular textcolor="white" cursor="pointer">
-                            Publish New
-                          </BodyRegular>
+                                  <IconImg
+                                    url={editPencil}
+                                    width="26px"
+                                    height="26px"
+                                  ></IconImg>
+                                </HStack>
+                              ) : null}
+                            </VStack>
+                          )}
+
+                          {newMessage ? (
+                            <HStack width="100%">
+                              <HStack
+                                width="100%"
+                                minheight="42px"
+                                background={({ theme }) => theme.backElement}
+                                border="6px"
+                                cursor="pointer"
+                                whileTap={{ scale: 0.98 }}
+                                onClick={() => setNewMessage(false)}
+                              >
+                                <BodyRegular cursor="pointer">
+                                  Cancel
+                                </BodyRegular>
+                              </HStack>
+                              <HStack
+                                width="100%"
+                                minheight="42px"
+                                background="linear-gradient(166.99deg, #2868F4 37.6%, #0E27C1 115.6%)"
+                                border="6px"
+                                cursor="pointer"
+                                whileTap={{ scale: 0.98 }}
+                                onClick={() => setNewMessage(false)}
+                              >
+                                <BodyRegular textcolor="white" cursor="pointer">
+                                  Publish New
+                                </BodyRegular>
+                              </HStack>
+                            </HStack>
+                          ) : null}
+                        </VStack>
+                      </HStack>
+
+                      {/* <Activity></Activity> */}
+                    </VStack>
+                  </HStack>
+
+                  {subMenu === 0 && (
+                    <StickySectionHeader top="120">
+                      <HStack
+                        background="rgb(0,0,0, 0.06)"
+                        padding="6px"
+                        border="9px"
+                        width="100%"
+                        blur="30px"
+                      >
+                        <HStack width="1200px">
+                          <FiltersButton
+                            isNftFilter={true}
+                            onChange={""}
+                            params={""}
+                            switched={""}
+                            maxPrice={""}
+                          ></FiltersButton>
+                          <Spacer></Spacer>
+                          <SortButtonNFTS
+                            onChange={""}
+                            params={""}
+                          ></SortButtonNFTS>
                         </HStack>
                       </HStack>
-                      : null
-                    }
+                    </StickySectionHeader>
+                  )}
 
-                    {/* <Activity></Activity> */}
-                  </VStack>
-                </HStack>
-
-                {/* Collection or NFT Purchased  */}
-                <HStack>
-                  <ZStack height="auto" width="100%" padding="0 0 12px 0">
-                    {subMenu === 0 && (
-                      <VStack
-                        width="100%"
-                        key={"Created"}
-                        initial={{ opacity: 0, y: 15 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: 15 }}
-                        id={"scrollableDiv"}
-                      >
-                        {loading ? (
-                          <VStack padding="120px">
-                            <LoopLogo></LoopLogo>
-                          </VStack>
-                        ) : nfts.length !== 0 ? (
-                          <InfiniteScroll
-                            dataLength={nfts.length}
-                            next={fetchMoreNFTs}
-                            hasMore={nfts.length < totalNfts}
-                            scrollThreshold={0.6}
-                            loader={
-                              <HStack
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                height="190px"
-                              >
-                                <LoopLogo></LoopLogo>
-                              </HStack>
-                            }
-                            scrollableTarget="#scrollableDiv"
-                            style={{ overflow: "hidden" }}
-                          >
-                            <HStack
-                              flexwrap="wrap"
-                              width="100%"
-                              justify="flex-start"
-                              spacing="6px"
-                              padding="12px"
+                  {/* Collection or NFT Purchased  */}
+                  <HStack>
+                    <ZStack height="auto" width="100%" padding="0 0 12px 0">
+                      {subMenu === 0 && (
+                        <VStack
+                          width="100%"
+                          key={"Created"}
+                          initial={{ opacity: 0, y: 15 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: 15 }}
+                          id={"scrollableDiv"}
+                        >
+                          {loading ? (
+                            <VStack padding="120px">
+                              <LoopLogo></LoopLogo>
+                            </VStack>
+                          ) : nfts.length !== 0 ? (
+                            <InfiniteScroll
+                              dataLength={nfts.length}
+                              next={fetchMoreNFTs}
+                              hasMore={nfts.length < totalNfts}
+                              scrollThreshold={0.6}
+                              loader={
+                                <HStack
+                                  initial={{ opacity: 0 }}
+                                  animate={{ opacity: 1 }}
+                                  height="190px"
+                                >
+                                  <LoopLogo></LoopLogo>
+                                </HStack>
+                              }
+                              scrollableTarget="#scrollableDiv"
+                              style={{ overflow: "hidden" }}
                             >
-                              {nfts.map((item, i) => (
+                              <Masonry
+                                columnsCount={size.width > 1200 ? 4 : 3}
+                                gutter="15px"
+                                style={{
+                                  width:
+                                    size.width > 1200
+                                      ? "1200px"
+                                      : size.width > 1023
+                                      ? "1024px"
+                                      : "768px",
+                                }}
+                              >
+                                {nfts.map((item, i) => (
+                                  <VStack
+                                    key={item._id}
+                                    maxwidth="100%"
+                                    minheight={item.height + "px"}
+                                    border="6px"
+                                    cursor="pointer"
+                                    overflow="hidden"
+                                    whileHover={{ scale: 1.009 }}
+                                    onClick={() => {
+                                      props.redirect(
+                                        `nft/${nftaddress}/${item.tokenId}`
+                                      );
+                                    }}
+                                  >
+                                    <ZStack cursor={"pointer"} border="6px">
+                                      {item.hasOpenOffer ? (
+                                        <BubbleOffers>
+                                          <HStack
+                                            background="linear-gradient(180deg, #FF5A5A 0%, rgba(255, 90, 90, 0.88) 100%)"
+                                            width="26px"
+                                            height="26px"
+                                            border="300px"
+                                            padding="0 6px"
+                                            spacing="6px"
+                                          >
+                                            <CaptionBoldShort textcolor="white">
+                                              !
+                                            </CaptionBoldShort>
+                                          </HStack>
+                                        </BubbleOffers>
+                                      ) : null}
+                                      <ZItem>
+                                        {isImage(item.fileType) ? (
+                                          <IconImg
+                                            url={item.urlFile.v0}
+                                            width="100%"
+                                            height="100%"
+                                            backsize="cover"
+                                            border="15px"
+                                          ></IconImg>
+                                        ) : isVideo(item.fileType) ? (
+                                          <VStack
+                                            width="100%"
+                                            height="100%"
+                                            border="9px"
+                                            background="black"
+                                            overflow="hidden"
+                                            animate={{ scale: 2.02 }}
+                                          >
+                                            <ReactPlayer
+                                              url={item.urlFile.v0}
+                                              playing={true}
+                                              volume={0}
+                                              muted={true}
+                                              loop={false}
+                                              width="100%"
+                                              height="160%"
+                                            />
+                                          </VStack>
+                                        ) : isAudio(item.fileType) ? (
+                                          <IconImg
+                                            url={item.preview.v0}
+                                            width="100%"
+                                            height="100%"
+                                            backsize="cover"
+                                            border="15px"
+                                          ></IconImg>
+                                        ) : null}
+                                      </ZItem>
+                                      <ZItem>
+                                        <VStack
+                                          padding="15px"
+                                          background="linear-gradient(180deg, rgba(0, 0, 0, 0) 54.41%, #000000 91.67%)"
+                                          border="9px"
+                                        >
+                                          <Spacer></Spacer>
+                                          <BodyRegular
+                                            textcolor={appStyle.colors.white}
+                                          >
+                                            {item.name}
+                                          </BodyRegular>
+                                        </VStack>
+                                      </ZItem>
+                                    </ZStack>
+                                  </VStack>
+                                ))}
+                              </Masonry>
+
+                              {/* {nfts.map((item, i) => (
                                 <VStack
                                   key={item._id}
                                   minwidth="23%"
@@ -1207,71 +1399,70 @@ const MyNFT = (props) => {
                                     </ZItem>
                                   </ZStack>
                                 </VStack>
-                              ))}
-                            </HStack>
-                          </InfiniteScroll>
-                        ) : (
-                          <VStack
-                            border="15px"
-                            width="100%"
-                            minheight="300px"
-                            background={({ theme }) => theme.backElement}
-                          >
-                            <IconImg
-                              url={emptyNFT}
-                              width="60px"
-                              height="60px"
-                            ></IconImg>
-                            <BodyRegular>
-                              This creator does not have any NFT yet
-                            </BodyRegular>
-                          </VStack>
-                        )}
-                      </VStack>
-                    )}
-                    {subMenu === 1 && (
-                      <HStack
-                        flexwrap="wrap"
-                        justify="flex-start"
-                        padding="12px"
-                      >
-                        {collections?.length !== 0
-                          ? collections?.map((item) => (
-                              <ZStack
-                                maxwidth="49%"
-                                height={size.width < 1112 ? "320px" : "490px"}
-                                border="9px"
-                                padding="12px"
-                                overflow="hidden"
-                              >
-                                <ZItem>
-                                  <IconImg
-                                    url={item.banner.v0}
-                                    width="100%"
-                                    height="100%"
-                                    backsize="cover"
-                                    border="9px"
-                                  ></IconImg>
-                                </ZItem>
-                                <ZItem>
-                                  <VStack
-                                    background="linear-gradient(180deg, rgba(0, 0, 0, 0) 54.41%, #000000 91.67%)"
-                                    width="100%"
-                                    height="100%"
-                                    border="12px"
-                                    padding="12px"
-                                  >
-                                    <Spacer></Spacer>
-                                    <BodyRegular textcolor="white">
-                                      {item.name}
-                                    </BodyRegular>
-                                  </VStack>
-                                </ZItem>
-                              </ZStack>
-                            ))
-                          : null}
+                              ))} */}
+                            </InfiniteScroll>
+                          ) : (
+                            <VStack
+                              border="15px"
+                              width="100%"
+                              minheight="300px"
+                              background={({ theme }) => theme.backElement}
+                            >
+                              <IconImg
+                                url={emptyNFT}
+                                width="60px"
+                                height="60px"
+                              ></IconImg>
+                              <BodyRegular>
+                                This creator does not have any NFT yet
+                              </BodyRegular>
+                            </VStack>
+                          )}
+                        </VStack>
+                      )}
+                      {subMenu === 1 && (
+                        <HStack
+                          flexwrap="wrap"
+                          justify="flex-start"
+                          padding="12px"
+                        >
+                          {collections?.length !== 0
+                            ? collections?.map((item) => (
+                                <ZStack
+                                  maxwidth="49%"
+                                  height={size.width < 1112 ? "320px" : "490px"}
+                                  border="9px"
+                                  padding="12px"
+                                  overflow="hidden"
+                                >
+                                  <ZItem>
+                                    <IconImg
+                                      url={item.banner.v0}
+                                      width="100%"
+                                      height="100%"
+                                      backsize="cover"
+                                      border="9px"
+                                    ></IconImg>
+                                  </ZItem>
+                                  <ZItem>
+                                    <VStack
+                                      background="linear-gradient(180deg, rgba(0, 0, 0, 0) 54.41%, #000000 91.67%)"
+                                      width="100%"
+                                      height="100%"
+                                      border="12px"
+                                      padding="12px"
+                                    >
+                                      <Spacer></Spacer>
+                                      <BodyRegular textcolor="white">
+                                        {item.name}
+                                      </BodyRegular>
+                                    </VStack>
+                                  </ZItem>
+                                </ZStack>
+                              ))
+                            : null}
 
-                        {/* {loadingCollection ? (
+                          {/* {loadingCollection ? (
                           <VStack padding="120px">
                             <LoopLogo></LoopLogo>
                           </VStack>
@@ -1390,10 +1581,11 @@ const MyNFT = (props) => {
                             </BodyRegular>
                           </VStack>
                         )} */}
-                      </HStack>
-                    )}
-                  </ZStack>
-                </HStack>
+                        </HStack>
+                      )}
+                    </ZStack>
+                  </HStack>
+                </VStack>
               </Content>
             </ZItem>
           )}
@@ -1595,9 +1787,10 @@ const MyNFT = (props) => {
                           ></IconImg>
                         ) : isVideo(item.fileType) ? (
                           <VStack
-                            width="186px"
-                            height="186px"
+                            width="100%"
+                            height="100%"
                             border="9px"
+                            background="black"
                             overflow="hidden"
                           >
                             <ReactPlayer
