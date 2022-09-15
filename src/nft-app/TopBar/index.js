@@ -751,7 +751,7 @@ function TopBar(props) {
                         >
                           Beta
                         </BodyBold>
-                        {devMode ? (
+                        {!devMode ? (
                           <BodyBold
                             textcolor={({ theme }) => theme.backElement}
                           >
@@ -759,12 +759,13 @@ function TopBar(props) {
                           </BodyBold>
                         ) : (
                           <HStack
-                            background="linear-gradient(180deg, #044DC4 0%, #192EA6 100%)"
+                            background=" linear-gradient(90.5deg, #FFF5B3 -30.32%, #FCD868 15.14%, #FBC34B 85.07%, #FF7A00 109.52%)
+"
                             border="6px"
                             padding="3px 6px"
                             cursor={"pointer"}
                           >
-                            <CaptionRegular textcolor={appStyle.colors.white}>
+                            <CaptionRegular textcolor="#7A4405">
                               Developer
                             </CaptionRegular>
                           </HStack>
