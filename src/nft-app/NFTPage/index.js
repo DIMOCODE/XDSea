@@ -501,7 +501,7 @@ const NFTDetails = (props) => {
                   id: i + 1,
                   event:
                     item.eventTypeId.eventCode === "MINTED" ? (
-                      <HStack>
+                      <HStack key={"event_" + i}>
                         <IconImg
                           url={mint}
                           width="26px"
@@ -510,7 +510,7 @@ const NFTDetails = (props) => {
                         <CaptionBoldShort>Mint</CaptionBoldShort>
                       </HStack>
                     ) : item.eventTypeId.eventCode === "LISTED" ? (
-                      <HStack>
+                      <HStack key={"event_" + i}>
                         <IconImg
                           url={list}
                           width="26px"
@@ -519,7 +519,7 @@ const NFTDetails = (props) => {
                         <CaptionBoldShort>List</CaptionBoldShort>
                       </HStack>
                     ) : item.eventTypeId.eventCode === "WITHDRAWN" ? (
-                      <HStack>
+                      <HStack key={"event_" + i}>
                         <IconImg
                           url={withdrawList}
                           width="26px"
@@ -528,7 +528,7 @@ const NFTDetails = (props) => {
                         <CaptionBoldShort>Withdraw Listing</CaptionBoldShort>
                       </HStack>
                     ) : item.eventTypeId.eventCode === "SALE" ? (
-                      <HStack>
+                      <HStack key={"event_" + i}>
                         <IconImg
                           url={sale}
                           width="26px"
@@ -537,7 +537,7 @@ const NFTDetails = (props) => {
                         <CaptionBoldShort>Sale</CaptionBoldShort>
                       </HStack>
                     ) : item.eventTypeId.eventCode === "TRANSFER" ? (
-                      <HStack>
+                      <HStack key={"event_" + i}>
                         <IconImg
                           url={transferIcon}
                           width="26px"
@@ -546,7 +546,7 @@ const NFTDetails = (props) => {
                         <CaptionBoldShort>Transfer</CaptionBoldShort>
                       </HStack>
                     ) : item.eventTypeId.eventCode === "EDIT" ? (
-                      <HStack>
+                      <HStack key={"event_" + i}>
                         <IconImg
                           url={editListingIcon}
                           width="26px"
@@ -555,7 +555,7 @@ const NFTDetails = (props) => {
                         <CaptionBoldShort>Edit Listing</CaptionBoldShort>
                       </HStack>
                     ) : item.eventTypeId.eventCode === "OFFER_RECEIVED" ? (
-                      <HStack>
+                      <HStack key={"event_" + i}>
                         <IconImg
                           url={offerPlacedIcon}
                           width="26px"
@@ -564,7 +564,7 @@ const NFTDetails = (props) => {
                         <CaptionBoldShort>Offer Placed</CaptionBoldShort>
                       </HStack>
                     ) : item.eventTypeId.eventCode === "OFFER_WITHDRAWN" ? (
-                      <HStack>
+                      <HStack key={"event_" + i}>
                         <IconImg
                           url={offerRejectedIcon}
                           width="26px"
@@ -573,7 +573,7 @@ const NFTDetails = (props) => {
                         <CaptionBoldShort>Offer Withdrawn</CaptionBoldShort>
                       </HStack>
                     ) : (
-                      <HStack>
+                      <HStack key={"event_" + i}>
                         <IconImg
                           url={offerAcceptedIcon}
                           width="26px"
@@ -1108,7 +1108,7 @@ const NFTDetails = (props) => {
                   onClick={() => props.redirect(`user/${nft.owner._id}`)}
                 >
                   <IconImg
-                    url={nft?.owner.userProfile}
+                    url={nft?.owner.urlProfile}
                     width="18px"
                     height="18px"
                     backsize="cover"
@@ -1288,9 +1288,7 @@ const NFTDetails = (props) => {
                     spacing="6px"
                     cursor={"pointer"}
                     width="auto"
-                    onClick={() =>
-                      props.redirect(`user/${nft.creator._id}`)
-                    }
+                    onClick={() => props.redirect(`user/${nft.creator._id}`)}
                   >
                     <IconImg
                       url={nft.creator.urlProfile}
@@ -1662,10 +1660,15 @@ const NFTDetails = (props) => {
                   </HStack>
                 </HStack>
                 {loadingOffers ? (
-                  loadingOffersArray.map((i) => (
+                  loadingOffersArray.map((item) => (
                     <>
-                      <Divider></Divider>
-                      <HStack width="100%" height={"69px"} spacing="6px">
+                      <Divider key={"offerLoadingDivider_" + item.id}></Divider>
+                      <HStack
+                        key={"offerLoading_" + item.id}
+                        width="100%"
+                        height={"69px"}
+                        spacing="6px"
+                      >
                         <HStack background={"transparent"} width={"100%"}>
                           <VStack
                             alignment="flex-start"
@@ -1835,7 +1838,7 @@ const NFTDetails = (props) => {
             <HStack flexwrap="wrap" padding="0 15px">
               {loadingMore ? (
                 loadingNFTs.map((item) => (
-                  <VStack minwidth="240px" height="390px" key={item.name}>
+                  <VStack minwidth="240px" height="390px" key={item.id}>
                     <LoadingNftContainer></LoadingNftContainer>
                   </VStack>
                 ))

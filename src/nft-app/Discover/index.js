@@ -232,10 +232,18 @@ const Discover = (props) => {
     window.scrollTo(0, 0);
     setLoading(true);
     if (isSelected) {
-      window.history.replaceState({ path: "/discover/collections" }, "", "/discover/collections");
+      window.history.replaceState(
+        { path: "/discover/collections" },
+        "",
+        "/discover/collections"
+      );
       getData("collections");
     } else {
-      window.history.replaceState({ path: "/discover/nfts" }, "", "/discover/nfts");
+      window.history.replaceState(
+        { path: "/discover/nfts" },
+        "",
+        "/discover/nfts"
+      );
       getData("nfts");
     }
   }, [isSelected]);
@@ -409,8 +417,8 @@ const Discover = (props) => {
                     </VStack>
                   ))
                 ) : collections.length !== 0 ? (
-                  collections.map((item) => (
-                    <LayoutGroup id="collection" key={item._id}>
+                  collections.map((item, i) => (
+                    <LayoutGroup id="collection" key={i + item._id}>
                       <VStack
                         width="326px"
                         height="440px"

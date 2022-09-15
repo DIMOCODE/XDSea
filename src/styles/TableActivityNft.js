@@ -52,9 +52,9 @@ function TableActivityNft(props) {
       {props?.loading
         ? loadingEvents.map((item) => (
             <>
-              <Divider></Divider>
-              <VStack width="100%" spacing="0px">
-                <HStack key={item.id} width="100%" height={heightRow}>
+              <Divider key={"loadingDivider_" + item.id}></Divider>
+              <VStack key={"loading_" + item.id} width="100%" spacing="0px">
+                <HStack width="100%" height={heightRow}>
                   <HStack width={widthRow} background={debugColor}>
                     <TitleLoading
                       key="Offerer"
@@ -147,9 +147,9 @@ function TableActivityNft(props) {
           ))
         : props?.activity.map((item) => (
             <>
-              <Divider></Divider>
-              <VStack width="100%" spacing="0">
-                <HStack key={item.id} width="100%" height={heightRow}>
+              <Divider key={"activityDivider_" + item.id}></Divider>
+              <VStack key={"activity_" + item.id} width="100%" spacing="0">
+                <HStack width="100%" height={heightRow}>
                   <HStack
                     spacing="6px"
                     width={widthRow}

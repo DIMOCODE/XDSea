@@ -17,6 +17,7 @@ import { motion } from "framer-motion/dist/framer-motion";
 
 function NftContainer(props) {
   const {
+    elementKey,
     price,
     collectionName,
     itemNumber,
@@ -31,7 +32,10 @@ function NftContainer(props) {
     isVerified,
     usdPrice,
     collectionVerified,
-    itemPreview
+    itemPreview,
+    width,
+    height,
+    border,
   } = props;
 
   const scaleImage = {
@@ -62,13 +66,14 @@ function NftContainer(props) {
 
   return (
     <VStack
+      key={elementKey}
       cursor={"pointer"}
       overflow="hidden"
-      border="12px"
+      border={border}
       background={appStyle.colors.darkgrey10}
       spacing="0"
-      width="100%"
-      height="390px"
+      width={width || "100%"}
+      height={height || "390px"}
       bordersize="0px"
       bordercolor={appStyle.colors.darkgrey10}
       onHoverStart={() => {
@@ -125,76 +130,78 @@ function NftContainer(props) {
         </ZItem>
         <ZItem>
           <VStack
-            spacing="0
-            "
+            spacing="0"
             background="linear-gradient(180.3deg, rgba(0, 0, 0, 0) 64.14%, rgba(0, 0, 0, 0.3) 78.31%, #000000 96.66%)"
             cursor={"pointer"}
             onClick={onClick}
             height="100%"
           >
             <HStack padding="15px" cursor={"pointer"}>
-              {isVerified ? (
-                <>
-                  <ZStack>
-                    <ZItem>
-                      <Mask img={verifiedMask}>
+              {creatorImage
+                ? isVerified ? (
+                  <>
+                    <ZStack>
+                      <ZItem>
+                        <Mask img={verifiedMask}>
+                          <IconImg
+                            url={creatorImage}
+                            width="48px"
+                            height="48px"
+                            border="120px"
+                            backsize="cover"
+                          ></IconImg>
+                        </Mask>
+                      </ZItem>
+
+                      <ZItem>
                         <IconImg
-                          url={creatorImage}
+                          url={verifiedShape}
                           width="48px"
                           height="48px"
                           border="120px"
+                          whileTap={onClickCreator}
                           backsize="cover"
+                          cursor={"pointer"}
+                          style={{
+                            boxShadow: "0px 4px 2px rgba(0, 0, 0, 0.15)",
+                          }}
                         ></IconImg>
-                      </Mask>
-                    </ZItem>
+                        <AbsoluteVerified>
+                          <IconImg
+                            url={verifiedBlue}
+                            width="21px"
+                            height="21px"
+                            border="120px"
+                          ></IconImg>
+                        </AbsoluteVerified>
+                      </ZItem>
+                    </ZStack>
 
-                    <ZItem>
-                      <IconImg
-                        url={verifiedShape}
-                        width="48px"
-                        height="48px"
-                        border="120px"
-                        whileTap={onClickCreator}
-                        backsize="cover"
-                        cursor={"pointer"}
-                        style={{
-                          boxShadow: "0px 4px 2px rgba(0, 0, 0, 0.15)",
-                        }}
-                      ></IconImg>
-                      <AbsoluteVerified>
-                        <IconImg
-                          url={verifiedBlue}
-                          width="21px"
-                          height="21px"
-                          border="120px"
-                        ></IconImg>
-                      </AbsoluteVerified>
-                    </ZItem>
-                  </ZStack>
-
-                  <Spacer></Spacer>
-                </>
-              ) : (
-                <>
-                  <IconImg
-                    url={creatorImage}
-                    width="48px"
-                    height="48px"
-                    border="120px"
-                    bordersize="3px"
-                    bordercolor="white"
-                    whileTap={onClickCreator}
-                    backsize="cover"
-                    cursor={"pointer"}
-                  ></IconImg>
-                  <Spacer></Spacer>
-                  {owner ? (
-                    <OwnerTag>OWNER</OwnerTag>
-                  ) : (
-                    <CreatorTag>CREATOR</CreatorTag>
-                  )}
-                </>
-              )}
+                    <Spacer></Spacer>
+                  </>
+                ) : (
+                  <>
+                    <IconImg
+                      url={creatorImage}
+                      width="48px"
+                      height="48px"
+                      border="120px"
+                      bordersize="3px"
+                      bordercolor="white"
+                      whileTap={onClickCreator}
+                      backsize="cover"
+                      cursor={"pointer"}
+                    ></IconImg>
+                    <Spacer></Spacer>
+                    {owner ? (
+                      <OwnerTag>OWNER</OwnerTag>
+                    ) : (
+                      <CreatorTag>CREATOR</CreatorTag>
+                    )}
+                  </>
+                )
+                : <Spacer></Spacer>
+              }
 
               {(() => {
                 switch (nftStatus) {

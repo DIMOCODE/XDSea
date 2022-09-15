@@ -819,7 +819,7 @@ function TopBar(props) {
                     </HStack>
 
                     <HStack>
-                      {/* <VStack maxwidth="160px">
+                      <VStack maxwidth="160px">
                         <ZStack>
                           <ZItem>
                             <WalletButton
@@ -841,7 +841,7 @@ function TopBar(props) {
                             ></WalletButton>
                           </ZItem>
                         </ZStack>
-                      </VStack> */}
+                      </VStack>
 
                       {/* <SwitchButton clickOnSwitch={themeToggler}></SwitchButton>
                        */}

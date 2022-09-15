@@ -82,6 +82,9 @@ function Searchbar({
     switchBarStatus(false);
   }
 
+  /**
+   * React Hook to render the component when the search term is updated
+   */
   useEffect(() => {
     const delayDebounceFn = setTimeout(async () => {
       if (searchTerm !== "") {
@@ -89,7 +92,7 @@ function Searchbar({
           [1, 2].map(async (i) => {
             if (i === 1) {
               const collectionResults = await (
-                await getCollections({ searchTerm: searchTerm })
+                await getCollections({ searchBy: searchTerm })
               ).data;
               setFilteredCollectionData(collectionResults.collections);
             } else {
@@ -198,6 +201,7 @@ function Searchbar({
                         onClick={() =>
                           NavigateTo(`nft/${nftaddress}/${nft.tokenId}`)
                         }
+                        key={nft._id}
                       >
                         <IconImg
                           url={nft.urlFile.v0}
@@ -266,6 +270,7 @@ function Searchbar({
                       onClick={() =>
                         NavigateTo(`collection/${collection.nickName}`)
                       }
+                      key={collection._id}
                     >
                       <IconImg
                         url={collection.banner.v0}

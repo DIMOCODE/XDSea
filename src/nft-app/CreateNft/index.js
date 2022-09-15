@@ -171,7 +171,7 @@ function CreateNft(props) {
   };
 
   /**
-   * Get a list of collections for which the user is the creator
+   * Get the list of collections for which the user is the creator
    *
    * @param {*} userData the User DB object
    */
@@ -207,15 +207,15 @@ function CreateNft(props) {
   /**
    * Set the selected collection as the state value
    *
-   * @param {string} name the name of the selected collection
+   * @param {string} value the name of the selected collection
    * @param {string} nickName the nickname of the selected collection
    */
-  const onCollectionSelected = (name, nickName) => {
-    setSelectedCollection(name);
+  const onCollectionSelected = (value, nickName) => {
+    setSelectedCollection(value);
     setIsOpenSelector(false);
     setNewCollection(false);
     setIsCollectionNotSelected(false);
-    setCollection(name);
+    setCollection(value);
     setCollectionNickName(nickName);
   };
 
@@ -640,7 +640,7 @@ function CreateNft(props) {
         const collectionCreation = await (
           await createCollection(
             collectionName,
-            isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address,
+            user.XDCWallets[0],
             collectionDescription,
             logoUrl,
             bannerUrl,
@@ -1254,10 +1254,12 @@ function CreateNft(props) {
                           <ListItem
                             height="43px"
                             border="6px"
-                            onClick={onCollectionSelected(
-                              collection.name,
-                              collection.nickName
-                            )}
+                            onClick={() =>
+                              onCollectionSelected(
+                                collection.name,
+                                collection.nickName
+                              )
+                            }
                             key={Math.random()}
                           >
                             {collection.name}

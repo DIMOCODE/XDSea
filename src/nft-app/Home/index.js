@@ -53,6 +53,7 @@ const Home = (props) => {
   const [featuredNFTs, setFeaturedNFTs] = useState([]);
   const [topCollections, setTopCollections] = useState([]);
   const [trendingNFTs, setTrendingNFTs] = useState([]);
+  const [newestNFTs, setNewestNFTs] = useState([]);
 
   const [loading, setLoading] = useState(false);
   const [loadingCollections] = useState([
@@ -90,6 +91,7 @@ const Home = (props) => {
       setFeaturedNFTs(homeData.featuredNfts);
       setTopCollections(homeData.topCollections);
       setTrendingNFTs(homeData.trendingNfts);
+      setNewestNFTs(homeData.newestNfts);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -416,41 +418,28 @@ const Home = (props) => {
           <HStack flexwrap="wrap" padding="0 12px 0 12px">
             {trendingNFTs.length !== 0
               ? trendingNFTs.slice(0, 4).map((item) =>
-                  isImage(item.fileType) ? (
-                    <IconImg
-                      key={item._id}
-                      url={item.urlFile.v0}
-                      backsize="cover"
-                      width="48%"
-                      height={size.width > 414 ? "360px" : "180px"}
-                      border="6px"
-                      cursor="pointer"
-                      onClick={() =>
-                        props.redirect(
-                          `nft/${item.nftContract}/${item.tokenId}`
-                        )
-                      }
-                    ></IconImg>
-                  ) : (
-                    <HStack
-                      key={item._id}
-                      background="black"
-                      width="48%"
-                      height={size.width > 414 ? "360px" : "180px"}
-                      border="6px"
-                    >
-                      <ReactPlayer
-                        url={item.urlFile.v0}
-                        playing={true}
-                        volume={0}
-                        muted={true}
-                        loop={true}
-                        width="100%"
-                        height="100%"
-                      ></ReactPlayer>
-                    </HStack>
-                  )
-                )
+                <NftContainer
+                  key={"trending_" + item._id}
+                  iconStatus={item.saleType.toLowerCase()}
+                  itemImage={item.urlFile.v0}
+                  itemPreview={item.preview.v0}
+                  price={item.price}
+                  collectionName={item.collectionId.name}
+                  itemNumber={item.name}
+                  fileType={item.fileType}
+                  background={({ theme }) => theme.backElement}
+                  onClick={() =>
+                    props.redirect(
+                      `nft/${item.nftContract}/${item.tokenId}`
+                    )
+                  }
+                  usdPrice={props.xdc}
+                  collectionVerified={item.creator.isVerified}
+                  width="48%"
+                  height={size.width > 414 ? "360px" : "180px"}
+                  border="6px"
+                ></NftContainer>
+              )
               : null}
           </HStack>
 
@@ -497,10 +486,10 @@ const Home = (props) => {
             onSlideChange={() => {}}
             className="mySwiper2"
           >
-            {trendingNFTs.length !== 0
-              ? trendingNFTs.slice(0, 4).map((item) => (
+            {newestNFTs.length !== 0
+              ? newestNFTs.slice(0, 4).map((item) => (
                   <SwiperSlide
-                    key={item._id}
+                    key={"newSlide_" + item._id}
                     style={{ cursor: "pointer" }}
                     onClick={() =>
                       props.redirect(
@@ -508,35 +497,27 @@ const Home = (props) => {
                       )
                     }
                   >
-                    <ZStack background="black" width="100%" border="6px">
-                      <ZItem>
-                        {isImage(item.fileType) ? (
-                          <IconImg
-                            url={item.urlFile.v0}
-                            backsize="cover"
-                            width="100%"
-                            height="100%"
-                            border="6px"
-                          ></IconImg>
-                        ) : (
-                          <ReactPlayer
-                            url={item.urlFile.v0}
-                            playing={true}
-                            volume={0}
-                            muted={true}
-                            loop={true}
-                            width="100%"
-                            height="100%"
-                          ></ReactPlayer>
-                        )}
-                      </ZItem>
-                      <ZItem>
-                        <VStack
-                          border="6px"
-                          background="linear-gradient(181.21deg, rgba(0, 0, 0, 0) 75.55%, #000000 96.17%)"
-                        ></VStack>
-                      </ZItem>
-                    </ZStack>
+                    <NftContainer
+                      key={"new_" + item._id}
+                      iconStatus={item.saleType.toLowerCase()}
+                      itemImage={item.urlFile.v0}
+                      itemPreview={item.preview.v0}
+                      price={item.price}
+                      collectionName={item.collectionId.name}
+                      itemNumber={item.name}
+                      fileType={item.fileType}
+                      background={({ theme }) => theme.backElement}
+                      onClick={() =>
+                        props.redirect(
+                          `nft/${item.nftContract}/${item.tokenId}`
+                        )
+                      }
+                      usdPrice={props.xdc}
+                      collectionVerified={item.creator.isVerified}
+                      width="100%"
+                      height="100%"
+                      border="6px"
+                    ></NftContainer>
                   </SwiperSlide>
                 ))
               : null}

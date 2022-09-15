@@ -54,7 +54,7 @@ function SearchPage(props) {
   const [maxPrice, setMaxPrice] = useState(0);
 
   /**
-   * Get a list of collections
+   * Get a list of collections based on the search results and filter
    *
    * @param {*} params the collection parameters for filtering
    */
@@ -181,7 +181,7 @@ function SearchPage(props) {
       var newurl =
         location.pathname + `?searchTerm=${searchTerm}&mode=collection`;
       window.history.replaceState({ path: newurl }, "", newurl);
-      getCollectionData({ page: 1, searchTerm: searchTerm });
+      getCollectionData({ page: 1, searchBy: searchTerm });
       setNftParams({ page: 1, searchBy: searchTerm });
     } else {
       var newurl = location.pathname + `?searchTerm=${searchTerm}&mode=nft`;
@@ -255,7 +255,8 @@ function SearchPage(props) {
                       }
                       setNewResults(false);
                       var newurl =
-                        location.pathname + `?${searchTerm}&mode=collection`;
+                        location.pathname +
+                        `?searchTerm=${searchTerm}&mode=collection`;
                       window.history.replaceState({ path: newurl }, "", newurl);
                       setIsSelected(true);
                     }}
@@ -279,7 +280,8 @@ function SearchPage(props) {
                       }
                       setNewResults(false);
                       var newurl =
-                        location.pathname + `?${searchTerm}&mode=nft`;
+                        location.pathname +
+                        `?searchTerm=${searchTerm}&mode=nft`;
                       window.history.replaceState({ path: newurl }, "", newurl);
                       setIsSelected(false);
                     }}
@@ -431,9 +433,7 @@ function SearchPage(props) {
                                 collectionParams.sortBy === "volumeTrade"
                               }
                               onClickCreator={() =>
-                                props.redirect(
-                                  `user/${item.creator._id}`
-                                )
+                                props.redirect(`user/${item.creator._id}`)
                               }
                               xdc={props.xdc}
                             ></Collection>
@@ -491,9 +491,8 @@ function SearchPage(props) {
                   <HStack>
                     <HStack spacing="12px" flexwrap="wrap" justify="flex-start">
                       {nftData.map((item, i) => (
-                        <VStack minwidth="240px" height="390px">
+                        <VStack minwidth="240px" height="390px" key={i}>
                           <NftContainer
-                            key={i}
                             isVerified={item.owner.isVerified}
                             iconStatus={item.saleType.toLowerCase()}
                             hasOffers={item.hasOpenOffer}

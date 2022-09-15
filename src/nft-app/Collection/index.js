@@ -73,6 +73,7 @@ const CollectionPage = (props) => {
     searchBy: searchTerm,
   });
   const [copied, setCopied] = useState(false);
+  const [nftNumber, setNftNumber] = useState(0);
 
   const webLink = `https://www.xdsea.com/collection/${collectionNickName}`;
 
@@ -103,12 +104,12 @@ const CollectionPage = (props) => {
         isVerified: collectionData.collection.creator.isVerified,
         description: collectionData.collection.description,
         discordUrl: collectionData.collection.discordUrl,
-        floorPrice: collectionData.collection.floorPrice,
+        floorPrice: collectionData.metrics.floorPrice,
         instagramUrl: collectionData.collection.instagramUrl,
         logo: collectionData.collection.logo.v0,
         name: collectionData.collection.name,
         twitterUrl: collectionData.collection.twitterUrl,
-        volumeTrade: collectionData.collection.volumeTrade,
+        volumeTrade: collectionData.metrics.volumeTraded,
         websiteUrl: collectionData.collection.websiteUrl,
         nftsCount: collectionData.metrics.nftsCount,
         owners: collectionData.metrics.owners,
@@ -122,6 +123,7 @@ const CollectionPage = (props) => {
         })
       ).data;
 
+      setNftNumber(collectionNFTData.nftsAmount);
       setMaxPrice(collectionNFTData.higherPrice);
       setParams({
         collectionId: collectionData.collection._id,
@@ -168,6 +170,7 @@ const CollectionPage = (props) => {
   const updateNFTs = async (params) => {
     const collectionNFTData = await (await getCollectionNFTs(params)).data;
 
+    setNftNumber(collectionNFTData.nftsAmount);
     setMaxPrice(collectionNFTData.higherPrice);
     setParams({
       ...params,
@@ -212,9 +215,7 @@ const CollectionPage = (props) => {
           {/* Creator Tag */}
           <CreatorAbsolute>
             <HStack
-              onClick={() =>
-                props.redirect(`user/${collection.creatorId}`)
-              }
+              onClick={() => props.redirect(`user/${collection.creatorId}`)}
               border="30px"
               padding="6px 15px"
               style={{
@@ -655,7 +656,7 @@ const CollectionPage = (props) => {
         <InfiniteScroll
           dataLength={nfts.length}
           next={fetchMoreNFTs}
-          hasMore={nfts.length < collection.nftsCount}
+          hasMore={nfts.length < nftNumber}
           loader={
             <HStack
               initial={{ opacity: 0 }}
@@ -681,12 +682,12 @@ const CollectionPage = (props) => {
                     minwidth={size.width < 768 ? "100%" : "300px"}
                     width={"240px"}
                     height="450px"
-                    key={i}
+                    key={"collectionStack_" + item._id}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                   >
                     <NftContainer
-                      key={i}
+                      elementKey={"collection_" + item._id}
                       isVerified={item.owner.isVerified}
                       iconStatus={item.saleType.toLowerCase()}
                       hasOffers={item.hasOpenOffer}
