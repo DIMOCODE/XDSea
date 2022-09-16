@@ -124,9 +124,9 @@ function Searchbar({
 
   return (
     <VStack
-      height="42px"
+      height="auto"
       minwidth={widthInput || "300px"}
-      style={{ zIndex: 100 }}
+      style={{ zIndex: 1 }}
     >
       <InputStyled
         type="text"
@@ -153,195 +153,540 @@ function Searchbar({
         }}
         height="42px"
       ></InputStyled>
-      {showResults && (
-        <SearchResult top={top} left={left} ref={ref}>
-          <VStack
-            background={({ theme }) => theme.backElement}
-            padding={isPhone ? "0px" : "6px 15px 0 15px"}
-            border={isPhone ? "0px" : "12px"}
-            style={{
-              boxShadow: isPhone ? "0" : "0px 15px 15px rgba(0, 0, 0, 0.15)",
-            }}
-            spacing="0px"
-            width={width}
-          >
-            {/* Title Results */}
+      {showResults
+        ? size.width > 425
+            ? <SearchResult top={top} left={left} ref={ref}>
+              <VStack
+                background={({ theme }) => theme.backElement}
+                padding={isPhone ? "0px" : "6px 15px 0 15px"}
+                border={isPhone ? "0px" : "12px"}
+                style={{
+                  boxShadow: isPhone ? "0" : "0px 15px 15px rgba(0, 0, 0, 0.15)",
+                }}
+                spacing="0px"
+                width={widthInput || "300px"}
+              >
+                {/* Title Results */}
 
-            <HStack padding="15px 0 " width="100%">
-              <BodyRegular>Search Results for</BodyRegular>
-              <BodyBold>"{searchTerm}"</BodyBold>
+                <HStack padding="15px 0 " width="100%">
+                  <BodyRegular>Search Results for</BodyRegular>
+                  <BodyBold>"{searchTerm}"</BodyBold>
 
-              <Spacer></Spacer>
+                  <Spacer></Spacer>
 
-              <a onClick={clearInput}>
-                <IconImg
-                  url={crossSearch}
-                  width="26px"
-                  height="26px"
-                  cursor="pointer"
-                ></IconImg>
-              </a>
-            </HStack>
+                  <a onClick={clearInput}>
+                    <IconImg
+                      url={crossSearch}
+                      width="26px"
+                      height="26px"
+                      cursor="pointer"
+                    ></IconImg>
+                  </a>
+                </HStack>
 
-            <Divider></Divider>
+                <Divider></Divider>
 
-            {/* Box Results */}
+                {/* Box Results */}
 
-            <HStack
-              responsive={size.width > 425 ? false : true}
-              alignment="flex-start"
+                {size.width > 768
+                  ? <HStack
+                    responsive={size.width > 425 ? false : true}
+                    alignment="flex-start"
+                    overflowy="auto"
+                    height={"auto"}
+                    justify={isPhone ? "flex-start" : "center"}
+                    padding="15px 0 15px 0"
+                  >
+                    {/* NFTs */}
+                    {filteredNFTData.length !== 0 && (
+                      <VStack alignment="flex-start" spacing="9px">
+                        <CaptionBoldShort>NFTs</CaptionBoldShort>
+                        <VStack spacing="12px" width="100%">
+                          {filteredNFTData.slice(0, 3).map((nft) => (
+                            <HStack
+                              whileHover={{ background: "rgb(0,0,0,0.06" }}
+                              padding="6px"
+                              border="6px"
+                              onClick={() =>
+                                NavigateTo(`nft/${nftaddress}/${nft.tokenId}`)
+                              }
+                              key={nft._id}
+                            >
+                              <IconImg
+                                url={nft.urlFile.v0}
+                                width="54px"
+                                height="54px"
+                                border="9px"
+                                backsize="cover"
+                                cursor="pointer"
+                              ></IconImg>
+                              <VStack
+                                alignment="flex-start"
+                                spacing="3px"
+                                cursor="pointer"
+                              >
+                                <BodyBold>{nft.name}</BodyBold>
+                                <CaptionRegular>
+                                  {nft.collectionId.name}
+                                </CaptionRegular>
+                                <CaptionRegular>
+                                  {truncateAddress(nft.owner.userName)}
+                                </CaptionRegular>
+                              </VStack>
+                            </HStack>
+                          ))}
+                        </VStack>
+
+                        {filteredNFTData.length > 3 && (
+                          <a>
+                            <HStack
+                              spacing="5px"
+                              background={({ theme }) => theme.faded}
+                              padding="5px 15px"
+                              border="9px"
+                              cursor="pointer"
+                              onClick={() =>
+                                NavigateTo(
+                                  `SearchPage?searchTerm=${searchTerm}&mode=nft`
+                                )
+                              }
+                            >
+                              <CaptionBoldShort>See all NFTs</CaptionBoldShort>
+                              <IconImg
+                                url={arrowRight}
+                                width="26px"
+                                height="26px"
+                                cursor="pointer"
+                              ></IconImg>
+                            </HStack>
+                          </a>
+                        )}
+                      </VStack>
+                    )}
+
+                    {/* Collections */}
+                    {filteredCollectionData.length !== 0 && (
+                      <VStack alignment="flex-start" spacing="9px">
+                        <CaptionBoldShort>Collections</CaptionBoldShort>
+                        {filteredCollectionData.slice(0, 2).map((collection) => (
+                          <VStack
+                            alignment="flex-start"
+                            spacing="9px"
+                            width="100%"
+                            whileHover={{ background: "rgb(0,0,0,0.06" }}
+                            padding="6px"
+                            border="6px"
+                            onClick={() =>
+                              NavigateTo(`collection/${collection.nickName}`)
+                            }
+                            key={collection._id}
+                          >
+                            <IconImg
+                              url={collection.banner.v0}
+                              width="100%"
+                              height="60px"
+                              border="6px"
+                              backsize="cover"
+                              cursor="pointer"
+                            ></IconImg>
+                            <HStack>
+                              <IconImg
+                                url={collection.logo.v0}
+                                width="32px"
+                                height="32px"
+                                border="15px"
+                                backsize="cover"
+                              ></IconImg>
+                              <VStack
+                                alignment="flex-start"
+                                spacing="3px"
+                                cursor="pointer"
+                                width="100%"
+                              >
+                                <BodyBold>{collection.name}</BodyBold>
+                                <CaptionRegular>
+                                  {truncateAddress(collection.creator.userName)}
+                                </CaptionRegular>
+                              </VStack>
+                            </HStack>
+                          </VStack>
+                        ))}
+
+                        {filteredCollectionData.length > 2 && (
+                          <a>
+                            <HStack
+                              spacing="5px"
+                              background={({ theme }) => theme.faded}
+                              padding="5px 15px"
+                              border="9px"
+                              cursor="pointer"
+                              onClick={() =>
+                                NavigateTo(
+                                  `SearchPage?searchTerm=${searchTerm}&mode=collection`
+                                )
+                              }
+                            >
+                              <CaptionBoldShort cursor="pointer">
+                                See all Collections
+                              </CaptionBoldShort>
+                              <IconImg
+                                url={arrowRight}
+                                width="26px"
+                                height="26px"
+                                cursor="pointer"
+                              ></IconImg>
+                            </HStack>
+                          </a>
+                        )}
+                      </VStack>
+                    )}
+                  </HStack>
+                  : <VStack
+                    responsive={size.width > 425 ? false : true}
+                    alignment="flex-start"
+                    overflowy="auto"
+                    height={isPhone ? "490px" : "300px"}
+                    justify={isPhone ? "flex-start" : "center"}
+                    padding="15px 0 15px 0"
+                  >
+                    {/* NFTs */}
+                    {filteredNFTData.length !== 0 && (
+                      <VStack alignment="flex-start" spacing="9px">
+                        <CaptionBoldShort>NFTs</CaptionBoldShort>
+                        <VStack spacing="12px" width="100%">
+                          {filteredNFTData.slice(0, 2).map((nft) => (
+                            <HStack
+                              whileHover={{ background: "rgb(0,0,0,0.06" }}
+                              padding="6px"
+                              border="6px"
+                              onClick={() =>
+                                NavigateTo(`nft/${nftaddress}/${nft.tokenId}`)
+                              }
+                              key={nft._id}
+                              width="260px"
+                            >
+                              <IconImg
+                                url={nft.urlFile.v0}
+                                width="54px"
+                                height="54px"
+                                border="9px"
+                                backsize="cover"
+                                cursor="pointer"
+                              ></IconImg>
+                              <VStack
+                                alignment="flex-start"
+                                spacing="3px"
+                                cursor="pointer"
+                              >
+                                <BodyBold>{nft.name}</BodyBold>
+                                <CaptionRegular>
+                                  {nft.collectionId.name}
+                                </CaptionRegular>
+                                <CaptionRegular>
+                                  {truncateAddress(nft.owner.userName)}
+                                </CaptionRegular>
+                              </VStack>
+                            </HStack>
+                          ))}
+                        </VStack>
+
+                        {filteredNFTData.length > 2 && (
+                          <a>
+                            <HStack
+                              spacing="5px"
+                              background={({ theme }) => theme.faded}
+                              padding="5px 15px"
+                              border="9px"
+                              cursor="pointer"
+                              onClick={() =>
+                                NavigateTo(
+                                  `SearchPage?searchTerm=${searchTerm}&mode=nft`
+                                )
+                              }
+                            >
+                              <CaptionBoldShort>See all NFTs</CaptionBoldShort>
+                              <IconImg
+                                url={arrowRight}
+                                width="26px"
+                                height="26px"
+                                cursor="pointer"
+                              ></IconImg>
+                            </HStack>
+                          </a>
+                        )}
+                      </VStack>
+                    )}
+
+                    {/* Collections */}
+                    {filteredCollectionData.length !== 0 && (
+                      <VStack alignment="flex-start" spacing="9px">
+                        <CaptionBoldShort>Collections</CaptionBoldShort>
+                        {filteredCollectionData.slice(0, 2).map((collection) => (
+                          <VStack
+                            alignment="flex-start"
+                            spacing="9px"
+                            width="260px"
+                            whileHover={{ background: "rgb(0,0,0,0.06" }}
+                            padding="6px"
+                            border="6px"
+                            onClick={() =>
+                              NavigateTo(`collection/${collection.nickName}`)
+                            }
+                            key={collection._id}
+                          >
+                            <IconImg
+                              url={collection.banner.v0}
+                              width="100%"
+                              height="60px"
+                              border="6px"
+                              backsize="cover"
+                              cursor="pointer"
+                            ></IconImg>
+                            <HStack>
+                              <IconImg
+                                url={collection.logo.v0}
+                                width="32px"
+                                height="32px"
+                                border="15px"
+                                backsize="cover"
+                              ></IconImg>
+                              <VStack
+                                alignment="flex-start"
+                                spacing="3px"
+                                cursor="pointer"
+                                width="100%"
+                              >
+                                <BodyBold>{collection.name}</BodyBold>
+                                <CaptionRegular>
+                                  {truncateAddress(collection.creator.userName)}
+                                </CaptionRegular>
+                              </VStack>
+                            </HStack>
+                          </VStack>
+                        ))}
+
+                        {filteredCollectionData.length > 2 && (
+                          <a>
+                            <HStack
+                              spacing="5px"
+                              background={({ theme }) => theme.faded}
+                              padding="5px 15px"
+                              border="9px"
+                              cursor="pointer"
+                              onClick={() =>
+                                NavigateTo(
+                                  `SearchPage?searchTerm=${searchTerm}&mode=collection`
+                                )
+                              }
+                            >
+                              <CaptionBoldShort cursor="pointer">
+                                See all Collections
+                              </CaptionBoldShort>
+                              <IconImg
+                                url={arrowRight}
+                                width="26px"
+                                height="26px"
+                                cursor="pointer"
+                              ></IconImg>
+                            </HStack>
+                          </a>
+                        )}
+                      </VStack>
+                    )}
+                  </VStack>
+                }
+              </VStack>
+            </SearchResult>
+          : <SearchResultMobile top={top} left={left}>
+            <VStack
+              background={({ theme }) => theme.backElement}
+              padding={"6px 15px 0 15px"}
+              border={isPhone ? "0px" : "12px"}
+              style={{
+                boxShadow: isPhone ? "0" : "0px 15px 15px rgba(0, 0, 0, 0.15)",
+              }}
+              spacing="0px"
+              width={widthInput || "300px"}
+              minheight="360px"
               overflowy="auto"
-              height={isPhone ? "490px" : "300px"}
-              justify={isPhone ? "flex-start" : "center"}
-              padding="15px 0 15px 0"
             >
-              {/* NFTs */}
-              {filteredNFTData.length !== 0 && (
-                <VStack alignment="flex-start" spacing="9px">
-                  <CaptionBoldShort>NFTs</CaptionBoldShort>
-                  <VStack spacing="12px" width="100%">
-                    {filteredNFTData.slice(0, 3).map((nft) => (
-                      <HStack
+              {/* Title Results */}
+
+              <HStack padding="15px 0 " width="100%">
+                <BodyRegular>Search Results for</BodyRegular>
+                <BodyBold>"{searchTerm}"</BodyBold>
+
+                <Spacer></Spacer>
+
+                <a onClick={clearInput}>
+                  <IconImg
+                    url={crossSearch}
+                    width="26px"
+                    height="26px"
+                    cursor="pointer"
+                  ></IconImg>
+                </a>
+              </HStack>
+
+              <Divider></Divider>
+
+              {/* Box Results */}
+
+              <VStack
+                alignment="flex-start"
+                justify={"flex-start"}
+                padding="15px 0 15px 0"
+                width={"100%"}
+              >
+                {/* NFTs */}
+                {filteredNFTData.length !== 0 && (
+                  <VStack alignment="flex-start" spacing="9px" width="100%">
+                    <CaptionBoldShort>NFTs</CaptionBoldShort>
+                    <VStack spacing="12px" width="100%">
+                      {filteredNFTData.slice(0, 2).map((nft) => (
+                        <HStack
+                          whileHover={{ background: "rgb(0,0,0,0.06" }}
+                          padding="6px"
+                          border="6px"
+                          onClick={() =>
+                            NavigateTo(`nft/${nftaddress}/${nft.tokenId}`)
+                          }
+                          key={nft._id}
+                          width="100%"
+                        >
+                          <IconImg
+                            url={nft.urlFile.v0}
+                            width="54px"
+                            height="54px"
+                            border="9px"
+                            backsize="cover"
+                            cursor="pointer"
+                          ></IconImg>
+                          <VStack
+                            alignment="flex-start"
+                            spacing="3px"
+                            cursor="pointer"
+                          >
+                            <BodyBold>{nft.name}</BodyBold>
+                            <CaptionRegular>
+                              {nft.collectionId.name}
+                            </CaptionRegular>
+                            <CaptionRegular>
+                              {truncateAddress(nft.owner.userName)}
+                            </CaptionRegular>
+                          </VStack>
+                        </HStack>
+                      ))}
+                    </VStack>
+
+                    {filteredNFTData.length > 2 && (
+                      <a>
+                        <HStack
+                          spacing="5px"
+                          background={({ theme }) => theme.faded}
+                          padding="5px 15px"
+                          border="9px"
+                          cursor="pointer"
+                          onClick={() =>
+                            NavigateTo(
+                              `SearchPage?searchTerm=${searchTerm}&mode=nft`
+                            )
+                          }
+                        >
+                          <CaptionBoldShort>See all NFTs</CaptionBoldShort>
+                          <IconImg
+                            url={arrowRight}
+                            width="26px"
+                            height="26px"
+                            cursor="pointer"
+                          ></IconImg>
+                        </HStack>
+                      </a>
+                    )}
+                  </VStack>
+                )}
+
+                {/* Collections */}
+                {filteredCollectionData.length !== 0 && (
+                  <VStack alignment="flex-start" spacing="9px" width="100%">
+                    <CaptionBoldShort>Collections</CaptionBoldShort>
+                    {filteredCollectionData.slice(0, 1).map((collection) => (
+                      <VStack
+                        alignment="flex-start"
+                        spacing="9px"
+                        width="100%"
                         whileHover={{ background: "rgb(0,0,0,0.06" }}
                         padding="6px"
                         border="6px"
                         onClick={() =>
-                          NavigateTo(`nft/${nftaddress}/${nft.tokenId}`)
+                          NavigateTo(`collection/${collection.nickName}`)
                         }
-                        key={nft._id}
+                        key={collection._id}
                       >
                         <IconImg
-                          url={nft.urlFile.v0}
-                          width="54px"
-                          height="54px"
-                          border="9px"
-                          backsize="cover"
-                          cursor="pointer"
-                        ></IconImg>
-                        <VStack
-                          alignment="flex-start"
-                          spacing="3px"
-                          cursor="pointer"
-                        >
-                          <BodyBold>{nft.name}</BodyBold>
-                          <CaptionRegular>
-                            {nft.collectionId.name}
-                          </CaptionRegular>
-                          <CaptionRegular>
-                            {truncateAddress(nft.owner.userName)}
-                          </CaptionRegular>
-                        </VStack>
-                      </HStack>
-                    ))}
-                  </VStack>
-
-                  {filteredNFTData.length > 3 && (
-                    <a>
-                      <HStack
-                        spacing="5px"
-                        background={({ theme }) => theme.faded}
-                        padding="5px 15px"
-                        border="9px"
-                        cursor="pointer"
-                        onClick={() =>
-                          NavigateTo(
-                            `SearchPage?searchTerm=${searchTerm}&mode=nft`
-                          )
-                        }
-                      >
-                        <CaptionBoldShort>See all NFTs</CaptionBoldShort>
-                        <IconImg
-                          url={arrowRight}
-                          width="26px"
-                          height="26px"
-                          cursor="pointer"
-                        ></IconImg>
-                      </HStack>
-                    </a>
-                  )}
-                </VStack>
-              )}
-
-              {/* Collections */}
-              {filteredCollectionData.length !== 0 && (
-                <VStack alignment="flex-start" spacing="9px">
-                  <CaptionBoldShort>Collections</CaptionBoldShort>
-                  {filteredCollectionData.slice(0, 2).map((collection) => (
-                    <VStack
-                      alignment="flex-start"
-                      spacing="9px"
-                      width="100%"
-                      whileHover={{ background: "rgb(0,0,0,0.06" }}
-                      padding="6px"
-                      border="6px"
-                      onClick={() =>
-                        NavigateTo(`collection/${collection.nickName}`)
-                      }
-                      key={collection._id}
-                    >
-                      <IconImg
-                        url={collection.banner.v0}
-                        width="100%"
-                        height="60px"
-                        border="6px"
-                        backsize="cover"
-                        cursor="pointer"
-                      ></IconImg>
-                      <HStack>
-                        <IconImg
-                          url={collection.logo.v0}
-                          width="32px"
-                          height="32px"
-                          border="15px"
-                          backsize="cover"
-                        ></IconImg>
-                        <VStack
-                          alignment="flex-start"
-                          spacing="3px"
-                          cursor="pointer"
+                          url={collection.banner.v0}
                           width="100%"
-                        >
-                          <BodyBold>{collection.name}</BodyBold>
-                          <CaptionRegular>
-                            {truncateAddress(collection.creator.userName)}
-                          </CaptionRegular>
-                        </VStack>
-                      </HStack>
-                    </VStack>
-                  ))}
-
-                  {filteredCollectionData.length > 2 && (
-                    <a>
-                      <HStack
-                        spacing="5px"
-                        background={({ theme }) => theme.faded}
-                        padding="5px 15px"
-                        border="9px"
-                        cursor="pointer"
-                        onClick={() =>
-                          NavigateTo(
-                            `SearchPage?searchTerm=${searchTerm}&mode=collection`
-                          )
-                        }
-                      >
-                        <CaptionBoldShort cursor="pointer">
-                          See all Collections
-                        </CaptionBoldShort>
-                        <IconImg
-                          url={arrowRight}
-                          width="26px"
-                          height="26px"
+                          height="60px"
+                          border="6px"
+                          backsize="cover"
                           cursor="pointer"
                         ></IconImg>
-                      </HStack>
-                    </a>
-                  )}
-                </VStack>
-              )}
-            </HStack>
-          </VStack>
-        </SearchResult>
-      )}
+                        <HStack>
+                          <IconImg
+                            url={collection.logo.v0}
+                            width="32px"
+                            height="32px"
+                            border="15px"
+                            backsize="cover"
+                          ></IconImg>
+                          <VStack
+                            alignment="flex-start"
+                            spacing="3px"
+                            cursor="pointer"
+                            width="100%"
+                          >
+                            <BodyBold>{collection.name}</BodyBold>
+                            <CaptionRegular>
+                              {truncateAddress(collection.creator.userName)}
+                            </CaptionRegular>
+                          </VStack>
+                        </HStack>
+                      </VStack>
+                    ))}
+
+                    {filteredCollectionData.length > 1 && (
+                      <a>
+                        <HStack
+                          spacing="5px"
+                          background={({ theme }) => theme.faded}
+                          padding="5px 15px"
+                          border="9px"
+                          cursor="pointer"
+                          onClick={() =>
+                            NavigateTo(
+                              `SearchPage?searchTerm=${searchTerm}&mode=collection`
+                            )
+                          }
+                        >
+                          <CaptionBoldShort cursor="pointer">
+                            See all Collections
+                          </CaptionBoldShort>
+                          <IconImg
+                            url={arrowRight}
+                            width="26px"
+                            height="26px"
+                            cursor="pointer"
+                          ></IconImg>
+                        </HStack>
+                      </a>
+                    )}
+                  </VStack>
+                )}
+              </VStack>
+            </VStack>
+          </SearchResultMobile>
+        : null 
+      }
     </VStack>
   );
 }
@@ -353,8 +698,16 @@ const SearchResult = styled(motion.div)`
   top: ${(props) => props.top};
   left: ${(props) => props.left};
   z-index: 100;
-  width: 100vw;
+  width: ${(props) => props.width} || 100vw;
 
+  box-sizing: border-box;
+`;
+
+const SearchResultMobile = styled(motion.div)`
+  position: absolute;
+  top: ${(props) => props.top};
+  left: ${(props) => props.left};
+  width: ${(props) => props.width} || 100vw;
   box-sizing: border-box;
 `;
 

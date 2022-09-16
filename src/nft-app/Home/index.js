@@ -57,6 +57,7 @@ import { CollectionPosition } from "../../styles/CollectionPosition";
 import { BigButton } from "../../styles/BigButton";
 import ReactPlayer from "react-player";
 import verifiedBlue from "../../images/verifiedBlue.png";
+import { useLongPress } from "react-use";
 
 const Home = (props) => {
 
@@ -116,6 +117,21 @@ const Home = (props) => {
       console.log(error);
     }
   };
+
+  function longPress(callback, ms=250) {
+    let timeout = null;
+
+    const start = () => timeout = setTimeout(callback, ms);
+    const stop = () => timeout && window.clearTimeout(timeout);
+    return callback ? {
+      onMouseDown: start,
+      onMouseUp: stop,
+      onMouseLeave: stop,
+      onTouchStart: start,
+      onTouchMove: stop,
+      onTouchEnd: stop,
+    } : {};
+  }
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -236,7 +252,13 @@ const Home = (props) => {
                       )}
                     </VStack>
                   </ZItem>
-                  <ZItem cursor="pointer">
+                  <ZItem cursor="pointer" {...longPress(() => {
+                    const newFeaturedNFTPlaying = new Array(featuredNFTPlaying.length).fill(false);
+                    setFeaturedNFTPlaying((prevState) => {
+                      newFeaturedNFTPlaying[i] = !newFeaturedNFTPlaying[i];
+                      return [...newFeaturedNFTPlaying];
+                    });
+                  })}>
                     <VStack
                       background="linear-gradient(190.5deg, rgba(0, 0, 0, 0) 75.64%, rgba(0, 0, 0, 0.90) 90.61%);"
                       border="6px"
@@ -530,7 +552,6 @@ const Home = (props) => {
             onSwiper={(swiper) => {}}
             onSlideChange={() => {}}
             className="mySwiper2"
-            loop={true}
           >
             {newestNFTs.length !== 0
               ? newestNFTs.map((item) => (

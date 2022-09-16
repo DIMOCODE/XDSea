@@ -73,6 +73,21 @@ function NftContainer(props) {
     return str?.length > n ? str.substr(0, n - 1) + "..." : str;
   };
 
+  function longPress(callback, ms=250) {
+    let timeout = null;
+
+    const start = () => timeout = setTimeout(callback, ms);
+    const stop = () => timeout && window.clearTimeout(timeout);
+    return callback ? {
+      onMouseDown: start,
+      onMouseUp: stop,
+      onMouseLeave: stop,
+      onTouchStart: start,
+      onTouchMove: stop,
+      onTouchEnd: stop,
+    } : {};
+  }
+
   return (
     <VStack
       key={elementKey}
@@ -89,11 +104,11 @@ function NftContainer(props) {
       bordercolor={appStyle.colors.darkgrey10}
       onHoverStart={() => {
         setIsVisible((isVisible) => !isVisible);
-        setIsPlaying((isPlaying) => !isPlaying);
+        setIsPlaying(true);
       }}
       onHoverEnd={() => {
         setIsVisible((isVisible) => !isVisible);
-        setIsPlaying((isPlaying) => !isPlaying);
+        setIsPlaying(false);
       }}
     >
       <ZStack overflow="hidden" border="12px">
@@ -121,7 +136,7 @@ function NftContainer(props) {
                 playing={isPlaying}
                 muted={true}
                 volume={0}
-                loop={true}
+                loop={false}
                 width="120%"
                 height="100%"
               />
@@ -139,7 +154,11 @@ function NftContainer(props) {
             ></IconImg>
           )}
         </ZItem>
-        <ZItem>
+        <ZItem
+          {...longPress(() => {
+            setIsPlaying(!isPlaying);
+          })}
+        >
           <VStack
             spacing="0"
             background="linear-gradient(180.3deg, rgba(0, 0, 0, 0) 64.14%, rgba(0, 0, 0, 0.3) 78.31%, #000000 96.66%)"

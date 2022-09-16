@@ -85,6 +85,7 @@ const MyNFT = (props) => {
 
   const [collections, setCollections] = useState([]);
   const [nfts, setNfts] = useState([]);
+  const [ownedNFTPlaying, setOwnedNFTPlaying] = useState([]);
   const [totalNfts, setTotalNfts] = useState(0);
   const [loading, setLoading] = useState(false);
   const [loadingCollection, setLoadingCollection] = useState(false);
@@ -148,6 +149,7 @@ const MyNFT = (props) => {
 
           setNfts(nftHeights);
           setTotalNfts(nftData.nftsAmount);
+          setOwnedNFTPlaying(new Array(nftData.nftsAmount.length).fill(false));
           setHighestPrice(nftData.higherPrice);
         }
       })
@@ -221,6 +223,21 @@ const MyNFT = (props) => {
     setIsDarkUI(user?.theme === "dark" ? true : false);
     setBanner({ preview: "", raw: "" });
   };
+
+  function longPress(callback, ms=250) {
+    let timeout = null;
+
+    const start = () => timeout = setTimeout(callback, ms);
+    const stop = () => timeout && window.clearTimeout(timeout);
+    return callback ? {
+      onMouseDown: start,
+      onMouseUp: stop,
+      onMouseLeave: stop,
+      onTouchStart: start,
+      onTouchMove: stop,
+      onTouchEnd: stop,
+    } : {};
+  }
 
   /**
    * React Hook to re-render the component when the userId state changes
@@ -328,7 +345,7 @@ const MyNFT = (props) => {
 
   return (
     <UserSection>
-      {size.width > 414 ? (
+      {size.width > 425 ? (
         <ZStack>
           <ZItem>
             <VStack width="100%" height="900px" justify="flex-start">
@@ -1268,14 +1285,26 @@ const MyNFT = (props) => {
                                     border="6px"
                                     cursor="pointer"
                                     overflow="hidden"
-                                    whileHover={{ scale: 1.009 }}
-                                    onClick={() => {
-                                      props.redirect(
-                                        `nft/${nftaddress}/${item.tokenId}`
-                                      );
-                                    }}
+                                    whileHover={{ scale: 1.009 }}  
                                   >
-                                    <ZStack cursor={"pointer"} border="6px">
+                                    <ZStack cursor={"pointer"} border="6px" 
+                                      onClick={() => {
+                                        props.redirect(
+                                          `nft/${nftaddress}/${item.tokenId}`
+                                        );
+                                      }}
+                                      onHoverStart={() => {
+                                        setOwnedNFTPlaying((prevState) => {
+                                          prevState[i] = true;
+                                          return [...prevState];
+                                        });
+                                      }}
+                                      onHoverEnd={() => {
+                                        setOwnedNFTPlaying((prevState) => {
+                                          prevState[i] = false;
+                                          return [...prevState];
+                                        });
+                                      }}>
                                       {item.hasOpenOffer ? (
                                         <BubbleOffers>
                                           <HStack
@@ -1312,10 +1341,10 @@ const MyNFT = (props) => {
                                           >
                                             <ReactPlayer
                                               url={item.urlFile.v0}
-                                              playing={true}
+                                              playing={ownedNFTPlaying[i]}
                                               volume={0}
                                               muted={true}
-                                              loop={false}
+                                              loop={true}
                                               width="100%"
                                               height="160%"
                                             />
@@ -1330,7 +1359,13 @@ const MyNFT = (props) => {
                                           ></IconImg>
                                         ) : null}
                                       </ZItem>
-                                      <ZItem>
+                                      <ZItem {...longPress(() => {
+                                        setOwnedNFTPlaying((prevState) => {
+                                          const newOwnedNFTPlaying = new Array(ownedNFTPlaying.length).fill(false);
+                                          newOwnedNFTPlaying[i] = !newOwnedNFTPlaying[i];
+                                          return [...newOwnedNFTPlaying];
+                                        });
+                                      })}>
                                         <VStack
                                           padding="15px"
                                           background="linear-gradient(180deg, rgba(0, 0, 0, 0) 54.41%, #000000 91.67%)"
@@ -1623,10 +1658,10 @@ const MyNFT = (props) => {
                           >
                             <ReactPlayer
                               url={item.urlFile.v0}
-                              playing={true}
+                              playing={ownedNFTPlaying[i]}
                               volume={0}
                               muted={true}
-                              loop={false}
+                              loop={true}
                               width="100%"
                               height="160%"
                             />
@@ -1641,7 +1676,13 @@ const MyNFT = (props) => {
                           ></IconImg>
                         ) : null}
                       </ZItem>
-                      <ZItem>
+                      <ZItem {...longPress(() => {
+                        setOwnedNFTPlaying((prevState) => {
+                          const newOwnedNFTPlaying = new Array(ownedNFTPlaying.length).fill(false);
+                          newOwnedNFTPlaying[i] = !newOwnedNFTPlaying[i];
+                          return [...newOwnedNFTPlaying];
+                        });
+                      })}>
                         <VStack
                           padding="15px"
                           background="linear-gradient(180deg, rgba(0, 0, 0, 0) 54.41%, #000000 91.67%)"
@@ -1662,7 +1703,7 @@ const MyNFT = (props) => {
         </VStack>
       )}
 
-      {size.width < 415 ? (
+      {size.width < 426 ? (
         <SliderActivity>
           <Activity></Activity>
         </SliderActivity>
