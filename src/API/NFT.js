@@ -1,10 +1,10 @@
-import { createRequest, createSignedRequest } from "./index"
+import { createRequest, createSignedRequest } from "./index";
 import { HTTP_METHODS } from "../constant";
 import { nftmarketlayeraddress } from "../config";
 
 /**
  * Send an HTTP request to get a list of NFTs
- * 
+ *
  * @param {string} searchBy search word to filter NFTs
  * @param {number} page page number
  * @param {number} pageSize number of NFTs per page
@@ -20,57 +20,89 @@ import { nftmarketlayeraddress } from "../config";
  * @param {number} priceRangeEnd maximum value of the range of prices to be filtered
  * @returns HTTP GET request response with the filtered list of NFTs
  */
-export const getNFTs = ({searchBy, page, pageSize, userId, sortBy, sortDirection, verified, saleType1, saleType2, saleType3, saleType4, priceRangeStart, priceRangeEnd}) => {
-  var params = `?${searchBy !== undefined ? `searchBy=${searchBy}&` : ""}` + 
-    `${pageSize !== undefined ? `pageSize=${pageSize}&` : ""}${userId !== undefined ? `userId=${userId}&` : ""}` + 
-    `${priceRangeStart !== undefined ? `priceRangeStart=${priceRangeStart}&` : ""}` + 
-    `${priceRangeEnd !== undefined ? `priceRangeEnd=${priceRangeEnd}&` : ""}${sortBy !== undefined ? `sortBy=${sortBy}&` : ""}` + 
-    `${sortDirection !== undefined ? `sortDirection=${sortDirection}&` : ""}${verified !== undefined ? `verified=${verified}&` : ""}` +
-    `${saleType1 !== undefined ? `saleType=${saleType1}&` : ""}${saleType2 !== undefined ? `saleType=${saleType2}&` : ""}` + 
-    `${saleType3 !== undefined ? `saleType=${saleType3}&` : ""}${saleType4 !== undefined ? `saleType=${saleType4}&` : ""}`;
+export const getNFTs = ({
+  searchBy,
+  page,
+  pageSize,
+  userId,
+  sortBy,
+  sortDirection,
+  verified,
+  saleType1,
+  saleType2,
+  saleType3,
+  saleType4,
+  priceRangeStart,
+  priceRangeEnd,
+}) => {
+  var params =
+    `?${searchBy !== undefined ? `searchBy=${searchBy}&` : ""}` +
+    `${pageSize !== undefined ? `pageSize=${pageSize}&` : ""}${
+      userId !== undefined ? `userId=${userId}&` : ""
+    }` +
+    `${
+      priceRangeStart !== undefined ? `priceRangeStart=${priceRangeStart}&` : ""
+    }` +
+    `${priceRangeEnd !== undefined ? `priceRangeEnd=${priceRangeEnd}&` : ""}${
+      sortBy !== undefined ? `sortBy=${sortBy}&` : ""
+    }` +
+    `${sortDirection !== undefined ? `sortDirection=${sortDirection}&` : ""}${
+      verified !== undefined ? `verified=${verified}&` : ""
+    }` +
+    `${saleType1 !== undefined ? `saleType=${saleType1}&` : ""}${
+      saleType2 !== undefined ? `saleType=${saleType2}&` : ""
+    }` +
+    `${saleType3 !== undefined ? `saleType=${saleType3}&` : ""}${
+      saleType4 !== undefined ? `saleType=${saleType4}&` : ""
+    }`;
   params = params.substring(0, params.length - 1);
   return createRequest(HTTP_METHODS.get, `nft/${page}${params}`, null, null);
 };
 
 /**
  * Send an HTTP request to get a specific NFT
- * 
+ *
  * @param {string} tokenId token Id of the NFT (soon to be replaced by NFT Contract and tokenId)
  * @returns HTTP GET request response with the requested NFT
  */
 export const getNFT = (nftContract, tokenId) => {
-  return createRequest(HTTP_METHODS.get, `nft/byToken/${nftContract}/${tokenId}`, null, null);
+  return createRequest(
+    HTTP_METHODS.get,
+    `nft/byToken/${nftContract}/${tokenId}`,
+    null,
+    null
+  );
 };
 
 /**
  * Send an HTTP request to get the list of offers placed on a specific NFT
- * 
+ *
  * @param {string} nftId the DB object ID of the NFT
  * @returns HTTP GET request response with the list of offers
  */
 export const getNFTOffers = (nftId) => {
   const params = {
-    nftId
+    nftId,
   };
   return createRequest(HTTP_METHODS.get, `offer`, params, null);
 };
 
 /**
  * Send an HTTP request to get the list of events placed on a specific NFT
- * 
+ *
  * @param {string} nftId the DB object ID of the NFT
  * @returns HTTP GET request response with the list of events
  */
 export const getNFTEvents = (nftId) => {
   const params = {
-    nftId
+    nftId,
   };
   return createRequest(HTTP_METHODS.get, `event`, params, null);
 };
 
 /**
  * Send a User-authorized HTTP request to add the minted NFT to the DB
- * 
+ *
  * @param {string} collectionId the DB object ID of the Collection
  * @param {string} tokenId the tokenID of the minted NFT
  * @param {string} addressCreator the wallet address of the creator of the NFT
@@ -84,13 +116,25 @@ export const getNFTEvents = (nftId) => {
  * @param {[{property: string, value: string}]} properties properties/attributes of the NFT
  * @returns HTTP POST request response with the newly added DB NFT object
  */
-export const createNFT = (collectionId, tokenId, addressCreator, price, royalty, name, description, urlFile, fileType,
-  preview, properties) => {
+export const createNFT = (
+  collectionId,
+  tokenId,
+  addressCreator,
+  marketAddress,
+  price,
+  royalty,
+  name,
+  description,
+  urlFile,
+  fileType,
+  preview,
+  properties
+) => {
   const body = {
     collectionId,
     tokenId,
     addressCreator,
-    marketAddress: nftmarketlayeraddress,
+    marketAddress,
     price,
     isListed: false,
     royalty,
@@ -101,28 +145,33 @@ export const createNFT = (collectionId, tokenId, addressCreator, price, royalty,
     preview,
     properties,
     blockchainOrigin: "XDC",
-    isHidden:false
+    isHidden: false,
   };
   return createSignedRequest(HTTP_METHODS.post, "nft", null, body);
 };
 
 /**
  * Send a User-authorized HTTP request to list a specific NFT
- * 
+ *
  * @param {number} price listing price of the NFT
  * @param {string} nftId the DB object ID of the NFT
  * @returns HTTP POST request response with the newly listed DB NFT object
  */
 export const listNFTRequest = (price, nftId) => {
   const body = {
-    price
+    price,
   };
-  return createSignedRequest(HTTP_METHODS.post, `nft/list/${nftId}`, null, body);
+  return createSignedRequest(
+    HTTP_METHODS.post,
+    `nft/list/${nftId}`,
+    null,
+    body
+  );
 };
 
 /**
  * Send a User-authorized HTTP request to transfer a specific NFT to another address
- * 
+ *
  * @param {string} myAddress wallet address of the current owner of the NFT
  * @param {string} toAddress wallet address that the NFT is to be transferred to
  * @param {string} nftId the DB object ID of the NFT
@@ -131,38 +180,48 @@ export const listNFTRequest = (price, nftId) => {
 export const transferNFTRequest = (myAddress, toAddress, nftId) => {
   const body = {
     myAddress,
-    toAddress
+    toAddress,
   };
-  return createSignedRequest(HTTP_METHODS.post, `nft/transfer/${nftId}`, null, body);
+  return createSignedRequest(
+    HTTP_METHODS.post,
+    `nft/transfer/${nftId}`,
+    null,
+    body
+  );
 };
 
 /**
  * Send a User-authorized HTTP request to withdraw an active NFT listing
- * 
+ *
  * @param {string} nftId the DB object ID of the NFT
  * @returns HTTP DELETE request response with the newly withdrawn DB NFT object
  */
 export const withdrawListingNFTRequest = (nftId) => {
-  return createSignedRequest(HTTP_METHODS.delete, `nft/list/${nftId}`, null, null);
+  return createSignedRequest(
+    HTTP_METHODS.delete,
+    `nft/list/${nftId}`,
+    null,
+    null
+  );
 };
 
 /**
  * Send a User-authorized HTTP request to edit an active NFT listing
- * 
+ *
  * @param {number} price the new price of the listing
  * @param {string} nftId the DB object ID of the NFT
  * @returns HTTP PUT request response with the newly edited DB NFT object
  */
 export const editListingNFTRequest = (price, nftId) => {
   const body = {
-    price
+    price,
   };
   return createSignedRequest(HTTP_METHODS.put, `nft/list/${nftId}`, null, body);
 };
 
 /**
  * Send a User-authorized HTTP request to buy an NFT
- * 
+ *
  * @param {string} myAddress wallet address of the NFT buyer
  * @param {number} price the price of the NFT
  * @param {string} nftId the DB object ID of the NFT
@@ -171,14 +230,14 @@ export const editListingNFTRequest = (price, nftId) => {
 export const buyNFTRequest = (myAddress, price, nftId) => {
   const body = {
     myAddress,
-    fee: price
+    fee: price,
   };
   return createSignedRequest(HTTP_METHODS.post, `nft/buy/${nftId}`, null, body);
 };
 
 /**
  * Send a User-authorized HTTP request to place an offer on a specific NFT
- * 
+ *
  * @param {number} price price offered to purchase the NFT
  * @param {string} myAddress wallet address of the user making the offer
  * @param {string} nftId the DB object ID of the NFT
@@ -188,27 +247,37 @@ export const placeOfferRequest = (price, myAddress, nftId) => {
   const body = {
     price,
     fromAddress: myAddress,
-    tokenId: nftId
+    tokenId: nftId,
   };
   return createSignedRequest(HTTP_METHODS.post, `offer`, null, body);
 };
 
 /**
  * Send a User-authorized HTTP request to withdraw a specific offer
- * 
+ *
  * @param {string} offerId the DB object ID of the Offer
  * @returns HTTP PUT request response with the newly withdrawn DB Offer object
  */
 export const withdrawOfferRequest = (offerId) => {
-  return createSignedRequest(HTTP_METHODS.put, `offer/${offerId}/withdraw`, null, null);
+  return createSignedRequest(
+    HTTP_METHODS.put,
+    `offer/${offerId}/withdraw`,
+    null,
+    null
+  );
 };
 
 /**
  * Send a User-authorized HTTP request to accept a specific offer
- * 
+ *
  * @param {string} offerId the DB object ID of the offer
  * @returns HTTP POST request response with the newly purchased DB NFT object
  */
 export const acceptOfferRequest = (offerId) => {
-  return createSignedRequest(HTTP_METHODS.post, `offer/${offerId}/accept`, null, null);
-}
+  return createSignedRequest(
+    HTTP_METHODS.post,
+    `offer/${offerId}/accept`,
+    null,
+    null
+  );
+};

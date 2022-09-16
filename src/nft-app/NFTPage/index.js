@@ -325,6 +325,11 @@ const NFTDetails = (props) => {
     setListButtonStatus(1);
   };
 
+  /**
+   * Send the transaction to list the NFT on the marketplace
+   * 
+   * @returns {void} none
+   */
   const listNFT = async () => {
     setIsProcessingListing(true);
     if (isNaN(parseFloat(listPrice))) {

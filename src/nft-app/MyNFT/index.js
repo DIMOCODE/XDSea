@@ -178,6 +178,11 @@ const MyNFT = (props) => {
     });
   };
 
+  /**
+   * Get the filtered list of owned NFTs of the user
+   *
+   * @param {*} params parameters used to filter the query results
+   */
   const updateNFTs = async (params) => {
     let nftData = await (await getNFTs(params)).data;
 

@@ -71,6 +71,7 @@ function TopBar(props) {
   const [isSearch, setIsSearch] = useState(false);
   const [walletOptions, setWalletOptions] = useState(true);
   const [searchPhone, setSearchPhone] = useState(false);
+  const [user, setUser] = useState(null);
 
   const variant1 = {
     open: {
@@ -133,6 +134,7 @@ function TopBar(props) {
             });
             logout();
           });
+          getUser();
           setIsMetamask(true);
           setShowMetamask(false);
           setShowError(0);
@@ -172,6 +174,7 @@ function TopBar(props) {
             connected: true,
             address: address,
           });
+          getUser();
           setShowMetamask(false);
           setShowError(0);
         }
@@ -214,6 +217,7 @@ function TopBar(props) {
             });
             logout();
           });
+          getUser();
           setIsDcent(true);
           setShowError(0);
         } else if (window.ethereum.chainId === undefined) {
@@ -245,6 +249,7 @@ function TopBar(props) {
       address: res[0],
     });
     logout();
+    setShowMenu(!showMenu);
     setIsMetamask(false);
   };
 
@@ -261,6 +266,7 @@ function TopBar(props) {
       address: wallet.address,
     });
     logout();
+    setShowMenu(!showMenu);
     setIsXdcPay(false);
   };
 
@@ -280,8 +286,14 @@ function TopBar(props) {
       address: res[0],
     });
     logout();
+    setShowMenu(!showMenu);
     setIsDcent(false);
   };
+
+  const getUser = async () => {
+    const userData = await LS.get(LS_ROOT_KEY).user;
+    setUser(userData);
+  }
 
   /**
    * Close the drop down menu when the outside is clicked
@@ -565,12 +577,11 @@ function TopBar(props) {
                   <BodyRegular animate={{ opacity: 1 }} textcolor="#FCD868">
                     BETA
                   </BodyRegular>
-                  {!devMode ? (
-                    <BodyBold textcolor="FCD868">Basilisk</BodyBold>
+                  {devMode ? (
+                    <BodyBold textcolor="#FFFFFF">Basilisk</BodyBold>
                   ) : (
                     <HStack
-                      background=" linear-gradient(90.5deg, #FFF5B3 -30.32%, #FCD868 15.14%, #FBC34B 85.07%, #FF7A00 109.52%)
-"
+                      background=" linear-gradient(90.5deg, #FFF5B3 -30.32%, #FCD868 15.14%, #FBC34B 85.07%, #FF7A00 109.52%)"
                       border="6px"
                       padding="3px 6px"
                       cursor={"pointer"}
@@ -637,7 +648,7 @@ function TopBar(props) {
                 {wallet?.connected ? (
                   <HStack self="none" minwith="52px" height="52px">
                     <IconImg
-                      url={mountain}
+                      url={user?.urlProfile}
                       width="52px"
                       height="52px"
                       border="42px"
@@ -647,8 +658,9 @@ function TopBar(props) {
                       whileTap={{ scale: 0.96 }}
                       onTapStart={() => setShowMenu(!showMenu)}
                       ref={ref}
+                      cursor="pointer"
                     ></IconImg>
-                    <RedBubble>
+                    {/* <RedBubble>
                       <VStack
                         background="red"
                         width="26px"
@@ -657,7 +669,7 @@ function TopBar(props) {
                       >
                         <CaptionBold textcolor="white">1</CaptionBold>
                       </VStack>
-                    </RedBubble>
+                    </RedBubble> */}
                   </HStack>
                 ) : (
                   <VStack
@@ -731,9 +743,11 @@ function TopBar(props) {
                           {wallet?.connected ? (
                             <HStack
                               minheight="42px"
-                              onClick={() =>
-                                props.redirect("discover/how-to-start")
-                              }
+                              cursor="pointer"
+                              onClick={() => {
+                                setShowMenu(!showMenu);
+                                props.redirect(`user/${user?._id}`);
+                              }}
                             >
                               <TitleRegular18
                                 textcolor={({ theme }) => theme.text}
@@ -742,10 +756,17 @@ function TopBar(props) {
                               </TitleRegular18>
                               <Spacer></Spacer>
 
-                              <UserMenuButton
-                                wallet={wallet}
-                                redirect={props.redirect}
-                              ></UserMenuButton>
+                              <IconImg
+                                url={user?.urlProfile}
+                                width="35px"
+                                height="35px"
+                                border="42px"
+                                bordersize="3px"
+                                bordercolor="white"
+                                backsize="cover"
+                                whileTap={{ scale: 0.96 }}
+                                cursor="pointer"
+                              ></IconImg>
                             </HStack>
                           ) : null}
 
@@ -757,9 +778,11 @@ function TopBar(props) {
 
                           <HStack
                             minheight="42px"
-                            onClick={() =>
-                              props.redirect("discover/how-to-start")
-                            }
+                            cursor="pointer"
+                            onClick={() => {
+                              setShowMenu(!showMenu);
+                              props.redirect("how-to-start");
+                            }}
                           >
                             <TitleRegular18
                               textcolor={({ theme }) => theme.text}
@@ -769,6 +792,7 @@ function TopBar(props) {
                             <Spacer></Spacer>
 
                             <IconImg
+                              cursor="pointer"
                               url={howToStart}
                               width="35px"
                               height="39px"
@@ -783,9 +807,11 @@ function TopBar(props) {
 
                           <HStack
                             minheight="42px"
-                            onClick={() =>
-                              props.redirect("discover/collections")
-                            }
+                            cursor="pointer"
+                            onClick={() => {
+                              setShowMenu(!showMenu);
+                              props.redirect("discover/collections");
+                            }}
                           >
                             <TitleRegular18
                               textcolor={({ theme }) => theme.text}
@@ -795,6 +821,7 @@ function TopBar(props) {
                             <Spacer></Spacer>
 
                             <IconImg
+                              cursor="pointer"
                               url={discoverIcon}
                               width="35px"
                               height="35px"
@@ -809,18 +836,21 @@ function TopBar(props) {
 
                           <HStack
                             minheight="42px"
-                            onClick={() =>
-                              props.redirect("discover/create-nft")
-                            }
+                            cursor="pointer"
+                            onClick={() => {
+                              setShowMenu(!showMenu);
+                              props.redirect("create-nft");
+                            }}
                           >
                             <TitleRegular18
                               textcolor={({ theme }) => theme.text}
                             >
-                              Create New NFT
+                              Create An NFT
                             </TitleRegular18>
                             <Spacer></Spacer>
 
                             <IconImg
+                              cursor="pointer"
                               url={createNewIcon}
                               width="35px"
                               height="35px"

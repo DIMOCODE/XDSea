@@ -87,10 +87,8 @@ function WalletButton(props) {
       <AnimatePresence>
         <VStack
           width="100%"
-          onClick={props.onClick}
-          onTap={() => setIsVisible(true)}
-          onHoverEnd={() => setIsVisible(false)}
-          cursor={"pointer"}
+          onClick={!status ? clickAlert : () => {}}
+          cursor={!status ? "pointer" : "default"}
           spacing="12px"
           padding={isMobile ? "0 30px" : "0"}
         >
@@ -100,54 +98,41 @@ function WalletButton(props) {
             background=" linear-gradient(1.75deg, #11101C 12.32%, #302F43 86.61%, #504E66 99.83%)"
             border="6px"
             spacing="9px"
-            cursor="pointer"
             alignment="flex-start"
             padding={"6px 18px"}
           >
             {!status ? (
               <HStack spacing="6px">
-                <a>
-                  <IconImg
-                    cursor={"pointer"}
-                    url={walletIcon}
-                    width="26px"
-                    height="26px"
-                    onClick={clickAlert}
-                  ></IconImg>
-                </a>
+                <IconImg
+                  url={walletIcon}
+                  width="26px"
+                  height="26px"
+                  onClick={clickAlert}
+                ></IconImg>
               </HStack>
             ) : isMetamask ? (
               <HStack alignment={isMobile ? "flex-start" : "center"}>
-                <a>
-                  <IconImg
-                    cursor={"pointer"}
-                    url={Metamask}
-                    width="30px"
-                    height="30px"
-                  ></IconImg>
-                </a>
+                <IconImg
+                  url={Metamask}
+                  width="30px"
+                  height="30px"
+                ></IconImg>
               </HStack>
             ) : isXdcPay ? (
               <HStack alignment={isMobile ? "flex-start" : "center"}>
-                <a>
-                  <IconImg
-                    cursor={"pointer"}
-                    url={XDClogo}
-                    width="26px"
-                    height="26px"
-                  ></IconImg>
-                </a>
+                <IconImg
+                  url={XDClogo}
+                  width="26px"
+                  height="26px"
+                ></IconImg>
               </HStack>
             ) : (
               <HStack alignment={isMobile ? "flex-start" : "center"}>
-                <a>
-                  <IconImg
-                    cursor={"pointer"}
-                    url={dcentLogo}
-                    width="26px"
-                    height="26px"
-                  ></IconImg>
-                </a>
+                <IconImg
+                  url={dcentLogo}
+                  width="26px"
+                  height="26px"
+                ></IconImg>
               </HStack>
             )}
 
@@ -164,7 +149,6 @@ function WalletButton(props) {
                         exit="initial"
                         justify="flex-start"
                         spacing="6px"
-                        cursor={"pointer"}
                       >
                         <CaptionRegular
                           textcolor={({ theme }) => theme.walletText}
@@ -213,7 +197,7 @@ function WalletButton(props) {
                   animate="hover"
                   exit="initial"
                 >
-                  <BodyMedium textcolor="white">Connect your Wallet</BodyMedium>
+                  <BodyMedium cursor="pointer" textcolor="white">Connect your Wallet</BodyMedium>
                 </motion.div>
               )}
             </VStack>

@@ -650,11 +650,12 @@ function CreateNft(props) {
             websiteLink
           )
         ).data.collection;
-        const nftCreation = await (
+        await (
           await createNFT(
             collectionCreation._id,
             tokenId,
             isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address,
+            nftmarketlayeraddress,
             price,
             royalty,
             name,
@@ -669,7 +670,7 @@ function CreateNft(props) {
         const collectionId = await (
           await getCollection(collectionNickName)
         ).data.collection._id;
-        const nftCreation = await (
+        await (
           await createNFT(
             collectionId,
             tokenId,

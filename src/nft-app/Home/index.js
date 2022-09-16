@@ -56,8 +56,10 @@ import { PricePosition } from "../../styles/PricePosition";
 import { CollectionPosition } from "../../styles/CollectionPosition";
 import { BigButton } from "../../styles/BigButton";
 import ReactPlayer from "react-player";
+import verifiedBlue from "../../images/verifiedBlue.png";
 
 const Home = (props) => {
+
   /** State Variables */
   const [featuredNFTs, setFeaturedNFTs] = useState([]);
   const [topCollections, setTopCollections] = useState([]);
@@ -89,6 +91,8 @@ const Home = (props) => {
   const [scrollTop, setScrollTop] = useState();
   const [scrolling, setScrolling] = useState();
   const [, setShowMenu] = useState(props.showMenu);
+  const heights = [260, 360, 300];
+  const [featuredNFTPlaying, setFeaturedNFTPlaying] = useState([]);
 
   /**
    * Get content for the Home page including featured NFTs, trending NFTs and top Collections
@@ -97,7 +101,13 @@ const Home = (props) => {
     try {
       const homeData = (await getHomeData()).data;
 
-      setFeaturedNFTs(homeData.featuredNfts);
+      let nftHeights = homeData.featuredNfts.map((item) => ({
+        ...item,
+        height: heights[Math.round(Math.random() * 2)],
+      }));
+
+      setFeaturedNFTs(nftHeights);
+      setFeaturedNFTPlaying(new Array(nftHeights.length).fill(false));
       setTopCollections(homeData.topCollections);
       setTrendingNFTs(homeData.trendingNfts);
       setNewestNFTs(homeData.newestNfts);
@@ -168,20 +178,30 @@ const Home = (props) => {
           }}
         >
           {featuredNFTs.length !== 0
-            ? featuredNFTs?.map((item) => (
-                <ZStack>
-                  <ZItem>
+            ? featuredNFTs?.map((item, i) => (
+                <ZStack
+                  minheight={item.height + "px"}
+                  cursor="pointer"
+                  onClick={() =>
+                    props.redirect(`nft/${item.nftContract}/${item.tokenId}`)
+                  }
+                  onHoverStart={() => {
+                    setFeaturedNFTPlaying((prevState) => {
+                      prevState[i] = true;
+                      return [...prevState];
+                    });
+                  }}
+                  onHoverEnd={() => {
+                    setFeaturedNFTPlaying((prevState) => {
+                      prevState[i] = false;
+                      return [...prevState];
+                    });
+                  }}
+                >
+                  <ZItem cursor="pointer">
                     <VStack
                       key={"featured_" + item._id}
-                      onClick={() =>
-                        props.redirect(
-                          `nft/${item.nftContract}/${item.tokenId}`
-                        )
-                      }
-                      style={{
-                        cursor: "pointer",
-                      }}
-                      minheight="360px"
+                      cursor="pointer"
                       border="6px"
                       overflowx="hidden"
                       overflowy="hidden"
@@ -193,6 +213,7 @@ const Home = (props) => {
                           width="100%"
                           height="100%"
                           border="6px"
+                          cursor="pointer"
                         ></IconImg>
                       ) : (
                         <VStack
@@ -200,10 +221,11 @@ const Home = (props) => {
                           border="6px"
                           overflowx="hidden"
                           animate={{ scale: 2 }}
+                          cursor="pointer"
                         >
                           <ReactPlayer
                             url={item.urlFile.v0}
-                            playing={true}
+                            playing={featuredNFTPlaying[i]}
                             volume={0}
                             muted={true}
                             loop={true}
@@ -214,12 +236,12 @@ const Home = (props) => {
                       )}
                     </VStack>
                   </ZItem>
-                  <ZItem>
+                  <ZItem cursor="pointer">
                     <VStack
-                      background="linear-gradient(190.5deg, rgba(0, 0, 0, 0) 75.64%, rgba(0, 0, 0, 0.90) 90.61%);
-"
+                      background="linear-gradient(190.5deg, rgba(0, 0, 0, 0) 75.64%, rgba(0, 0, 0, 0.90) 90.61%);"
                       border="6px"
                       alignment="flex-start"
+                      cursor="pointer"
                     >
                       <Spacer></Spacer>
                       <VStack
@@ -228,12 +250,31 @@ const Home = (props) => {
                         padding="0 0 0px 30px"
                         maxheight="90px"
                         width="100%"
+                        cursor="pointer"
                       >
-                        <BodyMedium textcolor="rgba(255,255,255,0.6)">
-                          CREATOR NAME
-                        </BodyMedium>
-                        <TitleRegular18 textcolor="white">
-                          Collection Name
+                        <HStack spacing="6px" cursor="pointer">
+                          <IconImg
+                            url={item.creator.urlProfile}
+                            width="18px"
+                            height="18px"
+                            backsize="cover"
+                            border="12px"
+                            cursor="pointer"
+                          ></IconImg>
+                          <BodyMedium textcolor="rgba(255,255,255,0.6)" cursor="pointer">
+                            {truncateAddress(item.creator.userName)}
+                          </BodyMedium>
+                          <IconImg
+                            url={verifiedBlue}
+                            width="15px"
+                            height="15px"
+                            border="12px"
+                            cursor="pointer"
+                          ></IconImg>
+                          <Spacer></Spacer>
+                        </HStack>
+                        <TitleRegular18 textcolor="white" cursor="pointer">
+                          {item.collectionId.name}
                         </TitleRegular18>
                       </VStack>
                     </VStack>
@@ -242,104 +283,6 @@ const Home = (props) => {
               ))
             : null}
         </Masonry>
-
-        {/* Featured Section */}
-        <VStack spacing="6px" width="100%">
-          {/* Big Tiles */}
-
-          {/* <Swiper
-            slidesPerView={size.width > 414 ? "2" : "1"}
-            spaceBetween={9}
-            centeredSlides={true}
-            style={{
-              "--swiper-navigation-color": "#fff",
-              "--swiper-pagination-color": "#fff",
-              height: "680px",
-            }}
-            navigation={true}
-            thumbs={{ swiper: thumbsSwiper }}
-            modules={[FreeMode, Navigation, Thumbs]}
-            onSwiper={() => {}}
-            onSlideChange={(event) => {}}
-            className="featuredBig"
-          >
-            {featuredNFTs.length !== 0
-              ? featuredNFTs?.map((item) => (
-                  <SwiperSlide
-                    key={"featured_" + item._id}
-                    onClick={() =>
-                      props.redirect(
-                        `nft/${item.nftContract}/${item.tokenId}`
-                      )
-                    }
-                    style={{
-                      cursor: "pointer",
-                    }}
-                  >
-                    {isImage(item.fileType) ? (
-                      <IconImg
-                        url={item.urlFile.v0}
-                        backsize="cover"
-                        width="100%"
-                        height="100%"
-                        border="6px"
-                      ></IconImg>
-                    ) : (
-                      <ReactPlayer
-                        url={item.urlFile.v0}
-                        playing={true}
-                        volume={0}
-                        muted={true}
-                        loop={true}
-                        width="100%"
-                        height="100%"
-                      ></ReactPlayer>
-                    )}
-                  </SwiperSlide>
-                ))
-              : null}
-          </Swiper> */}
-
-          {/* Thumbnails */}
-          {/* <Swiper
-            onSwiper={setThumbsSwiper}
-            spaceBetween={9}
-            slidesPerView={6}
-            watchSlidesProgress={true}
-            modules={[FreeMode, Navigation, Thumbs]}
-            style={{
-              height: size.width > 414 ? "69px" : "60px",
-              width: size.width > 414 ? "680px" : "100%",
-            }}
-            className="mySwiperThumb"
-          >
-            {featuredNFTs.length !== 0
-              ? featuredNFTs?.map((item) => (
-                  <SwiperSlide key={"thumbnail_" + item._id}>
-                    {isImage(item.fileType) ? (
-                      <IconImg
-                        url={item.urlFile.v0}
-                        backsize="cover"
-                        width="100%"
-                        height="100%"
-                        border="6px"
-                      ></IconImg>
-                    ) : (
-                      <ReactPlayer
-                        url={item.urlFile.v0}
-                        playing={false}
-                        volume={0}
-                        muted={true}
-                        loop={true}
-                        width="100%"
-                        height="100%"
-                      ></ReactPlayer>
-                    )}
-                  </SwiperSlide>
-                ))
-              : null}
-          </Swiper> */}
-        </VStack>
       </VStack>
 
       <ContentCentered>
@@ -585,9 +528,10 @@ const Home = (props) => {
             onSwiper={(swiper) => {}}
             onSlideChange={() => {}}
             className="mySwiper2"
+            loop={true}
           >
             {newestNFTs.length !== 0
-              ? newestNFTs.slice(0, 4).map((item) => (
+              ? newestNFTs.map((item) => (
                   <SwiperSlide
                     key={"newSlide_" + item._id}
                     style={{ cursor: "pointer" }}
