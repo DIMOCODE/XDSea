@@ -14,11 +14,20 @@ import ButtonApp from "../../styles/Buttons";
 
 import { Swiper, SwiperSlide } from "swiper/react";
 
-import { HStack, IconImg, VStack, ZItem, ZStack } from "../../styles/Stacks";
 import {
+  HStack,
+  IconImg,
+  Spacer,
+  VStack,
+  ZItem,
+  ZStack,
+} from "../../styles/Stacks";
+import {
+  BodyMedium,
   BodyRegular,
   SubtTitleRegular18,
   TitleBold42,
+  TitleRegular18,
   TitleRegular36,
 } from "../../styles/TextStyles";
 import { motion } from "framer-motion/dist/framer-motion";
@@ -146,10 +155,99 @@ const Home = (props) => {
           text={"Has now become simpler and faster"}
         ></SubtitleBubble>
 
+        <Masonry
+          columnsCount={3}
+          gutter="15px"
+          style={{
+            width:
+              size.width > 1200
+                ? "1200px"
+                : size.width > 1023
+                ? "1024px"
+                : "768px",
+          }}
+        >
+          {featuredNFTs.length !== 0
+            ? featuredNFTs?.map((item) => (
+                <ZStack>
+                  <ZItem>
+                    <VStack
+                      key={"featured_" + item._id}
+                      onClick={() =>
+                        props.redirect(
+                          `nft/${item.nftContract}/${item.tokenId}`
+                        )
+                      }
+                      style={{
+                        cursor: "pointer",
+                      }}
+                      minheight="360px"
+                      border="6px"
+                      overflowx="hidden"
+                      overflowy="hidden"
+                    >
+                      {isImage(item.fileType) ? (
+                        <IconImg
+                          url={item.urlFile.v0}
+                          backsize="cover"
+                          width="100%"
+                          height="100%"
+                          border="6px"
+                        ></IconImg>
+                      ) : (
+                        <VStack
+                          background="black"
+                          border="6px"
+                          overflowx="hidden"
+                          animate={{ scale: 2 }}
+                        >
+                          <ReactPlayer
+                            url={item.urlFile.v0}
+                            playing={true}
+                            volume={0}
+                            muted={true}
+                            loop={true}
+                            width="100%"
+                            height="100%"
+                          ></ReactPlayer>
+                        </VStack>
+                      )}
+                    </VStack>
+                  </ZItem>
+                  <ZItem>
+                    <VStack
+                      background="linear-gradient(190.5deg, rgba(0, 0, 0, 0) 75.64%, rgba(0, 0, 0, 0.90) 90.61%);
+"
+                      border="6px"
+                      alignment="flex-start"
+                    >
+                      <Spacer></Spacer>
+                      <VStack
+                        spacing="0px"
+                        alignment="flex-start"
+                        padding="0 0 0px 30px"
+                        maxheight="90px"
+                        width="100%"
+                      >
+                        <BodyMedium textcolor="rgba(255,255,255,0.6)">
+                          CREATOR NAME
+                        </BodyMedium>
+                        <TitleRegular18 textcolor="white">
+                          Collection Name
+                        </TitleRegular18>
+                      </VStack>
+                    </VStack>
+                  </ZItem>
+                </ZStack>
+              ))
+            : null}
+        </Masonry>
+
         {/* Featured Section */}
         <VStack spacing="6px" width="100%">
           {/* Big Tiles */}
-          <Swiper
+
+          {/* <Swiper
             slidesPerView={size.width > 414 ? "2" : "1"}
             spaceBetween={9}
             centeredSlides={true}
@@ -200,10 +298,10 @@ const Home = (props) => {
                   </SwiperSlide>
                 ))
               : null}
-          </Swiper>
+          </Swiper> */}
 
           {/* Thumbnails */}
-          <Swiper
+          {/* <Swiper
             onSwiper={setThumbsSwiper}
             spaceBetween={9}
             slidesPerView={6}
@@ -240,7 +338,7 @@ const Home = (props) => {
                   </SwiperSlide>
                 ))
               : null}
-          </Swiper>
+          </Swiper> */}
         </VStack>
       </VStack>
 
@@ -417,29 +515,31 @@ const Home = (props) => {
           {/* Trending NFT Cards */}
           <HStack flexwrap="wrap" padding="0 12px 0 12px">
             {trendingNFTs.length !== 0
-              ? trendingNFTs.slice(0, 4).map((item) =>
-                <NftContainer
-                  key={"trending_" + item._id}
-                  iconStatus={item.saleType.toLowerCase()}
-                  itemImage={item.urlFile.v0}
-                  itemPreview={item.preview.v0}
-                  price={item.price}
-                  collectionName={item.collectionId.name}
-                  itemNumber={item.name}
-                  fileType={item.fileType}
-                  background={({ theme }) => theme.backElement}
-                  onClick={() =>
-                    props.redirect(
-                      `nft/${item.nftContract}/${item.tokenId}`
-                    )
-                  }
-                  usdPrice={props.xdc}
-                  collectionVerified={item.creator.isVerified}
-                  width="48%"
-                  height={size.width > 414 ? "360px" : "180px"}
-                  border="6px"
-                ></NftContainer>
-              )
+              ? trendingNFTs
+                  .slice(0, 4)
+                  .map((item) => (
+                    <NftContainer
+                      key={"trending_" + item._id}
+                      iconStatus={item.saleType.toLowerCase()}
+                      itemImage={item.urlFile.v0}
+                      itemPreview={item.preview.v0}
+                      price={item.price}
+                      collectionName={item.collectionId.name}
+                      itemNumber={item.name}
+                      fileType={item.fileType}
+                      background={({ theme }) => theme.backElement}
+                      onClick={() =>
+                        props.redirect(
+                          `nft/${item.nftContract}/${item.tokenId}`
+                        )
+                      }
+                      usdPrice={props.xdc}
+                      collectionVerified={item.creator.isVerified}
+                      width="48%"
+                      height={size.width > 414 ? "360px" : "180px"}
+                      border="6px"
+                    ></NftContainer>
+                  ))
               : null}
           </HStack>
 
@@ -492,9 +592,7 @@ const Home = (props) => {
                     key={"newSlide_" + item._id}
                     style={{ cursor: "pointer" }}
                     onClick={() =>
-                      props.redirect(
-                        `nft/${item.nftContract}/${item.tokenId}`
-                      )
+                      props.redirect(`nft/${item.nftContract}/${item.tokenId}`)
                     }
                   >
                     <NftContainer
