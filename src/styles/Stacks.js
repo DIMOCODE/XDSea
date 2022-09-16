@@ -143,7 +143,8 @@ export const HStack = styled(motion.div).attrs((props) => ({
   position: relative;
   overflow-x: ${(props) => props.overflowx};
   overflow-y: ${(props) => props.overflowy};
-
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
   -webkit-backdrop-filter: blur(${(props) => props.blur});
   backdrop-filter: blur(${(props) => props.blur});
   @media (max-width: 768px) {
