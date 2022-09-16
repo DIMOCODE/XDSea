@@ -209,9 +209,9 @@ export const ZItem = styled(motion.div).attrs((props) => ({
 
 // Divider
 export const Divider = styled.div`
-  min-height: 1px;
-  width: 100%;
-  background: rgba(153, 162, 175, 0.36);
+  min-height: 2px;
+  minwidth: 100%;
+  background: rgba(153, 162, 175, 0.3);
 `;
 
 // Icon Image

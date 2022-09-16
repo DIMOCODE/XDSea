@@ -18,6 +18,9 @@ import {
   BodyRegular,
   CaptionBold,
   TitleBold18,
+  BodyMedium,
+  TitleRegular21,
+  TitleRegular18,
 } from "../../styles/TextStyles";
 import { XdcConnect, Disconnect } from "xdc-connect";
 import XDSealogo from "../../images/LogoXDSEA.png";
@@ -43,11 +46,18 @@ import { Searchbar } from "../../styles/Searbar";
 import { anonymousLogin, logout } from "../../API/access";
 import { LS, LS_ROOT_KEY } from "../../constant";
 import { Divider, Icon } from "@mui/material";
+import useWindowSize from "../../styles/useWindowSize";
+import howToStart from "../../images/HowToStart.png";
+import discoverIcon from "../../images/DiscoverIcon.png";
+import createNewIcon from "../../images/CreateNewIcon.png";
+import { createNFT } from "../../API/NFT";
+import iconMenu from "../../images/iconMenu.png";
 
 function TopBar(props) {
   const { device, themeToggler, devMode, onWalletChange } = props;
   const location = useLocation();
   const ref = useRef(null);
+  const size = useWindowSize();
 
   const [wallet, setWallet] = useState({});
   const [deviceSize, setDeviceSize] = useState("");
@@ -294,61 +304,67 @@ function TopBar(props) {
     <ContentBar>
       {/* Top bar organized by Phone Tablet and Computer, each case of the switch have the content of the bar */}
       <HStack height="69px" width="100%" justify="center" blur="30px">
-        {(() => {
-          switch (deviceSize) {
-            case "phone":
-              return (
-                <AnimatePresence initial={false}>
-                  {showMenu && (
-                    <SlideMenu
-                      key="slidemenu"
-                      initial={{ opacity: 1, y: -12 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -12 }}
-                      transition={{ type: "spring", damping: 10 }}
+        {size.width < 426 ? (
+          <AnimatePresence initial={false}>
+            {showMenu && (
+              <SlideMenu
+                key="slidemenu"
+                initial={{ opacity: 1, x: -6 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -6 }}
+                transition={{ type: "spring", damping: 10 }}
+              >
+                <VStack
+                  background={({ theme }) => theme.backElement}
+                  width="375px"
+                  padding="60px 30px"
+                  height="420px"
+                  border="0 0 15px 15px"
+                >
+                  <VStack
+                    alignment="flex-start"
+                    width="180px"
+                    spacing="21px"
+                    style={{ zIndex: -100 }}
+                  >
+                    <BodyMedium
+                      onClick={() => props.redirect("")}
+                      textcolor={({ theme }) => theme.text}
                     >
-                      <VStack
-                        background={({ theme }) => theme.backElement}
-                        width="375px"
-                        padding="60px 30px"
-                        height="420px"
-                        border="0 0 15px 15px"
-                      >
-                        <VStack
-                          alignment="flex-start"
-                          width="180px"
-                          spacing="21px"
-                          style={{ zIndex: -100 }}
-                        >
-                          <TitleBold21
-                            onClick={() => props.redirect("")}
-                            textcolor={({ theme }) => theme.text}
-                          >
-                            Home
-                          </TitleBold21>
-                          <TitleBold21
-                            onClick={() =>
-                              props.redirect("discover/collections")
-                            }
-                            textcolor={({ theme }) => theme.text}
-                          >
-                            Discover
-                          </TitleBold21>
-                          <TitleBold21
-                            textcolor={({ theme }) => theme.text}
-                            onClick={() => props.redirect("how-to-start")}
-                          >
-                            How to Start
-                          </TitleBold21>
-                          <TitleBold21
-                            textcolor={({ theme }) => theme.text}
-                            onClick={() => props.redirect("create-nft")}
-                          >
-                            Create an NFT
-                          </TitleBold21>
-                        </VStack>
+                      Home
+                    </BodyMedium>
 
-                        {/* <VStack style={{ zIndex: -100 }}>
+                    <HStack>
+                      <BodyMedium
+                        onClick={() => props.redirect("discover/collections")}
+                        textcolor={({ theme }) => theme.text}
+                      >
+                        Discoversss
+                      </BodyMedium>
+                      <Spacer></Spacer>
+
+                      <IconImg
+                        url={discoverIcon}
+                        width="35px"
+                        height="35px"
+                      ></IconImg>
+                    </HStack>
+
+                    <TitleBold21
+                      textcolor={({ theme }) => theme.text}
+                      onClick={() => props.redirect("how-to-start")}
+                    >
+                      How to Start
+                    </TitleBold21>
+                    <TitleBold21
+                      textcolor={({ theme }) => theme.text}
+                      onClick={() => props.redirect("create-nft")}
+                    >
+                      Create an NFT
+                    </TitleBold21>
+                  </VStack>
+
+                  {/* <VStack style={{ zIndex: -100 }}>
                           <WalletButton
                             logout={
                               isMetamask
@@ -368,323 +384,8 @@ function TopBar(props) {
                             clickAlert={() => setShowInfo(true)}
                           ></WalletButton>
                         </VStack> */}
-                        <Spacer></Spacer>
-                        <HStack style={{ zIndex: -100 }}>
-                          <SwitchButton
-                            clickOnSwitch={themeToggler}
-                          ></SwitchButton>
-                          {wallet?.connected ? (
-                            <UserMenuButton
-                              wallet={wallet}
-                              redirect={props.redirect}
-                            ></UserMenuButton>
-                          ) : null}
-
-                          <a href="https://www.instagram.com/xdsea.nft/">
-                            <IconImg
-                              url={instagram}
-                              width="49px"
-                              height="49px"
-                              cursor="pointer"
-                            ></IconImg>
-                          </a>
-                          <a href="https://twitter.com/XDSeaNFT">
-                            <IconImg
-                              url={twitter}
-                              width="49px"
-                              height="49px"
-                              cursor="pointer"
-                            ></IconImg>
-                          </a>
-                          <a href="mailto:support@xdsea.com">
-                            <IconImg
-                              url={mail}
-                              width="49px"
-                              height="49px"
-                              cursor="pointer"
-                            ></IconImg>
-                          </a>
-                        </HStack>
-                      </VStack>
-                    </SlideMenu>
-                  )}
-
-                  {searchPhone ? (
-                    <HStack width="100%" padding=" 0 12px">
-                      <Searchbar
-                        placeholder="Search for NFTs and Collections"
-                        top="46px"
-                        left="-12px"
-                        width="100vw"
-                        widthInput="70%"
-                        isPhone={true}
-                        switchBarStatus={handleBarStatus}
-                      ></Searchbar>
-                      <VStack
-                        maxwidth="46px"
-                        height="46px"
-                        border="12px"
-                        background={({ theme }) => theme.faded}
-                        whileTap={{ scale: 0.9 }}
-                        onClick={() => setSearchPhone(!searchPhone)}
-                      >
-                        <IconImg
-                          url={chevronRight}
-                          width="21px"
-                          height="21px"
-                          cursor={"pointer"}
-                        ></IconImg>
-                      </VStack>
-                    </HStack>
-                  ) : (
-                    <HStack
-                      width="100%"
-                      padding="0 12px"
-                      style={{ position: "relative" }}
-                    >
-                      <HStack
-                        onClick={() => props.redirect("")}
-                        cursor={"pointer"}
-                      >
-                        <IconImg
-                          url={XDSealogo}
-                          width="52px"
-                          height="52px"
-                          cursor={"pointer"}
-                        ></IconImg>
-                        <VStack
-                          cursor={"pointer"}
-                          spacing="1px"
-                          alignment="flex-start"
-                        >
-                          <BodyBold textcolor={({ theme }) => theme.text}>
-                            XDSea
-                          </BodyBold>
-                          {devMode ? (
-                            <BodyBold textcolor={({ theme }) => theme.blue}>
-                              βeta v1.6.3
-                            </BodyBold>
-                          ) : (
-                            <HStack
-                              background="linear-gradient(180deg, #044DC4 0%, #192EA6 100%)"
-                              border="6px"
-                              padding="3px 6px"
-                              cursor={"pointer"}
-                            >
-                              <CaptionRegular textcolor={appStyle.colors.white}>
-                                Developer
-                              </CaptionRegular>
-                            </HStack>
-                          )}
-                        </VStack>
-                      </HStack>
-                      <Spacer></Spacer>
-
-                      <VStack
-                        maxwidth="46px"
-                        height="46px"
-                        border="12px"
-                        background={({ theme }) => theme.faded}
-                        whileTap={{ scale: 0.9 }}
-                        onClick={() => setSearchPhone(!searchPhone)}
-                      >
-                        <IconImg
-                          url={search}
-                          width="26px"
-                          height="26px"
-                          cursor={"pointer"}
-                        ></IconImg>
-                      </VStack>
-
-                      <VStack
-                        maxwidth="46px"
-                        height="46px"
-                        border="12px"
-                        background={({ theme }) => theme.faded}
-                        whileTap={{ scale: 0.9 }}
-                        onClick={() => setShowMenu(!showMenu)}
-                        ref={ref}
-                      >
-                        <svg
-                          width="26"
-                          height="26"
-                          viewBox="-2 0 26 26"
-                          fill={"#5C6976"}
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <motion.path
-                            animate={showMenu ? "open" : "closed"}
-                            variants={variant1}
-                            d="M2.16108 19.8381C1.18477 18.8618 1.18477 17.2789 2.16108 16.3025L16.3032 2.16041C17.2795 1.1841 18.8624 1.1841 19.8387 2.16041V2.16041C20.8151 3.13672 20.8151 4.71963 19.8387 5.69594L5.69661 19.8381C4.7203 20.8144 3.13739 20.8144 2.16108 19.8381V19.8381Z"
-                          />
-                          <motion.path
-                            animate={showMenu ? "open" : "closed"}
-                            variants={variant2}
-                            d="M2.16143 2.16035C3.13774 1.18403 4.72066 1.18403 5.69697 2.16035L19.8391 16.3025C20.8154 17.2788 20.8154 18.8617 19.8391 19.838V19.838C18.8628 20.8143 17.2799 20.8143 16.3036 19.838L2.16143 5.69588C1.18512 4.71957 1.18512 3.13666 2.16143 2.16035V2.16035Z"
-                          />
-                        </svg>
-                      </VStack>
-                    </HStack>
-                  )}
-                </AnimatePresence>
-              );
-            case "tablet":
-              return (
-                <AnimatePresence initial={false}>
-                  {showMenu && (
-                    <SlideMenuTablet
-                      key="slidemenu"
-                      initial={{ opacity: 1, y: -12 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -12 }}
-                      transition={{ type: "spring", damping: 10 }}
-                    >
-                      <VStack
-                        background={({ theme }) => theme.backElement}
-                        width="300px"
-                        padding="60px 30px"
-                        height="300px"
-                        border="0 0 15px 15px"
-                      >
-                        <VStack
-                          alignment="flex-end"
-                          width="180px"
-                          spacing="21px"
-                        >
-                          <TitleBold21
-                            onClick={() => props.redirect("")}
-                            textcolor={({ theme }) => theme.text}
-                          >
-                            Home
-                          </TitleBold21>
-                          <TitleBold21
-                            onClick={() =>
-                              props.redirect("discover/collections")
-                            }
-                            textcolor={({ theme }) => theme.text}
-                          >
-                            Discover
-                          </TitleBold21>
-                          <TitleBold21
-                            textcolor={({ theme }) => theme.text}
-                            onClick={() => props.redirect("how-to-start")}
-                          >
-                            How to Start
-                          </TitleBold21>
-                          <TitleBold21
-                            textcolor={({ theme }) => theme.text}
-                            onClick={() => props.redirect("create-nft")}
-                          >
-                            Create an NFT
-                          </TitleBold21>
-                        </VStack>
-
-                        <HStack>
-                          <a href="https://www.instagram.com/xdsea.nft/">
-                            <IconImg
-                              url={instagram}
-                              width="49px"
-                              height="49px"
-                              cursor="pointer"
-                            ></IconImg>
-                          </a>
-                          <a href="https://twitter.com/XDSeaNFT">
-                            <IconImg
-                              url={twitter}
-                              width="49px"
-                              height="49px"
-                              cursor="pointer"
-                            ></IconImg>
-                          </a>
-                          <a href="mailto:support@xdsea.com">
-                            <IconImg
-                              url={mail}
-                              width="49px"
-                              height="49px"
-                              cursor="pointer"
-                            ></IconImg>
-                          </a>
-                        </HStack>
-                      </VStack>
-                    </SlideMenuTablet>
-                  )}
-                  <HStack
-                    width="100%"
-                    padding="0 26px"
-                    style={{ position: "relative" }}
-                  >
-                    <HStack
-                      onClick={() => props.redirect("")}
-                      cursor={"pointer"}
-                    >
-                      <IconImg
-                        url={XDSealogo}
-                        width="52px"
-                        height="52px"
-                        cursor={"pointer"}
-                      ></IconImg>
-                      <VStack
-                        cursor={"pointer"}
-                        spacing="1px"
-                        alignment="flex-start"
-                      >
-                        <BodyBold textcolor={({ theme }) => theme.text}>
-                          XDSea
-                        </BodyBold>
-                        {devMode ? (
-                          <BodyBold textcolor={({ theme }) => theme.blue}>
-                            βeta v1.6.3
-                          </BodyBold>
-                        ) : (
-                          <HStack
-                            background="linear-gradient(180deg, #044DC4 0%, #192EA6 100%)"
-                            border="6px"
-                            padding="3px 6px"
-                            cursor={"pointer"}
-                          >
-                            <CaptionRegular textcolor={appStyle.colors.white}>
-                              Developer
-                            </CaptionRegular>
-                          </HStack>
-                        )}
-                      </VStack>
-                    </HStack>
-
-                    {/* Search  */}
-                    <Searchbar
-                      placeholder="Search for NFTs and Collections"
-                      top="58px"
-                      left="0px"
-                      widthInput="50%"
-                      width="68%"
-                      switchBarStatus={handleBarStatus}
-                    ></Searchbar>
-                    <Spacer></Spacer>
-
-                    {/* <VStack maxwidth="180px">
-                      <ZStack>
-                        <ZItem>
-                          <WalletButton
-                            logout={
-                              isMetamask
-                                ? disconnectMetamask
-                                : isXdcPay
-                                ? disconnectXdcPay
-                                : disconnectDcent
-                            }
-                            status={wallet?.connected}
-                            wallet={wallet}
-                            onClickMetamask={() => setShowMetamask(true)}
-                            isMetamask={isMetamask}
-                            isDcent={isDcent}
-                            isXdcPay={isXdcPay}
-                            hasAlert={showError > 0}
-                            clickAlert={() => setShowInfo(true)}
-                          ></WalletButton>
-                        </ZItem>
-                      </ZStack>
-                    </VStack> */}
-
+                  <Spacer></Spacer>
+                  <HStack style={{ zIndex: -100 }}>
                     <SwitchButton clickOnSwitch={themeToggler}></SwitchButton>
                     {wallet?.connected ? (
                       <UserMenuButton
@@ -693,194 +394,447 @@ function TopBar(props) {
                       ></UserMenuButton>
                     ) : null}
 
-                    <VStack
-                      minwidth="46px"
-                      height="46px"
-                      border="12px"
-                      background={({ theme }) => theme.faded}
-                      whileTap={{ scale: 0.9 }}
-                      onTapStart={() => setShowMenu(!showMenu)}
-                      ref={ref}
-                    >
-                      <svg
-                        width="26"
-                        height="26"
-                        viewBox="-2 0 26 26"
-                        fill={"#5C6976"}
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <motion.path
-                          animate={showMenu ? "open" : "closed"}
-                          variants={variant1}
-                          d="M2.16108 19.8381C1.18477 18.8618 1.18477 17.2789 2.16108 16.3025L16.3032 2.16041C17.2795 1.1841 18.8624 1.1841 19.8387 2.16041V2.16041C20.8151 3.13672 20.8151 4.71963 19.8387 5.69594L5.69661 19.8381C4.7203 20.8144 3.13739 20.8144 2.16108 19.8381V19.8381Z"
-                        />
-                        <motion.path
-                          animate={showMenu ? "open" : "closed"}
-                          variants={variant2}
-                          d="M2.16143 2.16035C3.13774 1.18403 4.72066 1.18403 5.69697 2.16035L19.8391 16.3025C20.8154 17.2788 20.8154 18.8617 19.8391 19.838V19.838C18.8628 20.8143 17.2799 20.8143 16.3036 19.838L2.16143 5.69588C1.18512 4.71957 1.18512 3.13666 2.16143 2.16035V2.16035Z"
-                        />
-                      </svg>
-                    </VStack>
+                    <a href="https://www.instagram.com/xdsea.nft/">
+                      <IconImg
+                        url={instagram}
+                        width="49px"
+                        height="49px"
+                        cursor="pointer"
+                      ></IconImg>
+                    </a>
+                    <a href="https://twitter.com/XDSeaNFT">
+                      <IconImg
+                        url={twitter}
+                        width="49px"
+                        height="49px"
+                        cursor="pointer"
+                      ></IconImg>
+                    </a>
+                    <a href="mailto:support@xdsea.com">
+                      <IconImg
+                        url={mail}
+                        width="49px"
+                        height="49px"
+                        cursor="pointer"
+                      ></IconImg>
+                    </a>
                   </HStack>
-                </AnimatePresence>
-              );
-            case "computer":
-              return (
-                <>
-                  <HStack width="1200px">
+                </VStack>
+              </SlideMenu>
+            )}
+
+            {searchPhone ? (
+              <HStack width="100%" padding=" 0 12px">
+                <Searchbar
+                  placeholder="Search for NFTs and Collections"
+                  top="46px"
+                  left="-12px"
+                  width="100vw"
+                  widthInput="70%"
+                  isPhone={true}
+                  switchBarStatus={handleBarStatus}
+                ></Searchbar>
+                <VStack
+                  maxwidth="46px"
+                  height="46px"
+                  border="12px"
+                  background={({ theme }) => theme.faded}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => setSearchPhone(!searchPhone)}
+                >
+                  <IconImg
+                    url={chevronRight}
+                    width="21px"
+                    height="21px"
+                    cursor={"pointer"}
+                  ></IconImg>
+                </VStack>
+              </HStack>
+            ) : (
+              <HStack
+                width="100%"
+                padding="0 12px"
+                style={{ position: "relative" }}
+              >
+                <HStack onClick={() => props.redirect("")} cursor={"pointer"}>
+                  <IconImg
+                    url={XDSealogo}
+                    width="52px"
+                    height="52px"
+                    cursor={"pointer"}
+                  ></IconImg>
+                  <VStack
+                    cursor={"pointer"}
+                    spacing="1px"
+                    alignment="flex-start"
+                  >
+                    <BodyBold textcolor={({ theme }) => theme.text}>
+                      XDSea
+                    </BodyBold>
+                    {devMode ? (
+                      <BodyBold textcolor={({ theme }) => theme.blue}>
+                        βeta v1.6.3
+                      </BodyBold>
+                    ) : (
+                      <HStack
+                        background="linear-gradient(180deg, #044DC4 0%, #192EA6 100%)"
+                        border="6px"
+                        padding="3px 6px"
+                        cursor={"pointer"}
+                      >
+                        <CaptionRegular textcolor={appStyle.colors.white}>
+                          Developer
+                        </CaptionRegular>
+                      </HStack>
+                    )}
+                  </VStack>
+                </HStack>
+                <Spacer></Spacer>
+
+                <VStack
+                  maxwidth="46px"
+                  height="46px"
+                  border="12px"
+                  background={({ theme }) => theme.faded}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => setSearchPhone(!searchPhone)}
+                >
+                  <IconImg
+                    url={search}
+                    width="26px"
+                    height="26px"
+                    cursor={"pointer"}
+                  ></IconImg>
+                </VStack>
+
+                <VStack
+                  maxwidth="46px"
+                  height="46px"
+                  border="12px"
+                  background={({ theme }) => theme.faded}
+                  whileTap={{ scale: 0.9 }}
+                  onClick={() => setShowMenu(!showMenu)}
+                  ref={ref}
+                >
+                  <svg
+                    width="26"
+                    height="26"
+                    viewBox="-2 0 26 26"
+                    fill={"#5C6976"}
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <motion.path
+                      animate={showMenu ? "open" : "closed"}
+                      variants={variant1}
+                      d="M2.16108 19.8381C1.18477 18.8618 1.18477 17.2789 2.16108 16.3025L16.3032 2.16041C17.2795 1.1841 18.8624 1.1841 19.8387 2.16041V2.16041C20.8151 3.13672 20.8151 4.71963 19.8387 5.69594L5.69661 19.8381C4.7203 20.8144 3.13739 20.8144 2.16108 19.8381V19.8381Z"
+                    />
+                    <motion.path
+                      animate={showMenu ? "open" : "closed"}
+                      variants={variant2}
+                      d="M2.16143 2.16035C3.13774 1.18403 4.72066 1.18403 5.69697 2.16035L19.8391 16.3025C20.8154 17.2788 20.8154 18.8617 19.8391 19.838V19.838C18.8628 20.8143 17.2799 20.8143 16.3036 19.838L2.16143 5.69588C1.18512 4.71957 1.18512 3.13666 2.16143 2.16035V2.16035Z"
+                    />
+                  </svg>
+                </VStack>
+              </HStack>
+            )}
+          </AnimatePresence>
+        ) : (
+          <>
+            {/* Logo */}
+            <HStack
+              width={size.width > 728 ? "1200px" : "1024px"}
+              padding="0 6px "
+            >
+              <HStack
+                spacing="9px"
+                onClick={() => props.redirect("")}
+                cursor={"pointer"}
+              >
+                <IconImg
+                  url={XDSealogo}
+                  width="52px"
+                  height="52px"
+                  cursor={"pointer"}
+                ></IconImg>
+                <VStack
+                  cursor={"pointer"}
+                  spacing="1px"
+                  alignment="flex-start"
+                  width="80px"
+                >
+                  <BodyRegular animate={{ opacity: 1 }} textcolor="#FCD868">
+                    BETA
+                  </BodyRegular>
+                  {!devMode ? (
+                    <BodyBold textcolor="FCD868">Basilisk</BodyBold>
+                  ) : (
                     <HStack
-                      spacing="9px"
-                      onClick={() => props.redirect("")}
+                      background=" linear-gradient(90.5deg, #FFF5B3 -30.32%, #FCD868 15.14%, #FBC34B 85.07%, #FF7A00 109.52%)
+"
+                      border="6px"
+                      padding="3px 6px"
                       cursor={"pointer"}
                     >
-                      <IconImg
-                        url={XDSealogo}
-                        width="52px"
-                        height="52px"
-                        cursor={"pointer"}
-                      ></IconImg>
+                      <CaptionRegular textcolor="#7A4405">
+                        Developer
+                      </CaptionRegular>
+                    </HStack>
+                  )}
+                </VStack>
+              </HStack>
+              <Spacer></Spacer>
+              {/* Search with Discover and Create */}
+              <HStack spacing="9px">
+                {location.pathname === "/SearchPage" ? null : (
+                  <Searchbar
+                    top="54px"
+                    left={size.width > 768 ? "0px" : "-96px"}
+                    placeholder="Search for NFTs and Collections"
+                    // widthInput={isSearch ? "741px" : "310px"}
+                    widthInput={size.width > 768 ? "390px" : "290px"}
+                    width="606px"
+                    switchBarStatus={handleBarStatus}
+                  ></Searchbar>
+                )}
+
+                <HStack
+                  background={({ theme }) => theme.backElement}
+                  self="none"
+                  height="42px"
+                  width="99px"
+                  padding="0"
+                  border="6px"
+                  whiteTap={{ scale: 0.9 }}
+                  cursor="pointer"
+                  onClick={() => props.redirect("discover/collections")}
+                >
+                  <BodyMedium cursor="pointer">Discover</BodyMedium>
+                </HStack>
+
+                <HStack
+                  background={
+                    "linear-gradient(166.99deg, #2868F4 37.6%, #0E27C1 115.6%)"
+                  }
+                  self="none"
+                  height="42px"
+                  width="99px"
+                  padding="0px"
+                  border="6px"
+                  minwidth="300px"
+                  whiteTap={{ scale: 0.9 }}
+                  cursor="pointer"
+                  onClick={() => props.redirect("create-nft")}
+                >
+                  <BodyMedium cursor="pointer" textcolor="white">
+                    Create NFT
+                  </BodyMedium>
+                </HStack>
+              </HStack>
+
+              <Spacer></Spacer>
+
+              <HStack>
+                {wallet?.connected ? (
+                  <HStack self="none" minwith="52px" height="52px">
+                    <IconImg
+                      url={mountain}
+                      width="52px"
+                      height="52px"
+                      border="42px"
+                      bordersize="3px"
+                      bordercolor="white"
+                      backsize="cover"
+                      whileTap={{ scale: 0.96 }}
+                      onTapStart={() => setShowMenu(!showMenu)}
+                      ref={ref}
+                    ></IconImg>
+                    <RedBubble>
                       <VStack
-                        cursor={"pointer"}
-                        spacing="1px"
-                        alignment="flex-start"
-                        width="80px"
+                        background="red"
+                        width="26px"
+                        height="26px"
+                        border="9px"
                       >
-                        <BodyBold
-                          animate={{ opacity: 0.6 }}
-                          textcolor={({ theme }) => theme.backElement}
-                        >
-                          Beta
-                        </BodyBold>
-                        {!devMode ? (
-                          <BodyBold
-                            textcolor={({ theme }) => theme.backElement}
-                          >
-                            Basilisk
-                          </BodyBold>
-                        ) : (
-                          <HStack
-                            background=" linear-gradient(90.5deg, #FFF5B3 -30.32%, #FCD868 15.14%, #FBC34B 85.07%, #FF7A00 109.52%)
-"
-                            border="6px"
-                            padding="3px 6px"
-                            cursor={"pointer"}
-                          >
-                            <CaptionRegular textcolor="#7A4405">
-                              Developer
-                            </CaptionRegular>
-                          </HStack>
-                        )}
+                        <CaptionBold textcolor="white">1</CaptionBold>
                       </VStack>
-                    </HStack>
-
-                    {/* Search  */}
-                    {location.pathname === "/SearchPage" ? null : (
-                      <Searchbar
-                        top="54px"
-                        left="0px"
-                        placeholder="Search for NFTs and Collections"
-                        // widthInput={isSearch ? "741px" : "310px"}
-                        widthInput={"580px"}
-                        width="741px"
-                        switchBarStatus={handleBarStatus}
-                      ></Searchbar>
-                    )}
-
-                    <Spacer></Spacer>
-                    <HStack
-                      background={({ theme }) => theme.backElement}
-                      self="none"
-                      height="42px"
-                      padding="0 15px"
-                      border="6px"
-                      whiteTap={{ scale: 0.9 }}
-                      cursor="pointer"
-                      onClick={() => props.redirect("discover/collections")}
-                    >
-                      <BodyBold cursor="pointer">Discover</BodyBold>
-                    </HStack>
-
-                    <HStack
-                      background={
-                        "linear-gradient(166.99deg, #2868F4 37.6%, #0E27C1 115.6%)"
-                      }
-                      self="none"
-                      height="42px"
-                      padding="0 16px"
-                      border="6px"
-                      minwidth="300px"
-                      whiteTap={{ scale: 0.9 }}
-                      cursor="pointer"
-                      onClick={() => props.redirect("create-nft")}
-                    >
-                      <BodyBold cursor="pointer" textcolor="white">
-                        Create NFT
-                      </BodyBold>
-                    </HStack>
-
-                    <HStack>
-                      <VStack maxwidth="160px">
-                        <ZStack>
-                          <ZItem>
-                            <WalletButton
-                              logout={
-                                isMetamask
-                                  ? disconnectMetamask
-                                  : isXdcPay
-                                  ? disconnectXdcPay
-                                  : disconnectDcent
-                              }
-                              status={wallet?.connected}
-                              wallet={wallet}
-                              onClickMetamask={() => setShowMetamask(true)}
-                              isMetamask={isMetamask}
-                              isDcent={isDcent}
-                              isXdcPay={isXdcPay}
-                              hasAlert={showError > 0}
-                              clickAlert={() => setShowInfo(true)}
-                            ></WalletButton>
-                          </ZItem>
-                        </ZStack>
-                      </VStack>
-
-                      {/* <SwitchButton clickOnSwitch={themeToggler}></SwitchButton>
-                       */}
-
-                      <HStack self="none" minwith="52px" height="52px">
-                        <IconImg
-                          url={mountain}
-                          width="52px"
-                          height="52px"
-                          border="42px"
-                          bordersize="3px"
-                          bordercolor="white"
-                          backsize="cover"
-                          whileTap={{ scale: 0.96 }}
-                        ></IconImg>
-                        <RedBubble>
-                          <VStack
-                            background="red"
-                            width="26px"
-                            height="26px"
-                            border="9px"
-                          >
-                            <CaptionBold textcolor="white">1</CaptionBold>
-                          </VStack>
-                        </RedBubble>
-                      </HStack>
-
-                      {wallet?.connected ? (
-                        <UserMenuButton
-                          wallet={wallet}
-                          redirect={props.redirect}
-                        ></UserMenuButton>
-                      ) : null}
-                    </HStack>
+                    </RedBubble>
                   </HStack>
-                </>
-              );
-          }
-        })()}
+                ) : (
+                  <VStack
+                    minwith="52px"
+                    height="52px"
+                    padding="17px"
+                    background="rgba(0,0,0,0.3)"
+                    border="52px"
+                    onTapStart={() => setShowMenu(!showMenu)}
+                    ref={ref}
+                    whileTap={{ scale: 0.96 }}
+                  >
+                    <IconImg
+                      url={iconMenu}
+                      width="18px"
+                      height="18px"
+                    ></IconImg>
+                  </VStack>
+                )}
+
+                <AnimatePresence initial={false}>
+                  {showMenu && (
+                    <SlideMenuTablet
+                      key="slidemenu"
+                      initial={{ opacity: 1, y: -6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -6 }}
+                      transition={{ type: "spring", damping: 10 }}
+                    >
+                      <VStack
+                        background={({ theme }) => theme.backElement}
+                        width="360px"
+                        padding="21px 30px"
+                        height="auto"
+                        border="9px"
+                        spacing="15px"
+                        style={{
+                          boxShadow: " 0px 11px 12px 0px rgba(0, 0, 0, 0.1)",
+                        }}
+                      >
+                        <WalletButton
+                          logout={
+                            isMetamask
+                              ? disconnectMetamask
+                              : isXdcPay
+                              ? disconnectXdcPay
+                              : disconnectDcent
+                          }
+                          status={wallet?.connected}
+                          wallet={wallet}
+                          onClickMetamask={() => setShowMetamask(true)}
+                          isMetamask={isMetamask}
+                          isDcent={isDcent}
+                          isXdcPay={isXdcPay}
+                          hasAlert={showError > 0}
+                          clickAlert={() => setShowInfo(true)}
+                        ></WalletButton>
+
+                        <HStack height="30px">
+                          <TitleRegular18 textcolor="rgba(0,0,0,0.3)">
+                            MENU
+                          </TitleRegular18>
+                          <Spacer></Spacer>
+                        </HStack>
+
+                        <VStack
+                          alignment="flex-end"
+                          width="100%"
+                          spacing="12px"
+                        >
+                          {wallet?.connected ? (
+                            <HStack
+                              minheight="42px"
+                              onClick={() =>
+                                props.redirect("discover/how-to-start")
+                              }
+                            >
+                              <TitleRegular18
+                                textcolor={({ theme }) => theme.text}
+                              >
+                                User Profile
+                              </TitleRegular18>
+                              <Spacer></Spacer>
+
+                              <UserMenuButton
+                                wallet={wallet}
+                                redirect={props.redirect}
+                              ></UserMenuButton>
+                            </HStack>
+                          ) : null}
+
+                          <HStack
+                            background="rgba(0,0,0, 0.15)"
+                            minheight="1px"
+                            width="100%"
+                          ></HStack>
+
+                          <HStack
+                            minheight="42px"
+                            onClick={() =>
+                              props.redirect("discover/how-to-start")
+                            }
+                          >
+                            <TitleRegular18
+                              textcolor={({ theme }) => theme.text}
+                            >
+                              How To Start
+                            </TitleRegular18>
+                            <Spacer></Spacer>
+
+                            <IconImg
+                              url={howToStart}
+                              width="35px"
+                              height="39px"
+                            ></IconImg>
+                          </HStack>
+
+                          <HStack
+                            background="rgba(0,0,0, 0.15)"
+                            minheight="1px"
+                            width="100%"
+                          ></HStack>
+
+                          <HStack
+                            minheight="42px"
+                            onClick={() =>
+                              props.redirect("discover/collections")
+                            }
+                          >
+                            <TitleRegular18
+                              textcolor={({ theme }) => theme.text}
+                            >
+                              Discover
+                            </TitleRegular18>
+                            <Spacer></Spacer>
+
+                            <IconImg
+                              url={discoverIcon}
+                              width="35px"
+                              height="35px"
+                            ></IconImg>
+                          </HStack>
+
+                          <HStack
+                            background="rgba(0,0,0, 0.15)"
+                            minheight="1px"
+                            width="100%"
+                          ></HStack>
+
+                          <HStack
+                            minheight="42px"
+                            onClick={() =>
+                              props.redirect("discover/create-nft")
+                            }
+                          >
+                            <TitleRegular18
+                              textcolor={({ theme }) => theme.text}
+                            >
+                              Create New NFT
+                            </TitleRegular18>
+                            <Spacer></Spacer>
+
+                            <IconImg
+                              url={createNewIcon}
+                              width="35px"
+                              height="35px"
+                            ></IconImg>
+                          </HStack>
+                        </VStack>
+                      </VStack>
+                    </SlideMenuTablet>
+                  )}
+                </AnimatePresence>
+              </HStack>
+            </HStack>
+          </>
+        )}
       </HStack>
 
       {showInfo ? (
@@ -1375,13 +1329,14 @@ const ContentBar = styled(motion.div)`
 
 const SlideMenu = styled(motion.div)`
   position: fixed;
-  top: 80px;
+  top: 60px;
+  right: 10px;
   z-index: 1;
 `;
 
 const SlideMenuTablet = styled(motion.div)`
   position: fixed;
-  top: 80px;
+  top: 76px;
   right: 0px;
   z-index: 1;
 `;

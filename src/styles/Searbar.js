@@ -32,6 +32,7 @@ import { getNFTs } from "../API/NFT";
 import loadingIcon from "../images/loadingDots.gif";
 import { truncateAddress } from "../common/common";
 import { nftaddress } from "../config";
+import useWindowSize from "../styles/useWindowSize";
 
 function Searchbar({
   placeholder,
@@ -57,7 +58,7 @@ function Searchbar({
   const [isOpen, setIsOpen] = useState(false);
 
   const ref = useRef(null);
-
+  const size = useWindowSize();
   useClickAway(ref, () => {
     switchBarStatus(false);
     setShowResults(false);
@@ -181,7 +182,7 @@ function Searchbar({
             {/* Box Results */}
 
             <HStack
-              responsive="true"
+              responsive={size.width > 425 ? false : true}
               alignment="flex-start"
               overflowy="auto"
               height={isPhone ? "590px" : "auto"}
@@ -192,7 +193,7 @@ function Searchbar({
               {filteredNFTData.length !== 0 && (
                 <VStack alignment="flex-start" spacing="9px">
                   <CaptionBoldShort>NFTs</CaptionBoldShort>
-                  <VStack spacing="12px">
+                  <VStack spacing="12px" width="100%">
                     {filteredNFTData.slice(0, 3).map((nft) => (
                       <HStack
                         whileHover={{ background: "rgb(0,0,0,0.06" }}
@@ -317,7 +318,9 @@ function Searchbar({
                           )
                         }
                       >
-                        <CaptionBoldShort>See all Collections</CaptionBoldShort>
+                        <CaptionBoldShort cursor="pointer">
+                          See all Collections
+                        </CaptionBoldShort>
                         <IconImg
                           url={arrowRight}
                           width="26px"
