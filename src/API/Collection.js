@@ -23,11 +23,16 @@ export const getCollections = ({
       verified !== undefined ? `verified=${verified}&` : ""
     }`;
   params = params.substring(0, params.length - 1);
-  return createRequest(HTTP_METHODS.get, `collection/${params}`, null, null);
+  return createSignedRequest(
+    HTTP_METHODS.get,
+    `collection/${params}`,
+    null,
+    null
+  );
 };
 
 export const getCollection = (nickName) => {
-  return createRequest(
+  return createSignedRequest(
     HTTP_METHODS.get,
     `collection/byNickName/${nickName}`,
     null,
@@ -67,7 +72,7 @@ export const getCollectionNFTs = ({
       saleType4 !== undefined ? `saleType=${saleType4}&` : ""
     }`;
   params = params.substring(0, params.length - 1);
-  return createRequest(
+  return createSignedRequest(
     HTTP_METHODS.get,
     `collection/nft/${collectionId}/${page}${params}`,
     null,
