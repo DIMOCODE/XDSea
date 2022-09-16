@@ -513,7 +513,7 @@ const Home = (props) => {
           </VStack>
 
           {/* Trending NFT Cards */}
-          <HStack flexwrap="wrap" padding="0 12px 0 12px">
+          <HStack flexwrap="wrap" padding="0 12px 0 12px" height="auto">
             {trendingNFTs.length !== 0
               ? trendingNFTs
                   .slice(0, 4)
@@ -535,8 +535,9 @@ const Home = (props) => {
                       }
                       usdPrice={props.xdc}
                       collectionVerified={item.creator.isVerified}
-                      width="48%"
-                      height={size.width > 414 ? "360px" : "180px"}
+                      minwidth="48%"
+                      height={size.width < 426 ? "190px" : "390px"}
+                      minheight={size.width < 426 ? "190px" : "390px"}
                       border="6px"
                     ></NftContainer>
                   ))
@@ -575,6 +576,7 @@ const Home = (props) => {
             slidesPerView={size.width > 414 ? "3" : "1"}
             spaceBetween={9}
             centeredSlides={false}
+            loop={true}
             style={{
               "--swiper-navigation-color": "#fff",
               "--swiper-pagination-color": "#fff",

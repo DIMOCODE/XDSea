@@ -420,6 +420,29 @@ export const CaptionRegular = styled(motion.p).attrs((props) => ({
   user-select: none;
 `;
 
+export const CaptionMedium = styled(motion.p).attrs((props) => ({
+  textcolor: props.textcolor || props.theme.text,
+  align: props.align || "Left",
+  padding: props.padding || "0px",
+  marginTop: props.marginTop || "0px",
+}))`
+  text-align: ${(props) => props.align};
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 15px;
+  letter-spacing: -0.01em;
+  padding: ${(props) => props.padding};
+  color: ${(props) => props.textcolor};
+  margin-top: ${(props) => props.marginTop};
+  margin-bottom: 2px;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -o-user-select: none;
+  user-select: none;
+`;
+
 export const CaptionCrypto = styled.p.attrs((props) => ({
   textcolor: props.textcolor || props.theme.text,
   align: props.align || "Left",
