@@ -56,7 +56,12 @@ export const getNFTs = ({
       saleType4 !== undefined ? `saleType=${saleType4}&` : ""
     }`;
   params = params.substring(0, params.length - 1);
-  return createRequest(HTTP_METHODS.get, `nft/${page}${params}`, null, null);
+  return createSignedRequest(
+    HTTP_METHODS.get,
+    `nft/${page}${params}`,
+    null,
+    null
+  );
 };
 
 /**
@@ -66,7 +71,7 @@ export const getNFTs = ({
  * @returns HTTP GET request response with the requested NFT
  */
 export const getNFT = (collectionAddress, tokenId) => {
-  return createRequest(
+  return createSignedRequest(
     HTTP_METHODS.get,
     `nft/byToken/${collectionAddress}/${tokenId}`,
     null,
