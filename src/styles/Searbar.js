@@ -46,6 +46,8 @@ function Searchbar({
   width,
   widthInput,
   isPhone,
+  backcolor,
+  textcolor,
   onClickInput,
   switchBarStatus,
 }) {
@@ -121,12 +123,16 @@ function Searchbar({
   }, [searchTerm]);
 
   return (
-    <VStack height="42px" minwidth={widthInput || "300px"}>
+    <VStack
+      height="42px"
+      minwidth={widthInput || "300px"}
+      style={{ zIndex: 100 }}
+    >
       <InputStyled
         type="text"
-        textcolor="white"
+        textcolor={textcolor || "white"}
         placeholder={placeholder}
-        background={({ theme }) => theme.searchInput}
+        background={backcolor || "rgba(0, 0, 0, 0.3)"}
         icon={loading ? loadingIcon : search}
         onChange={(e) => {
           setSearchTerm(e.target.value);
@@ -151,10 +157,10 @@ function Searchbar({
         <SearchResult top={top} left={left} ref={ref}>
           <VStack
             background={({ theme }) => theme.backElement}
-            padding="6px 15px 0 15px"
-            border="12px"
+            padding={isPhone ? "0px" : "6px 15px 0 15px"}
+            border={isPhone ? "0px" : "12px"}
             style={{
-              boxShadow: "0px 15px 15px rgba(0, 0, 0, 0.15)",
+              boxShadow: isPhone ? "0" : "0px 15px 15px rgba(0, 0, 0, 0.15)",
             }}
             spacing="0px"
             width={width}
@@ -185,7 +191,7 @@ function Searchbar({
               responsive={size.width > 425 ? false : true}
               alignment="flex-start"
               overflowy="auto"
-              height={isPhone ? "590px" : "auto"}
+              height={isPhone ? "490px" : "300px"}
               justify={isPhone ? "flex-start" : "center"}
               padding="15px 0 15px 0"
             >

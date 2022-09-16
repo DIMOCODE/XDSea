@@ -9,7 +9,14 @@ import verifiedMask from "../images/verifiedMask.png";
 import sale from "../images/sale.png";
 import relist from "../images/relist.png";
 import sold from "../images/sold.png";
-import { CaptionBoldShort, TitleBold18, CaptionRegular } from "./TextStyles";
+import {
+  CaptionBoldShort,
+  TitleBold18,
+  CaptionRegular,
+  BodyMedium,
+  CaptionMedium,
+  BodyRegular,
+} from "./TextStyles";
 import ReactPlayer from "react-player";
 import { appStyle } from "./AppStyles";
 import styled from "styled-components";
@@ -36,6 +43,8 @@ function NftContainer(props) {
     width,
     height,
     border,
+    minwidth,
+    minheight,
   } = props;
 
   const scaleImage = {
@@ -72,8 +81,10 @@ function NftContainer(props) {
       border={border}
       background={appStyle.colors.darkgrey10}
       spacing="0"
+      minwidth={minwidth || "auto"}
       width={width || "100%"}
       height={height || "390px"}
+      minheight={minheight || "auto"}
       bordersize="0px"
       bordercolor={appStyle.colors.darkgrey10}
       onHoverStart={() => {
@@ -137,8 +148,8 @@ function NftContainer(props) {
             height="100%"
           >
             <HStack padding="15px" cursor={"pointer"}>
-              {creatorImage
-                ? isVerified ? (
+              {creatorImage ? (
+                isVerified ? (
                   <>
                     <ZStack>
                       <ZItem>
@@ -200,8 +211,9 @@ function NftContainer(props) {
                     )}
                   </>
                 )
-                : <Spacer></Spacer>
-              }
+              ) : (
+                <Spacer></Spacer>
+              )}
 
               {(() => {
                 switch (nftStatus) {
@@ -209,8 +221,8 @@ function NftContainer(props) {
                     return (
                       <IconImg
                         url={relist}
-                        width="48px"
-                        height="48px"
+                        width="42px"
+                        height="42px"
                         border="120px"
                         backsize="cover"
                         cursor={"pointer"}
@@ -220,8 +232,8 @@ function NftContainer(props) {
                     return (
                       <IconImg
                         url={sale}
-                        width="48px"
-                        height="48px"
+                        width="42px"
+                        height="42px"
                         border="120px"
                         backsize="cover"
                         cursor={"pointer"}
@@ -231,8 +243,8 @@ function NftContainer(props) {
                     return (
                       <IconImg
                         url={sold}
-                        width="48px"
-                        height="48px"
+                        width="42px"
+                        height="42px"
                         border="120px"
                         backsize="cover"
                         cursor={"pointer"}
@@ -242,8 +254,8 @@ function NftContainer(props) {
                     return (
                       <IconImg
                         url={notforsale}
-                        width="48px"
-                        height="48px"
+                        width="42px"
+                        height="42px"
                         border="120px"
                         backsize="cover"
                         cursor={"pointer"}
@@ -291,7 +303,7 @@ function NftContainer(props) {
                 justify="flex-start"
                 cursor={"pointer"}
               >
-                <TitleBold18
+                <BodyMedium
                   display={"-webkit-box"}
                   overflow={"hidden"}
                   clamp={"1"}
@@ -299,11 +311,11 @@ function NftContainer(props) {
                   textcolor={appStyle.colors.white}
                 >
                   {truncate(itemNumber, 33)}
-                </TitleBold18>
+                </BodyMedium>
               </HStack>
               <HStack spacing="3px" alignment="center" cursor={"pointer"}>
                 <IconImg url={miniXdcLogo} width="18px" height="18px"></IconImg>
-                <TitleBold18 textcolor={appStyle.colors.white}>
+                <BodyMedium textcolor={appStyle.colors.white}>
                   {Number(price) > 100000
                     ? Intl.NumberFormat("en-US", {
                         notation: "compact",
@@ -312,8 +324,8 @@ function NftContainer(props) {
                     : Number(price).toLocaleString(undefined, {
                         maximumFractionDigits: 2,
                       }) || "0"}
-                </TitleBold18>
-                <CaptionRegular textcolor="white" animate={{ opacity: 0.6 }}>
+                </BodyMedium>
+                <CaptionMedium textcolor="white" animate={{ opacity: 0.6 }}>
                   (
                   {(usdPrice?.xdcPrice * Number(price) > 100000
                     ? Intl.NumberFormat("en-US", {
@@ -327,7 +339,7 @@ function NftContainer(props) {
                         }
                       ) || "0") + " USD"}
                   )
-                </CaptionRegular>
+                </CaptionMedium>
 
                 <Spacer></Spacer>
                 {hasOffers && (

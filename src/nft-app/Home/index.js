@@ -338,7 +338,7 @@ const Home = (props) => {
               {/* 2nd Place */}
               <Silver
                 animate={{ scale: size.width > 414 ? 1 : 0.81 }}
-                left={size.width > 414 ? "33px" : "0"}
+                left={size.width > 425 ? "33px" : "-12px"}
                 top="52px"
               >
                 <PricePosition
@@ -366,8 +366,8 @@ const Home = (props) => {
               {/* 3rd Place */}
               <Cooper
                 animate={{ scale: size.width > 414 ? 1 : 0.81 }}
-                top={size.width > 414 ? "100px" : "90px"}
-                right={size.width > 414 ? "26px" : 0}
+                top={size.width > 414 ? "100px" : "86px"}
+                right={size.width > 414 ? "26px" : "-12px"}
               >
                 <PricePosition
                   position={3}
@@ -456,7 +456,7 @@ const Home = (props) => {
           </VStack>
 
           {/* Trending NFT Cards */}
-          <HStack flexwrap="wrap" padding="0 12px 0 12px">
+          <HStack flexwrap="wrap" padding="0 12px 0 12px" height="auto">
             {trendingNFTs.length !== 0
               ? trendingNFTs
                   .slice(0, 4)
@@ -478,8 +478,9 @@ const Home = (props) => {
                       }
                       usdPrice={props.xdc}
                       collectionVerified={item.creator.isVerified}
-                      width="48%"
-                      height={size.width > 414 ? "360px" : "180px"}
+                      minwidth="46%"
+                      height={size.width < 426 ? "190px" : "390px"}
+                      minheight={size.width < 426 ? "190px" : "390px"}
                       border="6px"
                     ></NftContainer>
                   ))
@@ -518,6 +519,7 @@ const Home = (props) => {
             slidesPerView={size.width > 414 ? "3" : "1"}
             spaceBetween={9}
             centeredSlides={false}
+            loop={true}
             style={{
               "--swiper-navigation-color": "#fff",
               "--swiper-pagination-color": "#fff",
@@ -596,7 +598,10 @@ const Home = (props) => {
             <BodyRegular textcolor="rgba(255,122,0,100)">
               WANT TO GET STARTED?
             </BodyRegular>
-            <TitleRegular36 textcolor="rgba(251,195,75, 100)">
+            <TitleRegular36
+              textcolor="rgba(251,195,75, 100)"
+              alignment="center"
+            >
               Create and sell your NFTs
             </TitleRegular36>
 
@@ -626,8 +631,9 @@ export { Home };
 const Content = styled(motion.div)`
   padding: 0 0 120px 0;
   widht: 100%;
-
+  -moz-box-sizing: border-box;
   box-sizing: border-box;
+  overflow: hidden;
 `;
 
 const ContentCentered = styled(motion.div)`
@@ -635,6 +641,7 @@ const ContentCentered = styled(motion.div)`
   max-width: 1200px;
   margin: 0 auto;
   box-sizing: border-box;
+  -moz-box-sizing: border-box;
 `;
 
 const GridNfts = styled(motion.div)`
@@ -659,7 +666,8 @@ const SvgTexture = styled(motion.div)`
 
 const Gold = styled(motion.div)`
   position: absolute;
-
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
   top: ${(props) => props.top};
 
   z-index: 10;
@@ -671,6 +679,8 @@ const Silver = styled(motion.div)`
   top: ${(props) => props.top};
   // left: 33px;
   // top: 52px;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 `;
 
 const Cooper = styled(motion.div)`
