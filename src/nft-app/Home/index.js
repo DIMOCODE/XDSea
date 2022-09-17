@@ -32,6 +32,10 @@ import {
 } from "../../styles/TextStyles";
 import { motion } from "framer-motion/dist/framer-motion";
 import useWindowSize from "../../styles/useWindowSize";
+import goldshape1 from "../../images/goldshape1.png";
+import goldshape2 from "../../images/goldshape2.png";
+import goldshape3 from "../../images/goldshape3.png";
+import goldshape4 from "../../images/goldshape4.png";
 import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
 
 import Swipper from "../Home/Swiper.css";
@@ -321,6 +325,24 @@ const Home = (props) => {
       <ContentCentered>
         {/* TOP COLLECTION SECTION */}
         <VStack alignment="center">
+          <AbsoluteObject top="90px" left="-260px">
+            <IconImg
+              url={goldshape1}
+              width={size.width > 425 ? "390px" : "320px"}
+              height="390px"
+              backsize="contain"
+            ></IconImg>
+          </AbsoluteObject>
+
+          <AbsoluteObject top="990px" right="-260px">
+            <IconImg
+              url={goldshape2}
+              width={size.width > 425 ? "390px" : "320px"}
+              height="390px"
+              backsize="contain"
+            ></IconImg>
+          </AbsoluteObject>
+
           <VStack padding="40px 0 0 0 ">
             <IconImg
               url={rocket3D}
@@ -473,6 +495,14 @@ const Home = (props) => {
 
         {/* TRENDING NFT SECTION */}
         <VStack alignment="center" padding="40px 0 ">
+          <AbsoluteObject top="90px" left="-300px">
+            <IconImg
+              url={goldshape3}
+              width={size.width > 425 ? "490px" : "380px"}
+              height="490px"
+              backsize="contain"
+            ></IconImg>
+          </AbsoluteObject>
           <VStack padding="0 0 0 0 ">
             <IconImg
               url={CristalHeart}
@@ -531,6 +561,15 @@ const Home = (props) => {
 
         {/* NEW NFT SECTION */}
         <VStack alignment="center" padding="40px 0 ">
+          <AbsoluteObject top="90px" right="-230px">
+            <IconImg
+              url={goldshape4}
+              width={size.width > 425 ? "390px" : "320px"}
+              height="390px"
+              backsize="contain"
+            ></IconImg>
+          </AbsoluteObject>
+
           <VStack padding="0 0 0 0 ">
             <IconImg
               url={Star3D}
@@ -723,4 +762,11 @@ const Cooper = styled(motion.div)`
 
 const Sphere = styled(motion.div)`
   position: absolute;
+`;
+
+const AbsoluteObject = styled(motion.div)`
+  position: absolute;
+  top: ${(props) => props.top};
+  right: ${(props) => props.right};
+  left: ${(props) => props.left};
 `;
