@@ -29,9 +29,11 @@ import {
   TitleSemi18,
   BodyBold,
   TitleRegular18,
+  BodyMedium,
 } from "../../styles/TextStyles";
 import xdcLogo from "../../images/miniXdcLogo.png";
 import gradientBase from "../../images/gradientBase.jpg";
+import logoWhiteX from "../../images/logoWhiteX.png";
 import { SortButtonNFTS } from "../../styles/SortButtonNFTS";
 import { FiltersButton } from "../../styles/FiltersButton";
 import uploadIcon from "../../images/uploadiconwhite.png";
@@ -67,6 +69,7 @@ import { StickySectionHeader } from "../../CustomModules/sticky/StickySectionHea
 import { Swiper, SwiperSlide } from "swiper/react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import editPencil from "../../images/editPencil.png";
+import confirmation from "../../images/confirmation.png";
 
 // Import Swiper styles
 import "swiper/swiper-bundle.min.css";
@@ -78,6 +81,7 @@ import { InputStyled } from "../../styles/InputStyled";
 import { UploadMultimedia } from "../../styles/UploadMultimedia";
 import { Activity } from "./Activity";
 import { CollectionTab } from "./CollectionTab";
+import { Icon } from "@mui/material";
 
 const MyNFT = (props) => {
   const { userId } = useParams();
@@ -115,6 +119,7 @@ const MyNFT = (props) => {
   const [newTwitterUsername, setNewTwitterUsername] = useState("");
   const [newWebsite, setNewWebsite] = useState("");
   const [highestPrice, setHighestPrice] = useState(0);
+  const [statusPublished, setStatusPublished] = useState(false);
 
   const heights = [260, 360, 300];
 
@@ -224,19 +229,21 @@ const MyNFT = (props) => {
     setBanner({ preview: "", raw: "" });
   };
 
-  function longPress(callback, ms=250) {
+  function longPress(callback, ms = 250) {
     let timeout = null;
 
-    const start = () => timeout = setTimeout(callback, ms);
+    const start = () => (timeout = setTimeout(callback, ms));
     const stop = () => timeout && window.clearTimeout(timeout);
-    return callback ? {
-      onMouseDown: start,
-      onMouseUp: stop,
-      onMouseLeave: stop,
-      onTouchStart: start,
-      onTouchMove: stop,
-      onTouchEnd: stop,
-    } : {};
+    return callback
+      ? {
+          onMouseDown: start,
+          onMouseUp: stop,
+          onMouseLeave: stop,
+          onTouchStart: start,
+          onTouchMove: stop,
+          onTouchEnd: stop,
+        }
+      : {};
   }
 
   /**
@@ -1023,6 +1030,7 @@ const MyNFT = (props) => {
                         </VStack>
                       </HStack>
 
+                      <Spacer></Spacer>
                       {/* Filter Buttons */}
 
                       <HStack spacing="30px">
@@ -1076,11 +1084,94 @@ const MyNFT = (props) => {
                       </HStack>
 
                       {subMenu === 0 && (
-                        <HStack justify="flex-start" spacing="9px">
-                          <CollectionTab name="Tab 1"></CollectionTab>
-                          <CollectionTab name="Tab 2"></CollectionTab>
-                          <CollectionTab name="Tab 3"> </CollectionTab>
-                        </HStack>
+                        <Swiper
+                          spaceBetween={0}
+                          slidesPerView={"auto"}
+                          grabCursor={true}
+                          onSwiper={(swiper) => console.log(swiper)}
+                          onSlideChange={() => console.log("slide change")}
+                        >
+                          <SwiperSlide
+                            style={{
+                              width: "auto",
+                              padding: "0 12px",
+                              height: "46px",
+                              background: "transparent",
+                            }}
+                          >
+                            <CollectionTab name="Tab 1"></CollectionTab>
+                          </SwiperSlide>
+                          <SwiperSlide
+                            style={{
+                              width: "auto",
+                              padding: "0 12px",
+                              height: "46px",
+                              background: "transparent",
+                            }}
+                          >
+                            <CollectionTab name="Tab 1"></CollectionTab>
+                          </SwiperSlide>
+                          <SwiperSlide
+                            style={{
+                              width: "auto",
+                              padding: "0 12px",
+                              height: "46px",
+                              background: "transparent",
+                            }}
+                          >
+                            <CollectionTab name="Tab 1"></CollectionTab>
+                          </SwiperSlide>
+                          <SwiperSlide
+                            style={{
+                              width: "auto",
+                              padding: "0 12px",
+                              height: "46px",
+                              background: "transparent",
+                            }}
+                          >
+                            <CollectionTab name="Tab 1"></CollectionTab>
+                          </SwiperSlide>
+                          <SwiperSlide
+                            style={{
+                              width: "auto",
+                              padding: "0 12px",
+                              height: "46px",
+                              background: "transparent",
+                            }}
+                          >
+                            <CollectionTab name="Tab 1"></CollectionTab>
+                          </SwiperSlide>
+                          <SwiperSlide
+                            style={{
+                              width: "auto",
+                              padding: "0 12px",
+                              height: "46px",
+                              background: "transparent",
+                            }}
+                          >
+                            <CollectionTab name="Tab 1"></CollectionTab>
+                          </SwiperSlide>
+                          <SwiperSlide
+                            style={{
+                              width: "auto",
+                              padding: "0 12px",
+                              height: "46px",
+                              background: "transparent",
+                            }}
+                          >
+                            <CollectionTab name="Tab 1"></CollectionTab>
+                          </SwiperSlide>
+                          <SwiperSlide
+                            style={{
+                              width: "auto",
+                              padding: "0 12px",
+                              height: "46px",
+                              background: "transparent",
+                            }}
+                          >
+                            <CollectionTab name="Tab 1"></CollectionTab>
+                          </SwiperSlide>
+                        </Swiper>
                       )}
                     </VStack>
 
@@ -1088,7 +1179,7 @@ const MyNFT = (props) => {
                     <VStack
                       minwidth="30%"
                       height="100%"
-                      padding="12px 12px 30px 0"
+                      padding="12px 12px 0px 0"
                       alignment="flex-end"
                       justify="flex-start"
                       spacing="21px"
@@ -1127,15 +1218,105 @@ const MyNFT = (props) => {
                           blur="30px"
                         >
                           {newMessage ? (
-                            <InputStyled
-                              background="transparent"
-                              textcolor="white"
-                              placeholder="We just joined the XDSea NFT Marketplace 🤩"
-                            ></InputStyled>
+                            <>
+                              <AlertMessage>
+                                <VStack
+                                  background="white"
+                                  border="9px"
+                                  padding="15px 21px"
+                                >
+                                  {statusPublished ? (
+                                    <>
+                                      <IconImg
+                                        url={confirmation}
+                                        width="42px"
+                                        height="42px"
+                                      ></IconImg>
+                                      <TitleRegular18 align="center">
+                                        Status Published
+                                      </TitleRegular18>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <TitleRegular18 align="center">
+                                        Are you sure you want erase your
+                                        message?
+                                      </TitleRegular18>
+                                      <HStack width="100%">
+                                        <VStack
+                                          background="rgba(0,0,0,0.1)"
+                                          border="6px"
+                                          height="42px"
+                                          with="100%"
+                                          cursor="pointer"
+                                        >
+                                          <BodyMedium cursor="pointer">
+                                            Back
+                                          </BodyMedium>
+                                        </VStack>
+                                        <VStack
+                                          background="linear-gradient(342.17deg, #0905C4 24.4%, #2D28FF 39.63%, #59E1FF 103.94%, #71FCF4 132.7%)"
+                                          border="6px"
+                                          height="42px"
+                                          with="100%"
+                                          cursor="pointer"
+                                        >
+                                          <BodyMedium
+                                            textcolor="white"
+                                            cursor="pointer"
+                                          >
+                                            Yes
+                                          </BodyMedium>
+                                        </VStack>
+                                      </HStack>
+                                    </>
+                                  )}
+                                </VStack>
+                              </AlertMessage>
+                              <InputStyled
+                                background="transparent"
+                                textcolor="white"
+                                placeholder="Only 92 Characters "
+                                fontsize="21px"
+                              ></InputStyled>
+                              <HStack width="100%">
+                                <HStack
+                                  width="100%"
+                                  minheight="42px"
+                                  background={({ theme }) => theme.backElement}
+                                  border="6px"
+                                  cursor="pointer"
+                                  whileTap={{ scale: 0.98 }}
+                                  onClick={() => setNewMessage(false)}
+                                >
+                                  <BodyRegular cursor="pointer">
+                                    Cancel
+                                  </BodyRegular>
+                                </HStack>
+                                <HStack
+                                  width="100%"
+                                  minheight="42px"
+                                  background="linear-gradient(166.99deg, #2868F4 37.6%, #0E27C1 115.6%)"
+                                  border="6px"
+                                  cursor="pointer"
+                                  whileTap={{ scale: 0.98 }}
+                                  onClick={() => setNewMessage(false)}
+                                >
+                                  <BodyRegular
+                                    textcolor="white"
+                                    cursor="pointer"
+                                  >
+                                    Publish New
+                                  </BodyRegular>
+                                </HStack>
+                              </HStack>
+                            </>
                           ) : (
                             <VStack>
+                              {/* Only 92 characters */}
                               <TitleSemi21 textcolor="white">
-                                We just joined the XDSea NFT Marketplace 🤩
+                                We just joined the XDSea NFT Marketplace 🤩 stay
+                                tunned for more info related to our nfts 🫰
                               </TitleSemi21>
                               <HStack>
                                 <CaptionSmallRegular textcolor="white">
@@ -1166,37 +1347,6 @@ const MyNFT = (props) => {
                               ) : null}
                             </VStack>
                           )}
-
-                          {newMessage ? (
-                            <HStack width="100%">
-                              <HStack
-                                width="100%"
-                                minheight="42px"
-                                background={({ theme }) => theme.backElement}
-                                border="6px"
-                                cursor="pointer"
-                                whileTap={{ scale: 0.98 }}
-                                onClick={() => setNewMessage(false)}
-                              >
-                                <BodyRegular cursor="pointer">
-                                  Cancel
-                                </BodyRegular>
-                              </HStack>
-                              <HStack
-                                width="100%"
-                                minheight="42px"
-                                background="linear-gradient(166.99deg, #2868F4 37.6%, #0E27C1 115.6%)"
-                                border="6px"
-                                cursor="pointer"
-                                whileTap={{ scale: 0.98 }}
-                                onClick={() => setNewMessage(false)}
-                              >
-                                <BodyRegular textcolor="white" cursor="pointer">
-                                  Publish New
-                                </BodyRegular>
-                              </HStack>
-                            </HStack>
-                          ) : null}
                         </VStack>
                       </HStack>
 
@@ -1285,9 +1435,11 @@ const MyNFT = (props) => {
                                     border="6px"
                                     cursor="pointer"
                                     overflow="hidden"
-                                    whileHover={{ scale: 1.009 }}  
+                                    whileHover={{ scale: 1.009 }}
                                   >
-                                    <ZStack cursor={"pointer"} border="6px" 
+                                    <ZStack
+                                      cursor={"pointer"}
+                                      border="6px"
                                       onClick={() => {
                                         props.redirect(
                                           `nft/${nftaddress}/${item.tokenId}`
@@ -1304,7 +1456,8 @@ const MyNFT = (props) => {
                                           prevState[i] = false;
                                           return [...prevState];
                                         });
-                                      }}>
+                                      }}
+                                    >
                                       {item.hasOpenOffer ? (
                                         <BubbleOffers>
                                           <HStack
@@ -1359,13 +1512,19 @@ const MyNFT = (props) => {
                                           ></IconImg>
                                         ) : null}
                                       </ZItem>
-                                      <ZItem {...longPress(() => {
-                                        setOwnedNFTPlaying((prevState) => {
-                                          const newOwnedNFTPlaying = new Array(ownedNFTPlaying.length).fill(false);
-                                          newOwnedNFTPlaying[i] = !newOwnedNFTPlaying[i];
-                                          return [...newOwnedNFTPlaying];
-                                        });
-                                      })}>
+                                      <ZItem
+                                        {...longPress(() => {
+                                          setOwnedNFTPlaying((prevState) => {
+                                            const newOwnedNFTPlaying =
+                                              new Array(
+                                                ownedNFTPlaying.length
+                                              ).fill(false);
+                                            newOwnedNFTPlaying[i] =
+                                              !newOwnedNFTPlaying[i];
+                                            return [...newOwnedNFTPlaying];
+                                          });
+                                        })}
+                                      >
                                         <VStack
                                           padding="15px"
                                           background="linear-gradient(180deg, rgba(0, 0, 0, 0) 54.41%, #000000 91.67%)"
@@ -1413,7 +1572,9 @@ const MyNFT = (props) => {
                             ? collections?.map((item) => (
                                 <ZStack
                                   maxwidth="49%"
-                                  height={size.width < 1112 ? "320px" : "490px"}
+                                  minheight={
+                                    size.width < 1112 ? "320px" : "590px"
+                                  }
                                   border="9px"
                                   padding="12px"
                                   overflow="hidden"
@@ -1433,12 +1594,43 @@ const MyNFT = (props) => {
                                       width="100%"
                                       height="100%"
                                       border="12px"
-                                      padding="12px"
+                                      padding="0 0 30px 0"
                                     >
                                       <Spacer></Spacer>
-                                      <BodyRegular textcolor="white">
+
+                                      <IconImg
+                                        url={newBlue}
+                                        width="90px"
+                                        height="90px"
+                                        backsize="cover"
+                                        border="90px"
+                                        bordersize="3px"
+                                        bordercolor="white"
+                                      ></IconImg>
+                                      <TitleSemi21 textcolor="white">
                                         {item.name}
-                                      </BodyRegular>
+                                      </TitleSemi21>
+                                      <HStack
+                                        self="none"
+                                        height="33px"
+                                        border="30px"
+                                        padding="0 15px "
+                                        spacing="9px"
+                                        background="linear-gradient(350.1deg, #0905C4 16.98%, #2D28FF 32.68%, #59E1FF 98.99%, #71FCF4 128.65%)"
+                                      >
+                                        <CaptionBoldShort textcolor="white">
+                                          Volume Traded
+                                        </CaptionBoldShort>
+                                        <BodyRegular textcolor="white">
+                                          {"333,333"}
+                                        </BodyRegular>
+
+                                        <IconImg
+                                          url={logoWhiteX}
+                                          width="18px"
+                                          height="18px"
+                                        ></IconImg>
+                                      </HStack>
                                     </VStack>
                                   </ZItem>
                                 </ZStack>
@@ -1676,13 +1868,17 @@ const MyNFT = (props) => {
                           ></IconImg>
                         ) : null}
                       </ZItem>
-                      <ZItem {...longPress(() => {
-                        setOwnedNFTPlaying((prevState) => {
-                          const newOwnedNFTPlaying = new Array(ownedNFTPlaying.length).fill(false);
-                          newOwnedNFTPlaying[i] = !newOwnedNFTPlaying[i];
-                          return [...newOwnedNFTPlaying];
-                        });
-                      })}>
+                      <ZItem
+                        {...longPress(() => {
+                          setOwnedNFTPlaying((prevState) => {
+                            const newOwnedNFTPlaying = new Array(
+                              ownedNFTPlaying.length
+                            ).fill(false);
+                            newOwnedNFTPlaying[i] = !newOwnedNFTPlaying[i];
+                            return [...newOwnedNFTPlaying];
+                          });
+                        })}
+                      >
                         <VStack
                           padding="15px"
                           background="linear-gradient(180deg, rgba(0, 0, 0, 0) 54.41%, #000000 91.67%)"
@@ -1793,4 +1989,14 @@ const SliderActivity = styled(motion.div)`
   z-index: 3000;
   bottom: -503px;
   width: 100%;
+`;
+
+const AlertMessage = styled(motion.div)`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+
+  z-index: 1;
 `;

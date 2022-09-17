@@ -60,7 +60,6 @@ import verifiedBlue from "../../images/verifiedBlue.png";
 import { useLongPress } from "react-use";
 
 const Home = (props) => {
-
   /** State Variables */
   const [featuredNFTs, setFeaturedNFTs] = useState([]);
   const [topCollections, setTopCollections] = useState([]);
@@ -92,7 +91,7 @@ const Home = (props) => {
   const [scrollTop, setScrollTop] = useState();
   const [scrolling, setScrolling] = useState();
   const [, setShowMenu] = useState(props.showMenu);
-  const heights = [260, 360, 300];
+  const heights = [360, 522, 260, 320, 490];
   const [featuredNFTPlaying, setFeaturedNFTPlaying] = useState([]);
 
   /**
@@ -118,19 +117,21 @@ const Home = (props) => {
     }
   };
 
-  function longPress(callback, ms=250) {
+  function longPress(callback, ms = 250) {
     let timeout = null;
 
-    const start = () => timeout = setTimeout(callback, ms);
+    const start = () => (timeout = setTimeout(callback, ms));
     const stop = () => timeout && window.clearTimeout(timeout);
-    return callback ? {
-      onMouseDown: start,
-      onMouseUp: stop,
-      onMouseLeave: stop,
-      onTouchStart: start,
-      onTouchMove: stop,
-      onTouchEnd: stop,
-    } : {};
+    return callback
+      ? {
+          onMouseDown: start,
+          onMouseUp: stop,
+          onMouseLeave: stop,
+          onTouchStart: start,
+          onTouchMove: stop,
+          onTouchEnd: stop,
+        }
+      : {};
   }
 
   useEffect(() => {
@@ -182,7 +183,7 @@ const Home = (props) => {
         ></SubtitleBubble>
 
         <Masonry
-          columnsCount={3}
+          columnsCount={size.width > 425 ? 3 : 2}
           gutter="15px"
           style={{
             width:
@@ -190,13 +191,15 @@ const Home = (props) => {
                 ? "1200px"
                 : size.width > 1023
                 ? "1024px"
-                : "768px",
+                : size.width > 768
+                ? "768px"
+                : "425px",
           }}
         >
           {featuredNFTs.length !== 0
             ? featuredNFTs?.map((item, i) => (
                 <ZStack
-                  minheight={item.height + "px"}
+                  minheight={size.width > 425 ? item.height + "px" : "150px"}
                   cursor="pointer"
                   onClick={() =>
                     props.redirect(`nft/${item.nftContract}/${item.tokenId}`)
@@ -252,13 +255,18 @@ const Home = (props) => {
                       )}
                     </VStack>
                   </ZItem>
-                  <ZItem cursor="pointer" {...longPress(() => {
-                    const newFeaturedNFTPlaying = new Array(featuredNFTPlaying.length).fill(false);
-                    setFeaturedNFTPlaying((prevState) => {
-                      newFeaturedNFTPlaying[i] = !newFeaturedNFTPlaying[i];
-                      return [...newFeaturedNFTPlaying];
-                    });
-                  })}>
+                  <ZItem
+                    cursor="pointer"
+                    {...longPress(() => {
+                      const newFeaturedNFTPlaying = new Array(
+                        featuredNFTPlaying.length
+                      ).fill(false);
+                      setFeaturedNFTPlaying((prevState) => {
+                        newFeaturedNFTPlaying[i] = !newFeaturedNFTPlaying[i];
+                        return [...newFeaturedNFTPlaying];
+                      });
+                    })}
+                  >
                     <VStack
                       background="linear-gradient(190.5deg, rgba(0, 0, 0, 0) 75.64%, rgba(0, 0, 0, 0.90) 90.61%);"
                       border="6px"
@@ -283,7 +291,10 @@ const Home = (props) => {
                             border="12px"
                             cursor="pointer"
                           ></IconImg>
-                          <BodyMedium textcolor="rgba(255,255,255,0.6)" cursor="pointer">
+                          <BodyMedium
+                            textcolor="rgba(255,255,255,0.6)"
+                            cursor="pointer"
+                          >
                             {truncateAddress(item.creator.userName)}
                           </BodyMedium>
                           <IconImg

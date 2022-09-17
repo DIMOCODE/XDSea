@@ -206,6 +206,7 @@ export const ZItem = styled(motion.div).attrs((props) => ({
   cursor: ${(props) => props.cursor};
   background: ${(props) => props.background};
   background-image: url(${(props) => props.backgroundimage});
+  position: relative;
 `;
 
 // Divider

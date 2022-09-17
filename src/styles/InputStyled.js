@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { IconImg, ZStack } from "./Stacks";
-import styled from "styled-components";
+import styled, { withTheme } from "styled-components";
 import empty from "../images/empty.png";
 import { BodyBold } from "./TextStyles";
 
@@ -113,6 +113,7 @@ const Input = styled.input.attrs((props) => ({
   texttransform: props.texttransform || "none",
   height: props.height || "39px",
   textcolor: props.textcolor || props.theme.text,
+  textplace: props.textplace || "rgba(255,255,255, 0.8)",
 }))`
   background: ${(props) => props.background};
   width: 100%;
@@ -139,4 +140,7 @@ const Input = styled.input.attrs((props) => ({
     border-color: rgba(153, 162, 175, 0.36);
 
   }
+  ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: ${(props) => props.textplace};
+  opacity: 1; /* Firefox */
 `;
