@@ -116,7 +116,7 @@ const Home = (props) => {
       setTopCollections(homeData.topCollections);
       setTrendingNFTs(homeData.trendingNfts);
       setNewestNFTs(homeData.newestNfts);
-      setNftPlaying(new Array(homeData.trendingNFTs.length + homeData.newestNfts.length).fill(false));
+      setNftPlaying(new Array(homeData.trendingNfts.length + homeData.newestNfts.length).fill(false));
       props?.setTwitterFollowers(homeData.socialMediaMetrics.twitter);
       setLoading(false);
     } catch (error) {
