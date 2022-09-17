@@ -340,7 +340,7 @@ function Searchbar({
                             {nft.collectionId.name}
                           </CaptionRegular>
                           <CaptionRegular>
-                            {truncateAddress(nft.owner.userName)}
+                            {truncateAddress(nft.addressOwner)}
                           </CaptionRegular>
                         </VStack>
                       </HStack>
@@ -418,7 +418,7 @@ function Searchbar({
                         >
                           <BodyBold>{collection.name}</BodyBold>
                           <CaptionRegular>
-                            {truncateAddress(collection.creator.userName)}
+                            {truncateAddress(collection.addressCreator)}
                           </CaptionRegular>
                         </VStack>
                       </HStack>

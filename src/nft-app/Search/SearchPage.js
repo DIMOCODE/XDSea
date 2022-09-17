@@ -392,7 +392,7 @@ function SearchPage(props) {
                               }
                               collectionName={item.name}
                               collectionDescription={item.description}
-                              creatorName={item.creator.userName}
+                              creatorName={item.addressCreator}
                               onClickCollection={() =>
                                 NavigateTo(`collection/${item.nickName}`)
                               }

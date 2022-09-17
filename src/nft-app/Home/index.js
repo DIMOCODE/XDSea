@@ -81,7 +81,7 @@ const Home = (props) => {
             fileType: nft.fileType,
             nftContract: nft.collectionId.address,
             preview: nft.preview.v0,
-            creator: nft.creator.userName,
+            creator: nft.addressCreator,
             creatorId: nft.creator._id,
             tokenId: nft.tokenId,
             isVerified: nft.creator.isVerified,
