@@ -45,6 +45,9 @@ function NftContainer(props) {
     border,
     minwidth,
     minheight,
+    setIsPlaying,
+    isPlaying,
+    nftIndex,
   } = props;
 
   const scaleImage = {
@@ -66,7 +69,6 @@ function NftContainer(props) {
   };
 
   const [isVisible, setIsVisible] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [nftStatus] = useState(iconStatus);
 
   const truncate = (str, n) => {
@@ -104,11 +106,11 @@ function NftContainer(props) {
       bordercolor={appStyle.colors.darkgrey10}
       onHoverStart={() => {
         setIsVisible((isVisible) => !isVisible);
-        setIsPlaying(true);
+        setIsPlaying(nftIndex, false);
       }}
       onHoverEnd={() => {
         setIsVisible((isVisible) => !isVisible);
-        setIsPlaying(false);
+        setIsPlaying(nftIndex, false);
       }}
     >
       <ZStack overflow="hidden" border="12px">
@@ -136,7 +138,7 @@ function NftContainer(props) {
                 playing={isPlaying}
                 muted={true}
                 volume={0}
-                loop={false}
+                loop={true}
                 width="120%"
                 height="100%"
               />
@@ -156,7 +158,7 @@ function NftContainer(props) {
         </ZItem>
         <ZItem
           {...longPress(() => {
-            setIsPlaying(!isPlaying);
+            setIsPlaying(nftIndex, true);
           })}
         >
           <VStack

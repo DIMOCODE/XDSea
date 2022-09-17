@@ -1001,6 +1001,8 @@ function CreateNft(props) {
                 onChange={(event) => {
                   setDescription(event.target.value);
                 }}
+                textColor={({ theme }) => theme.text}
+                background={({ theme }) => theme.backElement}
               ></TextAreaStyled>
 
               {/* NFT Price Input Field */}
@@ -1566,6 +1568,8 @@ function CreateNft(props) {
                           setCollectionDescription(event.target.value);
                         }}
                         height="240px"
+                        textColor={({ theme }) => theme.text}
+                        background={({ theme }) => theme.backElement}
                       ></TextAreaStyled>
                     </VStack>
                   </VStack>

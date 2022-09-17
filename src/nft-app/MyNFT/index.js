@@ -32,7 +32,7 @@ import {
   BodyMedium,
 } from "../../styles/TextStyles";
 import xdcLogo from "../../images/miniXdcLogo.png";
-import gradientBase from "../../images/gradientBase.jpg";
+import gradientBase from "../../images/circleLeft.png";
 import logoWhiteX from "../../images/logoWhiteX.png";
 import { SortButtonNFTS } from "../../styles/SortButtonNFTS";
 import { FiltersButton } from "../../styles/FiltersButton";
@@ -51,6 +51,7 @@ import webColor from "../../images/webColor.png";
 import walletBlue from "../../images/walletBlue.png";
 import useWindowSize from "../../styles/useWindowSize";
 import ButtonApp from "../../styles/Buttons";
+import { TextAreaStyled } from "../../styles/TextAreaStyled";
 import newBlue from "../../images/newBlue.webp";
 
 import { appStyle } from "../../styles/AppStyles";
@@ -97,10 +98,6 @@ const MyNFT = (props) => {
   const [nftParams, setNftParams] = useState({
     pageSize: 15,
     page: 1,
-    userId: userId,
-  });
-  const [collectionParams] = useState({
-    userId: userId,
   });
   const [subMenu, setSubMenu] = useState(0);
   const [, setShowMenu] = useState(props.showMenu);
@@ -120,32 +117,25 @@ const MyNFT = (props) => {
   const [newWebsite, setNewWebsite] = useState("");
   const [highestPrice, setHighestPrice] = useState(0);
   const [statusPublished, setStatusPublished] = useState(false);
+  const [collectionFilters, setCollectionFilters] = useState([]);
+  const [isCollectionFilterSelected, setIsCollectionFilterSelected] = useState([]);
 
   const heights = [260, 360, 300];
 
   let position = Math.round(Math.random() * 2);
 
   /**
-   * Get the collections created by the user
+   * Get the first page of owned NFTs, created collections, and profile of the user
    */
-  const getCreatedCollections = async () => {
-    const collectionData = await (await getCollections(collectionParams)).data;
-
-    setCollections(collectionData.collections);
-    setLoadingCollection(false);
-  };
-
-  /**
-   * Get the first page of owned NFTs of the user
-   */
-  const getOwnedNFTs = async () => {
+  const getData = async () => {
+    let userData = await (await getUser(userId)).data.user;
+    setUser(userData);
     await Promise.all(
       [1, 2].map(async (i) => {
         if (i === 1) {
-          let userData = await (await getUser(userId)).data.user;
-          setUser(userData);
-        } else {
-          let nftData = await (await getNFTs(nftParams)).data;
+          let nftData = await (
+            await getNFTs({ ...nftParams, userId: userData._id })
+          ).data;
 
           let nftHeights = nftData.nfts.map((item) => ({
             ...item,
@@ -156,12 +146,22 @@ const MyNFT = (props) => {
           setTotalNfts(nftData.nftsAmount);
           setOwnedNFTPlaying(new Array(nftData.nftsAmount.length).fill(false));
           setHighestPrice(nftData.higherPrice);
+          setCollectionFilters(nftData.associatedCollections);
+          setIsCollectionFilterSelected(new Array(nftData.associatedCollections.length).fill(false));
+        } else {
+          let collectionData = await (
+            await getCollections({ userId: userData._id })
+          ).data;
+
+          setCollections(collectionData.collections);
+          setLoadingCollection(false);
         }
       })
     );
 
     setNftParams({
       ...nftParams,
+      userId: userData._id,
       page: nftParams.page + 1,
     });
     setLoading(false);
@@ -246,6 +246,13 @@ const MyNFT = (props) => {
       : {};
   }
 
+  const handleCollectionFilter = (i, isNew) => {
+    console.log(isCollectionFilterSelected);
+    const newIsCollectionFilterSelected = new Array(isCollectionFilterSelected.length).fill(false);
+    newIsCollectionFilterSelected[i] = isNew;
+    setIsCollectionFilterSelected([...newIsCollectionFilterSelected]);
+  }
+
   /**
    * React Hook to re-render the component when the userId state changes
    */
@@ -253,8 +260,7 @@ const MyNFT = (props) => {
     window.scrollTo(0, 0);
     setSubMenu(1);
     setLoading(true);
-    getOwnedNFTs();
-    getCreatedCollections();
+    getData();
   }, [userId]);
 
   useEffect(() => {
@@ -280,14 +286,6 @@ const MyNFT = (props) => {
 
     return () => window.removeEventListener("scroll", onScroll);
   }, [scrollTop]);
-
-  useEffect(() => {
-    if (props?.theme === "light") {
-      setIsDarkUI(false);
-    } else {
-      setIsDarkUI(true);
-    }
-  }, [props?.theme]);
 
   useEffect(() => {}, [scrolling]);
 
@@ -473,7 +471,7 @@ const MyNFT = (props) => {
                             </ZItem>
                           </ZStack>
 
-                          <CaptionBoldShort textcolor="white" align="center">
+                          <CaptionBoldShort textcolor={isDarkUI ? "#363537" : "#FAFAFA"} align="center">
                             UPLOAD USER PROFILE
                           </CaptionBoldShort>
                         </VStack>
@@ -481,14 +479,14 @@ const MyNFT = (props) => {
                         {/* Username and social networks selector    */}
                         <VStack alignment="flex-start">
                           <VStack spacing="9px" alignment="flex-start">
-                            <CaptionBoldShort textcolor="white">
+                            <CaptionBoldShort textcolor={isDarkUI ? "#363537" : "#FAFAFA"}>
                               EDIT CREATOR NAME
                             </CaptionBoldShort>
 
                             <InputStyled
-                              placeholder={user?.nickName}
+                              placeholder={user?.userName}
                               fontsize="21px"
-                              textcolor="white"
+                              textcolor={isDarkUI ? "#363537" : "#FAFAFA"}
                               background={"rgba(0,0,0,0.3)"}
                               onChange={(event) => {
                                 setNewUserName(event.target.value);
@@ -515,7 +513,15 @@ const MyNFT = (props) => {
                             ) : null}
 
                             {/* Wallet button  */}
-                            <CircleButton image={walletBlue}></CircleButton>
+                            <BubbleCopied
+                              logo={walletBlue}
+                              address={
+                                user.XDCWallets ? user.XDCWallets[0] : ""
+                              }
+                              icon={copyIcon}
+                              background={isDarkUI ? "#20222D" : "white"}
+                              textColor={isDarkUI ? "#FAFAFA" : "#363537"}
+                            ></BubbleCopied>
                           </HStack>
                         </VStack>
                       </HStack>
@@ -527,13 +533,13 @@ const MyNFT = (props) => {
                         <HStack>
                           <InputStyled
                             icon={instagramColor}
-                            background={({ theme }) => theme.faded}
+                            background={"rgba(0,0,0,0.3)"}
                             placeholder={
                               user?.instagramUrl
                                 ? user.instagramUrl
-                                : "Instagram Username"
+                                : "Instagram URL"
                             }
-                            textcolor="white"
+                            textcolor={isDarkUI ? "#363537" : "#FAFAFA"}
                             iconRight=""
                             iconLeft="15px"
                             padding="0 0 0 42px"
@@ -548,7 +554,7 @@ const MyNFT = (props) => {
                               width="42px"
                               height="36px"
                               border="36px"
-                              background="white"
+                              background={isDarkUI ? "#20222D" : "white"}
                               cursor="pointer"
                               whileTap={{ scale: 0.96 }}
                               onClick={() => setIsInstaAdded(false)}
@@ -566,7 +572,7 @@ const MyNFT = (props) => {
                                 width="36px"
                                 height="36px"
                                 border="36px"
-                                background="white"
+                                background={isDarkUI ? "#20222D" : "white"}
                                 cursor="pointer"
                                 whileTap={{ scale: 0.96 }}
                                 onClick={() => setIsInstaAdded(true)}
@@ -603,13 +609,13 @@ const MyNFT = (props) => {
                         <HStack>
                           <InputStyled
                             icon={twitterColor}
-                            background={({ theme }) => theme.faded}
+                            background={"rgba(0,0,0,0.3)"}
                             placeholder={
                               user?.twitterUrl
                                 ? user.twitterUrl
-                                : "Twitter username"
+                                : "Twitter URL"
                             }
-                            textcolor="white"
+                            textcolor={isDarkUI ? "#363537" : "#FAFAFA"}
                             iconRight=""
                             iconLeft="15px"
                             padding="0 0 0 42px"
@@ -624,7 +630,7 @@ const MyNFT = (props) => {
                               width="42px"
                               height="36px"
                               border="36px"
-                              background="white"
+                              background={isDarkUI ? "#20222D" : "white"}
                               cursor="pointer"
                               whileTap={{ scale: 0.96 }}
                               onClick={() => setIsTweetAdded(false)}
@@ -642,7 +648,7 @@ const MyNFT = (props) => {
                                 width="36px"
                                 height="36px"
                                 border="36px"
-                                background="white"
+                                background={isDarkUI ? "#20222D" : "white"}
                                 cursor="pointer"
                                 whileTap={{ scale: 0.96 }}
                                 onClick={() => setIsTweetAdded(true)}
@@ -679,11 +685,11 @@ const MyNFT = (props) => {
                         <HStack>
                           <InputStyled
                             icon={webColor}
-                            background={({ theme }) => theme.faded}
+                            background={"rgba(0,0,0,0.3)"}
                             placeholder={
                               user?.websiteUrl ? user.websiteUrl : "Website URL"
                             }
-                            textcolor="white"
+                            textcolor={isDarkUI ? "#363537" : "#FAFAFA"}
                             iconRight=""
                             iconLeft="15px"
                             padding="0 0 0 42px"
@@ -698,7 +704,7 @@ const MyNFT = (props) => {
                               width="42px"
                               height="36px"
                               border="36px"
-                              background="white"
+                              background={isDarkUI ? "#20222D" : "white"}
                               cursor="pointer"
                               whileTap={{ scale: 0.96 }}
                               onClick={() => setIsWebAdded(false)}
@@ -716,7 +722,7 @@ const MyNFT = (props) => {
                                 width="36px"
                                 height="36px"
                                 border="36px"
-                                background="white"
+                                background={isDarkUI ? "#20222D" : "white"}
                                 cursor="pointer"
                                 whileTap={{ scale: 0.96 }}
                                 onClick={() => setIsWebAdded(true)}
@@ -759,7 +765,7 @@ const MyNFT = (props) => {
                     >
                       {/* Close button  */}
                       <HStack
-                        background="white"
+                        background={isDarkUI ? "#20222D" : "white"}
                         border="30px"
                         cursor="pointer"
                         height="42px"
@@ -773,7 +779,7 @@ const MyNFT = (props) => {
                       >
                         <IconImg
                           cursor="pointer"
-                          url={crossIcon}
+                          url={isDarkUI ? crossWhite : crossIcon}
                           width="21px"
                           height="21px"
                         ></IconImg>
@@ -811,8 +817,7 @@ const MyNFT = (props) => {
                             width="100%"
                             cursor="pointer"
                             onClick={() => {
-                              setIsDarkUI(false);
-                              props?.themeToggler();
+                              setIsDarkUI(true);
                             }}
                           >
                             <CaptionBoldShort
@@ -825,8 +830,7 @@ const MyNFT = (props) => {
                           <HStack
                             width="100%"
                             onClick={() => {
-                              setIsDarkUI(true);
-                              props?.themeToggler();
+                              setIsDarkUI(false);
                             }}
                             cursor="pointer"
                           >
@@ -987,8 +991,8 @@ const MyNFT = (props) => {
 
                         {/* Username and social networks    */}
                         <VStack alignment="flex-start">
-                          <TitleSemi21 textcolor="white">
-                            {user?.nickName}
+                          <TitleSemi21 textcolor={isDarkUI ? "#363537" : "#FAFAFA"}>
+                            {user?.userName}
                           </TitleSemi21>
                           <HStack spacing="12px" justify="flex-start">
                             {/* Instagram Button */}
@@ -1010,20 +1014,14 @@ const MyNFT = (props) => {
 
                             {/* Wallet button  */}
                             {user?.XDCWallets?.length !== 0 ? (
-                              // <CircleButton
-                              //   image={walletBlue}
-                              //   onClick={() => {
-                              //     navigator.clipboard.writeText(
-                              //       user.XDCWallets[0]
-                              //     );
-                              //   }}
-                              // ></CircleButton>
                               <BubbleCopied
                                 logo={walletBlue}
                                 address={
                                   user.XDCWallets ? user.XDCWallets[0] : ""
                                 }
                                 icon={copyIcon}
+                                background={isDarkUI ? "#20222D" : "white"}
+                                textColor={isDarkUI ? "#FAFAFA" : "#363537"}
                               ></BubbleCopied>
                             ) : null}
                           </HStack>
@@ -1044,17 +1042,18 @@ const MyNFT = (props) => {
                           variants={selection}
                           animate={subMenu === 1 ? "active" : "faded"}
                         >
-                          <TitleSemi18 cursor="pointer" textcolor="white">
+                          <TitleSemi18 cursor="pointer" textcolor={isDarkUI ? "#363537" : "#FAFAFA"}>
                             Collections
                           </TitleSemi18>
                           <VStack
-                            width="26px"
+                            width="auto"
+                            minwidth="26px"
                             height="26px"
                             border="30px"
-                            background={({ theme }) => theme.backElement}
+                            background={isDarkUI ? "#20222D" : "white"}
                             cursor="pointer"
                           >
-                            <BodyRegular>{collections?.length}</BodyRegular>
+                            <BodyRegular textcolor={isDarkUI ? "#FAFAFA" : "#363537"}>{collections?.length}</BodyRegular>
                           </VStack>
                         </HStack>
 
@@ -1065,114 +1064,23 @@ const MyNFT = (props) => {
                           variants={selection}
                           animate={subMenu === 0 ? "active" : "faded"}
                         >
-                          <TitleSemi18 cursor="pointer" textcolor="white">
+                          <TitleSemi18 cursor="pointer" textcolor={isDarkUI ? "#363537" : "#FAFAFA"}>
                             NFTs Owned
                           </TitleSemi18>
                           <VStack
                             width="auto"
                             height="26px"
                             border="30px"
-                            background={({ theme }) => theme.backElement}
+                            background={isDarkUI ? "#20222D" : "white"}
                             cursor="pointer"
                             padding="0px 9px"
                           >
-                            <BodyRegular>{totalNfts}</BodyRegular>
+                            <BodyRegular textcolor={isDarkUI ? "#FAFAFA" : "#363537"}>{totalNfts}</BodyRegular>
                           </VStack>
                         </HStack>
 
                         <Spacer></Spacer>
                       </HStack>
-
-                      {subMenu === 0 && (
-                        <Swiper
-                          spaceBetween={0}
-                          slidesPerView={"auto"}
-                          grabCursor={true}
-                          onSwiper={(swiper) => console.log(swiper)}
-                          onSlideChange={() => console.log("slide change")}
-                        >
-                          <SwiperSlide
-                            style={{
-                              width: "auto",
-                              padding: "0 12px",
-                              height: "46px",
-                              background: "transparent",
-                            }}
-                          >
-                            <CollectionTab name="Tab 1"></CollectionTab>
-                          </SwiperSlide>
-                          <SwiperSlide
-                            style={{
-                              width: "auto",
-                              padding: "0 12px",
-                              height: "46px",
-                              background: "transparent",
-                            }}
-                          >
-                            <CollectionTab name="Tab 1"></CollectionTab>
-                          </SwiperSlide>
-                          <SwiperSlide
-                            style={{
-                              width: "auto",
-                              padding: "0 12px",
-                              height: "46px",
-                              background: "transparent",
-                            }}
-                          >
-                            <CollectionTab name="Tab 1"></CollectionTab>
-                          </SwiperSlide>
-                          <SwiperSlide
-                            style={{
-                              width: "auto",
-                              padding: "0 12px",
-                              height: "46px",
-                              background: "transparent",
-                            }}
-                          >
-                            <CollectionTab name="Tab 1"></CollectionTab>
-                          </SwiperSlide>
-                          <SwiperSlide
-                            style={{
-                              width: "auto",
-                              padding: "0 12px",
-                              height: "46px",
-                              background: "transparent",
-                            }}
-                          >
-                            <CollectionTab name="Tab 1"></CollectionTab>
-                          </SwiperSlide>
-                          <SwiperSlide
-                            style={{
-                              width: "auto",
-                              padding: "0 12px",
-                              height: "46px",
-                              background: "transparent",
-                            }}
-                          >
-                            <CollectionTab name="Tab 1"></CollectionTab>
-                          </SwiperSlide>
-                          <SwiperSlide
-                            style={{
-                              width: "auto",
-                              padding: "0 12px",
-                              height: "46px",
-                              background: "transparent",
-                            }}
-                          >
-                            <CollectionTab name="Tab 1"></CollectionTab>
-                          </SwiperSlide>
-                          <SwiperSlide
-                            style={{
-                              width: "auto",
-                              padding: "0 12px",
-                              height: "46px",
-                              background: "transparent",
-                            }}
-                          >
-                            <CollectionTab name="Tab 1"></CollectionTab>
-                          </SwiperSlide>
-                        </Swiper>
-                      )}
                     </VStack>
 
                     {/* Sidebar Content */}
@@ -1187,7 +1095,7 @@ const MyNFT = (props) => {
                       {/* Edit button for the logged-in user */}
                       {!isLoggedIn ? (
                         <HStack
-                          background="white"
+                          background={isDarkUI ? "#20222D" : "white"}
                           border="30px"
                           cursor="pointer"
                           minheight="42px"
@@ -1196,7 +1104,7 @@ const MyNFT = (props) => {
                           padding="0 6px 0 9px"
                           onClick={() => setIsEditing(true)}
                         >
-                          <BodyRegular cursor="pointer">
+                          <BodyRegular textcolor={isDarkUI ? "#FAFAFA" : "#363537"} cursor="pointer">
                             Edit Profile
                           </BodyRegular>
                           <IconImg
@@ -1210,7 +1118,7 @@ const MyNFT = (props) => {
 
                       <HStack>
                         <VStack
-                          background={({ theme }) => theme.faded30}
+                          background={"rgba(0,0,0,0.3)"}
                           alignment="flex-start"
                           padding="26px 18px 26px 18px"
                           border="6px"
@@ -1219,7 +1127,7 @@ const MyNFT = (props) => {
                         >
                           {newMessage ? (
                             <>
-                              <AlertMessage>
+                              {/* <AlertMessage>
                                 <VStack
                                   background="white"
                                   border="9px"
@@ -1272,13 +1180,19 @@ const MyNFT = (props) => {
                                     </>
                                   )}
                                 </VStack>
-                              </AlertMessage>
-                              <InputStyled
-                                background="transparent"
-                                textcolor="white"
-                                placeholder="Only 92 Characters "
-                                fontsize="21px"
-                              ></InputStyled>
+                              </AlertMessage> */}
+                              <TextAreaStyled
+                                background="rgba(0,0,0,0.3)"
+                                textColor={isDarkUI ? "#363537" : "#FAFAFA"}
+                                placeholder="Write new message..."
+                                fontSize="21px"
+                                fontWeight="400"
+                                height="165px"
+                                resize="none"
+                                maxLength="90"
+                                letterSpacing="-0.03em"
+                                lineHeight="33px"
+                              ></TextAreaStyled>
                               <HStack width="100%">
                                 <HStack
                                   width="100%"
@@ -1314,19 +1228,19 @@ const MyNFT = (props) => {
                           ) : (
                             <VStack>
                               {/* Only 92 characters */}
-                              <TitleSemi21 textcolor="white">
-                                We just joined the XDSea NFT Marketplace 🤩 stay
-                                tunned for more info related to our nfts 🫰
+                              <TitleSemi21 textcolor={isDarkUI ? "#363537" : "#FAFAFA"}>
+                                We just joined the XDSea NFT Marketplace 🤩 Stay
+                                tuned for more info related to our NFTs!
                               </TitleSemi21>
                               <HStack>
-                                <CaptionSmallRegular textcolor="white">
+                                <CaptionSmallRegular textcolor={isDarkUI ? "#363537" : "#FAFAFA"}>
                                   10 MINS AGO
                                 </CaptionSmallRegular>
                                 <Spacer></Spacer>
                               </HStack>
                               {!isLoggedIn ? (
                                 <HStack
-                                  background="white"
+                                  background={isDarkUI ? "#20222D" : "white"}
                                   padding="6px 12px"
                                   border="6px"
                                   height="39px"
@@ -1334,7 +1248,7 @@ const MyNFT = (props) => {
                                   whileTap={{ scale: 0.96 }}
                                   onClick={() => setNewMessage(true)}
                                 >
-                                  <BodyRegular cursor="pointer">
+                                  <BodyRegular textcolor={isDarkUI ? "#FAFAFA" : "#363537"} cursor="pointer">
                                     New Status
                                   </BodyRegular>
 
@@ -1357,11 +1271,12 @@ const MyNFT = (props) => {
                   {subMenu === 0 && (
                     <StickySectionHeader top="120">
                       <HStack
-                        background="rgb(0,0,0, 0.06)"
+                        background="rgb(0,0,0, 0.3)"
                         padding="6px"
                         border="9px"
                         width="100%"
                         blur="30px"
+                        spacing="0px"
                       >
                         <HStack width="1200px">
                           <FiltersButton
@@ -1371,7 +1286,41 @@ const MyNFT = (props) => {
                             switched={subMenu === 1}
                             maxPrice={highestPrice}
                           ></FiltersButton>
-                          <Spacer></Spacer>
+                          <Swiper
+                            spaceBetween={0}
+                            slidesPerView={"auto"}
+                            grabCursor={true}
+                            onSwiper={(swiper) => console.log(swiper)}
+                            onSlideChange={() => console.log("slide change")}
+                            style={{
+                              width: "730px",
+                              margin: "0 0 0 0",
+                            }}
+                          >
+                            {collectionFilters.length !== 0
+                              ? collectionFilters.map((collection, i) => (
+                                  <SwiperSlide
+                                    style={{
+                                      width: "auto",
+                                      padding: "0 12px",
+                                      height: "50px",
+                                      background: "transparent",
+                                    }}
+                                  >
+                                    <CollectionTab
+                                      image={collection.logo.v0}
+                                      name={collection.name}
+                                      onClick={handleChangeFilterNFT}
+                                      params={nftParams}
+                                      collectionId={collection._id}
+                                      filterId={i}
+                                      isSelected={isCollectionFilterSelected[i]}
+                                      onSelect={handleCollectionFilter}
+                                    ></CollectionTab>
+                                  </SwiperSlide>
+                                ))
+                              : null}
+                          </Swiper>
                           <SortButtonNFTS
                             onChange={handleChangeFilterNFT}
                             params={nftParams}

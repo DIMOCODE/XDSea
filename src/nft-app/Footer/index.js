@@ -25,19 +25,13 @@ import { useEffect, useState } from "react";
 
 function Footer(props) {
   const size = useWindowSize();
-  const [twitterFollowers, setTwitterFollowers] = useState(0);
   const [instagramFollowers, setInstagramFollowers] = useState(0);
-
-  const getTwitterData = async () => {
-    
-  }
 
   const getInstagramData = async () => {
     
   }
 
   useEffect(() => {
-    getTwitterData();
     getInstagramData();
   }, [])
 
@@ -115,12 +109,12 @@ function Footer(props) {
                         @XDSeaNFT
                       </TitleRegular18>
                       <CaptionBold textcolor="#0471C0" cursor="pointer">
-                        {Number(twitterFollowers) > 1000
+                        {Number(props?.twitterFollowers) > 1000
                           ? Intl.NumberFormat("en-US", {
                               notation: "compact",
                               maximumFractionDigits: 1,
-                            }).format(Number(twitterFollowers))
-                          : Number(twitterFollowers).toLocaleString(
+                            }).format(Number(props?.twitterFollowers))
+                          : Number(props?.twitterFollowers).toLocaleString(
                               undefined,
                               {
                                 maximumFractionDigits: 1,

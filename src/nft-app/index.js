@@ -36,6 +36,7 @@ const NFTApp = () => {
   const [isDevMode] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [xdcPrice, setXdcPrice] = useState(0);
+  const [twitterFollowers, setTwitterFollowers] = useState(0);
 
   /**
    * Toggle the theme from light to dark
@@ -136,6 +137,7 @@ const NFTApp = () => {
                     xdc={xdcPrice}
                     redirect={NavigateTo}
                     showMenu={showMenu}
+                    setTwitterFollowers={setTwitterFollowers}
                   />
                 )}
               ></Route>
@@ -169,8 +171,6 @@ const NFTApp = () => {
                     redirect={NavigateTo}
                     showMenu={showMenu}
                     wallet={wallet}
-                    themeToggler={themeToggler}
-                    theme={theme}
                   />
                 )}
               ></Route>
@@ -222,7 +222,11 @@ const NFTApp = () => {
                 )}
               ></Route>
             </Switch>
-            <Footer style={{ zIndex: -400 }} redirect={NavigateTo}></Footer>
+            <Footer
+              style={{ zIndex: -400 }}
+              redirect={NavigateTo}
+              twitterFollowers={twitterFollowers}
+            ></Footer>
           </ScrollView>
         </HomeStack>
       </>

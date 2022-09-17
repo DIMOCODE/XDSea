@@ -5,11 +5,20 @@ import { HStack, IconImg } from "../../styles/Stacks";
 import { BodyRegular } from "../../styles/TextStyles";
 
 function CollectionTab(props) {
-  const { onClick, image, name } = props;
+  const {
+    onClick,
+    image,
+    name,
+    params,
+    collectionId,
+    isSelected,
+    filterId,
+    onSelect,
+  } = props;
 
   const color = {
-    hover: { background: "rgba(255, 245, 245, 0.1)" },
-    initial: { background: "rgba(255, 245, 245, 1)" },
+    hover: { background: "rgba(255, 255, 255, 0.1)" },
+    initial: { background: "rgba(255, 255, 255, 1)" },
   };
 
   const [isVisible, setIsVisible] = useState(false);
@@ -24,8 +33,31 @@ function CollectionTab(props) {
       spacing="9px"
       cursor="pointer"
       whileTap={{ scale: 0.98 }}
-      onClick={onClick}
-      animate={isVisible ? "initial" : "hover"}
+      onClick={() => {
+        if (!isSelected) {
+          onClick({
+            ...params,
+            page: 1,
+            collectionId,
+          });
+          onSelect(filterId, true);
+        } else {
+          onClick({
+            ...params,
+            page: 1,
+            collectionId: "",
+          });
+          onSelect(filterId, false);
+        }
+        
+      }}
+      animate={
+        isSelected
+          ? "initial"
+          : isVisible
+          ? "initial"
+          : "hover"
+      }
       variants={color}
       onHoverStart={() => setIsVisible(true)}
       onHoverEnd={() => setIsVisible(false)}
@@ -38,7 +70,16 @@ function CollectionTab(props) {
         border="36px"
         cursor="pointer"
       ></IconImg>
-      <BodyRegular cursor="pointer" textcolor={isVisible ? "black" : "white"}>
+      <BodyRegular
+        cursor="pointer"
+        textcolor={
+          isSelected
+            ? "black"
+            : isVisible
+            ? "black"
+            : "white"
+        }
+      >
         {name || "Collection Name"}
       </BodyRegular>
     </HStack>

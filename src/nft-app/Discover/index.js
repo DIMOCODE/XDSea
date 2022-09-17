@@ -99,6 +99,7 @@ const Discover = (props) => {
   const [totalCollections, setTotalCollections] = useState(0);
   const [totalNFTs, setTotalNFTs] = useState(0);
   const [maxPrice, setMaxPrice] = useState(0);
+  const [nftPlaying, setNftPlaying] = useState([]);
 
   /**
    * Get the collections and NFT data for the first page
@@ -126,6 +127,7 @@ const Discover = (props) => {
 
           setMaxPrice(nftData.higherPrice);
           setNfts(nftData.nfts);
+          setNftPlaying(new Array(nftData.nftsAmount).fill(false));
           setTotalNFTs(nftData.nftsAmount);
           setNftParams((prevState) => ({
             ...prevState,
@@ -218,12 +220,27 @@ const Discover = (props) => {
     setNfts(nftData.nfts);
     setMaxPrice(nftData.higherPrice);
     setTotalNFTs(nftData.nftsAmount);
+    setNftPlaying(new Array(nftData.nftsAmount).fill(false));
     setNftParams((prevState) => ({
       ...prevState,
       page: prevState.page + 1,
     }));
     setLoading(false);
   };
+
+  const handleNFTLongPress = (i, isNew) => {
+    if(!isNew) {
+      setNftPlaying((prevState) => {
+        prevState[i] = !prevState[i];
+        return [...prevState];
+      });
+    }
+    else{
+      const newNftPlaying = new Array(nftPlaying.length).fill(false);
+      newNftPlaying[i] = !newNftPlaying[i];
+      setNftPlaying([...newNftPlaying]);
+    }
+  }
 
   /**
    * React Hook re-render when the Collection/NFT switch is toggled
@@ -542,6 +559,9 @@ const Discover = (props) => {
                               owner={true}
                               usdPrice={props.xdc}
                               collectionVerified={item.creator.isVerified}
+                              setIsPlaying={handleNFTLongPress}
+                              isPlaying={nftPlaying[i]}
+                              nftIndex={i}
                             ></NftContainer>
                           </VStack>
                         ))

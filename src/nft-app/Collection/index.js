@@ -74,6 +74,7 @@ const CollectionPage = (props) => {
   });
   const [copied, setCopied] = useState(false);
   const [nftNumber, setNftNumber] = useState(0);
+  const [nftPlaying, setNftPlaying] = useState([]);
 
   const webLink = `https://www.xdsea.com/collection/${collectionNickName}`;
 
@@ -131,6 +132,7 @@ const CollectionPage = (props) => {
         page: params.page + 1,
       });
       setNfts(collectionNFTData.nfts);
+      setNftPlaying(new Array(collectionNFTData.nftsAmount).fill(false));
       setCollection(collection);
       setLoadingState("loaded");
     } catch (error) {
@@ -177,9 +179,24 @@ const CollectionPage = (props) => {
       page: params.page + 1,
     });
     setNfts(collectionNFTData.nfts);
+    setNftPlaying(new Array(collectionNFTData.nftsAmount).fill(false));
     setCollection(collection);
     setLoadingState("loaded");
   };
+
+  const handleNFTLongPress = (i, isNew) => {
+    if(!isNew) {
+      setNftPlaying((prevState) => {
+        prevState[i] = !prevState[i];
+        return [...prevState];
+      });
+    }
+    else{
+      const newNftPlaying = new Array(nftPlaying.length).fill(false);
+      newNftPlaying[i] = !newNftPlaying[i];
+      setNftPlaying([...newNftPlaying]);
+    }
+  }
 
   /**
    * React Hook to re-render when the search term state value is changed
@@ -708,6 +725,9 @@ const CollectionPage = (props) => {
                       owner={true}
                       usdPrice={props.xdc}
                       collectionVerified={item.owner.isVerified}
+                      setIsPlaying={handleNFTLongPress}
+                      isPlaying={nftPlaying[i]}
+                      nftIndex={i}
                     ></NftContainer>
                   </VStack>
                 ))

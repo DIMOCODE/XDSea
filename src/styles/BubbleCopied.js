@@ -12,7 +12,7 @@ import { truncateAddress } from "../common/common";
 import doneIcon from "../images/doneIcon.png";
 
 function BubbleCopied(props) {
-  const { logo, address, icon } = props;
+  const { logo, address, icon, background, textColor } = props;
 
   const [showAlertLink, setShowAlertLink] = useState(false);
 
@@ -27,7 +27,7 @@ function BubbleCopied(props) {
   return (
     <>
       <HStack
-        background={({ theme }) => theme.backElement}
+        background={background}
         border="30px"
         spacing="9px"
         padding="6px 18px"
@@ -42,7 +42,7 @@ function BubbleCopied(props) {
           {showAlertLink ? (
             <CaptionBoldShort>Address Copied</CaptionBoldShort>
           ) : (
-            <CaptionBoldShort textcolor={({ theme }) => theme.text}>
+            <CaptionBoldShort textcolor={textColor}>
               {truncateAddress(address)}
             </CaptionBoldShort>
           )}

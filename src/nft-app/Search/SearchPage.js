@@ -52,6 +52,7 @@ function SearchPage(props) {
   });
   const [newResults, setNewResults] = useState(true);
   const [maxPrice, setMaxPrice] = useState(0);
+  const [nftPlaying, setNftPlaying] = useState([]);
 
   /**
    * Get a list of collections based on the search results and filter
@@ -122,6 +123,7 @@ function SearchPage(props) {
     setMaxPrice(nftResults.higherPrice);
     setNftData(nftResults.nfts);
     setTotalNFTs(nftResults.nftsAmount);
+    setNftPlaying(new Array(nftResults.nftsAmount).fill(false));
     setLoading(false);
     setNftParams((prevState) => ({
       ...prevState,
@@ -169,8 +171,23 @@ function SearchPage(props) {
       page: prevState.page + 1,
     }));
     setTotalNFTs(nftResults.nftsAmount);
+    setNftPlaying(new Array(nftResults.nftsAmount).fill(false));
     setLoading(false);
   };
+
+  const handleNFTLongPress = (i, isNew) => {
+    if(!isNew) {
+      setNftPlaying((prevState) => {
+        prevState[i] = !prevState[i];
+        return [...prevState];
+      });
+    }
+    else{
+      const newNftPlaying = new Array(nftPlaying.length).fill(false);
+      newNftPlaying[i] = !newNftPlaying[i];
+      setNftPlaying([...newNftPlaying]);
+    }
+  }
 
   /**
    * React Hook to re-render the component when the search term is updated
@@ -515,6 +532,9 @@ function SearchPage(props) {
                             owner={true}
                             usdPrice={props.xdc}
                             collectionVerified={item.creator.isVerified}
+                            setIsPlaying={handleNFTLongPress}
+                            isPlaying={nftPlaying[i]}
+                            nftIndex={i}
                           ></NftContainer>
                         </VStack>
                       ))}

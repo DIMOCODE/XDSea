@@ -157,6 +157,7 @@ const NFTDetails = (props) => {
     { id: 4, name: "NFT 4" },
   ]);
   const [copied, setCopied] = useState(false);
+  const [nftPlaying, setNftPlaying] = useState([]);
 
   const variants = {
     selected: { opacity: 1 },
@@ -604,6 +605,7 @@ const NFTDetails = (props) => {
 
       setNFT(nftData.nft);
       setMoreFromCollectionNfts(nftData.relatedNfts);
+      setNftPlaying(new Array(nftData.relatedNfts.length).fill(false));
       setLoadingMore(false);
     } catch (error) {
       console.log(error);
@@ -630,6 +632,20 @@ const NFTDetails = (props) => {
     setApproved(getVal);
   };
 
+  const handleNFTLongPress = (i, isNew) => {
+    if(!isNew) {
+      setNftPlaying((prevState) => {
+        prevState[i] = !prevState[i];
+        return [...prevState];
+      });
+    }
+    else{
+      const newNftPlaying = new Array(nftPlaying.length).fill(false);
+      newNftPlaying[i] = !newNftPlaying[i];
+      setNftPlaying([...newNftPlaying]);
+    }
+  }
+  
   /**
    * React Hook to re-render component when the token ID or the action state changes
    */
@@ -1873,6 +1889,9 @@ const NFTDetails = (props) => {
                       usdPrice={props.xdc}
                       owner={true}
                       collectionVerified={item.creator.isVerified}
+                      setIsPlaying={handleNFTLongPress}
+                      isPlaying={nftPlaying[i]}
+                      nftIndex={i}
                     ></NftContainer>
                   </VStack>
                 ))

@@ -34,6 +34,7 @@ export const getNFTs = ({
   saleType4,
   priceRangeStart,
   priceRangeEnd,
+  collectionId,
 }) => {
   var params =
     `?${searchBy !== undefined ? `searchBy=${searchBy}&` : ""}` +
@@ -54,7 +55,9 @@ export const getNFTs = ({
     }` +
     `${saleType3 !== undefined ? `saleType=${saleType3}&` : ""}${
       saleType4 !== undefined ? `saleType=${saleType4}&` : ""
-    }`;
+    }` +
+    `${collectionId !== undefined ? `collectionId=${collectionId}&` : ""
+  }`;
   params = params.substring(0, params.length - 1);
   return createRequest(HTTP_METHODS.get, `nft/${page}${params}`, null, null);
 };

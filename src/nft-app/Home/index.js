@@ -97,6 +97,7 @@ const Home = (props) => {
   const [, setShowMenu] = useState(props.showMenu);
   const heights = [360, 522, 260, 320, 490];
   const [featuredNFTPlaying, setFeaturedNFTPlaying] = useState([]);
+  const [nftPlaying, setNftPlaying] = useState([]);
 
   /**
    * Get content for the Home page including featured NFTs, trending NFTs and top Collections
@@ -115,6 +116,8 @@ const Home = (props) => {
       setTopCollections(homeData.topCollections);
       setTrendingNFTs(homeData.trendingNfts);
       setNewestNFTs(homeData.newestNfts);
+      setNftPlaying(new Array(homeData.trendingNFTs.length + homeData.newestNfts.length).fill(false));
+      props?.setTwitterFollowers(homeData.socialMediaMetrics.twitter);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -136,6 +139,20 @@ const Home = (props) => {
           onTouchEnd: stop,
         }
       : {};
+  }
+
+  const handleNFTLongPress = (i, isNew) => {
+    if(!isNew) {
+      setNftPlaying((prevState) => {
+        prevState[i] = !prevState[i];
+        return [...prevState];
+      });
+    }
+    else{
+      const newNftPlaying = new Array(nftPlaying.length).fill(false);
+      newNftPlaying[i] = !newNftPlaying[i];
+      setNftPlaying([...newNftPlaying]);
+    }
   }
 
   useEffect(() => {
@@ -299,7 +316,7 @@ const Home = (props) => {
                             textcolor="rgba(255,255,255,0.6)"
                             cursor="pointer"
                           >
-                            {truncateAddress(item.creator.userName)}
+                            {item.creator.userName}
                           </BodyMedium>
                           <IconImg
                             url={verifiedBlue}
@@ -523,7 +540,7 @@ const Home = (props) => {
             {trendingNFTs.length !== 0
               ? trendingNFTs
                   .slice(0, 4)
-                  .map((item) => (
+                  .map((item, i) => (
                     <NftContainer
                       key={"trending_" + item._id}
                       iconStatus={item.saleType.toLowerCase()}
@@ -545,6 +562,9 @@ const Home = (props) => {
                       height={size.width < 426 ? "190px" : "390px"}
                       minheight={size.width < 426 ? "190px" : "390px"}
                       border="6px"
+                      setIsPlaying={handleNFTLongPress}
+                      isPlaying={nftPlaying[i]}
+                      nftIndex={i}
                     ></NftContainer>
                   ))
               : null}
@@ -604,7 +624,7 @@ const Home = (props) => {
             className="mySwiper2"
           >
             {newestNFTs.length !== 0
-              ? newestNFTs.map((item) => (
+              ? newestNFTs.map((item, i) => (
                   <SwiperSlide
                     key={"newSlide_" + item._id}
                     style={{ cursor: "pointer" }}
@@ -632,6 +652,9 @@ const Home = (props) => {
                       width="100%"
                       height="100%"
                       border="6px"
+                      setIsPlaying={handleNFTLongPress}
+                      isPlaying={nftPlaying[i]}
+                      nftIndex={i}
                     ></NftContainer>
                   </SwiperSlide>
                 ))
