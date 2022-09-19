@@ -120,7 +120,11 @@ const Home = (props) => {
       setTopCollections(homeData.topCollections);
       setTrendingNFTs(homeData.trendingNfts);
       setNewestNFTs(homeData.newestNfts);
-      setNftPlaying(new Array(homeData.trendingNfts.length + homeData.newestNfts.length).fill(false));
+      setNftPlaying(
+        new Array(
+          homeData.trendingNfts.length + homeData.newestNfts.length
+        ).fill(false)
+      );
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -145,18 +149,17 @@ const Home = (props) => {
   }
 
   const handleNFTLongPress = (i, isNew) => {
-    if(!isNew) {
+    if (!isNew) {
       setNftPlaying((prevState) => {
         prevState[i] = !prevState[i];
         return [...prevState];
       });
-    }
-    else{
+    } else {
       const newNftPlaying = new Array(nftPlaying.length).fill(false);
       newNftPlaying[i] = !newNftPlaying[i];
       setNftPlaying([...newNftPlaying]);
     }
-  }
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -208,23 +211,11 @@ const Home = (props) => {
 
         <Masonry
           columnsCount={size.width > 425 ? 3 : 2}
-          gutter={
-            size.width > 768 
-              ? "15px"
-              : size.width > 425
-                ? "8px"
-                : "2px"
-          }
+          gutter={size.width > 768 ? "15px" : size.width > 425 ? "8px" : "2px"}
           style={{
-            width:
-              size.width > 1200
-                ? "1200px"
-                : size.width,
-            padding : size.width > 768
-              ? "15px"
-              : size.width > 425
-                ? "8px"
-                : "2px"
+            width: size.width > 1200 ? "1200px" : size.width,
+            padding:
+              size.width > 768 ? "15px" : size.width > 425 ? "8px" : "2px",
           }}
         >
           {featuredNFTs.length !== 0
@@ -252,11 +243,7 @@ const Home = (props) => {
                     <VStack
                       key={"featured_" + item._id}
                       cursor="pointer"
-                      border={
-                        size.width > 425
-                        ? "6px"
-                        : "0px"
-                      }
+                      border={size.width > 425 ? "6px" : "0px"}
                       overflowx="hidden"
                       overflowy="hidden"
                     >
@@ -266,21 +253,13 @@ const Home = (props) => {
                           backsize="cover"
                           width="100%"
                           height="100%"
-                          border={
-                            size.width > 425
-                            ? "6px"
-                            : "0px"
-                          }
+                          border={size.width > 425 ? "6px" : "0px"}
                           cursor="pointer"
                         ></IconImg>
                       ) : (
                         <VStack
                           background="black"
-                          border={
-                            size.width > 425
-                            ? "6px"
-                            : "0px"
-                          }
+                          border={size.width > 425 ? "6px" : "0px"}
                           overflowx="hidden"
                           animate={{ scale: 2 }}
                           cursor="pointer"
@@ -312,11 +291,7 @@ const Home = (props) => {
                   >
                     <VStack
                       background="linear-gradient(190.5deg, rgba(0, 0, 0, 0) 75.64%, rgba(0, 0, 0, 0.90) 90.61%);"
-                      border={
-                        size.width > 425
-                        ? "6px"
-                        : "0px"
-                      }
+                      border={size.width > 425 ? "6px" : "0px"}
                       alignment="flex-start"
                       cursor="pointer"
                     >
@@ -329,9 +304,8 @@ const Home = (props) => {
                         width="100%"
                         cursor="pointer"
                       >
-                        
-                          {size.width > 425
-                            ? <HStack spacing="6px" cursor="pointer">
+                        {size.width > 425 ? (
+                          <HStack spacing="6px" cursor="pointer">
                             <IconImg
                               url={item.creator.urlProfile}
                               width="18px"
@@ -355,16 +329,13 @@ const Home = (props) => {
                             ></IconImg>
                             <Spacer></Spacer>
                           </HStack>
-                            : null
-                          }
-                          
-                        {size.width > 768
-                          ? <TitleRegular18 textcolor="white" cursor="pointer">
+                        ) : null}
+
+                        {size.width > 768 ? (
+                          <TitleRegular18 textcolor="white" cursor="pointer">
                             {item.collectionId.name}
                           </TitleRegular18>
-                          : null
-                        }
-                        
+                        ) : null}
                       </VStack>
                     </VStack>
                   </ZItem>
@@ -411,39 +382,40 @@ const Home = (props) => {
           </VStack>
 
           {/* First 3 Places  */}
-          <HStack width="100%" padding={
-            size.width > 425
-              ? "120px 0 0 0"
-              : size.width > 375
+          <HStack
+            width="100%"
+            padding={
+              size.width > 425
+                ? "120px 0 0 0"
+                : size.width > 375
                 ? "45px 0 0 0"
                 : size.width > 320
-                  ? "30px 0 0 0"
-                  : "0"
-          }>
+                ? "30px 0 0 0"
+                : "0"
+            }
+          >
             <VStack maxwidth="600px" height="360px">
-              <IconImg url={firstPlaces} width={
-                size.width > 425
-                  ? "100%"
-                  : "95%"
-               } height="100%"></IconImg>
+              <IconImg
+                url={firstPlaces}
+                width={size.width > 425 ? "100%" : "95%"}
+                height="100%"
+              ></IconImg>
 
               {/* 1st Place */}
               <Gold
-                animate={{ scale: size.width > 425 
-                  ? 1 
-                  : size.width > 320
-                    ? 0.81
-                    : 0.65
+                animate={{
+                  scale: size.width > 425 ? 1 : size.width > 320 ? 0.81 : 0.65,
                 }}
-                top={size.width > 768
+                top={
+                  size.width > 768
                     ? "-64px"
                     : size.width > 425
-                      ? "-64px"
-                      : size.width > 375
-                        ? "-12px"
-                        : size.width > 320
-                          ? "0px"
-                          : "14px"
+                    ? "-64px"
+                    : size.width > 375
+                    ? "-12px"
+                    : size.width > 320
+                    ? "0px"
+                    : "14px"
                 }
               >
                 <PricePosition
@@ -470,28 +442,26 @@ const Home = (props) => {
 
               {/* 2nd Place */}
               <Silver
-                animate={{ scale: size.width > 425 
-                  ? 1 
-                  : size.width > 320
-                    ? 0.81
-                    : 0.65
+                animate={{
+                  scale: size.width > 425 ? 1 : size.width > 320 ? 0.81 : 0.65,
                 }}
-                left={size.width > 425 
-                  ? "33px" 
-                  : size.width > 375
+                left={
+                  size.width > 425
+                    ? "33px"
+                    : size.width > 375
                     ? "2px"
                     : size.width > 320
-                      ? "-10px"
-                      : "-16px"
+                    ? "-10px"
+                    : "-16px"
                 }
                 top={
                   size.width > 425
-                    ? "32px"  
+                    ? "32px"
                     : size.width > 375
-                      ? "52px"
-                      : size.width > 320
-                        ? "60px"
-                        : "64px"
+                    ? "52px"
+                    : size.width > 320
+                    ? "60px"
+                    : "64px"
                 }
               >
                 <PricePosition
@@ -518,27 +488,26 @@ const Home = (props) => {
 
               {/* 3rd Place */}
               <Cooper
-                animate={{ scale: size.width > 425 
-                  ? 1 
-                  : size.width > 320
-                    ? 0.81
-                    : 0.65
+                animate={{
+                  scale: size.width > 425 ? 1 : size.width > 320 ? 0.81 : 0.65,
                 }}
-                top={size.width > 425 
-                  ? "80px" 
-                  : size.width > 375
+                top={
+                  size.width > 425
+                    ? "80px"
+                    : size.width > 375
                     ? "84px"
                     : size.width > 320
-                      ? "84px"
-                      : "84px"
+                    ? "84px"
+                    : "84px"
                 }
-                right={size.width > 425 
-                  ? "26px" 
-                  : size.width > 375
+                right={
+                  size.width > 425
+                    ? "26px"
+                    : size.width > 375
                     ? "0px"
                     : size.width > 320
-                      ? "-6px"
-                      : "-18px"
+                    ? "-6px"
+                    : "-18px"
                 }
               >
                 <PricePosition
@@ -566,17 +535,19 @@ const Home = (props) => {
           </HStack>
 
           {/* Rest of the 7 Places */}
-          <HStack style={
-            size.width > 375
-            ? {}
-              : size.width > 320
+          <HStack
+            style={
+              size.width > 375
+                ? {}
+                : size.width > 320
                 ? {
-                  "margin-top": "-60px"
-                }
+                    "margin-top": "-60px",
+                  }
                 : {
-                  "margin-top": "-80px"
-                }
-            }>
+                    "margin-top": "-80px",
+                  }
+            }
+          >
             <VStack maxwidth="600px">
               {topCollections.length !== 0
                 ? topCollections.slice(3).map((item, i) => (
@@ -616,11 +587,7 @@ const Home = (props) => {
             <BigButton
               text="Explore All Collections"
               onClick={() => props.redirect("discover/collections")}
-              width={
-                size.width > 375
-                  ? null
-                  : size.width - 30 + "px"
-              }
+              width={size.width > 375 ? null : size.width - 30 + "px"}
             ></BigButton>
           </HStack>
         </VStack>
@@ -651,14 +618,12 @@ const Home = (props) => {
           </VStack>
 
           {/* Trending NFT Cards */}
-          <HStack flexwrap="wrap" padding={size.width > 375
-            ? "0 12px 0 12px"
-            : "0 2px 0 2px"
-           } height="auto" spacing={
-            size.width > 375
-              ? "15px"
-              : "2px"
-           }>
+          <HStack
+            flexwrap="wrap"
+            padding={size.width > 375 ? "0 12px 0 12px" : "0 2px 0 2px"}
+            height="auto"
+            spacing={size.width > 375 ? "15px" : "2px"}
+          >
             {trendingNFTs.length !== 0
               ? trendingNFTs
                   .slice(0, 4)
@@ -677,10 +642,7 @@ const Home = (props) => {
                       minwidth="46%"
                       height={size.width < 426 ? "190px" : "390px"}
                       minheight={size.width < 426 ? "190px" : "390px"}
-                      border={size.width > 375
-                        ? "6px"
-                        : "0px"
-                      }
+                      border={size.width > 375 ? "6px" : "0px"}
                       setIsPlaying={handleNFTLongPress}
                       isPlaying={nftPlaying[i]}
                       nftIndex={i}
@@ -694,11 +656,7 @@ const Home = (props) => {
             <BigButton
               text="Discover All NFTs"
               onClick={() => props.redirect("discover/nfts")}
-              width={
-                size.width > 375
-                  ? null
-                  : size.width - 30 + "px"
-              }
+              width={size.width > 375 ? null : size.width - 30 + "px"}
             ></BigButton>
           </HStack>
         </VStack>
@@ -732,7 +690,7 @@ const Home = (props) => {
           </VStack>
 
           <Swiper
-            slidesPerView={size.width > 414 ? "3" : "1"}
+            slidesPerView={size.width > 425 ? "3" : "1"}
             spaceBetween={9}
             centeredSlides={false}
             loop={true}
@@ -775,11 +733,7 @@ const Home = (props) => {
                       collectionVerified={item.creator.isVerified}
                       width="100%"
                       height="100%"
-                      border={
-                        size.width > 375 
-                          ? "6px"
-                          : "0px"
-                      }
+                      border={size.width > 375 ? "6px" : "0px"}
                       setIsPlaying={handleNFTLongPress}
                       isPlaying={nftPlaying[i]}
                       nftIndex={i}
@@ -794,11 +748,7 @@ const Home = (props) => {
             <BigButton
               text="Discover The Latest NFTs"
               onClick={() => props.redirect("discover/nfts")}
-              width={
-                size.width > 375
-                  ? null
-                  : size.width - 30 + "px"
-              }
+              width={size.width > 375 ? null : size.width - 30 + "px"}
             ></BigButton>
           </HStack>
         </VStack>
@@ -825,21 +775,21 @@ const Home = (props) => {
             <BodyRegular textcolor="rgba(255,122,0,100)">
               WANT TO GET STARTED?
             </BodyRegular>
-            {size.width > 375 
-              ? <TitleRegular36
+            {size.width > 375 ? (
+              <TitleRegular36
                 textcolor="rgba(251,195,75, 100)"
                 alignment="center"
               >
                 Create and sell your NFTs
               </TitleRegular36>
-              : <TitleRegular27
-                  textcolor="rgba(251,195,75,100)"
-                  alignment="center"
-                >
-                  Create and sell your NFTs
-                </TitleRegular27>
-            }
-            
+            ) : (
+              <TitleRegular27
+                textcolor="rgba(251,195,75,100)"
+                alignment="center"
+              >
+                Create and sell your NFTs
+              </TitleRegular27>
+            )}
 
             <HStack
               self="none"

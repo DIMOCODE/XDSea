@@ -112,7 +112,7 @@ function TopBar(props) {
    */
   const connectMetamask = async () => {
     if (window.ethereum) {
-      if(window.ethereum.isMetaMask && window.ethereum.chainId !== undefined) {
+      if (window.ethereum.isMetaMask && window.ethereum.chainId !== undefined) {
         try {
           if (window.ethereum.chainId === "0x32") {
             const res = await window.ethereum.request({
@@ -151,8 +151,7 @@ function TopBar(props) {
         } catch (err) {
           setShowError(2);
         }
-      }
-      else {
+      } else {
         setShowError(1);
       }
     } else {
@@ -164,29 +163,29 @@ function TopBar(props) {
    * Connect XDCPay wallet
    */
   const connectXDCPay = async () => {
-    try{
+    try {
       if (
         (window.ethereum.publicConfigStore._state.networkVersion === "50" ||
           window.ethereum.publicConfigStore._state.networkVersion === "51") &&
         window.ethereum.publicConfigStore._state.selectedAddress !== undefined
       ) {
         try {
-            const address =
-              window.ethereum.publicConfigStore._state.selectedAddress;
-            const { data } = await anonymousLogin(address);
-            LS.set(LS_ROOT_KEY, data);
-            setWallet({
-              connected: true,
-              address: address,
-            });
-            onWalletChange({
-              connected: true,
-              address: address,
-            });
-            getUser();
-            setShowMetamask(false);
-            setShowError(0);
-            setShowInfo(false);
+          const address =
+            window.ethereum.publicConfigStore._state.selectedAddress;
+          const { data } = await anonymousLogin(address);
+          LS.set(LS_ROOT_KEY, data);
+          setWallet({
+            connected: true,
+            address: address,
+          });
+          onWalletChange({
+            connected: true,
+            address: address,
+          });
+          getUser();
+          setShowMetamask(false);
+          setShowError(0);
+          setShowInfo(false);
         } catch (err) {
           setShowError(2);
         }
@@ -201,7 +200,10 @@ function TopBar(props) {
    */
   const connectDcent = async () => {
     if (window.ethereum) {
-      if(window.ethereum.isDcentWallet && window.ethereum.chainId !== undefined) {
+      if (
+        window.ethereum.isDcentWallet &&
+        window.ethereum.chainId !== undefined
+      ) {
         try {
           if (window.ethereum.chainId === "0x32") {
             const res = await window.ethereum.request({
@@ -239,8 +241,7 @@ function TopBar(props) {
         } catch (err) {
           setShowError(2);
         }
-      }
-      else {
+      } else {
         setShowError(6);
       }
     } else {
@@ -525,7 +526,8 @@ function TopBar(props) {
                             left="0px"
                             widthInput={size.width - 60 + "px"}
                             backcolor="rgba(0,0,0,0.1)"
-                            textcolor={({ theme }) => theme.text}
+                            textcolor={"rgba(0,0,0,0.6)"}
+                            textplace={"rgba(0,0,0,0.6)"}
                             isPhone={true}
                             switchBarStatus={handleBarStatus}
                             style={{ zIndex: 1 }}
@@ -714,11 +716,14 @@ function TopBar(props) {
                       border="6px"
                       whileTap={{
                         scale:
-                          ((window.ethereum?.publicConfigStore?._state?.networkVersion === "50" ||
-                            window.ethereum?.publicConfigStore?._state?.networkVersion === "51") &&
-                          window.ethereum?.publicConfigStore?._state?.selectedAddress !== undefined)
+                          (window.ethereum?.publicConfigStore?._state
+                            ?.networkVersion === "50" ||
+                            window.ethereum?.publicConfigStore?._state
+                              ?.networkVersion === "51") &&
+                          window.ethereum?.publicConfigStore?._state
+                            ?.selectedAddress !== undefined
                             ? 0.98
-                            : 1
+                            : 1,
                       }}
                       onClick={() => {
                         setShowError(0);
@@ -729,9 +734,12 @@ function TopBar(props) {
                       <IconImg
                         cursor="pointer"
                         url={
-                          ((window.ethereum?.publicConfigStore?._state?.networkVersion === "50" ||
-                            window.ethereum?.publicConfigStore?._state?.networkVersion === "51") &&
-                          window.ethereum?.publicConfigStore?._state?.selectedAddress !== undefined)
+                          (window.ethereum?.publicConfigStore?._state
+                            ?.networkVersion === "50" ||
+                            window.ethereum?.publicConfigStore?._state
+                              ?.networkVersion === "51") &&
+                          window.ethereum?.publicConfigStore?._state
+                            ?.selectedAddress !== undefined
                             ? XDClogo
                             : XDClogoBW
                         }
@@ -741,9 +749,12 @@ function TopBar(props) {
                       <BodyRegular
                         cursor="pointer"
                         textcolor={
-                          ((window.ethereum?.publicConfigStore?._state?.networkVersion === "50" ||
-                            window.ethereum?.publicConfigStore?._state?.networkVersion === "51") &&
-                          window.ethereum?.publicConfigStore?._state?.selectedAddress !== undefined)
+                          (window.ethereum?.publicConfigStore?._state
+                            ?.networkVersion === "50" ||
+                            window.ethereum?.publicConfigStore?._state
+                              ?.networkVersion === "51") &&
+                          window.ethereum?.publicConfigStore?._state
+                            ?.selectedAddress !== undefined
                             ? "white"
                             : "grey"
                         }
@@ -757,9 +768,12 @@ function TopBar(props) {
                       background="rgb(0,0,0,0.3)"
                       padding="9px"
                       border="6px"
-                      whileTap={{ scale: window.ethereum?.isMetaMask && window.ethereum.chainId !== undefined
-                        ? 0.98
-                        : 1 
+                      whileTap={{
+                        scale:
+                          window.ethereum?.isMetaMask &&
+                          window.ethereum.chainId !== undefined
+                            ? 0.98
+                            : 1,
                       }}
                       onClick={() => {
                         setShowMetamask(true);
@@ -768,18 +782,24 @@ function TopBar(props) {
                     >
                       <IconImg
                         cursor="pointer"
-                        url={window.ethereum?.isMetaMask && window.ethereum.chainId !== undefined
-                          ? Metamask
-                          : MetamaskBW
+                        url={
+                          window.ethereum?.isMetaMask &&
+                          window.ethereum.chainId !== undefined
+                            ? Metamask
+                            : MetamaskBW
                         }
                         width="30px"
                         height="30px"
                       ></IconImg>
-                      <BodyRegular cursor="pointer" textcolor={
-                        window.ethereum?.isMetaMask && window.ethereum.chainId !== undefined
-                          ? "white"
-                          : "grey"
-                        }>
+                      <BodyRegular
+                        cursor="pointer"
+                        textcolor={
+                          window.ethereum?.isMetaMask &&
+                          window.ethereum.chainId !== undefined
+                            ? "white"
+                            : "grey"
+                        }
+                      >
                         Metamask
                       </BodyRegular>
                     </HStack>
@@ -789,9 +809,12 @@ function TopBar(props) {
                       background="rgb(0,0,0,0.3)"
                       padding="9px"
                       border="6px"
-                      whileTap={{ scale: window.ethereum?.isDcentWallet && window.ethereum.chainId !== undefined
-                        ? 0.98
-                        : 1 
+                      whileTap={{
+                        scale:
+                          window.ethereum?.isDcentWallet &&
+                          window.ethereum.chainId !== undefined
+                            ? 0.98
+                            : 1,
                       }}
                       onClick={() => {
                         setShowError(0);
@@ -800,18 +823,24 @@ function TopBar(props) {
                     >
                       <IconImg
                         cursor="pointer"
-                        url={window.ethereum?.isDcentWallet && window.ethereum.chainId !== undefined
-                          ? dcentWallet
-                          : dcentWalletBW
+                        url={
+                          window.ethereum?.isDcentWallet &&
+                          window.ethereum.chainId !== undefined
+                            ? dcentWallet
+                            : dcentWalletBW
                         }
                         width="30px"
                         height="30px"
                       ></IconImg>
-                      <BodyRegular cursor="pointer" textcolor={
-                        window.ethereum?.isDcentWallet && window.ethereum.chainId !== undefined
-                        ? "white"
-                        : "grey"
-                      }>
+                      <BodyRegular
+                        cursor="pointer"
+                        textcolor={
+                          window.ethereum?.isDcentWallet &&
+                          window.ethereum.chainId !== undefined
+                            ? "white"
+                            : "grey"
+                        }
+                      >
                         Dcent Wallet
                       </BodyRegular>
                     </HStack>
@@ -873,8 +902,17 @@ function TopBar(props) {
                         align="center"
                         textcolor={appStyle.colors.darkYellow}
                       >
-                        Metamask is not detected. Install the <a style={{"text-decoration": "underline", "color": appStyle.colors.darkYellow}} href="https://metamask.io/download/">official wallet</a> to
-                        connect with our marketplace
+                        Metamask is not detected. Install the{" "}
+                        <a
+                          style={{
+                            "text-decoration": "underline",
+                            color: appStyle.colors.darkYellow,
+                          }}
+                          href="https://metamask.io/download/"
+                        >
+                          official wallet
+                        </a>{" "}
+                        to connect with our marketplace
                       </BodyRegular>
                     </HStack>
                   )}
@@ -921,8 +959,17 @@ function TopBar(props) {
                         align="center"
                         textcolor={appStyle.colors.darkYellow}
                       >
-                        XDCPay is not detected. Install the <a style={{"text-decoration": "underline", "color": appStyle.colors.darkYellow}} href="https://chrome.google.com/webstore/detail/xdcpay/bocpokimicclpaiekenaeelehdjllofo">official wallet</a> to
-                        connect with our marketplace
+                        XDCPay is not detected. Install the{" "}
+                        <a
+                          style={{
+                            "text-decoration": "underline",
+                            color: appStyle.colors.darkYellow,
+                          }}
+                          href="https://chrome.google.com/webstore/detail/xdcpay/bocpokimicclpaiekenaeelehdjllofo"
+                        >
+                          official wallet
+                        </a>{" "}
+                        to connect with our marketplace
                       </BodyRegular>
                     </HStack>
                   )}
@@ -937,8 +984,17 @@ function TopBar(props) {
                         align="center"
                         textcolor={appStyle.colors.darkYellow}
                       >
-                        DCent Wallet is not detected. Install the <a style={{"text-decoration": "underline", "color": appStyle.colors.darkYellow}} href="https://play.google.com/store/apps/details?id=com.kr.iotrust.dcent.wallet&hl=en_NZ&gl=US">official
-                        wallet application</a> to connect with our marketplace
+                        DCent Wallet is not detected. Install the{" "}
+                        <a
+                          style={{
+                            "text-decoration": "underline",
+                            color: appStyle.colors.darkYellow,
+                          }}
+                          href="https://play.google.com/store/apps/details?id=com.kr.iotrust.dcent.wallet&hl=en_NZ&gl=US"
+                        >
+                          official wallet application
+                        </a>{" "}
+                        to connect with our marketplace
                       </BodyRegular>
                     </HStack>
                   )}
@@ -1061,17 +1117,15 @@ function TopBar(props) {
                           </BodyRegular>
                         </VStack>
                       </VStack>
-                      {deviceSize === "phone"
-                        ? <IconImg
+                      {deviceSize === "phone" ? (
+                        <IconImg
                           url={gif}
                           width="240px"
                           height="360px"
                           backsize="contain"
                           border="9px"
                         ></IconImg>
-                        : null
-                      }
-                      
+                      ) : null}
 
                       <Spacer></Spacer>
                       <HStack
@@ -1104,7 +1158,9 @@ function TopBar(props) {
                           cursor="pointer"
                         >
                           <BodyBold textcolor={appStyle.colors.darkYellow}>
-                          <a href="https://metamask.io/download/">Install Metamask</a>
+                            <a href="https://metamask.io/download/">
+                              Install Metamask
+                            </a>
                           </BodyBold>
                         </HStack>
                       )}
