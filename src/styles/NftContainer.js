@@ -113,7 +113,7 @@ function NftContainer(props) {
         setIsPlaying(nftIndex, false);
       }}
     >
-      <ZStack overflow="hidden" border="12px">
+      <ZStack overflow="hidden" border={border}>
         <ZItem>
           {fileType.match("image.*") ? (
             <IconImg
@@ -123,7 +123,7 @@ function NftContainer(props) {
               backsize="cover"
               animate={isVisible ? "hover" : "initial"}
               variants={scaleImage}
-              border="12px"
+              border={border}
               cursor={"pointer"}
             ></IconImg>
           ) : fileType.match("video.*") ? (
@@ -151,7 +151,7 @@ function NftContainer(props) {
               backsize="cover"
               animate={isVisible ? "hover" : "initial"}
               variants={scaleImage}
-              border="12px"
+              border={border}
               cursor={"pointer"}
             ></IconImg>
           )}
@@ -271,7 +271,7 @@ function NftContainer(props) {
                         cursor={"pointer"}
                       ></IconImg>
                     );
-                  default:
+                  case "not_sale":
                     return (
                       <IconImg
                         url={notforsale}
@@ -282,6 +282,8 @@ function NftContainer(props) {
                         cursor={"pointer"}
                       ></IconImg>
                     );
+                  default:
+                    return(<></>)
                 }
               })()}
             </HStack>
@@ -334,47 +336,50 @@ function NftContainer(props) {
                   {truncate(itemNumber, 33)}
                 </BodyMedium>
               </HStack>
-              <HStack spacing="3px" alignment="center" cursor={"pointer"}>
-                <IconImg url={miniXdcLogo} width="18px" height="18px"></IconImg>
-                <BodyMedium textcolor={appStyle.colors.white}>
-                  {Number(price) > 100000
-                    ? Intl.NumberFormat("en-US", {
-                        notation: "compact",
-                        maximumFractionDigits: 2,
-                      }).format(Number(price))
-                    : Number(price).toLocaleString(undefined, {
-                        maximumFractionDigits: 2,
-                      }) || "0"}
-                </BodyMedium>
-                <CaptionMedium textcolor="white" animate={{ opacity: 0.6 }}>
-                  (
-                  {(usdPrice?.xdcPrice * Number(price) > 100000
-                    ? Intl.NumberFormat("en-US", {
-                        notation: "compact",
-                        maximumFractionDigits: 2,
-                      }).format(usdPrice?.xdcPrice * Number(price))
-                    : (usdPrice?.xdcPrice * Number(price)).toLocaleString(
-                        undefined,
-                        {
+              {price
+                ? <HStack spacing="3px" alignment="center" cursor={"pointer"}>
+                  <IconImg url={miniXdcLogo} width="18px" height="18px"></IconImg>
+                  <BodyMedium textcolor={appStyle.colors.white}>
+                    {Number(price) > 100000
+                      ? Intl.NumberFormat("en-US", {
+                          notation: "compact",
                           maximumFractionDigits: 2,
-                        }
-                      ) || "0") + " USD"}
-                  )
-                </CaptionMedium>
+                        }).format(Number(price))
+                      : Number(price).toLocaleString(undefined, {
+                          maximumFractionDigits: 2,
+                        }) || "0"}
+                  </BodyMedium>
+                  <CaptionMedium textcolor="white" animate={{ opacity: 0.6 }}>
+                    (
+                    {(usdPrice?.xdcPrice * Number(price) > 100000
+                      ? Intl.NumberFormat("en-US", {
+                          notation: "compact",
+                          maximumFractionDigits: 2,
+                        }).format(usdPrice?.xdcPrice * Number(price))
+                      : (usdPrice?.xdcPrice * Number(price)).toLocaleString(
+                          undefined,
+                          {
+                            maximumFractionDigits: 2,
+                          }
+                        ) || "0") + " USD"}
+                    )
+                  </CaptionMedium>
 
-                <Spacer></Spacer>
-                {hasOffers && (
-                  <HStack
-                    background="linear-gradient(180deg, #FF5A5A 0%, rgba(255, 90, 90, 0.88) 100%)"
-                    border="30px"
-                    padding="3px 6px"
-                  >
-                    <CaptionBoldShort textcolor="white">
-                      HAS OFFERS
-                    </CaptionBoldShort>
-                  </HStack>
-                )}
-              </HStack>
+                  <Spacer></Spacer>
+                  {hasOffers && (
+                    <HStack
+                      background="linear-gradient(180deg, #FF5A5A 0%, rgba(255, 90, 90, 0.88) 100%)"
+                      border="30px"
+                      padding="3px 6px"
+                    >
+                      <CaptionBoldShort textcolor="white">
+                        HAS OFFERS
+                      </CaptionBoldShort>
+                    </HStack>
+                  )}
+                </HStack>
+                : null
+              }
             </VStack>
           </VStack>
         </ZItem>
