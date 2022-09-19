@@ -16,6 +16,7 @@ function TextAreaStyled(props) {
     letterSpacing,
     lineHeight,
     placeholder,
+    textplace,
   } = props;
   return (
     <TextArea
@@ -32,6 +33,7 @@ function TextAreaStyled(props) {
       letterSpacing={letterSpacing}
       lineHeight={lineHeight}
       placeholder={placeholder}
+      textplace={textplace}
     />
   );
 }
@@ -49,11 +51,13 @@ export const TextArea = styled.textarea.attrs((props) => ({
   fontWeight: props.fontWeight || "normal",
   letterSpacing: props.letterSpacing || "-0.01em",
   lineHeight: props.lineHeight,
+  padding: props.padding || "15px",
+  textplace: props.textplace || "rgba(255,255,255,0.3)",
 }))`
   height: ${(props) => props.height}; //
   width: 100%;
   border-radius: 9px;
-  padding: 15px;
+  padding: ${(props) => props.padding};
   border-style: solid;
   border-color: rgba(255, 255, 255, 0);
   border-size: 0px
@@ -75,4 +79,7 @@ export const TextArea = styled.textarea.attrs((props) => ({
     outline: none;
     border-color: rgba(153, 162, 175, 0.36);
   }
+   ::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+  color: ${(props) => props.textplace};
+  opacity: 1; /* Firefox */
 `;

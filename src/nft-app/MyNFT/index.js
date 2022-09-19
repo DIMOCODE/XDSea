@@ -462,7 +462,7 @@ const MyNFT = (props) => {
                 minwidth="100%"
                 maxheight="522px"
                 overflowx="hidden"
-                backgroundimage={gradientBase}
+                // backgroundimage={gradientBase}
               >
                 <IconImg
                   url={
@@ -470,7 +470,7 @@ const MyNFT = (props) => {
                       ? banner?.preview
                         ? banner.preview
                         : user.urlCover
-                      : user?.urlCover
+                      : user?.urlCover || gradientBase
                   }
                   backsize="cover"
                   width="100%"
@@ -482,8 +482,64 @@ const MyNFT = (props) => {
 
           {isEditing ? (
             <>
-              <ZItem zindex="30">
+              <ZItem zindex="1">
                 <Content>
+                  {isProfileUpdated && (
+                    <FadedBack
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{
+                        duration: 0.21,
+                        delay: 0.1,
+                      }}
+                    >
+                      <VStack>
+                        <Spacer></Spacer>
+                        <VStack
+                          background={({ theme }) => theme.backElement}
+                          width="390px"
+                          border="9px"
+                          spacing="12px"
+                          padding="36px 30px"
+                          flex="0"
+                          initial={{ opacity: 0, scale: 0.96 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{
+                            duration: 0.21,
+                            delay: 0.3,
+                          }}
+                        >
+                          <SwishSpinner
+                            size={42}
+                            frontColor="#3A60FF"
+                            backColor="#3A60FF"
+                          ></SwishSpinner>
+                          {/* <GuardSpinner
+                            size={42}
+                            frontColor="#3A60FF"
+                            backColor="#B8BFDC"
+                          ></GuardSpinner> */}
+                          {/* <TraceSpinner
+                            size={42}
+                            frontColor="#3A60FF"
+                            backColor="#B8BFDC"
+                          ></TraceSpinner> */}
+                          <HStack padding="0 30px">
+                            <BodyRegular
+                              textcolor={({ theme }) => theme.text}
+                              align="center"
+                            >
+                              {"Saving Changes"}
+                            </BodyRegular>
+                          </HStack>
+                        </VStack>
+                        <Spacer></Spacer>
+                      </VStack>
+                    </FadedBack>
+                  )}
+
                   {confirmCancel && (
                     <FadedBack
                       initial={{ opacity: 0 }}
@@ -1145,63 +1201,8 @@ const MyNFT = (props) => {
                 </Content>
               </ZItem>
 
-              <ZItem zindex="30">
+              <ZItem>
                 <Content>
-                  {isProfileUpdated && (
-                    <FadedBack
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{
-                        duration: 0.21,
-                        delay: 0.1,
-                      }}
-                    >
-                      <VStack>
-                        <Spacer></Spacer>
-                        <VStack
-                          background={({ theme }) => theme.backElement}
-                          width="390px"
-                          border="9px"
-                          spacing="12px"
-                          padding="36px 30px"
-                          flex="0"
-                          initial={{ opacity: 0, scale: 0.96 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          exit={{ opacity: 0 }}
-                          transition={{
-                            duration: 0.21,
-                            delay: 0.3,
-                          }}
-                        >
-                          <SwishSpinner
-                            size={42}
-                            frontColor="#3A60FF"
-                            backColor="#3A60FF"
-                          ></SwishSpinner>
-                          {/* <GuardSpinner
-                            size={42}
-                            frontColor="#3A60FF"
-                            backColor="#B8BFDC"
-                          ></GuardSpinner> */}
-                          {/* <TraceSpinner
-                            size={42}
-                            frontColor="#3A60FF"
-                            backColor="#B8BFDC"
-                          ></TraceSpinner> */}
-                          <HStack padding="0 30px">
-                            <BodyRegular
-                              textcolor={({ theme }) => theme.text}
-                              align="center"
-                            >
-                              {"Saving Changes"}
-                            </BodyRegular>
-                          </HStack>
-                        </VStack>
-                        <Spacer></Spacer>
-                      </VStack>
-                    </FadedBack>
-                  )}
                   <VStack height="900px">
                     <HStack
                       width="100%"
@@ -1794,7 +1795,7 @@ const MyNFT = (props) => {
               </ZItem>
             </>
           ) : (
-            <ZItem>
+            <ZItem zindex="0">
               <Content>
                 <VStack>
                   <HStack
@@ -2056,7 +2057,7 @@ const MyNFT = (props) => {
 
                       <HStack>
                         <VStack
-                          background={"rgba(0,0,0,0.3)"}
+                          background={"rgba(0,0,0,0.42)"}
                           alignment="flex-start"
                           padding="26px 18px 26px 18px"
                           border="6px"
@@ -2066,7 +2067,9 @@ const MyNFT = (props) => {
                           {newMessage ? (
                             <>
                               <TextAreaStyled
-                                background="rgba(0,0,0,0.3)"
+                                textplace="white"
+                                padding="0px"
+                                background="rgba(0,0,0,0)"
                                 textColor={
                                   userSettings?.dashboardMode === "dark"
                                     ? "#363537"
@@ -2119,7 +2122,7 @@ const MyNFT = (props) => {
                               </HStack>
                             </>
                           ) : (
-                            <VStack>
+                            <VStack width="100%">
                               {/* Only 90 characters */}
                               <TitleSemi21
                                 textcolor={
@@ -2159,6 +2162,7 @@ const MyNFT = (props) => {
                                   border="6px"
                                   height="39px"
                                   cursor="pointer"
+                                  width="100%"
                                   whileTap={{ scale: 0.96 }}
                                   onClick={() => setNewMessage(true)}
                                 >
@@ -2455,6 +2459,10 @@ const MyNFT = (props) => {
                                 border="9px"
                                 padding="12px"
                                 overflow="hidden"
+                                style={{
+                                  boxShadow:
+                                    " 0px 11px 12px 0px rgba(0, 0, 0, 0.2)",
+                                }}
                               >
                                 <ZItem>
                                   <IconImg
