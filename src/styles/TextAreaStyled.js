@@ -15,6 +15,7 @@ function TextAreaStyled(props) {
     fontWeight,
     letterSpacing,
     lineHeight,
+    placeholder,
   } = props;
   return (
     <TextArea
@@ -30,6 +31,7 @@ function TextAreaStyled(props) {
       fontWeight={fontWeight}
       letterSpacing={letterSpacing}
       lineHeight={lineHeight}
+      placeholder={placeholder}
     />
   );
 }
@@ -38,7 +40,7 @@ export { TextAreaStyled };
 
 export const TextArea = styled.textarea.attrs((props) => ({
   height: props.height || "300px",
-  placeholder: "Describe your NFT",
+  placeholder: props.placeholder || "Describe your NFT",
   textColor: props.textColor || "black",
   background: props.background || "white",
   resize: props.resize,

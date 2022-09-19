@@ -41,9 +41,11 @@ import addIcon from "../../images/addIcon.png";
 import crossIcon from "../../images/crossIcon.png";
 import crossWhite from "../../images/crossWhite.png";
 import doneIcon from "../../images/doneIcon.png";
+import doneIconWhite from "../../images/doneIconWhite.png";
 import minusIcon from "../../images/minusIcon.png";
 import editProfile from "../../images/editProfile.png";
 import mountain from "../../images/mountain.jpg";
+
 import exampleImage from "../../images/audioCover0.png";
 import instagramColor from "../../images/instagramColor.png";
 import twitterColor from "../../images/twitterColor.png";
@@ -71,6 +73,7 @@ import { StickySectionHeader } from "../../CustomModules/sticky/StickySectionHea
 import { Swiper, SwiperSlide } from "swiper/react";
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import editPencil from "../../images/editPencil.png";
+import editPencilWhite from "../../images/editPencilWhite.png";
 import confirmation from "../../images/confirmation.png";
 
 // Import Swiper styles
@@ -85,6 +88,7 @@ import { Activity } from "./Activity";
 import { CollectionTab } from "./CollectionTab";
 import { Icon } from "@mui/material";
 import { uploadFileInS3Bucket } from "../../helpers/fileUploader";
+import { GuardSpinner, SwishSpinner, TraceSpinner } from "react-spinners-kit";
 
 const MyNFT = (props) => {
   const { userId } = useParams();
@@ -120,10 +124,13 @@ const MyNFT = (props) => {
   const [highestPrice, setHighestPrice] = useState(0);
   const [statusPublished, setStatusPublished] = useState(false);
   const [collectionFilters, setCollectionFilters] = useState([]);
-  const [isCollectionFilterSelected, setIsCollectionFilterSelected] = useState([]);
+  const [isCollectionFilterSelected, setIsCollectionFilterSelected] = useState(
+    []
+  );
   const [confirmCancel, setConfirmCancel] = useState(false);
   const [userSettings, setUserSettings] = useState({});
   const [newStatus, setNewStatus] = useState("");
+  const [isProfileUpdated, setIsProfileUpdated] = useState(false);
 
   const heights = [260, 360, 300];
 
@@ -154,7 +161,9 @@ const MyNFT = (props) => {
           setOwnedNFTPlaying(new Array(nftData.nftsAmount.length).fill(false));
           setHighestPrice(nftData.higherPrice);
           setCollectionFilters(nftData.associatedCollections);
-          setIsCollectionFilterSelected(new Array(nftData.associatedCollections.length).fill(false));
+          setIsCollectionFilterSelected(
+            new Array(nftData.associatedCollections.length).fill(false)
+          );
         } else {
           let collectionData = await (
             await getCollections({ userId: id })
@@ -169,7 +178,7 @@ const MyNFT = (props) => {
     if (props?.wallet?.address === userData.user.XDCWallets[0]) {
       setIsLoggedIn(true);
     }
-    if(userData?.settings?.dashboardMode === "dark") {
+    if (userData?.settings?.dashboardMode === "dark") {
       setIsDarkUI(true);
     }
 
@@ -262,10 +271,12 @@ const MyNFT = (props) => {
 
   const handleCollectionFilter = (i, isNew) => {
     console.log(isCollectionFilterSelected);
-    const newIsCollectionFilterSelected = new Array(isCollectionFilterSelected.length).fill(false);
+    const newIsCollectionFilterSelected = new Array(
+      isCollectionFilterSelected.length
+    ).fill(false);
     newIsCollectionFilterSelected[i] = isNew;
     setIsCollectionFilterSelected([...newIsCollectionFilterSelected]);
-  }
+  };
 
   function determineAgoTime(date) {
     var seconds = Math.floor((new Date() - date) / 1000);
@@ -388,50 +399,57 @@ const MyNFT = (props) => {
   };
 
   const updateUserProfile = async () => {
-    if(profilePicture.raw !== "") {
+    if (profilePicture.raw !== "") {
       const profilePictureSuccess = await uploadFileInS3Bucket(
         profilePicture.raw,
         "user",
         "urlProfile"
       );
     }
-    if(banner.raw !== "") {
+    if (banner.raw !== "") {
       const bannerPictureSuccess = await uploadFileInS3Bucket(
         banner.raw,
         "user",
         "urlCover"
       );
     }
-    if(user.userName !== newUserName || user.instagram !== newInstagramUsername || user.twitter !== newTwitterUsername || user.siteUrl !== newWebsite) {
-      const updateSuccess = await( await updateUser({
+    if (
+      user.userName !== newUserName ||
+      user.instagram !== newInstagramUsername ||
+      user.twitter !== newTwitterUsername ||
+      user.siteUrl !== newWebsite
+    ) {
+      const updateSuccess = await await updateUser({
         userName: newUserName,
         instagram: newInstagramUsername,
         twitter: newTwitterUsername,
         siteUrl: newWebsite,
-      }));
+      });
     }
-    if(userSettings.dashboardMode !== (isDarkUI ? "dark" : "light")) {
-      const updateSettingsSuccess = await( await updateUserSettings({
-        dashboardMode: isDarkUI ? "dark" : "light"
-      }));
+    if (userSettings.dashboardMode !== (isDarkUI ? "dark" : "light")) {
+      const updateSettingsSuccess = await await updateUserSettings({
+        dashboardMode: isDarkUI ? "dark" : "light",
+      });
     }
-    
+
     let userData = await (await getUser(userId)).data;
+    setIsProfileUpdated(true);
     setUser(userData.user);
     setUserSettings(userData.settings);
     setIsEditing(false);
-  }
+    setIsProfileUpdated(false);
+  };
 
   const updateUserStatus = async () => {
-    if(user.statusRecord?.status !== newStatus) {
-      const updateSuccess = await( await updateUser({
-        newStatus
-      }));
+    if (user.statusRecord?.status !== newStatus) {
+      const updateSuccess = await await updateUser({
+        newStatus,
+      });
     }
     let userData = await (await getUser(userId)).data;
     setUser(userData.user);
     setNewMessage(false);
-  }
+  };
 
   return (
     <UserSection>
@@ -463,36 +481,41 @@ const MyNFT = (props) => {
           </ZItem>
 
           {isEditing ? (
-            <ZItem>
-              <Content>
-                {confirmCancel && (
-                  <FadedBack
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{
-                      duration: 0.21,
-                      delay: 0.1,
-                    }}
-                  >
-                    <VStack>
-                      <Spacer></Spacer>
-                      <VStack
-                        background={({ theme }) => theme.backElement}
-                        width="390px"
-                        border="9px"
-                        spacing="12px"
-                        padding="36px 30px"
-                        flex="0"
-                        initial={{ opacity: 0, scale: 0.96 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{
-                          duration: 0.21,
-                          delay: 0.3,
-                        }}
-                      >
-                        <IconImg url={warning} width="59px" height="59px"></IconImg>
+            <>
+              <ZItem zindex="30">
+                <Content>
+                  {confirmCancel && (
+                    <FadedBack
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{
+                        duration: 0.21,
+                        delay: 0.1,
+                      }}
+                    >
+                      <VStack>
+                        <Spacer></Spacer>
+                        <VStack
+                          background={({ theme }) => theme.backElement}
+                          width="390px"
+                          border="9px"
+                          spacing="12px"
+                          padding="36px 30px"
+                          flex="0"
+                          initial={{ opacity: 0, scale: 0.96 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{
+                            duration: 0.21,
+                            delay: 0.3,
+                          }}
+                        >
+                          <IconImg
+                            url={warning}
+                            width="59px"
+                            height="59px"
+                          ></IconImg>
                           <HStack padding="0 30px">
                             <BodyRegular
                               textcolor={({ theme }) => theme.text}
@@ -507,7 +530,9 @@ const MyNFT = (props) => {
                               textcolor={({ theme }) => theme.text}
                               background={appStyle.colors.darkgrey10}
                               width="100%"
-                              onClick={() => {setConfirmCancel(false)}}
+                              onClick={() => {
+                                setConfirmCancel(false);
+                              }}
                               cursor="pointer"
                               btnStatus={0}
                             ></ButtonApp>
@@ -523,78 +548,62 @@ const MyNFT = (props) => {
                               btnStatus={0}
                             ></ButtonApp>
                           </HStack>
+                        </VStack>
+                        <Spacer></Spacer>
                       </VStack>
-                      <Spacer></Spacer>
-                    </VStack>
-                </FadedBack>)}
-                <VStack height="900px">
-                  <HStack
-                    width="100%"
-                    spacing="0%"
-                    height="552px"
-                    alignment="flex-start"
-                    self="none"
-                    padding="90px 0 0 0"
-                  >
-                    <VStack
-                      minwidth="70%"
-                      height="420px"
+                    </FadedBack>
+                  )}
+                  <VStack height="900px">
+                    <HStack
+                      width="100%"
+                      spacing="0%"
+                      height="552px"
                       alignment="flex-start"
-                      padding="24px 12px 12px 12px"
+                      self="none"
+                      padding="90px 0 0 0"
                     >
-                      <HStack>
-                        {/* User image uploader*/}
-                        <VStack
-                          maxwidth="96px"
-                          maxheight="96px"
-                          cursor="pointer"
-                          overflow="visible"
-                          spacing="17px"
-                        >
-                          <ZStack
+                      <VStack
+                        minwidth="70%"
+                        height="420px"
+                        alignment="flex-start"
+                        padding="24px 12px 12px 12px"
+                      >
+                        <HStack>
+                          {/* User image uploader*/}
+                          <VStack
+                            maxwidth="96px"
+                            maxheight="96px"
                             cursor="pointer"
-                            width="96px"
-                            minheight="96px"
                             overflow="visible"
+                            spacing="17px"
                           >
-                            <ZItem>
-                              <HStack
-                                width="90px"
-                                height="90px"
-                                border="90px"
-                                background={"rgba(0,0,0,0.3)"}
-                              >
-                                <IconImg
-                                  url={uploadIcon}
-                                  width="30px"
-                                  height="30px"
-                                ></IconImg>
-                              </HStack>
-                            </ZItem>
-                            <ZItem>
-                              <label htmlFor="upload-button">
-                                {profilePicture.preview ? (
+                            <ZStack
+                              cursor="pointer"
+                              width="96px"
+                              minheight="96px"
+                              overflow="visible"
+                            >
+                              <ZItem>
+                                <HStack
+                                  width="90px"
+                                  height="90px"
+                                  border="90px"
+                                  background={"rgba(0,0,0,0.3)"}
+                                >
                                   <IconImg
-                                    whileTap={{ scale: 0.97 }}
-                                    cursor="pointer"
-                                    url={profilePicture.preview}
-                                    width="90px"
-                                    height="90px"
-                                    border="90px"
-                                    backsize="cover"
-                                    bordercolor="white"
-                                    bordersize="3px"
-                                    style={{
-                                      boxShadow:
-                                        "0px 3px 6px 0px rgba(0, 0, 0, 0.3)",
-                                    }}
+                                    url={uploadIcon}
+                                    width="30px"
+                                    height="30px"
                                   ></IconImg>
-                                ) : (
-                                  <>
+                                </HStack>
+                              </ZItem>
+                              <ZItem>
+                                <label htmlFor="upload-button">
+                                  {profilePicture.preview ? (
                                     <IconImg
                                       whileTap={{ scale: 0.97 }}
                                       cursor="pointer"
-                                      url={user?.urlProfile}
+                                      url={profilePicture.preview}
                                       width="90px"
                                       height="90px"
                                       border="90px"
@@ -606,505 +615,1184 @@ const MyNFT = (props) => {
                                           "0px 3px 6px 0px rgba(0, 0, 0, 0.3)",
                                       }}
                                     ></IconImg>
-                                  </>
-                                )}
-                              </label>
-                              <input
-                                type="file"
-                                id="upload-button"
-                                style={{ display: "none" }}
-                                onChange={handleChange}
-                              />
-                            </ZItem>
-                          </ZStack>
+                                  ) : (
+                                    <>
+                                      <IconImg
+                                        whileTap={{ scale: 0.97 }}
+                                        cursor="pointer"
+                                        url={user?.urlProfile}
+                                        width="90px"
+                                        height="90px"
+                                        border="90px"
+                                        backsize="cover"
+                                        bordercolor="white"
+                                        bordersize="3px"
+                                        style={{
+                                          boxShadow:
+                                            "0px 3px 6px 0px rgba(0, 0, 0, 0.3)",
+                                        }}
+                                      ></IconImg>
+                                    </>
+                                  )}
+                                </label>
+                                <input
+                                  type="file"
+                                  id="upload-button"
+                                  style={{ display: "none" }}
+                                  onChange={handleChange}
+                                />
+                              </ZItem>
+                            </ZStack>
 
-                          <CaptionBoldShort textcolor={isDarkUI ? "#363537" : "#FAFAFA"} align="center">
-                            UPLOAD USER PROFILE
-                          </CaptionBoldShort>
-                        </VStack>
-
-                        {/* Username and social networks selector    */}
-                        <VStack alignment="flex-start">
-                          <VStack spacing="9px" alignment="flex-start">
-                            <CaptionBoldShort textcolor={isDarkUI ? "#363537" : "#FAFAFA"}>
-                              EDIT CREATOR NAME
-                            </CaptionBoldShort>
-
-                            <InputStyled
-                              placeholder={user?.userName}
-                              fontsize="21px"
+                            <CaptionBoldShort
                               textcolor={isDarkUI ? "#363537" : "#FAFAFA"}
-                              background={"rgba(0,0,0,0.3)"}
-                              onChange={(event) => {
-                                setNewUserName(event.target.value);
-                              }}
-                            ></InputStyled>
+                              align="center"
+                            >
+                              UPLOAD USER PROFILE
+                            </CaptionBoldShort>
                           </VStack>
 
-                          <HStack spacing="12px" justify="flex-start">
-                            {/* Instagram Button */}
-                            {user?.instagram ? (
-                              <CircleButton
-                                image={instagramColor}
+                          {/* Username and social networks selector    */}
+                          <VStack alignment="flex-start">
+                            <VStack
+                              spacing="9px"
+                              alignment="flex-start"
+                              width="360px"
+                            >
+                              <CaptionBoldShort
+                                textcolor={isDarkUI ? "#363537" : "#FAFAFA"}
+                              >
+                                EDIT CREATOR NAME
+                              </CaptionBoldShort>
+
+                              <InputStyled
+                                placeholder={user?.userName}
+                                fontsize="21px"
+                                textcolor={isDarkUI ? "#363537" : "#FAFAFA"}
+                                background={"rgba(0,0,0,0.3)"}
+                                onChange={(event) => {
+                                  setNewUserName(event.target.value);
+                                }}
+                              ></InputStyled>
+                            </VStack>
+
+                            <HStack spacing="12px" justify="flex-start">
+                              {/* Instagram Button */}
+                              {user?.instagram ? (
+                                <CircleButton
+                                  image={instagramColor}
+                                  background={isDarkUI ? "#20222D" : "white"}
+                                ></CircleButton>
+                              ) : null}
+
+                              {/* Twitter Button  */}
+                              {user?.twitter ? (
+                                <CircleButton
+                                  image={twitterColor}
+                                  background={isDarkUI ? "#20222D" : "white"}
+                                ></CircleButton>
+                              ) : null}
+
+                              {/* Web Icon  */}
+                              {user?.siteUrl ? (
+                                <CircleButton
+                                  image={webColor}
+                                  background={isDarkUI ? "#20222D" : "white"}
+                                ></CircleButton>
+                              ) : null}
+
+                              {/* Wallet button  */}
+                              <BubbleCopied
+                                logo={walletBlue}
+                                address={
+                                  user.XDCWallets ? user.XDCWallets[0] : ""
+                                }
+                                icon={copyIcon}
                                 background={isDarkUI ? "#20222D" : "white"}
-                              ></CircleButton>
-                            ) : null}
+                                textColor={isDarkUI ? "#FAFAFA" : "#363537"}
+                              ></BubbleCopied>
+                            </HStack>
+                          </VStack>
+                        </HStack>
 
-                            {/* Twitter Button  */}
-                            {user?.twitter ? (
-                              <CircleButton image={twitterColor} background={isDarkUI ? "#20222D" : "white"}></CircleButton>
-                            ) : null}
+                        <Spacer></Spacer>
+                        <VStack width="360px">
+                          {/* Add instagram input */}
 
-                            {/* Web Icon  */}
-                            {user?.siteUrl ? (
-                              <CircleButton image={webColor} background={isDarkUI ? "#20222D" : "white"}></CircleButton>
-                            ) : null}
-
-                            {/* Wallet button  */}
-                            <BubbleCopied
-                              logo={walletBlue}
-                              address={
-                                user.XDCWallets ? user.XDCWallets[0] : ""
+                          <HStack>
+                            <InputStyled
+                              icon={instagramColor}
+                              background={"rgba(0,0,0,0.3)"}
+                              placeholder={
+                                user?.instagram
+                                  ? user.instagram
+                                  : "Instagram URL"
                               }
-                              icon={copyIcon}
-                              background={isDarkUI ? "#20222D" : "white"}
-                              textColor={isDarkUI ? "#FAFAFA" : "#363537"}
-                            ></BubbleCopied>
+                              textcolor={isDarkUI ? "#363537" : "#FAFAFA"}
+                              iconRight=""
+                              iconLeft="15px"
+                              padding="0 0 0 42px"
+                              disabled={!isInstaAdded}
+                              onChange={(event) => {
+                                setNewInstagramUsername(event.target.value);
+                              }}
+                            ></InputStyled>
+
+                            {!isInstaAdded ? (
+                              <HStack
+                                width="42px"
+                                height="36px"
+                                border="36px"
+                                background={isDarkUI ? "#20222D" : "white"}
+                                cursor="pointer"
+                                whileTap={{ scale: 0.96 }}
+                                onClick={() => setIsInstaAdded(true)}
+                              >
+                                <IconImg
+                                  url={isDarkUI ? editPencilWhite : editPencil}
+                                  width="12px"
+                                  height="12px"
+                                  cursor="pointer"
+                                ></IconImg>
+                              </HStack>
+                            ) : (
+                              <HStack spacing="6px">
+                                <HStack
+                                  width="36px"
+                                  height="36px"
+                                  border="36px"
+                                  background={isDarkUI ? "#20222D" : "white"}
+                                  cursor="pointer"
+                                  whileTap={{ scale: 0.96 }}
+                                  onClick={() => {
+                                    setIsInstaAdded(false);
+                                  }}
+                                >
+                                  <IconImg
+                                    url={isDarkUI ? doneIconWhite : doneIcon}
+                                    width="12px"
+                                    height="12px"
+                                    cursor="pointer"
+                                  ></IconImg>
+                                </HStack>{" "}
+                                <HStack
+                                  width="36px"
+                                  height="36px"
+                                  border="36px"
+                                  background="rgba(0,0,0,0.3)"
+                                  cursor="pointer"
+                                  whileTap={{ scale: 0.96 }}
+                                  onClick={() => {
+                                    setNewInstagramUsername("");
+                                    setIsInstaAdded(false);
+                                  }}
+                                >
+                                  <IconImg
+                                    url={crossWhite}
+                                    width="18px"
+                                    height="18px"
+                                    cursor="pointer"
+                                  ></IconImg>
+                                </HStack>
+                              </HStack>
+                            )}
+                          </HStack>
+
+                          {/* Add twitter input */}
+
+                          <HStack>
+                            <InputStyled
+                              icon={twitterColor}
+                              background={"rgba(0,0,0,0.3)"}
+                              placeholder={
+                                user?.twitter ? user.twitter : "Twitter URL"
+                              }
+                              textcolor={isDarkUI ? "#363537" : "#FAFAFA"}
+                              iconRight=""
+                              iconLeft="15px"
+                              padding="0 0 0 42px"
+                              disabled={!isTweetAdded}
+                              onChange={(event) => {
+                                setNewTwitterUsername(event.target.value);
+                              }}
+                            ></InputStyled>
+
+                            {!isTweetAdded ? (
+                              <HStack
+                                width="42px"
+                                height="36px"
+                                border="36px"
+                                background={isDarkUI ? "#20222D" : "white"}
+                                cursor="pointer"
+                                whileTap={{ scale: 0.96 }}
+                                onClick={() => setIsTweetAdded(true)}
+                              >
+                                <IconImg
+                                  url={isDarkUI ? editPencilWhite : editPencil}
+                                  width="12px"
+                                  height="12px"
+                                  cursor="pointer"
+                                ></IconImg>
+                              </HStack>
+                            ) : (
+                              <HStack spacing="6px">
+                                <HStack
+                                  width="36px"
+                                  height="36px"
+                                  border="36px"
+                                  background={isDarkUI ? "#20222D" : "white"}
+                                  cursor="pointer"
+                                  whileTap={{ scale: 0.96 }}
+                                  onClick={() => setIsTweetAdded(false)}
+                                >
+                                  <IconImg
+                                    url={isDarkUI ? doneIconWhite : doneIcon}
+                                    width="12px"
+                                    height="12px"
+                                    cursor="pointer"
+                                  ></IconImg>
+                                </HStack>
+
+                                <HStack
+                                  width="36px"
+                                  height="36px"
+                                  border="36px"
+                                  background="rgba(0,0,0,0.3)"
+                                  cursor="pointer"
+                                  whileTap={{ scale: 0.96 }}
+                                  onClick={() => {
+                                    setNewTwitterUsername("");
+                                    setIsTweetAdded(false);
+                                  }}
+                                >
+                                  <IconImg
+                                    url={crossWhite}
+                                    width="18px"
+                                    height="18px"
+                                    cursor="pointer"
+                                  ></IconImg>
+                                </HStack>
+                              </HStack>
+                            )}
+                          </HStack>
+
+                          {/* Add website input */}
+                          <HStack>
+                            <InputStyled
+                              icon={webColor}
+                              background={"rgba(0,0,0,0.3)"}
+                              placeholder={
+                                user?.siteUrl ? user.siteUrl : "Website URL"
+                              }
+                              textcolor={isDarkUI ? "#363537" : "#FAFAFA"}
+                              iconRight=""
+                              iconLeft="15px"
+                              padding="0 0 0 42px"
+                              disabled={!isWebAdded}
+                              onChange={(event) => {
+                                setNewWebsite(event.target.value);
+                              }}
+                            ></InputStyled>
+
+                            {!isWebAdded ? (
+                              <HStack
+                                width="42px"
+                                height="36px"
+                                border="36px"
+                                background={isDarkUI ? "#20222D" : "white"}
+                                cursor="pointer"
+                                whileTap={{ scale: 0.96 }}
+                                onClick={() => setIsWebAdded(true)}
+                              >
+                                <IconImg
+                                  url={isDarkUI ? editPencilWhite : editPencil}
+                                  width="12px"
+                                  height="12px"
+                                  cursor="pointer"
+                                ></IconImg>
+                              </HStack>
+                            ) : (
+                              <HStack spacing="6px">
+                                <HStack
+                                  width="36px"
+                                  height="36px"
+                                  border="36px"
+                                  background={isDarkUI ? "#20222D" : "white"}
+                                  cursor="pointer"
+                                  whileTap={{ scale: 0.96 }}
+                                  onClick={() => setIsWebAdded(false)}
+                                >
+                                  <IconImg
+                                    url={isDarkUI ? doneIconWhite : doneIcon}
+                                    width="12px"
+                                    height="12px"
+                                    cursor="pointer"
+                                  ></IconImg>
+                                </HStack>
+                                <HStack
+                                  width="36px"
+                                  height="36px"
+                                  border="36px"
+                                  background="rgba(0,0,0,0.3)"
+                                  cursor="pointer"
+                                  whileTap={{ scale: 0.96 }}
+                                  onClick={() => {
+                                    setNewWebsite("");
+                                    setIsWebAdded(false);
+                                  }}
+                                >
+                                  <IconImg
+                                    url={crossWhite}
+                                    width="18px"
+                                    height="18px"
+                                    cursor="pointer"
+                                  ></IconImg>
+                                </HStack>
+                              </HStack>
+                            )}
                           </HStack>
                         </VStack>
-                      </HStack>
-
-                      <Spacer></Spacer>
-                      <VStack width="360px">
-                        {/* Add instagram input */}
-
-                        <HStack>
-                          <InputStyled
-                            icon={instagramColor}
-                            background={"rgba(0,0,0,0.3)"}
-                            placeholder={
-                              user?.instagram
-                                ? user.instagram
-                                : "Instagram URL"
-                            }
-                            textcolor={isDarkUI ? "#363537" : "#FAFAFA"}
-                            iconRight=""
-                            iconLeft="15px"
-                            padding="0 0 0 42px"
-                            disabled={isInstaAdded}
-                            onChange={(event) => {
-                              setNewInstagramUsername(event.target.value);
-                            }}
-                          ></InputStyled>
-
-                          {!isInstaAdded ? (
-                            <HStack
-                              width="42px"
-                              height="36px"
-                              border="36px"
-                              background={isDarkUI ? "#20222D" : "white"}
-                              cursor="pointer"
-                              whileTap={{ scale: 0.96 }}
-                              onClick={() => setIsInstaAdded(true)}
-                            >
-                              <IconImg
-                                url={editPencil}
-                                width="18px"
-                                height="18px"
-                                cursor="pointer"
-                              ></IconImg>
-                            </HStack>
-                          ) : (
-                            <HStack spacing="6px">
-                              <HStack
-                                width="36px"
-                                height="36px"
-                                border="36px"
-                                background={isDarkUI ? "#20222D" : "white"}
-                                cursor="pointer"
-                                whileTap={{ scale: 0.96 }}
-                                onClick={() => {
-                                  setIsInstaAdded(false)
-                                }}
-                              >
-                                <IconImg
-                                  url={doneIcon}
-                                  width="18px"
-                                  height="18px"
-                                  cursor="pointer"
-                                ></IconImg>
-                              </HStack>{" "}
-                              <HStack
-                                width="36px"
-                                height="36px"
-                                border="36px"
-                                background="rgba(0,0,0,0.3)"
-                                cursor="pointer"
-                                whileTap={{ scale: 0.96 }}
-                                onClick={() => {
-                                  setNewInstagramUsername("");
-                                  setIsInstaAdded(false)}
-                                }
-                              >
-                                <IconImg
-                                  url={crossWhite}
-                                  width="18px"
-                                  height="18px"
-                                  cursor="pointer"
-                                ></IconImg>
-                              </HStack>
-                            </HStack>
-                          )}
-                        </HStack>
-
-                        {/* Add twitter input */}
-
-                        <HStack>
-                          <InputStyled
-                            icon={twitterColor}
-                            background={"rgba(0,0,0,0.3)"}
-                            placeholder={
-                              user?.twitter
-                                ? user.twitter
-                                : "Twitter URL"
-                            }
-                            textcolor={isDarkUI ? "#363537" : "#FAFAFA"}
-                            iconRight=""
-                            iconLeft="15px"
-                            padding="0 0 0 42px"
-                            disabled={!isTweetAdded}
-                            onChange={(event) => {
-                              setNewTwitterUsername(event.target.value);
-                            }}
-                          ></InputStyled>
-
-                          {!isTweetAdded ? (
-                            <HStack
-                              width="42px"
-                              height="36px"
-                              border="36px"
-                              background={isDarkUI ? "#20222D" : "white"}
-                              cursor="pointer"
-                              whileTap={{ scale: 0.96 }}
-                              onClick={() => setIsTweetAdded(true)}
-                            >
-                              <IconImg
-                                url={editPencil}
-                                width="18px"
-                                height="18px"
-                                cursor="pointer"
-                              ></IconImg>
-                            </HStack>
-                          ) : (
-                            <HStack spacing="6px">
-                              <HStack
-                                width="36px"
-                                height="36px"
-                                border="36px"
-                                background={isDarkUI ? "#20222D" : "white"}
-                                cursor="pointer"
-                                whileTap={{ scale: 0.96 }}
-                                onClick={() => setIsTweetAdded(false)}
-                              >
-                                <IconImg
-                                  url={doneIcon}
-                                  width="18px"
-                                  height="18px"
-                                  cursor="pointer"
-                                ></IconImg>
-                              </HStack>
-
-                              <HStack
-                                width="36px"
-                                height="36px"
-                                border="36px"
-                                background="rgba(0,0,0,0.3)"
-                                cursor="pointer"
-                                whileTap={{ scale: 0.96 }}
-                                onClick={() => {
-                                  setNewTwitterUsername("");
-                                  setIsTweetAdded(false)}}
-                              >
-                                <IconImg
-                                  url={crossWhite}
-                                  width="18px"
-                                  height="18px"
-                                  cursor="pointer"
-                                ></IconImg>
-                              </HStack>
-                            </HStack>
-                          )}
-                        </HStack>
-
-                        {/* Add website input */}
-                        <HStack>
-                          <InputStyled
-                            icon={webColor}
-                            background={"rgba(0,0,0,0.3)"}
-                            placeholder={
-                              user?.siteUrl ? user.siteUrl : "Website URL"
-                            }
-                            textcolor={isDarkUI ? "#363537" : "#FAFAFA"}
-                            iconRight=""
-                            iconLeft="15px"
-                            padding="0 0 0 42px"
-                            disabled={!isWebAdded}
-                            onChange={(event) => {
-                              setNewWebsite(event.target.value);
-                            }}
-                          ></InputStyled>
-
-                          {!isWebAdded ? (
-                            <HStack
-                              width="42px"
-                              height="36px"
-                              border="36px"
-                              background={isDarkUI ? "#20222D" : "white"}
-                              cursor="pointer"
-                              whileTap={{ scale: 0.96 }}
-                              onClick={() => setIsWebAdded(true)}
-                            >
-                              <IconImg
-                                url={editPencil}
-                                width="18px"
-                                height="18px"
-                                cursor="pointer"
-                              ></IconImg>
-                            </HStack>
-                          ) : (
-                            <HStack spacing="6px">
-                              <HStack
-                                width="36px"
-                                height="36px"
-                                border="36px"
-                                background={isDarkUI ? "#20222D" : "white"}
-                                cursor="pointer"
-                                whileTap={{ scale: 0.96 }}
-                                onClick={() => setIsWebAdded(false)}
-                              >
-                                <IconImg
-                                  url={doneIcon}
-                                  width="18px"
-                                  height="18px"
-                                  cursor="pointer"
-                                ></IconImg>
-                              </HStack>
-                              <HStack
-                                width="36px"
-                                height="36px"
-                                border="36px"
-                                background="rgba(0,0,0,0.3)"
-                                cursor="pointer"
-                                whileTap={{ scale: 0.96 }}
-                                onClick={() => {
-                                  setNewWebsite("");
-                                  setIsWebAdded(false)}
-                                }
-                              >
-                                <IconImg
-                                  url={crossWhite}
-                                  width="18px"
-                                  height="18px"
-                                  cursor="pointer"
-                                ></IconImg>
-                              </HStack>
-                            </HStack>
-                          )}
-                        </HStack>
                       </VStack>
-                    </VStack>
 
-                    <VStack
-                      // background="pink"
-                      height="420px"
-                      minwidth="30%"
-                      alignment="flex-end"
-                      padding="12px 12px 12px 0"
-                    >
-                      {/* Close button  */}
-                      <HStack
-                        background={isDarkUI ? "#20222D" : "white"}
-                        border="30px"
-                        cursor="pointer"
-                        height="42px"
-                        self="none"
-                        spacing="6px"
-                        padding="6px 10px"
-                        onClick={() => {
-                          setIsEditing(false);
-                        }}
+                      <VStack
+                        // background="pink"
+                        height="420px"
+                        minwidth="30%"
+                        alignment="flex-end"
+                        padding="12px 12px 12px 0"
                       >
-                        <IconImg
-                          cursor="pointer"
-                          url={isDarkUI ? crossWhite : crossIcon}
-                          width="21px"
-                          height="21px"
-                        ></IconImg>
-                      </HStack>
-
-                      <HStack width="100%" justify="flex-end">
+                        {/* Close button  */}
                         <HStack
-                          background="rgba(0, 0, 0, 0.21)"
+                          background={isDarkUI ? "#20222D" : "white"}
+                          border="30px"
+                          cursor="pointer"
                           height="42px"
-                          width="240px"
-                          spacing="0px"
-                          border="6px"
-                          blur="30px"
-                          overflowx="hidden"
-                        >
-                          <Selector>
-                            <AnimatePresence initial="false">
-                              <HStack
-                                width="100%"
-                                justify={isDarkUI ? "flex-start" : "flex-end"}
-                              >
-                                <HStack
-                                  height="42px"
-                                  width="120px"
-                                  background="rgba(0, 0, 0, 0.52)"
-                                  border="6px"
-                                  cursor="pointer"
-                                  layout
-                                ></HStack>
-                              </HStack>
-                            </AnimatePresence>
-                          </Selector>
-
-                          <HStack
-                            width="100%"
-                            cursor="pointer"
-                            onClick={() => {
-                              setIsDarkUI(true);
-                            }}
-                          >
-                            <CaptionBoldShort
-                              cursor="pointer"
-                              textcolor="white"
-                            >
-                              DARK UI
-                            </CaptionBoldShort>
-                          </HStack>
-                          <HStack
-                            width="100%"
-                            onClick={() => {
-                              setIsDarkUI(false);
-                            }}
-                            cursor="pointer"
-                          >
-                            <CaptionBoldShort
-                              textcolor="white"
-                              cursor="pointer"
-                            >
-                              CLEAN UI
-                            </CaptionBoldShort>
-                          </HStack>
-                        </HStack>
-                      </HStack>
-
-                      <Spacer></Spacer>
-
-                      <label htmlFor="upload-button-banner">
-                        <HStack
-                          width="240px"
-                          overflowx="hidden"
                           self="none"
-                          style={{
-                            boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.6)",
+                          spacing="6px"
+                          padding="6px 10px"
+                          onClick={() => {
+                            setIsEditing(false);
                           }}
-                          whileTap={{ scale: 0.98 }}
-                          cursor="pointer"
-                          border="6px"
                         >
                           <IconImg
-                            url={
-                              banner?.preview ? banner.preview : user?.urlCover
-                            }
-                            width="100%"
-                            height="120px"
-                            border="6px"
-                            backsize="cover"
                             cursor="pointer"
+                            url={isDarkUI ? crossWhite : crossIcon}
+                            width="21px"
+                            height="21px"
                           ></IconImg>
+                        </HStack>
 
-                          <OverImage>
-                            <VStack
-                              background="rgba(0,0,0,0.3)"
-                              border="6px"
+                        <HStack width="100%" justify="flex-end">
+                          <HStack
+                            background="rgba(0, 0, 0, 0.21)"
+                            height="42px"
+                            width="240px"
+                            spacing="0px"
+                            border="6px"
+                            blur="30px"
+                            overflowx="hidden"
+                          >
+                            <Selector>
+                              <AnimatePresence initial="false">
+                                <HStack
+                                  width="100%"
+                                  justify={isDarkUI ? "flex-start" : "flex-end"}
+                                >
+                                  <HStack
+                                    height="42px"
+                                    width="120px"
+                                    background="rgba(0, 0, 0, 0.52)"
+                                    border="6px"
+                                    cursor="pointer"
+                                    layout
+                                  ></HStack>
+                                </HStack>
+                              </AnimatePresence>
+                            </Selector>
+
+                            <HStack
+                              width="100%"
+                              cursor="pointer"
+                              onClick={() => {
+                                setIsDarkUI(true);
+                              }}
+                            >
+                              <CaptionBoldShort
+                                cursor="pointer"
+                                textcolor="white"
+                              >
+                                DARK UI
+                              </CaptionBoldShort>
+                            </HStack>
+                            <HStack
+                              width="100%"
+                              onClick={() => {
+                                setIsDarkUI(false);
+                              }}
                               cursor="pointer"
                             >
-                              <IconImg
-                                url={uploadIcon}
-                                width="30px"
-                                height="30px"
-                                cursor="pointer"
-                              ></IconImg>
                               <CaptionBoldShort
                                 textcolor="white"
                                 cursor="pointer"
                               >
-                                CHANGE BANNER IMAGE
+                                CLEAN UI
                               </CaptionBoldShort>
-                            </VStack>
-                          </OverImage>
+                            </HStack>
+                          </HStack>
                         </HStack>
-                      </label>
-                      <input
-                        type="file"
-                        id="upload-button-banner"
-                        style={{ display: "none" }}
-                        onChange={handleChangeBanner}
-                      />
-                    </VStack>
-                  </HStack>
-                  {/* Buttons */}
-                  <HStack>
-                    <HStack
-                      height="42px"
-                      background="white"
-                      width="210px"
-                      border="6px"
-                      cursor="pointer"
-                      whileTap={{ scale: 0.98 }}
-                      style={{
-                        boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
-                      }}
-                    >
-                      <BodyRegular
+
+                        <Spacer></Spacer>
+
+                        <label htmlFor="upload-button-banner">
+                          <HStack
+                            width="240px"
+                            overflowx="hidden"
+                            self="none"
+                            style={{
+                              boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.6)",
+                            }}
+                            whileTap={{ scale: 0.98 }}
+                            cursor="pointer"
+                            border="6px"
+                          >
+                            <IconImg
+                              url={
+                                banner?.preview
+                                  ? banner.preview
+                                  : user?.urlCover
+                              }
+                              width="100%"
+                              height="120px"
+                              border="6px"
+                              backsize="cover"
+                              cursor="pointer"
+                            ></IconImg>
+
+                            <OverImage>
+                              <VStack
+                                background="rgba(0,0,0,0.3)"
+                                border="6px"
+                                cursor="pointer"
+                              >
+                                <IconImg
+                                  url={uploadIcon}
+                                  width="30px"
+                                  height="30px"
+                                  cursor="pointer"
+                                ></IconImg>
+                                <CaptionBoldShort
+                                  textcolor="white"
+                                  cursor="pointer"
+                                >
+                                  CHANGE BANNER IMAGE
+                                </CaptionBoldShort>
+                              </VStack>
+                            </OverImage>
+                          </HStack>
+                        </label>
+                        <input
+                          type="file"
+                          id="upload-button-banner"
+                          style={{ display: "none" }}
+                          onChange={handleChangeBanner}
+                        />
+                      </VStack>
+                    </HStack>
+                    {/* Buttons */}
+                    <HStack>
+                      <HStack
+                        height="42px"
+                        background="white"
+                        width="210px"
+                        border="6px"
                         cursor="pointer"
+                        whileTap={{ scale: 0.98 }}
+                        style={{
+                          boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
+                        }}
                         onClick={() => {
-                          setConfirmCancel(true)
+                          setConfirmCancel(true);
                         }}
                       >
-                        Cancel
-                      </BodyRegular>
-                    </HStack>
-                    <HStack
-                      height="42px"
-                      background="linear-gradient(166.99deg, #2868F4 37.6%, #0E27C1 115.6%)"
-                      width="210px"
-                      border="6px"
-                      cursor="pointer"
-                      whileTap={{ scale: 0.98 }}
-                      style={{
-                        boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
-                      }}
-                    >
-                      <BodyRegular
+                        <BodyRegular cursor="pointer">Cancel</BodyRegular>
+                      </HStack>
+                      <HStack
+                        height="42px"
+                        background="linear-gradient(166.99deg, #2868F4 37.6%, #0E27C1 115.6%)"
+                        width="210px"
+                        border="6px"
                         cursor="pointer"
-                        textcolor="white"
-                        onClick={() => {
-                          updateUserProfile();
-                          setIsEditing(false);
+                        whileTap={{ scale: 0.98 }}
+                        style={{
+                          boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
                         }}
                       >
-                        Save Changes
-                      </BodyRegular>
+                        <BodyRegular
+                          cursor="pointer"
+                          textcolor="white"
+                          onClick={() => {
+                            setIsProfileUpdated(true);
+                            updateUserProfile();
+                            setIsEditing(false);
+                          }}
+                        >
+                          Save Changes
+                        </BodyRegular>
+                      </HStack>
                     </HStack>
-                  </HStack>
-                  <Spacer></Spacer>
-                </VStack>
-              </Content>
-            </ZItem>
+                    <Spacer></Spacer>
+                  </VStack>
+                </Content>
+              </ZItem>
+
+              <ZItem zindex="30">
+                <Content>
+                  {isProfileUpdated && (
+                    <FadedBack
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{
+                        duration: 0.21,
+                        delay: 0.1,
+                      }}
+                    >
+                      <VStack>
+                        <Spacer></Spacer>
+                        <VStack
+                          background={({ theme }) => theme.backElement}
+                          width="390px"
+                          border="9px"
+                          spacing="12px"
+                          padding="36px 30px"
+                          flex="0"
+                          initial={{ opacity: 0, scale: 0.96 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{
+                            duration: 0.21,
+                            delay: 0.3,
+                          }}
+                        >
+                          <SwishSpinner
+                            size={42}
+                            frontColor="#3A60FF"
+                            backColor="#3A60FF"
+                          ></SwishSpinner>
+                          {/* <GuardSpinner
+                            size={42}
+                            frontColor="#3A60FF"
+                            backColor="#B8BFDC"
+                          ></GuardSpinner> */}
+                          {/* <TraceSpinner
+                            size={42}
+                            frontColor="#3A60FF"
+                            backColor="#B8BFDC"
+                          ></TraceSpinner> */}
+                          <HStack padding="0 30px">
+                            <BodyRegular
+                              textcolor={({ theme }) => theme.text}
+                              align="center"
+                            >
+                              {"Saving Changes"}
+                            </BodyRegular>
+                          </HStack>
+                        </VStack>
+                        <Spacer></Spacer>
+                      </VStack>
+                    </FadedBack>
+                  )}
+                  <VStack height="900px">
+                    <HStack
+                      width="100%"
+                      spacing="0%"
+                      height="552px"
+                      alignment="flex-start"
+                      self="none"
+                      padding="90px 0 0 0"
+                    >
+                      <VStack
+                        minwidth="70%"
+                        height="420px"
+                        alignment="flex-start"
+                        padding="24px 12px 12px 12px"
+                      >
+                        <HStack>
+                          {/* User image uploader*/}
+                          <VStack
+                            maxwidth="96px"
+                            maxheight="96px"
+                            cursor="pointer"
+                            overflow="visible"
+                            spacing="17px"
+                          >
+                            <ZStack
+                              cursor="pointer"
+                              width="96px"
+                              minheight="96px"
+                              overflow="visible"
+                            >
+                              <ZItem>
+                                <HStack
+                                  width="90px"
+                                  height="90px"
+                                  border="90px"
+                                  background={"rgba(0,0,0,0.3)"}
+                                >
+                                  <IconImg
+                                    url={uploadIcon}
+                                    width="30px"
+                                    height="30px"
+                                  ></IconImg>
+                                </HStack>
+                              </ZItem>
+                              <ZItem>
+                                <label htmlFor="upload-button">
+                                  {profilePicture.preview ? (
+                                    <IconImg
+                                      whileTap={{ scale: 0.97 }}
+                                      cursor="pointer"
+                                      url={profilePicture.preview}
+                                      width="90px"
+                                      height="90px"
+                                      border="90px"
+                                      backsize="cover"
+                                      bordercolor="white"
+                                      bordersize="3px"
+                                      style={{
+                                        boxShadow:
+                                          "0px 3px 6px 0px rgba(0, 0, 0, 0.3)",
+                                      }}
+                                    ></IconImg>
+                                  ) : (
+                                    <>
+                                      <IconImg
+                                        whileTap={{ scale: 0.97 }}
+                                        cursor="pointer"
+                                        url={user?.urlProfile}
+                                        width="90px"
+                                        height="90px"
+                                        border="90px"
+                                        backsize="cover"
+                                        bordercolor="white"
+                                        bordersize="3px"
+                                        style={{
+                                          boxShadow:
+                                            "0px 3px 6px 0px rgba(0, 0, 0, 0.3)",
+                                        }}
+                                      ></IconImg>
+                                    </>
+                                  )}
+                                </label>
+                                <input
+                                  type="file"
+                                  id="upload-button"
+                                  style={{ display: "none" }}
+                                  onChange={handleChange}
+                                />
+                              </ZItem>
+                            </ZStack>
+
+                            <CaptionBoldShort
+                              textcolor={isDarkUI ? "#363537" : "#FAFAFA"}
+                              align="center"
+                            >
+                              UPLOAD USER PROFILE
+                            </CaptionBoldShort>
+                          </VStack>
+
+                          {/* Username and social networks selector    */}
+                          <VStack alignment="flex-start">
+                            <VStack
+                              spacing="9px"
+                              alignment="flex-start"
+                              width="360px"
+                            >
+                              <CaptionBoldShort
+                                textcolor={isDarkUI ? "#363537" : "#FAFAFA"}
+                              >
+                                EDIT CREATOR NAME
+                              </CaptionBoldShort>
+
+                              <InputStyled
+                                placeholder={user?.userName}
+                                fontsize="21px"
+                                textcolor={isDarkUI ? "#363537" : "#FAFAFA"}
+                                background={"rgba(0,0,0,0.3)"}
+                                onChange={(event) => {
+                                  setNewUserName(event.target.value);
+                                }}
+                              ></InputStyled>
+                            </VStack>
+
+                            <HStack spacing="12px" justify="flex-start">
+                              {/* Instagram Button */}
+                              {user?.instagram ? (
+                                <CircleButton
+                                  image={instagramColor}
+                                  background={isDarkUI ? "#20222D" : "white"}
+                                ></CircleButton>
+                              ) : null}
+
+                              {/* Twitter Button  */}
+                              {user?.twitter ? (
+                                <CircleButton
+                                  image={twitterColor}
+                                  background={isDarkUI ? "#20222D" : "white"}
+                                ></CircleButton>
+                              ) : null}
+
+                              {/* Web Icon  */}
+                              {user?.siteUrl ? (
+                                <CircleButton
+                                  image={webColor}
+                                  background={isDarkUI ? "#20222D" : "white"}
+                                ></CircleButton>
+                              ) : null}
+
+                              {/* Wallet button  */}
+                              <BubbleCopied
+                                logo={walletBlue}
+                                address={
+                                  user.XDCWallets ? user.XDCWallets[0] : ""
+                                }
+                                icon={copyIcon}
+                                background={isDarkUI ? "#20222D" : "white"}
+                                textColor={isDarkUI ? "#FAFAFA" : "#363537"}
+                              ></BubbleCopied>
+                            </HStack>
+                          </VStack>
+                        </HStack>
+
+                        <Spacer></Spacer>
+                        <VStack width="360px">
+                          {/* Add instagram input */}
+
+                          <HStack>
+                            <InputStyled
+                              icon={instagramColor}
+                              background={"rgba(0,0,0,0.3)"}
+                              placeholder={
+                                user?.instagram
+                                  ? user.instagram
+                                  : "Instagram URL"
+                              }
+                              textcolor={isDarkUI ? "#363537" : "#FAFAFA"}
+                              iconRight=""
+                              iconLeft="15px"
+                              padding="0 0 0 42px"
+                              disabled={!isInstaAdded}
+                              onChange={(event) => {
+                                setNewInstagramUsername(event.target.value);
+                              }}
+                            ></InputStyled>
+
+                            {!isInstaAdded ? (
+                              <HStack
+                                width="42px"
+                                height="36px"
+                                border="36px"
+                                background={isDarkUI ? "#20222D" : "white"}
+                                cursor="pointer"
+                                whileTap={{ scale: 0.96 }}
+                                onClick={() => setIsInstaAdded(true)}
+                              >
+                                <IconImg
+                                  url={isDarkUI ? editPencilWhite : editPencil}
+                                  width="12px"
+                                  height="12px"
+                                  cursor="pointer"
+                                ></IconImg>
+                              </HStack>
+                            ) : (
+                              <HStack spacing="6px">
+                                <HStack
+                                  width="36px"
+                                  height="36px"
+                                  border="36px"
+                                  background={isDarkUI ? "#20222D" : "white"}
+                                  cursor="pointer"
+                                  whileTap={{ scale: 0.96 }}
+                                  onClick={() => {
+                                    setIsInstaAdded(false);
+                                  }}
+                                >
+                                  <IconImg
+                                    url={isDarkUI ? doneIconWhite : doneIcon}
+                                    width="12px"
+                                    height="12px"
+                                    cursor="pointer"
+                                  ></IconImg>
+                                </HStack>{" "}
+                                <HStack
+                                  width="36px"
+                                  height="36px"
+                                  border="36px"
+                                  background="rgba(0,0,0,0.3)"
+                                  cursor="pointer"
+                                  whileTap={{ scale: 0.96 }}
+                                  onClick={() => {
+                                    setNewInstagramUsername("");
+                                    setIsInstaAdded(false);
+                                  }}
+                                >
+                                  <IconImg
+                                    url={crossWhite}
+                                    width="18px"
+                                    height="18px"
+                                    cursor="pointer"
+                                  ></IconImg>
+                                </HStack>
+                              </HStack>
+                            )}
+                          </HStack>
+
+                          {/* Add twitter input */}
+
+                          <HStack>
+                            <InputStyled
+                              icon={twitterColor}
+                              background={"rgba(0,0,0,0.3)"}
+                              placeholder={
+                                user?.twitter ? user.twitter : "Twitter URL"
+                              }
+                              textcolor={isDarkUI ? "#363537" : "#FAFAFA"}
+                              iconRight=""
+                              iconLeft="15px"
+                              padding="0 0 0 42px"
+                              disabled={!isTweetAdded}
+                              onChange={(event) => {
+                                setNewTwitterUsername(event.target.value);
+                              }}
+                            ></InputStyled>
+
+                            {!isTweetAdded ? (
+                              <HStack
+                                width="42px"
+                                height="36px"
+                                border="36px"
+                                background={isDarkUI ? "#20222D" : "white"}
+                                cursor="pointer"
+                                whileTap={{ scale: 0.96 }}
+                                onClick={() => setIsTweetAdded(true)}
+                              >
+                                <IconImg
+                                  url={isDarkUI ? editPencilWhite : editPencil}
+                                  width="12px"
+                                  height="12px"
+                                  cursor="pointer"
+                                ></IconImg>
+                              </HStack>
+                            ) : (
+                              <HStack spacing="6px">
+                                <HStack
+                                  width="36px"
+                                  height="36px"
+                                  border="36px"
+                                  background={isDarkUI ? "#20222D" : "white"}
+                                  cursor="pointer"
+                                  whileTap={{ scale: 0.96 }}
+                                  onClick={() => setIsTweetAdded(false)}
+                                >
+                                  <IconImg
+                                    url={isDarkUI ? doneIconWhite : doneIcon}
+                                    width="12px"
+                                    height="12px"
+                                    cursor="pointer"
+                                  ></IconImg>
+                                </HStack>
+
+                                <HStack
+                                  width="36px"
+                                  height="36px"
+                                  border="36px"
+                                  background="rgba(0,0,0,0.3)"
+                                  cursor="pointer"
+                                  whileTap={{ scale: 0.96 }}
+                                  onClick={() => {
+                                    setNewTwitterUsername("");
+                                    setIsTweetAdded(false);
+                                  }}
+                                >
+                                  <IconImg
+                                    url={crossWhite}
+                                    width="18px"
+                                    height="18px"
+                                    cursor="pointer"
+                                  ></IconImg>
+                                </HStack>
+                              </HStack>
+                            )}
+                          </HStack>
+
+                          {/* Add website input */}
+                          <HStack>
+                            <InputStyled
+                              icon={webColor}
+                              background={"rgba(0,0,0,0.3)"}
+                              placeholder={
+                                user?.siteUrl ? user.siteUrl : "Website URL"
+                              }
+                              textcolor={isDarkUI ? "#363537" : "#FAFAFA"}
+                              iconRight=""
+                              iconLeft="15px"
+                              padding="0 0 0 42px"
+                              disabled={!isWebAdded}
+                              onChange={(event) => {
+                                setNewWebsite(event.target.value);
+                              }}
+                            ></InputStyled>
+
+                            {!isWebAdded ? (
+                              <HStack
+                                width="42px"
+                                height="36px"
+                                border="36px"
+                                background={isDarkUI ? "#20222D" : "white"}
+                                cursor="pointer"
+                                whileTap={{ scale: 0.96 }}
+                                onClick={() => setIsWebAdded(true)}
+                              >
+                                <IconImg
+                                  url={isDarkUI ? editPencilWhite : editPencil}
+                                  width="12px"
+                                  height="12px"
+                                  cursor="pointer"
+                                ></IconImg>
+                              </HStack>
+                            ) : (
+                              <HStack spacing="6px">
+                                <HStack
+                                  width="36px"
+                                  height="36px"
+                                  border="36px"
+                                  background={isDarkUI ? "#20222D" : "white"}
+                                  cursor="pointer"
+                                  whileTap={{ scale: 0.96 }}
+                                  onClick={() => setIsWebAdded(false)}
+                                >
+                                  <IconImg
+                                    url={isDarkUI ? doneIconWhite : doneIcon}
+                                    width="12px"
+                                    height="12px"
+                                    cursor="pointer"
+                                  ></IconImg>
+                                </HStack>
+                                <HStack
+                                  width="36px"
+                                  height="36px"
+                                  border="36px"
+                                  background="rgba(0,0,0,0.3)"
+                                  cursor="pointer"
+                                  whileTap={{ scale: 0.96 }}
+                                  onClick={() => {
+                                    setNewWebsite("");
+                                    setIsWebAdded(false);
+                                  }}
+                                >
+                                  <IconImg
+                                    url={crossWhite}
+                                    width="18px"
+                                    height="18px"
+                                    cursor="pointer"
+                                  ></IconImg>
+                                </HStack>
+                              </HStack>
+                            )}
+                          </HStack>
+                        </VStack>
+                      </VStack>
+
+                      <VStack
+                        // background="pink"
+                        height="420px"
+                        minwidth="30%"
+                        alignment="flex-end"
+                        padding="12px 12px 12px 0"
+                      >
+                        {/* Close button  */}
+                        <HStack
+                          background={isDarkUI ? "#20222D" : "white"}
+                          border="30px"
+                          cursor="pointer"
+                          height="42px"
+                          self="none"
+                          spacing="6px"
+                          padding="6px 10px"
+                          onClick={() => {
+                            setIsEditing(false);
+                          }}
+                        >
+                          <IconImg
+                            cursor="pointer"
+                            url={isDarkUI ? crossWhite : crossIcon}
+                            width="21px"
+                            height="21px"
+                          ></IconImg>
+                        </HStack>
+
+                        <HStack width="100%" justify="flex-end">
+                          <HStack
+                            background="rgba(0, 0, 0, 0.21)"
+                            height="42px"
+                            width="240px"
+                            spacing="0px"
+                            border="6px"
+                            blur="30px"
+                            overflowx="hidden"
+                          >
+                            <Selector>
+                              <AnimatePresence initial="false">
+                                <HStack
+                                  width="100%"
+                                  justify={isDarkUI ? "flex-start" : "flex-end"}
+                                >
+                                  <HStack
+                                    height="42px"
+                                    width="120px"
+                                    background="rgba(0, 0, 0, 0.52)"
+                                    border="6px"
+                                    cursor="pointer"
+                                    layout
+                                  ></HStack>
+                                </HStack>
+                              </AnimatePresence>
+                            </Selector>
+
+                            <HStack
+                              width="100%"
+                              cursor="pointer"
+                              onClick={() => {
+                                setIsDarkUI(true);
+                              }}
+                            >
+                              <CaptionBoldShort
+                                cursor="pointer"
+                                textcolor="white"
+                              >
+                                DARK UI
+                              </CaptionBoldShort>
+                            </HStack>
+                            <HStack
+                              width="100%"
+                              onClick={() => {
+                                setIsDarkUI(false);
+                              }}
+                              cursor="pointer"
+                            >
+                              <CaptionBoldShort
+                                textcolor="white"
+                                cursor="pointer"
+                              >
+                                CLEAN UI
+                              </CaptionBoldShort>
+                            </HStack>
+                          </HStack>
+                        </HStack>
+
+                        <Spacer></Spacer>
+
+                        <label htmlFor="upload-button-banner">
+                          <HStack
+                            width="240px"
+                            overflowx="hidden"
+                            self="none"
+                            style={{
+                              boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.6)",
+                            }}
+                            whileTap={{ scale: 0.98 }}
+                            cursor="pointer"
+                            border="6px"
+                          >
+                            <IconImg
+                              url={
+                                banner?.preview
+                                  ? banner.preview
+                                  : user?.urlCover
+                              }
+                              width="100%"
+                              height="120px"
+                              border="6px"
+                              backsize="cover"
+                              cursor="pointer"
+                            ></IconImg>
+
+                            <OverImage>
+                              <VStack
+                                background="rgba(0,0,0,0.3)"
+                                border="6px"
+                                cursor="pointer"
+                              >
+                                <IconImg
+                                  url={uploadIcon}
+                                  width="30px"
+                                  height="30px"
+                                  cursor="pointer"
+                                ></IconImg>
+                                <CaptionBoldShort
+                                  textcolor="white"
+                                  cursor="pointer"
+                                >
+                                  CHANGE BANNER IMAGE
+                                </CaptionBoldShort>
+                              </VStack>
+                            </OverImage>
+                          </HStack>
+                        </label>
+                        <input
+                          type="file"
+                          id="upload-button-banner"
+                          style={{ display: "none" }}
+                          onChange={handleChangeBanner}
+                        />
+                      </VStack>
+                    </HStack>
+                    {/* Buttons */}
+                    <HStack>
+                      <HStack
+                        height="42px"
+                        background="white"
+                        width="210px"
+                        border="6px"
+                        cursor="pointer"
+                        whileTap={{ scale: 0.98 }}
+                        style={{
+                          boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
+                        }}
+                        onClick={() => {
+                          setConfirmCancel(true);
+                        }}
+                      >
+                        <BodyRegular cursor="pointer">Cancel</BodyRegular>
+                      </HStack>
+                      <HStack
+                        height="42px"
+                        background="linear-gradient(166.99deg, #2868F4 37.6%, #0E27C1 115.6%)"
+                        width="210px"
+                        border="6px"
+                        cursor="pointer"
+                        whileTap={{ scale: 0.98 }}
+                        style={{
+                          boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
+                        }}
+                      >
+                        <BodyRegular
+                          cursor="pointer"
+                          textcolor="white"
+                          onClick={() => {
+                            updateUserProfile();
+                            setIsEditing(false);
+                          }}
+                        >
+                          Save Changes
+                        </BodyRegular>
+                      </HStack>
+                    </HStack>
+                    <Spacer></Spacer>
+                  </VStack>
+                </Content>
+              </ZItem>
+            </>
           ) : (
             <ZItem>
               <Content>
@@ -1151,7 +1839,13 @@ const MyNFT = (props) => {
 
                         {/* Username and social networks    */}
                         <VStack alignment="flex-start">
-                          <TitleBold27 textcolor={userSettings?.dashboardMode === "dark" ? "#363537" : "#FAFAFA"}>
+                          <TitleBold27
+                            textcolor={
+                              userSettings?.dashboardMode === "dark"
+                                ? "#363537"
+                                : "#FAFAFA"
+                            }
+                          >
                             {user?.userName}
                           </TitleBold27>
                           <HStack spacing="12px" justify="flex-start">
@@ -1159,26 +1853,44 @@ const MyNFT = (props) => {
                             {user?.instagram ? (
                               <CircleButton
                                 image={instagramColor}
-                                background={userSettings?.dashboardMode === "dark" ? "#20222D" : "white"}
-                                onClick={() => window.location.href = user.instagram}
+                                background={
+                                  userSettings?.dashboardMode === "dark"
+                                    ? "#20222D"
+                                    : "white"
+                                }
+                                onClick={() =>
+                                  (window.location.href = user.instagram)
+                                }
                               ></CircleButton>
                             ) : null}
 
                             {/* Twitter Button  */}
                             {user?.twitter ? (
-                              <CircleButton 
+                              <CircleButton
                                 image={twitterColor}
-                                background={userSettings?.dashboardMode === "dark" ? "#20222D" : "white"}
-                                onClick={() => window.location.href = user.twitter}
+                                background={
+                                  userSettings?.dashboardMode === "dark"
+                                    ? "#20222D"
+                                    : "white"
+                                }
+                                onClick={() =>
+                                  (window.location.href = user.twitter)
+                                }
                               ></CircleButton>
                             ) : null}
 
                             {/* Web Icon  */}
                             {user?.siteUrl ? (
-                              <CircleButton 
+                              <CircleButton
                                 image={webColor}
-                                background={userSettings?.dashboardMode === "dark" ? "#20222D" : "white"}
-                                onClick={() => window.location.href = user.siteUrl}
+                                background={
+                                  userSettings?.dashboardMode === "dark"
+                                    ? "#20222D"
+                                    : "white"
+                                }
+                                onClick={() =>
+                                  (window.location.href = user.siteUrl)
+                                }
                               ></CircleButton>
                             ) : null}
 
@@ -1190,8 +1902,16 @@ const MyNFT = (props) => {
                                   user.XDCWallets ? user.XDCWallets[0] : ""
                                 }
                                 icon={copyIcon}
-                                background={userSettings?.dashboardMode === "dark" ? "#20222D" : "white"}
-                                textColor={userSettings?.dashboardMode === "dark" ? "#FAFAFA" : "#363537"}
+                                background={
+                                  userSettings?.dashboardMode === "dark"
+                                    ? "#20222D"
+                                    : "white"
+                                }
+                                textColor={
+                                  userSettings?.dashboardMode === "dark"
+                                    ? "#FAFAFA"
+                                    : "#363537"
+                                }
                               ></BubbleCopied>
                             ) : null}
                           </HStack>
@@ -1211,7 +1931,14 @@ const MyNFT = (props) => {
                           variants={selection}
                           animate={subMenu === 1 ? "active" : "faded"}
                         >
-                          <TitleSemi18 cursor="pointer" textcolor={userSettings?.dashboardMode === "dark" ? "#363537" : "#FAFAFA"}>
+                          <TitleSemi18
+                            cursor="pointer"
+                            textcolor={
+                              userSettings?.dashboardMode === "dark"
+                                ? "white"
+                                : "#26272E"
+                            }
+                          >
                             Collections
                           </TitleSemi18>
                           <VStack
@@ -1219,10 +1946,22 @@ const MyNFT = (props) => {
                             minwidth="26px"
                             height="26px"
                             border="30px"
-                            background={userSettings?.dashboardMode === "dark" ? "#20222D" : "white"}
+                            background={
+                              userSettings?.dashboardMode === "dark"
+                                ? "#20222D"
+                                : "white"
+                            }
                             cursor="pointer"
                           >
-                            <BodyRegular textcolor={userSettings?.dashboardMode === "dark" ? "#FAFAFA" : "#363537"}>{collections?.length}</BodyRegular>
+                            <BodyRegular
+                              textcolor={
+                                userSettings?.dashboardMode === "dark"
+                                  ? "#FAFAFA"
+                                  : "#363537"
+                              }
+                            >
+                              {collections?.length}
+                            </BodyRegular>
                           </VStack>
                         </HStack>
 
@@ -1233,18 +1972,37 @@ const MyNFT = (props) => {
                           variants={selection}
                           animate={subMenu === 0 ? "active" : "faded"}
                         >
-                          <TitleSemi18 cursor="pointer" textcolor={userSettings?.dashboardMode === "dark" ? "#363537" : "#FAFAFA"}>
+                          <TitleSemi18
+                            cursor="pointer"
+                            textcolor={
+                              userSettings?.dashboardMode === "dark"
+                                ? "white"
+                                : "black"
+                            }
+                          >
                             NFTs Owned
                           </TitleSemi18>
                           <VStack
                             width="auto"
                             height="26px"
                             border="30px"
-                            background={userSettings?.dashboardMode === "dark" ? "#20222D" : "white"}
+                            background={
+                              userSettings?.dashboardMode === "dark"
+                                ? "white"
+                                : "#26272E"
+                            }
                             cursor="pointer"
                             padding="0px 9px"
                           >
-                            <BodyRegular textcolor={userSettings?.dashboardMode === "dark" ? "#FAFAFA" : "#363537"}>{totalNfts}</BodyRegular>
+                            <BodyRegular
+                              textcolor={
+                                userSettings?.dashboardMode === "dark"
+                                  ? "#26272E"
+                                  : "white"
+                              }
+                            >
+                              {totalNfts}
+                            </BodyRegular>
                           </VStack>
                         </HStack>
 
@@ -1264,7 +2022,11 @@ const MyNFT = (props) => {
                       {/* Edit button for the logged-in user */}
                       {isLoggedIn ? (
                         <HStack
-                          background={userSettings?.dashboardMode === "dark" ? "#20222D" : "white"}
+                          background={
+                            userSettings?.dashboardMode === "dark"
+                              ? "#20222D"
+                              : "white"
+                          }
                           border="30px"
                           cursor="pointer"
                           minheight="42px"
@@ -1273,7 +2035,14 @@ const MyNFT = (props) => {
                           padding="0 6px 0 9px"
                           onClick={() => setIsEditing(true)}
                         >
-                          <BodyRegular textcolor={userSettings?.dashboardMode === "dark" ? "#FAFAFA" : "#363537"} cursor="pointer">
+                          <BodyRegular
+                            textcolor={
+                              userSettings?.dashboardMode === "dark"
+                                ? "#FAFAFA"
+                                : "#363537"
+                            }
+                            cursor="pointer"
+                          >
                             Edit Profile
                           </BodyRegular>
                           <IconImg
@@ -1298,8 +2067,12 @@ const MyNFT = (props) => {
                             <>
                               <TextAreaStyled
                                 background="rgba(0,0,0,0.3)"
-                                textColor={userSettings?.dashboardMode === "dark" ? "#363537" : "#FAFAFA"}
-                                placeholder="Write new message..."
+                                textColor={
+                                  userSettings?.dashboardMode === "dark"
+                                    ? "#363537"
+                                    : "#FAFAFA"
+                                }
+                                placeholder="Write new message only 90 characters"
                                 fontSize="21px"
                                 fontWeight="400"
                                 height="165px"
@@ -1308,7 +2081,7 @@ const MyNFT = (props) => {
                                 letterSpacing="-0.03em"
                                 lineHeight="33px"
                                 onChange={(event) => {
-                                  setNewStatus(event.target.value)
+                                  setNewStatus(event.target.value);
                                 }}
                               ></TextAreaStyled>
                               <HStack width="100%">
@@ -1348,24 +2121,40 @@ const MyNFT = (props) => {
                           ) : (
                             <VStack>
                               {/* Only 90 characters */}
-                              <TitleSemi21 textcolor={userSettings?.dashboardMode === "dark" ? "#363537" : "#FAFAFA"}>
+                              <TitleSemi21
+                                textcolor={
+                                  userSettings?.dashboardMode === "dark"
+                                    ? "#363537"
+                                    : "#FAFAFA"
+                                }
+                              >
                                 {user?.statusRecord?.status
                                   ? user.statusRecord.status
-                                  : "We just joined the XDSea NFT Marketplace 🤩 Stay tuned for more info related to our NFTs!"
-                                }
+                                  : "We just joined the XDSea NFT Marketplace 🤩 Stay tuned for more info related to our NFTs!"}
                               </TitleSemi21>
                               <HStack>
-                                <CaptionSmallRegular textcolor={userSettings?.dashboardMode === "dark" ? "#363537" : "#FAFAFA"}>
-                                  {user?.statusRecord?.createdAt
-                                    ? determineAgoTime(new Date(user.statusRecord.createdAt))
-                                    : determineAgoTime(new Date())
+                                <CaptionSmallRegular
+                                  textcolor={
+                                    userSettings?.dashboardMode === "dark"
+                                      ? "#363537"
+                                      : "#FAFAFA"
                                   }
+                                >
+                                  {user?.statusRecord?.createdAt
+                                    ? determineAgoTime(
+                                        new Date(user.statusRecord.createdAt)
+                                      )
+                                    : determineAgoTime(new Date())}
                                 </CaptionSmallRegular>
                                 <Spacer></Spacer>
                               </HStack>
                               {isLoggedIn ? (
                                 <HStack
-                                  background={userSettings?.dashboardMode === "dark" ? "#20222D" : "white"}
+                                  background={
+                                    userSettings?.dashboardMode === "dark"
+                                      ? "#20222D"
+                                      : "white"
+                                  }
                                   padding="6px 12px"
                                   border="6px"
                                   height="39px"
@@ -1373,14 +2162,21 @@ const MyNFT = (props) => {
                                   whileTap={{ scale: 0.96 }}
                                   onClick={() => setNewMessage(true)}
                                 >
-                                  <BodyRegular textcolor={userSettings?.dashboardMode === "dark" ? "#FAFAFA" : "#363537"} cursor="pointer">
+                                  <BodyRegular
+                                    textcolor={
+                                      userSettings?.dashboardMode === "dark"
+                                        ? "#FAFAFA"
+                                        : "#363537"
+                                    }
+                                    cursor="pointer"
+                                  >
                                     New Status
                                   </BodyRegular>
 
                                   <IconImg
                                     url={editPencil}
-                                    width="26px"
-                                    height="26px"
+                                    width="18px"
+                                    height="18px"
                                   ></IconImg>
                                 </HStack>
                               ) : null}
@@ -1644,96 +2440,95 @@ const MyNFT = (props) => {
                           justify="flex-start"
                           padding="12px"
                         >
-                          {loadingCollection 
-                            ? (
+                          {loadingCollection ? (
                             <VStack padding="120px">
                               <LoopLogo></LoopLogo>
                             </VStack>
-                          ) : collections?.length !== 0
-                              ? collections?.map((item) => (
-                                  <ZStack
-                                    maxwidth="49%"
-                                    minheight={
-                                      size.width < 1112 ? "320px" : "590px"
-                                    }
-                                    border="9px"
-                                    padding="12px"
-                                    overflow="hidden"
-                                  >
-                                    <ZItem>
-                                      <IconImg
-                                        url={item.banner.v0}
-                                        width="100%"
-                                        height="100%"
-                                        backsize="cover"
-                                        border="9px"
-                                      ></IconImg>
-                                    </ZItem>
-                                    <ZItem>
-                                      <VStack
-                                        background="linear-gradient(180deg, rgba(0, 0, 0, 0) 54.41%, #000000 91.67%)"
-                                        width="100%"
-                                        height="100%"
-                                        border="12px"
-                                        padding="0 0 30px 0"
-                                      >
-                                        <Spacer></Spacer>
-
-                                        <IconImg
-                                          url={newBlue}
-                                          width="90px"
-                                          height="90px"
-                                          backsize="cover"
-                                          border="90px"
-                                          bordersize="3px"
-                                          bordercolor="white"
-                                        ></IconImg>
-                                        <TitleSemi21 textcolor="white">
-                                          {item.name}
-                                        </TitleSemi21>
-                                        <HStack
-                                          self="none"
-                                          height="33px"
-                                          border="30px"
-                                          padding="0 15px "
-                                          spacing="9px"
-                                          background="linear-gradient(350.1deg, #0905C4 16.98%, #2D28FF 32.68%, #59E1FF 98.99%, #71FCF4 128.65%)"
-                                        >
-                                          <CaptionBoldShort textcolor="white">
-                                            Volume Traded
-                                          </CaptionBoldShort>
-                                          <BodyRegular textcolor="white">
-                                            {"333,333"}
-                                          </BodyRegular>
-
-                                          <IconImg
-                                            url={logoWhiteX}
-                                            width="18px"
-                                            height="18px"
-                                          ></IconImg>
-                                        </HStack>
-                                      </VStack>
-                                    </ZItem>
-                                  </ZStack>
-                                ))
-                              : (
-                                <VStack
-                                  border="15px"
-                                  width="100%"
-                                  minheight="300px"
-                                  background={({ theme }) => theme.backElement}
-                                >
+                          ) : collections?.length !== 0 ? (
+                            collections?.map((item) => (
+                              <ZStack
+                                maxwidth="49%"
+                                minheight={
+                                  size.width < 1112 ? "320px" : "590px"
+                                }
+                                height={size.width < 1112 ? "320px" : "590px"}
+                                border="9px"
+                                padding="12px"
+                                overflow="hidden"
+                              >
+                                <ZItem>
                                   <IconImg
-                                    url={emptyCollection}
-                                    width="60px"
-                                    height="60px"
+                                    url={item.banner.v0}
+                                    width="100%"
+                                    height="100%"
+                                    backsize="cover"
+                                    border="9px"
                                   ></IconImg>
-                                  <BodyRegular>
-                                    This creator has not yet created any collection
-                                  </BodyRegular>
-                                </VStack>
-                              )
-                          }
+                                </ZItem>
+                                <ZItem>
+                                  <VStack
+                                    background="linear-gradient(180deg, rgba(0, 0, 0, 0) 54.41%, #000000 91.67%)"
+                                    width="100%"
+                                    height="100%"
+                                    border="12px"
+                                    padding="0 0 30px 0"
+                                  >
+                                    <Spacer></Spacer>
+
+                                    <IconImg
+                                      url={newBlue}
+                                      width="90px"
+                                      height="90px"
+                                      backsize="cover"
+                                      border="90px"
+                                      bordersize="3px"
+                                      bordercolor="white"
+                                    ></IconImg>
+                                    <TitleSemi21 textcolor="white">
+                                      {item.name}
+                                    </TitleSemi21>
+                                    <HStack
+                                      self="none"
+                                      height="33px"
+                                      border="30px"
+                                      padding="0 15px "
+                                      spacing="9px"
+                                      background="linear-gradient(350.1deg, #0905C4 16.98%, #2D28FF 32.68%, #59E1FF 98.99%, #71FCF4 128.65%)"
+                                    >
+                                      <CaptionBoldShort textcolor="white">
+                                        Volume Traded
+                                      </CaptionBoldShort>
+                                      <BodyRegular textcolor="white">
+                                        {"333,333"}
+                                      </BodyRegular>
+
+                                      <IconImg
+                                        url={logoWhiteX}
+                                        width="18px"
+                                        height="18px"
+                                      ></IconImg>
+                                    </HStack>
+                                  </VStack>
+                                </ZItem>
+                              </ZStack>
+                            ))
+                          ) : (
+                            <VStack
+                              border="15px"
+                              width="100%"
+                              minheight="300px"
+                              background={({ theme }) => theme.backElement}
+                            >
+                              <IconImg
+                                url={emptyCollection}
+                                width="60px"
+                                height="60px"
+                              ></IconImg>
+                              <BodyRegular>
+                                This creator has not yet created any collection
+                              </BodyRegular>
+                            </VStack>
+                          )}
                         </HStack>
                       )}
                     </ZStack>
