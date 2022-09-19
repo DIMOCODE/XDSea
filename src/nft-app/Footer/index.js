@@ -22,16 +22,25 @@ import twitterIcon from "../../images/twitterIconFooter.png";
 import mailIcon from "../../images/mailIconFooter.png";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { createRequest } from "../../API";
+import { HTTP_METHODS } from "../../constant";
 
 function Footer(props) {
   const size = useWindowSize();
-  const [instagramFollowers, setInstagramFollowers] = useState(0);
+  const [instagramFollowers, setInstagramFollowers] = useState(4237);
+  const [twitterFollowers, setTwitterFollowers] = useState(0);
+
+  const getTwitterData = async () => {
+    const twitterData = await createRequest(HTTP_METHODS.get, "spotlightList/socialMedia", null, null);
+    setTwitterFollowers(twitterData.data.socialMediaMetrics.twitter);
+  }
 
   const getInstagramData = async () => {
     
   }
 
   useEffect(() => {
+    getTwitterData();
     getInstagramData();
   }, [])
 
@@ -109,12 +118,12 @@ function Footer(props) {
                         @XDSeaNFT
                       </TitleRegular18>
                       <CaptionBold textcolor="#0471C0" cursor="pointer">
-                        {Number(props?.twitterFollowers) > 1000
+                        {Number(twitterFollowers) > 1000
                           ? Intl.NumberFormat("en-US", {
                               notation: "compact",
                               maximumFractionDigits: 1,
-                            }).format(Number(props?.twitterFollowers))
-                          : Number(props?.twitterFollowers).toLocaleString(
+                            }).format(Number(twitterFollowers))
+                          : Number(twitterFollowers).toLocaleString(
                               undefined,
                               {
                                 maximumFractionDigits: 1,

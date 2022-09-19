@@ -27,8 +27,12 @@ import {
   BodyRegular,
   SubtTitleRegular18,
   TitleBold42,
-  TitleRegular18,
+  TitleSemiBold15,
   TitleRegular36,
+  CaptionBold,
+  TitleRegular18,
+  TitleRegular27,
+  TitleRegular33,
 } from "../../styles/TextStyles";
 import { motion } from "framer-motion/dist/framer-motion";
 import useWindowSize from "../../styles/useWindowSize";
@@ -117,7 +121,6 @@ const Home = (props) => {
       setTrendingNFTs(homeData.trendingNfts);
       setNewestNFTs(homeData.newestNfts);
       setNftPlaying(new Array(homeData.trendingNfts.length + homeData.newestNfts.length).fill(false));
-      props?.setTwitterFollowers(homeData.socialMediaMetrics.twitter);
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -205,16 +208,23 @@ const Home = (props) => {
 
         <Masonry
           columnsCount={size.width > 425 ? 3 : 2}
-          gutter="15px"
+          gutter={
+            size.width > 768 
+              ? "15px"
+              : size.width > 425
+                ? "8px"
+                : "2px"
+          }
           style={{
             width:
               size.width > 1200
                 ? "1200px"
-                : size.width > 1023
-                ? "1024px"
-                : size.width > 768
-                ? "768px"
-                : "425px",
+                : size.width,
+            padding : size.width > 768
+              ? "15px"
+              : size.width > 425
+                ? "8px"
+                : "2px"
           }}
         >
           {featuredNFTs.length !== 0
@@ -242,7 +252,11 @@ const Home = (props) => {
                     <VStack
                       key={"featured_" + item._id}
                       cursor="pointer"
-                      border="6px"
+                      border={
+                        size.width > 425
+                        ? "6px"
+                        : "0px"
+                      }
                       overflowx="hidden"
                       overflowy="hidden"
                     >
@@ -252,13 +266,21 @@ const Home = (props) => {
                           backsize="cover"
                           width="100%"
                           height="100%"
-                          border="6px"
+                          border={
+                            size.width > 425
+                            ? "6px"
+                            : "0px"
+                          }
                           cursor="pointer"
                         ></IconImg>
                       ) : (
                         <VStack
                           background="black"
-                          border="6px"
+                          border={
+                            size.width > 425
+                            ? "6px"
+                            : "0px"
+                          }
                           overflowx="hidden"
                           animate={{ scale: 2 }}
                           cursor="pointer"
@@ -290,7 +312,11 @@ const Home = (props) => {
                   >
                     <VStack
                       background="linear-gradient(190.5deg, rgba(0, 0, 0, 0) 75.64%, rgba(0, 0, 0, 0.90) 90.61%);"
-                      border="6px"
+                      border={
+                        size.width > 425
+                        ? "6px"
+                        : "0px"
+                      }
                       alignment="flex-start"
                       cursor="pointer"
                     >
@@ -298,38 +324,47 @@ const Home = (props) => {
                       <VStack
                         spacing="0px"
                         alignment="flex-start"
-                        padding="0 0 0px 30px"
-                        maxheight="90px"
+                        padding="0 0 0px 15px"
+                        maxheight="60px"
                         width="100%"
                         cursor="pointer"
                       >
-                        <HStack spacing="6px" cursor="pointer">
-                          <IconImg
-                            url={item.creator.urlProfile}
-                            width="18px"
-                            height="18px"
-                            backsize="cover"
-                            border="12px"
-                            cursor="pointer"
-                          ></IconImg>
-                          <BodyMedium
-                            textcolor="rgba(255,255,255,0.6)"
-                            cursor="pointer"
-                          >
-                            {item.creator.userName}
-                          </BodyMedium>
-                          <IconImg
-                            url={verifiedBlue}
-                            width="15px"
-                            height="15px"
-                            border="12px"
-                            cursor="pointer"
-                          ></IconImg>
-                          <Spacer></Spacer>
-                        </HStack>
-                        <TitleRegular18 textcolor="white" cursor="pointer">
-                          {item.collectionId.name}
-                        </TitleRegular18>
+                        
+                          {size.width > 425
+                            ? <HStack spacing="6px" cursor="pointer">
+                            <IconImg
+                              url={item.creator.urlProfile}
+                              width="18px"
+                              height="18px"
+                              backsize="cover"
+                              border="12px"
+                              cursor="pointer"
+                            ></IconImg>
+                            <BodyMedium
+                              textcolor="rgba(255,255,255,0.6)"
+                              cursor="pointer"
+                            >
+                              {item.creator.userName}
+                            </BodyMedium>
+                            <IconImg
+                              url={verifiedBlue}
+                              width="15px"
+                              height="15px"
+                              border="12px"
+                              cursor="pointer"
+                            ></IconImg>
+                            <Spacer></Spacer>
+                          </HStack>
+                            : null
+                          }
+                          
+                        {size.width > 768
+                          ? <TitleRegular18 textcolor="white" cursor="pointer">
+                            {item.collectionId.name}
+                          </TitleRegular18>
+                          : null
+                        }
+                        
                       </VStack>
                     </VStack>
                   </ZItem>
@@ -376,14 +411,40 @@ const Home = (props) => {
           </VStack>
 
           {/* First 3 Places  */}
-          <HStack width="100%" padding="120px 0 0 0">
+          <HStack width="100%" padding={
+            size.width > 425
+              ? "120px 0 0 0"
+              : size.width > 375
+                ? "45px 0 0 0"
+                : size.width > 320
+                  ? "30px 0 0 0"
+                  : "0"
+          }>
             <VStack maxwidth="600px" height="360px">
-              <IconImg url={firstPlaces} width="100%" height="100%"></IconImg>
+              <IconImg url={firstPlaces} width={
+                size.width > 425
+                  ? "100%"
+                  : "95%"
+               } height="100%"></IconImg>
 
               {/* 1st Place */}
               <Gold
-                animate={{ scale: size.width > 414 ? 1 : 0.81 }}
-                top="-49px"
+                animate={{ scale: size.width > 425 
+                  ? 1 
+                  : size.width > 320
+                    ? 0.81
+                    : 0.65
+                }}
+                top={size.width > 768
+                    ? "-64px"
+                    : size.width > 425
+                      ? "-64px"
+                      : size.width > 375
+                        ? "-12px"
+                        : size.width > 320
+                          ? "0px"
+                          : "14px"
+                }
               >
                 <PricePosition
                   position={1}
@@ -409,9 +470,29 @@ const Home = (props) => {
 
               {/* 2nd Place */}
               <Silver
-                animate={{ scale: size.width > 414 ? 1 : 0.81 }}
-                left={size.width > 425 ? "33px" : "-12px"}
-                top="52px"
+                animate={{ scale: size.width > 425 
+                  ? 1 
+                  : size.width > 320
+                    ? 0.81
+                    : 0.65
+                }}
+                left={size.width > 425 
+                  ? "33px" 
+                  : size.width > 375
+                    ? "2px"
+                    : size.width > 320
+                      ? "-10px"
+                      : "-16px"
+                }
+                top={
+                  size.width > 425
+                    ? "32px"  
+                    : size.width > 375
+                      ? "52px"
+                      : size.width > 320
+                        ? "60px"
+                        : "64px"
+                }
               >
                 <PricePosition
                   position={2}
@@ -437,9 +518,28 @@ const Home = (props) => {
 
               {/* 3rd Place */}
               <Cooper
-                animate={{ scale: size.width > 414 ? 1 : 0.81 }}
-                top={size.width > 414 ? "100px" : "86px"}
-                right={size.width > 414 ? "26px" : "-12px"}
+                animate={{ scale: size.width > 425 
+                  ? 1 
+                  : size.width > 320
+                    ? 0.81
+                    : 0.65
+                }}
+                top={size.width > 425 
+                  ? "80px" 
+                  : size.width > 375
+                    ? "84px"
+                    : size.width > 320
+                      ? "84px"
+                      : "84px"
+                }
+                right={size.width > 425 
+                  ? "26px" 
+                  : size.width > 375
+                    ? "0px"
+                    : size.width > 320
+                      ? "-6px"
+                      : "-18px"
+                }
               >
                 <PricePosition
                   position={3}
@@ -466,7 +566,17 @@ const Home = (props) => {
           </HStack>
 
           {/* Rest of the 7 Places */}
-          <HStack>
+          <HStack style={
+            size.width > 375
+            ? {}
+              : size.width > 320
+                ? {
+                  "margin-top": "-60px"
+                }
+                : {
+                  "margin-top": "-80px"
+                }
+            }>
             <VStack maxwidth="600px">
               {topCollections.length !== 0
                 ? topCollections.slice(3).map((item, i) => (
@@ -506,6 +616,11 @@ const Home = (props) => {
             <BigButton
               text="Explore All Collections"
               onClick={() => props.redirect("discover/collections")}
+              width={
+                size.width > 375
+                  ? null
+                  : size.width - 30 + "px"
+              }
             ></BigButton>
           </HStack>
         </VStack>
@@ -536,19 +651,22 @@ const Home = (props) => {
           </VStack>
 
           {/* Trending NFT Cards */}
-          <HStack flexwrap="wrap" padding="0 12px 0 12px" height="auto">
+          <HStack flexwrap="wrap" padding={size.width > 375
+            ? "0 12px 0 12px"
+            : "0 2px 0 2px"
+           } height="auto" spacing={
+            size.width > 375
+              ? "15px"
+              : "2px"
+           }>
             {trendingNFTs.length !== 0
               ? trendingNFTs
                   .slice(0, 4)
                   .map((item, i) => (
                     <NftContainer
                       key={"trending_" + item._id}
-                      iconStatus={item.saleType.toLowerCase()}
                       itemImage={item.urlFile.v0}
                       itemPreview={item.preview.v0}
-                      price={item.price}
-                      collectionName={item.collectionId.name}
-                      itemNumber={item.name}
                       fileType={item.fileType}
                       background={({ theme }) => theme.backElement}
                       onClick={() =>
@@ -556,12 +674,13 @@ const Home = (props) => {
                           `nft/${item.nftContract}/${item.tokenId}`
                         )
                       }
-                      usdPrice={props.xdc}
-                      collectionVerified={item.creator.isVerified}
                       minwidth="46%"
                       height={size.width < 426 ? "190px" : "390px"}
                       minheight={size.width < 426 ? "190px" : "390px"}
-                      border="6px"
+                      border={size.width > 375
+                        ? "6px"
+                        : "0px"
+                      }
                       setIsPlaying={handleNFTLongPress}
                       isPlaying={nftPlaying[i]}
                       nftIndex={i}
@@ -575,6 +694,11 @@ const Home = (props) => {
             <BigButton
               text="Discover All NFTs"
               onClick={() => props.redirect("discover/nfts")}
+              width={
+                size.width > 375
+                  ? null
+                  : size.width - 30 + "px"
+              }
             ></BigButton>
           </HStack>
         </VStack>
@@ -651,7 +775,11 @@ const Home = (props) => {
                       collectionVerified={item.creator.isVerified}
                       width="100%"
                       height="100%"
-                      border="6px"
+                      border={
+                        size.width > 375 
+                          ? "6px"
+                          : "0px"
+                      }
                       setIsPlaying={handleNFTLongPress}
                       isPlaying={nftPlaying[i]}
                       nftIndex={i}
@@ -666,6 +794,11 @@ const Home = (props) => {
             <BigButton
               text="Discover The Latest NFTs"
               onClick={() => props.redirect("discover/nfts")}
+              width={
+                size.width > 375
+                  ? null
+                  : size.width - 30 + "px"
+              }
             ></BigButton>
           </HStack>
         </VStack>
@@ -692,12 +825,21 @@ const Home = (props) => {
             <BodyRegular textcolor="rgba(255,122,0,100)">
               WANT TO GET STARTED?
             </BodyRegular>
-            <TitleRegular36
-              textcolor="rgba(251,195,75, 100)"
-              alignment="center"
-            >
-              Create and sell your NFTs
-            </TitleRegular36>
+            {size.width > 375 
+              ? <TitleRegular36
+                textcolor="rgba(251,195,75, 100)"
+                alignment="center"
+              >
+                Create and sell your NFTs
+              </TitleRegular36>
+              : <TitleRegular27
+                  textcolor="rgba(251,195,75,100)"
+                  alignment="center"
+                >
+                  Create and sell your NFTs
+                </TitleRegular27>
+            }
+            
 
             <HStack
               self="none"
