@@ -35,6 +35,7 @@ function InputStyled(props) {
     iconRight,
     iconLeft,
     disabled,
+    textplace,
   } = props;
 
   const [hasURL] = useState(false);
@@ -69,6 +70,7 @@ function InputStyled(props) {
         onKeyPress={onKeyPress}
         textcolor={textcolor}
         disabled={disabled}
+        textplace={textplace}
       />
       <InputIcon iconRight={iconRight || "15px"} iconLeft={iconLeft}>
         <IconImg

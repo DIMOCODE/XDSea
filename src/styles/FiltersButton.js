@@ -227,6 +227,7 @@ function FiltersButton(props) {
                       inputId="MinFilterPrice"
                       onChange={(e) => setMinValue(e.target.value)}
                       background={({ theme }) => theme.faded}
+                      textplace={"rgba(0,0,0,0.6)"}
                     ></InputStyled>
                     <InputStyled
                       icon={xdcLogo}
@@ -236,6 +237,7 @@ function FiltersButton(props) {
                       onChange={(e) => setMaxValue(e.target.value)}
                       inputId="MaxFilterPrice"
                       background={({ theme }) => theme.faded}
+                      textplace={"rgba(0,0,0,0.6)"}
                     ></InputStyled>
                   </HStack>
 

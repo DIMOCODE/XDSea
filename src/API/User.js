@@ -13,3 +13,6 @@ export const getUser = (userId) => {
 export const updateUser = (body) => {
   return createSignedRequest(HTTP_METHODS.put, `user`, null, body);
 };
+export const updateUserSettings = (body) => {
+  return createSignedRequest(HTTP_METHODS.put, `user/settings`, null, body);
+};
