@@ -250,6 +250,7 @@ const MyNFT = (props) => {
     setNewWebsite("");
     setIsDarkUI(user?.theme === "dark" ? true : false);
     setBanner({ preview: "", raw: "" });
+    setIsEditing(false);
   };
 
   function longPress(callback, ms = 250) {
@@ -399,6 +400,8 @@ const MyNFT = (props) => {
   };
 
   const updateUserProfile = async () => {
+    setIsProfileUpdated(true);
+
     if (profilePicture.raw !== "") {
       const profilePictureSuccess = await uploadFileInS3Bucket(
         profilePicture.raw,
@@ -419,25 +422,24 @@ const MyNFT = (props) => {
       user.twitter !== newTwitterUsername ||
       user.siteUrl !== newWebsite
     ) {
-      const updateSuccess = await await updateUser({
+      const updateSuccess = await updateUser({
         userName: newUserName,
         instagram: newInstagramUsername,
         twitter: newTwitterUsername,
         siteUrl: newWebsite,
       });
     }
-    if (userSettings.dashboardMode !== (isDarkUI ? "dark" : "light")) {
-      const updateSettingsSuccess = await await updateUserSettings({
+    if (userSettings?.dashboardMode !== (isDarkUI ? "dark" : "light")) {
+      const updateSettingsSuccess = await updateUserSettings({
         dashboardMode: isDarkUI ? "dark" : "light",
       });
     }
 
-    let userData = await (await getUser(userId)).data;
-    setIsProfileUpdated(true);
+    let userData = (await getUser(userId)).data;
     setUser(userData.user);
     setUserSettings(userData.settings);
-    setIsEditing(false);
     setIsProfileUpdated(false);
+    setIsEditing(false);
   };
 
   const updateUserStatus = async () => {
@@ -1186,11 +1188,7 @@ const MyNFT = (props) => {
                         <BodyRegular
                           cursor="pointer"
                           textcolor="white"
-                          onClick={() => {
-                            setIsProfileUpdated(true);
-                            updateUserProfile();
-                            setIsEditing(false);
-                          }}
+                          onClick={updateUserProfile}
                         >
                           Save Changes
                         </BodyRegular>
@@ -2484,7 +2482,7 @@ const MyNFT = (props) => {
                                     <Spacer></Spacer>
 
                                     <IconImg
-                                      url={newBlue}
+                                      url={item.logo.v0}
                                       width="90px"
                                       height="90px"
                                       backsize="cover"
@@ -2507,7 +2505,7 @@ const MyNFT = (props) => {
                                         Volume Traded
                                       </CaptionBoldShort>
                                       <BodyRegular textcolor="white">
-                                        {"333,333"}
+                                        {item.volumeTrade}
                                       </BodyRegular>
 
                                       <IconImg
