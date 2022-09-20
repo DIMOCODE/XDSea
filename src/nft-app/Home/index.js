@@ -299,7 +299,11 @@ const Home = (props) => {
                       <VStack
                         spacing="0px"
                         alignment="flex-start"
-                        padding="0 0 0px 15px"
+                        padding={
+                          size.width > 768
+                            ? "0 0 0px 15px"
+                            : "0 0 30px 15px"
+                        }
                         maxheight="60px"
                         width="100%"
                         cursor="pointer"
@@ -331,7 +335,7 @@ const Home = (props) => {
                           </HStack>
                         ) : null}
 
-                        {size.width > 768 ? (
+                        {size.width > 425 ? (
                           <TitleRegular18 textcolor="white" cursor="pointer">
                             {item.collectionId.name}
                           </TitleRegular18>
@@ -447,7 +451,7 @@ const Home = (props) => {
                 }}
                 left={
                   size.width > 425
-                    ? "33px"
+                    ? "26px"
                     : size.width > 375
                     ? "2px"
                     : size.width > 320
@@ -620,9 +624,9 @@ const Home = (props) => {
           {/* Trending NFT Cards */}
           <HStack
             flexwrap="wrap"
-            padding={size.width > 375 ? "0 12px 0 12px" : "0 2px 0 2px"}
+            padding={size.width > 425 ? "0 12px 0 12px" : "0 2px 0 2px"}
             height="auto"
-            spacing={size.width > 375 ? "15px" : "2px"}
+            spacing={size.width > 425 ? "15px" : "2px"}
           >
             {trendingNFTs.length !== 0
               ? trendingNFTs
@@ -642,10 +646,17 @@ const Home = (props) => {
                       minwidth="46%"
                       height={size.width < 426 ? "190px" : "390px"}
                       minheight={size.width < 426 ? "190px" : "390px"}
-                      border={size.width > 375 ? "6px" : "0px"}
+                      border={size.width > 425 ? "6px" : "0px"}
                       setIsPlaying={handleNFTLongPress}
                       isPlaying={nftPlaying[i]}
                       nftIndex={i}
+                      iconStatus={item.saleType.toLowerCase()}
+                      price={item.price}
+                      collectionName={item.collectionId.name}
+                      itemNumber={item.name}
+                      usdPrice={props.xdc}
+                      collectionVerified={item.creator.isVerified}
+                      width="100%"
                     ></NftContainer>
                   ))
               : null}
@@ -733,7 +744,7 @@ const Home = (props) => {
                       collectionVerified={item.creator.isVerified}
                       width="100%"
                       height="100%"
-                      border={size.width > 375 ? "6px" : "0px"}
+                      border={size.width > 425 ? "6px" : "0px"}
                       setIsPlaying={handleNFTLongPress}
                       isPlaying={nftPlaying[i]}
                       nftIndex={i}

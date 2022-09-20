@@ -338,7 +338,7 @@ function TopBar(props) {
         <>
           <HStack
             width={
-              size.width > 728 ? "1200px" : size.width > 424 ? "1024px" : "100%"
+              size.width > 728 ? "1200px" : size.width > 425 ? "1024px" : "100%"
             }
             padding="0 6px "
           >

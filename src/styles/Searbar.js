@@ -424,7 +424,7 @@ function Searchbar({
                   {filteredCollectionData.length !== 0 && (
                     <VStack alignment="flex-start" spacing="9px">
                       <CaptionBoldShort>Collections</CaptionBoldShort>
-                      {filteredCollectionData.slice(0, 2).map((collection) => (
+                      {filteredCollectionData.slice(0, 1).map((collection) => (
                         <VStack
                           alignment="flex-start"
                           spacing="9px"
@@ -468,7 +468,7 @@ function Searchbar({
                         </VStack>
                       ))}
 
-                      {filteredCollectionData.length > 2 && (
+                      {filteredCollectionData.length > 1 && (
                         <a>
                           <HStack
                             spacing="5px"
@@ -543,78 +543,74 @@ function Searchbar({
                 width={"100%"}
               >
                 {/* NFTs */}
-                {filteredNFTData.length !== 0 && (
-                  <VStack alignment="flex-start" spacing="9px" width="100%">
-                    <CaptionBoldShort>NFTs</CaptionBoldShort>
-                    <VStack spacing="12px" width="100%">
-                      {filteredNFTData.slice(0, 2).map((nft) => (
-                        <HStack
-                          whileHover={{ background: "rgb(0,0,0,0.06" }}
-                          padding="6px"
-                          border="6px"
-                          onClick={() =>
-                            NavigateTo(`nft/${nftaddress}/${nft.tokenId}`)
-                          }
-                          key={nft._id}
-                          width="100%"
-                        >
-                          <IconImg
-                            url={nft.urlFile.v0}
-                            width="54px"
-                            height="54px"
-                            border="9px"
-                            backsize="cover"
-                            cursor="pointer"
-                          ></IconImg>
-                          <VStack
-                            alignment="flex-start"
-                            spacing="3px"
-                            cursor="pointer"
+                {filteredNFTData.length !== 0
+                  ? <VStack alignment="flex-start" spacing="9px" width="100%">
+                      <CaptionBoldShort>NFTs</CaptionBoldShort>
+                      <VStack spacing="12px" width="100%">
+                        {filteredNFTData.slice(0, 2).map((nft) => (
+                          <HStack
+                            whileHover={{ background: "rgb(0,0,0,0.06" }}
+                            padding="6px"
+                            border="6px"
+                            onClick={() =>
+                              NavigateTo(`nft/${nftaddress}/${nft.tokenId}`)
+                            }
+                            key={nft._id}
+                            width="100%"
                           >
-                            <BodyBold>{nft.name}</BodyBold>
-                            <CaptionRegular>
-                              {nft.collectionId.name}
-                            </CaptionRegular>
-                            <CaptionRegular>
-                              {truncateAddress(nft.owner.userName)}
-                            </CaptionRegular>
-                          </VStack>
-                        </HStack>
-                      ))}
-                    </VStack>
+                            <IconImg
+                              url={nft.urlFile.v0}
+                              width="54px"
+                              height="54px"
+                              border="9px"
+                              backsize="cover"
+                              cursor="pointer"
+                            ></IconImg>
+                            <VStack
+                              alignment="flex-start"
+                              spacing="3px"
+                              cursor="pointer"
+                            >
+                              <BodyBold>{nft.name}</BodyBold>
+                              <CaptionRegular>
+                                {nft.collectionId.name}
+                              </CaptionRegular>
+                              <CaptionRegular>
+                                {truncateAddress(nft.owner.userName)}
+                              </CaptionRegular>
+                            </VStack>
+                          </HStack>
+                        ))}
+                      </VStack>
 
-                    {filteredNFTData.length > 2 && (
-                      <a>
-                        <HStack
-                          spacing="5px"
-                          background={({ theme }) => theme.faded}
-                          padding="5px 15px"
-                          border="9px"
-                          cursor="pointer"
-                          onClick={() =>
-                            NavigateTo(
-                              `SearchPage?searchTerm=${searchTerm}&mode=nft`
-                            )
-                          }
-                        >
-                          <CaptionBoldShort>See all NFTs</CaptionBoldShort>
-                          <IconImg
-                            url={arrowRight}
-                            width="26px"
-                            height="26px"
+                      {<a>
+                          <HStack
+                            spacing="5px"
+                            background={({ theme }) => theme.faded}
+                            padding="5px 15px"
+                            border="9px"
                             cursor="pointer"
-                          ></IconImg>
-                        </HStack>
-                      </a>
-                    )}
-                  </VStack>
-                )}
-
-                {/* Collections */}
-                {filteredCollectionData.length !== 0 && (
-                  <VStack alignment="flex-start" spacing="9px" width="100%">
+                            onClick={() =>
+                              NavigateTo(
+                                `SearchPage?searchTerm=${searchTerm}&mode=nft`
+                              )
+                            }
+                          >
+                            <CaptionBoldShort>See all results</CaptionBoldShort>
+                            <IconImg
+                              url={arrowRight}
+                              width="26px"
+                              height="26px"
+                              cursor="pointer"
+                            ></IconImg>
+                          </HStack>
+                        </a>
+                      }
+                    </VStack>
+                : filteredCollectionData.length !== 0
+                  ? <VStack alignment="flex-start" spacing="9px" width="100%">
                     <CaptionBoldShort>Collections</CaptionBoldShort>
-                    {filteredCollectionData.slice(0, 1).map((collection) => (
+                    {filteredCollectionData.slice(0, 2).map((collection) => (
                       <VStack
                         alignment="flex-start"
                         spacing="9px"
@@ -658,7 +654,7 @@ function Searchbar({
                       </VStack>
                     ))}
 
-                    {filteredCollectionData.length > 1 && (
+                    {filteredCollectionData.length > 2 && (
                       <a>
                         <HStack
                           spacing="5px"
@@ -673,7 +669,7 @@ function Searchbar({
                           }
                         >
                           <CaptionBoldShort cursor="pointer">
-                            See all Collections
+                            See all results
                           </CaptionBoldShort>
                           <IconImg
                             url={arrowRight}
@@ -685,7 +681,8 @@ function Searchbar({
                       </a>
                     )}
                   </VStack>
-                )}
+                  : null
+                }
               </VStack>
             </VStack>
           </SearchResultMobile>
