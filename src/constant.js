@@ -1,4 +1,5 @@
 import SecureLS from "secure-ls";
+import domainjs from "xdcdomainjs";
 
 export const HTTP_PROVIDER = {
   50: "https://xdsearpc.blocksscan.io",
@@ -36,3 +37,28 @@ export const HTTP_METHODS = {
   put: "PUT",
   delete: "DELETE",
 };
+
+const xdcDomainConfig = {
+  testnet: {
+    rpcUrl: "",
+    contractAddress: ""
+  },
+  mainnet: {
+    rpcUrl: "https://rpc.xinfin.network/",
+    contractAddress: "xdc295a7ab79368187a6cd03c464cfaab04d799784e"
+  },
+  defaultNetwork: "mainnnet"
+};
+
+const xdcSdk = domainjs.SDK(xdcDomainConfig);
+
+export const getXdcDomain = async (address) => {
+  const xdcDomain = await xdcSdk.getDomain(address);
+  console.log(xdcDomain)
+  return xdcDomain;
+};
+
+export const getXdcOwner = async (domain) => {
+  const xdcAddress = await xdcSdk.getOwner(domain, false);
+  return xdcAddress;
+}

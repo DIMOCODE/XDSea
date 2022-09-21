@@ -16,7 +16,7 @@ const URL_ROOT = process.env.REACT_APP_URL_SERVER;
 export const createSignedRequest = async (method, url, params, body) => {
   const data = LS.get(LS_ROOT_KEY);
   if (!data) {
-    throw { code: ERROR_CODES.MISSING_TOKEN };
+    return await createRequest(method, url, params, body);
   }
   const bodyRequest = {
     url: `${URL_ROOT}/${url}`,

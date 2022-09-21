@@ -12,7 +12,7 @@ import { truncateAddress } from "../common/common";
 import doneIcon from "../images/doneIcon.png";
 
 function BubbleCopied(props) {
-  const { logo, address, icon, background, textColor } = props;
+  const { logo, address, icon, background, textColor, addressCreator } = props;
 
   const [showAlertLink, setShowAlertLink] = useState(false);
 
@@ -38,12 +38,12 @@ function BubbleCopied(props) {
       >
         <IconImg url={logo} width="21px" height="21px"></IconImg>
         <Spacer></Spacer>
-        <Tooltip title={address}>
+        <Tooltip title={addressCreator}>
           {showAlertLink ? (
             <CaptionBoldShort>Address Copied</CaptionBoldShort>
           ) : (
             <CaptionBoldShort textcolor={textColor}>
-              {truncateAddress(address)}
+              {address}
             </CaptionBoldShort>
           )}
         </Tooltip>
@@ -55,7 +55,7 @@ function BubbleCopied(props) {
             cursor="pointer"
             onClick={() => {
               setShowAlertLink(true);
-              navigator.clipboard.writeText(address);
+              navigator.clipboard.writeText(addressCreator);
             }}
             url={icon}
             width="21px"

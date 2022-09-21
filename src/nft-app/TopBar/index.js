@@ -26,6 +26,7 @@ import { XdcConnect, Disconnect } from "xdc-connect";
 import XDSealogo from "../../images/LogoXDSEA.png";
 import mountain from "../../images/mountain.jpg";
 import { WalletButton } from "../../styles/walletButton";
+import { fromXdc, isXdc, toXdc } from "../../common/common";
 import { SwitchButton } from "../../styles/SwitchButton";
 import { motion, AnimatePresence } from "framer-motion/dist/framer-motion";
 import { UserMenuButton } from "./UserMenuButton";
@@ -47,7 +48,7 @@ import dcentWalletBW from "../../images/dcentBW.png";
 import { useClickAway } from "react-use";
 import { Searchbar } from "../../styles/Searbar";
 import { anonymousLogin, logout } from "../../API/access";
-import { LS, LS_ROOT_KEY } from "../../constant";
+import { LS, LS_ROOT_KEY, getXdcDomain } from "../../constant";
 import { Divider, Icon } from "@mui/material";
 import useWindowSize from "../../styles/useWindowSize";
 import howToStart from "../../images/HowToStart.png";
@@ -74,6 +75,8 @@ function TopBar(props) {
   const [showInfo, setShowInfo] = useState(false);
   const [isSearch, setIsSearch] = useState(false);
   const [walletOptions, setWalletOptions] = useState(true);
+  const [walletAddress, setWalletAddress] = useState("");
+  const [isDomain, setIsDomain] = useState(false);
   const [searchPhone, setSearchPhone] = useState(false);
   const [user, setUser] = useState(null);
 
@@ -128,6 +131,7 @@ function TopBar(props) {
               connected: true,
               address: res[0],
             });
+            setWalletAddress(await getXdcDomainAddress(res[0]));
             window.ethereum.on("accountsChanged", (accounts) => {
               setWallet({
                 connected: false,
@@ -183,6 +187,7 @@ function TopBar(props) {
             address: address,
           });
           getUser();
+          setWalletAddress(await getXdcDomainAddress(address));
           setShowMetamask(false);
           setShowError(0);
           setShowInfo(false);
@@ -219,6 +224,7 @@ function TopBar(props) {
               connected: true,
               address: res[0],
             });
+            setWalletAddress(await getXdcDomainAddress(res[0]));
             window.ethereum.on("accountsChanged", (accounts) => {
               setWallet({
                 connected: false,
@@ -307,6 +313,23 @@ function TopBar(props) {
     setWalletOptions(true);
     setShowMenu(!showMenu);
     setIsDcent(false);
+  };
+
+  const getXdcDomainAddress = async (address) => {
+    const xdcDomainName = isXdc(address)
+      ? (await getXdcDomain(address))
+      : (await getXdcDomain(toXdc(address)))
+    if(xdcDomainName === "") {
+      setIsDomain(false);
+    }
+    else{
+      setIsDomain(true);
+    }
+    return xdcDomainName === "" 
+      ? isXdc(address) 
+        ? fromXdc(address) 
+        : address 
+      : xdcDomainName;
   };
 
   const getUser = async () => {
@@ -507,10 +530,12 @@ function TopBar(props) {
                           }
                           status={wallet?.connected}
                           wallet={wallet}
+                          walletAddress={walletAddress}
                           onClickMetamask={() => setShowMetamask(true)}
                           isMetamask={isMetamask}
                           isDcent={isDcent}
                           isXdcPay={isXdcPay}
+                          isDomain={isDomain}
                           hasAlert={showError > 0}
                           clickAlert={() => {
                             setShowInfo(true);

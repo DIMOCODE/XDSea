@@ -67,7 +67,7 @@ import { getCollections } from "../../API/Collection";
 import { getUser, updateUser, updateUserSettings } from "../../API/User";
 import { isImage, isVideo, isAudio } from "../../common";
 import { CircleButton } from "../../styles/CircleButton";
-
+import { toXdc, truncateAddress } from "../../common/common";
 import { Navigation, Pagination, Scrollbar, A11y, Mousewheel } from "swiper";
 import { StickySectionHeader } from "../../CustomModules/sticky/StickySectionHeader.js";
 import { Grid, FreeMode, Thumbs } from "swiper";
@@ -90,6 +90,7 @@ import { CollectionTab } from "./CollectionTab";
 import { Icon } from "@mui/material";
 import { uploadFileInS3Bucket } from "../../helpers/fileUploader";
 import { GuardSpinner, SwishSpinner, TraceSpinner } from "react-spinners-kit";
+import { getXdcDomain } from "../../constant";
 
 const MyNFT = (props) => {
   const { userId } = useParams();
@@ -132,6 +133,7 @@ const MyNFT = (props) => {
   const [userSettings, setUserSettings] = useState({});
   const [newStatus, setNewStatus] = useState("");
   const [isProfileUpdated, setIsProfileUpdated] = useState(false);
+  const [userDomain, setUserDomain] = useState("");
 
   const heights = [260, 360, 300];
 
@@ -145,6 +147,8 @@ const MyNFT = (props) => {
     const id = userData.user._id;
     setUser(userData.user);
     setUserSettings(userData.settings);
+    let domain = await getXdcDomain(toXdc(userData.user.XDCWallets[0]));
+    setUserDomain(domain);
     await Promise.all(
       [1, 2].map(async (i) => {
         if (i === 1) {
@@ -763,7 +767,10 @@ const MyNFT = (props) => {
                               <BubbleCopied
                                 logo={walletBlue}
                                 address={
-                                  user.XDCWallets ? user.XDCWallets[0] : ""
+                                  userDomain ? userDomain : user?.XDCWallets ? truncateAddress(user.XDCWallets[0]) : ""
+                                }
+                                addressCreator={
+                                  user?.XDCWallets ? user.XDCWallets[0] : ""
                                 }
                                 icon={copyIcon}
                                 background={isDarkUI ? "#20222D" : "white"}
@@ -1353,7 +1360,10 @@ const MyNFT = (props) => {
                               <BubbleCopied
                                 logo={walletBlue}
                                 address={
-                                  user.XDCWallets ? user.XDCWallets[0] : ""
+                                  userDomain ? userDomain : user?.XDCWallets ? truncateAddress(user.XDCWallets[0]) : ""
+                                }
+                                addressCreator={
+                                  user?.XDCWallets ? user.XDCWallets[0] : ""
                                 }
                                 icon={copyIcon}
                                 background={isDarkUI ? "#20222D" : "white"}
@@ -1908,7 +1918,10 @@ const MyNFT = (props) => {
                               <BubbleCopied
                                 logo={walletBlue}
                                 address={
-                                  user.XDCWallets ? user.XDCWallets[0] : ""
+                                  userDomain ? userDomain : user?.XDCWallets ? truncateAddress(user.XDCWallets[0]) : ""
+                                }
+                                addressCreator={
+                                  user?.XDCWallets ? user.XDCWallets[0] : ""
                                 }
                                 icon={copyIcon}
                                 background={

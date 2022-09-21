@@ -709,43 +709,7 @@ function CreateNft(props) {
     }, 1500);
   };
 
-  // const addARPCNFT = async () => {
-  //   const xdc3 = new Xdc3(
-  //     new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER)
-  //   );
-  //   const weiprice = await xdc3.utils.toWei("4700", "ether");
-  //   const contract2 = new xdc3.eth.Contract(
-  //     NFTMarketLayer1.abi,
-  //     "0x6198CFbfAeb17F60Fd10c56e53E143e5ef23370E",
-  //     "0x60cb41875e410a3186c26e5802b2f6d08bf16b4b"
-  //   );
-  //   let data = contract2.methods
-  //     .createMarketItem(
-  //       2001,
-  //       0,
-  //       "0x22222d61173b3b5be47965e19168b50f19826eee",
-  //       "0x22222d61173b3b5be47965e19168b50f19826eee",
-  //       weiprice,
-  //       false,
-  //       7,
-  //       1,
-  //       "ARPC #2001",
-  //       "Animal Reckless Party Club"
-  //     )
-  //     .encodeABI();
-  //   const tx2 = {
-  //     from: "0x60cb41875e410a3186c26e5802b2f6d08bf16b4b",
-  //     to: "0x6198CFbfAeb17F60Fd10c56e53E143e5ef23370E",
-  //     value: "",
-  //     data,
-  //   };
-  //   let gasLimit = await xdc3.eth.estimateGas(tx2);
-  //   tx2["gas"] = gasLimit;
-  //   let transaction = await SendTransaction(tx2);
-  // }
-
   useEffect(async () => {
-    // addARPCNFT();
     window.scrollTo(0, 0);
     setWallet(props?.wallet);
     await getUser();
@@ -1019,6 +983,7 @@ function CreateNft(props) {
                   setIsNameEmpty(false);
                   setName(event.target.value);
                 }}
+                textplace={"rgba(0,0,0,0.6)"}
               ></InputStyled>
               {isNameEmpty ? (
                 <HStack
@@ -1078,6 +1043,7 @@ function CreateNft(props) {
                     setIsPriceInvalid(true);
                   else setIsPriceInvalid(false);
                 }}
+                textplace={"rgba(0,0,0,0.6)"}
               ></InputStyled>
               {isPriceInvalid ? (
                 <HStack
@@ -1203,6 +1169,7 @@ function CreateNft(props) {
                       setRoyalty(100);
                     }
                   }}
+                  textplace={"rgba(0,0,0,0.6)"}
                 ></InputStyled>
               </VStack>
 
@@ -1224,6 +1191,7 @@ function CreateNft(props) {
                     onChange={(event) => {
                       setUnlockableContent(event.target.value);
                     }}
+                    textplace={"rgba(0,0,0,0.6)"}
                   ></InputStyled>
                 ) : null}
                 <ButtonApp
@@ -1544,6 +1512,7 @@ function CreateNft(props) {
                             checkCollectionExists(collectionName);
                           }
                         }}
+                        textplace={"rgba(0,0,0,0.6)"}
                       ></InputStyled>
                       {collectionExists ? (
                         <HStack

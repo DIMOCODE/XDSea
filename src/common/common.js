@@ -19,6 +19,14 @@ export const isXdc = (address) => {
 export const fromXdc = (address) => '0x'+(address)?.substring(3);
 
 /**
+ * Convert a "0x" prefix wallet address to an "xdc" prefix wallet address
+ * 
+ * @param {string} address wallet address to be converted
+ * @returns wallet address with an "xdc" prefix
+ */
+ export const toXdc = (address) => 'xdc'+(address)?.substring(2);
+
+/**
  * Get a truncated string for displaying wallet address
  * 
  * @param {string} address wallet address that is to be truncated

@@ -31,7 +31,7 @@ export const getCollections = ({
     sortDirection,
     verified,
   };
-  return createRequest(HTTP_METHODS.get, `collection/`, params, null);
+  return createSignedRequest(HTTP_METHODS.get, `collection/`, params, null);
 };
 
 /**
@@ -41,14 +41,10 @@ export const getCollections = ({
  * @returns HTTP GET request response with the requested collection
  */
 export const getCollection = (nickName) => {
-  return createRequest(
-    
+  return createSignedRequest(
     HTTP_METHODS.get,
-   
     `collection/byNickName/${nickName}`,
-   
     null,
-   
     null
   
   );
@@ -103,16 +99,11 @@ export const getCollectionNFTs = ({
       saleType4 !== undefined ? `saleType=${saleType4}&` : ""
     }`;
   params = params.substring(0, params.length - 1);
-  return createRequest(
-    
+  return createSignedRequest(
     HTTP_METHODS.get,
-   
     `collection/nft/${collectionId}/${page}${params}`,
-   
     null,
-   
     null
-  
   );
 };
 

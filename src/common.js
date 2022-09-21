@@ -348,9 +348,7 @@ export const TransferNFT = async (approved, transferNFT, transferAddress, wallet
     );
 
     let data = contract2.methods
-      .transferNFT(nftaddress, transferNFT.tokenId, isXdc(transferAddress)
-        ? fromXdc(transferAddress)
-        : transferAddress)
+      .transferNFT(nftaddress, transferNFT.tokenId, transferAddress)
       .encodeABI();
 
     const tx2 = {

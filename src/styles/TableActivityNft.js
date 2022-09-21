@@ -236,8 +236,8 @@ function TableActivityNft(props) {
                       height="18px"
                       border="30px"
                     ></IconImg>
-                    <Tooltip title={item.from}>
-                      <BodyRegular>{truncateAddress(item.from)}</BodyRegular>
+                    <Tooltip title={item.fromAddress}>
+                      <BodyRegular>{item.from === "" ? truncateAddress(item.fromAddress) : item.from}</BodyRegular>
                     </Tooltip>
                   </HStack>
                   <Spacer></Spacer>
@@ -252,8 +252,8 @@ function TableActivityNft(props) {
                       height="18px"
                       border="30px"
                     ></IconImg>
-                    <Tooltip title={item.to}>
-                      <BodyRegular>{truncateAddress(item.to)}</BodyRegular>
+                    <Tooltip title={item.toAddress}>
+                      <BodyRegular>{item.to === "" ? truncateAddress(item.toAddress) : item.to}</BodyRegular>
                     </Tooltip>
                   </HStack>
                   <Spacer></Spacer>

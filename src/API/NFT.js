@@ -59,7 +59,7 @@ export const getNFTs = ({
     `${collectionId !== undefined ? `collectionId=${collectionId}&` : ""
   }`;
   params = params.substring(0, params.length - 1);
-  return createRequest(HTTP_METHODS.get, `nft/${page}${params}`, null, null);
+  return createSignedRequest(HTTP_METHODS.get, `nft/${page}${params}`, null, null);
 };
 
 /**
@@ -69,7 +69,7 @@ export const getNFTs = ({
  * @returns HTTP GET request response with the requested NFT
  */
 export const getNFT = (nftContract, tokenId) => {
-  return createRequest(
+  return createSignedRequest(
     HTTP_METHODS.get,
     `nft/byToken/${nftContract}/${tokenId}`,
     null,

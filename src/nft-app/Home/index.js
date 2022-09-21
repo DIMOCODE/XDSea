@@ -224,7 +224,7 @@ const Home = (props) => {
                   minheight={size.width > 425 ? item.height + "px" : "150px"}
                   cursor="pointer"
                   onClick={() =>
-                    props.redirect(`nft/${item.nftContract}/${item.tokenId}`)
+                    props.redirect(`nft/${item.collectionId.address}/${item.tokenId}`)
                   }
                   onHoverStart={() => {
                     setFeaturedNFTPlaying((prevState) => {
@@ -640,7 +640,7 @@ const Home = (props) => {
                       background={({ theme }) => theme.backElement}
                       onClick={() =>
                         props.redirect(
-                          `nft/${item.nftContract}/${item.tokenId}`
+                          `nft/${item.collectionId.address}/${item.tokenId}`
                         )
                       }
                       minwidth="46%"
@@ -722,7 +722,7 @@ const Home = (props) => {
                     key={"newSlide_" + item._id}
                     style={{ cursor: "pointer" }}
                     onClick={() =>
-                      props.redirect(`nft/${item.nftContract}/${item.tokenId}`)
+                      props.redirect(`nft/${item.collectionId.address}/${item.tokenId}`)
                     }
                   >
                     <NftContainer
@@ -737,7 +737,7 @@ const Home = (props) => {
                       background={({ theme }) => theme.backElement}
                       onClick={() =>
                         props.redirect(
-                          `nft/${item.nftContract}/${item.tokenId}`
+                          `nft/${item.collectionId.address}/${item.tokenId}`
                         )
                       }
                       usdPrice={props.xdc}

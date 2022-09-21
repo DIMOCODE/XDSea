@@ -21,7 +21,8 @@ import { motion } from "framer-motion/dist/framer-motion";
 import { AnimatePresence } from "framer-motion/dist/framer-motion";
 import ButtonApp from "./Buttons";
 import { LayoutGroup } from "framer-motion/dist/framer-motion";
-import { fromXdc, isXdc, truncateAddress } from "../common/common";
+import { fromXdc, isXdc, toXdc, truncateAddress } from "../common/common";
+import { getXdcDomain } from "../constant";
 import logoutIcon from "../images/shutdownWhite.png";
 
 function WalletButton(props) {
@@ -29,6 +30,8 @@ function WalletButton(props) {
     status,
     wallet,
     logout,
+    walletAddress,
+    isDomain,
     onClickMetamask,
     isMetamask,
     isXdcPay,
@@ -74,6 +77,11 @@ function WalletButton(props) {
   };
 
   const [showAlert, setShowAlert] = useState(false);
+
+  const truncate = (str, n) => {
+    return str?.length > n ? str.substr(0, n - 1) + "..." : str;
+  };
+
   useEffect(() => {
     let timeout;
     if (showAlert) {
@@ -169,11 +177,10 @@ function WalletButton(props) {
                       </HStack>
 
                       <BodyRegular textcolor={({ theme }) => theme.walletText}>
-                        {truncateAddress(
-                          isXdc(wallet?.address)
-                            ? fromXdc(wallet?.address)
-                            : wallet?.address
-                        )}
+                        {isDomain
+                          ? truncate(walletAddress, 10)
+                          : truncateAddress(walletAddress)
+                        }
                       </BodyRegular>
                     </VStack>
                     <HStack spacing="6px" cursor="pointer" onClick={logout}>

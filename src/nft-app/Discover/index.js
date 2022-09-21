@@ -446,12 +446,12 @@ const Discover = (props) => {
                           key={item.name}
                           isVerified={item.creator.isVerified}
                           keyContent={item.name}
-                          keyID={item.creator.userName}
+                          keyID={item.addressCreator}
                           collectionImage={item.banner.v0}
                           creatorLogo={item.logo.v0}
                           collectionName={item.name}
                           collectionDescription={item.description}
-                          creatorName={item.creator.userName}
+                          creatorName={item.addressCreator}
                           onClickCollection={() =>
                             props.redirect(`collection/${item.nickName}`)
                           }

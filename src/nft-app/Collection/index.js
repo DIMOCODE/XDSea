@@ -38,12 +38,13 @@ import {
   WhatsappShareButton,
 } from "react-share";
 import { getCollection, getCollectionNFTs } from "../../API/Collection";
-import { truncateAddress } from "../../common/common";
+import { truncateAddress, toXdc } from "../../common/common";
 import { SearchCollection } from "../../styles/SearchCollection";
 import { FiltersButton } from "../../styles/FiltersButton";
 import { SortButtonNFTS } from "../../styles/SortButtonNFTS";
 import noResult from "../../images/noResult.png";
 import { StickySectionHeader } from "../../CustomModules/sticky/StickySectionHeader.js";
+import { getXdcDomain } from "../../constant";
 
 const CollectionPage = (props) => {
   const size = useWindowSize();
@@ -100,7 +101,8 @@ const CollectionPage = (props) => {
       let collection = {
         _id: collectionData.collection._id,
         banner: collectionData.collection.banner.v0,
-        creator: collectionData.collection.addressCreator,
+        creator: await getXdcDomain(toXdc(collectionData.collection.addressCreator)),
+        addressCreator: collectionData.collection.addressCreator,
         creatorId: collectionData.collection.creator._id,
         isVerified: collectionData.collection.creator.isVerified,
         description: collectionData.collection.description,
@@ -253,10 +255,10 @@ const CollectionPage = (props) => {
                 <CaptionBold textcolor={({ theme }) => theme.text}>
                   CREATOR
                 </CaptionBold>
-                {collection.creator ? (
-                  <Tooltip title={nfts[0]?.collectionCreator}>
+                {collection.addressCreator ? (
+                  <Tooltip title={collection.addressCreator}>
                     <CaptionBold textcolor={({ theme }) => theme.text}>
-                      {truncateAddress(collection.creator)}
+                      {collection.creator !== "" ? collection.creator : truncateAddress(collection.addressCreator)}
                     </CaptionBold>
                   </Tooltip>
                 ) : (

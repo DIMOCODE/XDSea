@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
 import Xdc3 from "xdc3";
-import { DEFAULT_PROVIDER, HEADER, LS, LS_ROOT_KEY } from "../../constant";
+import { DEFAULT_PROVIDER, HEADER, LS, LS_ROOT_KEY, getXdcDomain, getXdcOwner } from "../../constant";
 import { nftmarketlayeraddress } from "../../config";
 import NFT from "../../abis/NFT.json";
 import { Divider } from "../../styles/Stacks";
@@ -17,7 +17,7 @@ import {
   WithdrawOffer,
   AcceptOffer,
 } from "../../common";
-import { fromXdc, isXdc, truncateAddress } from "../../common/common";
+import { fromXdc, isXdc, toXdc, truncateAddress } from "../../common/common";
 import Tooltip from "@mui/material/Tooltip";
 import lock from "../../images/unlockable2.gif";
 import mint from "../../images/mintIcon.png";
@@ -369,12 +369,17 @@ const NFTDetails = (props) => {
   const transferNFT = async () => {
     setIsProcessingTransferring(true);
     setTransferring(false);
+    var address = transferAddress.split('.')[1] !== undefined
+      ? (await getXdcOwner(transferAddress)).owner0x
+      : isXdc(transferAddress)
+        ? fromXdc(transferAddress)
+        : transferAddress;
     var success = false;
     if (!nft.inBlacklist) {
       success = await TransferNFT(
         approved,
         nft,
-        transferAddress,
+        address,
         wallet.address,
         nftaddress
       );
@@ -382,7 +387,7 @@ const NFTDetails = (props) => {
     if (success) {
       setTransferButtonStatus(3);
       await (
-        await transferNFTRequest(wallet?.address, transferAddress, nft._id)
+        await transferNFTRequest(wallet?.address, address, nft._id)
       ).data;
     } else {
       setTransferButtonStatus(4);
@@ -493,11 +498,29 @@ const NFTDetails = (props) => {
           if (i === 1) {
             const offerData = await (
               await getNFTOffers(nftData.nft._id)
-            ).data.offers;
+            ).data;
+            var highestOffer = offerData.higherOffer;
+            const offerList = await Promise.all(
+              offerData.offers.map(async (offer) => {
+                let offerItem = {
+                  _id: offer._id,
+                  userProfile: offer.userId.urlProfile,
+                  from: truncate(await getXdcDomainAddress(offer.fromAddress), 13),
+                  fromAddress: truncateAddress(offer.fromAddress),
+                  isAccepted: offer.isAccepted,
+                  isWithdrawn: offer.isWithdraw,
+                  price: offer.price,
+                  to: offer.toAddress,
+                  userId: offer.userId._id,
+                };
+                return offerItem;
+              })
+            );
 
-            setOffers(offerData);
-            setAcceptOfferButtonStatus(new Array(offerData.length).fill(0));
-            setWithdrawOfferButtonStatus(new Array(offerData.length).fill(0));
+            setOffers(offerList);
+            setHighestOffer(highestOffer);
+            setAcceptOfferButtonStatus(new Array(offerList.length).fill(0));
+            setWithdrawOfferButtonStatus(new Array(offerList.length).fill(0));
             setLoadingOffers(false);
           } else {
             const eventData = await (
@@ -592,8 +615,10 @@ const NFTDetails = (props) => {
                       </HStack>
                     ),
                   price: item.price,
-                  from: item.fromAddress,
-                  to: item.toAddress,
+                  from: truncate(await getXdcDomainAddress(item.fromAddress), 13),
+                  fromAddress: item.fromAddress,
+                  to: truncate(await getXdcDomainAddress(item.toAddress), 13),
+                  toAddress: item.toAddress,
                   date: item.timestamp,
                 };
                 return event;
@@ -610,15 +635,28 @@ const NFTDetails = (props) => {
       setMoreFromCollectionNfts(nftData.relatedNfts);
       setNftPlaying(new Array(nftData.relatedNfts.length).fill(false));
       setLoadingMore(false);
+      return nftData.nft.marketAddress;
     } catch (error) {
       console.log(error);
+      return "";
     }
+  };
+
+  const getXdcDomainAddress = async (address) => {
+    const xdcDomainName = isXdc(address)
+      ? (await getXdcDomain(address))
+      : (await getXdcDomain(toXdc(address)))
+    return xdcDomainName;
+  };
+
+  const truncate = (str, n) => {
+    return str?.length > n ? str.substr(0, n - 1) + "..." : str;
   };
 
   /**
    * Check if the user has approved the marketplace
    */
-  const getApproval = async () => {
+  const getApproval = async (marketAddress) => {
     const xdc3 = new Xdc3(
       new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER)
     );
@@ -629,7 +667,7 @@ const NFTDetails = (props) => {
           isXdc(props?.wallet?.address)
             ? fromXdc(props?.wallet?.address)
             : props?.wallet?.address,
-          nft.marketAddress
+          marketAddress
         )
         .call();
     setApproved(getVal);
@@ -658,8 +696,8 @@ const NFTDetails = (props) => {
     setLoadingOffers(true);
     setLoadingEvents(true);
     setLoadingMore(true);
-    getData();
-    if (!approved) getApproval();
+    const address = getData();
+    if (!approved) getApproval(address);
   }, [id, actions]);
 
   /**
@@ -667,7 +705,7 @@ const NFTDetails = (props) => {
    */
   useEffect(() => {
     setWallet(props?.wallet);
-    getApproval();
+    getApproval(nft?.marketAddress);
   }, [props?.wallet]);
 
   return (
@@ -915,7 +953,7 @@ const NFTDetails = (props) => {
                         {(isXdc(wallet?.address)
                           ? fromXdc(wallet?.address?.toLowerCase())
                           : wallet?.address?.toLowerCase()) ===
-                          nft.owner.userName.toLowerCase() &&
+                          nft.addressOwner.toLowerCase() &&
                         nft.unlockableContent !== undefined &&
                         nft.unlockableContent !== "" ? (
                           <AnimatePresence>
@@ -983,7 +1021,7 @@ const NFTDetails = (props) => {
                         {(isXdc(wallet?.address)
                           ? fromXdc(wallet?.address?.toLowerCase())
                           : wallet?.address?.toLowerCase()) ===
-                          nft.owner.userName.toLowerCase() &&
+                          nft.addressOwner.toLowerCase() &&
                         nft.unlockableContent !== undefined &&
                         nft.unlockableContent !== "" ? (
                           <AnimatePresence>
@@ -1049,7 +1087,7 @@ const NFTDetails = (props) => {
                         {(isXdc(wallet?.address)
                           ? fromXdc(wallet?.address?.toLowerCase())
                           : wallet?.address?.toLowerCase()) ===
-                          nft.owner.userName.toLowerCase() &&
+                          nft.addressOwner.toLowerCase() &&
                         nft.unlockableContent !== undefined &&
                         nft.unlockableContent !== "" ? (
                           <AnimatePresence>
@@ -1138,10 +1176,10 @@ const NFTDetails = (props) => {
                     backsize="cover"
                     border="18px"
                   ></IconImg>
-                  {nft?.owner.userName ? (
-                    <Tooltip title={nft.owner.userName}>
+                  {nft?.addressOwner ? (
+                    <Tooltip title={nft.addressOwner}>
                       <BodyBold cursor={"pointer"}>
-                        {truncateAddress(nft.owner.userName)}
+                        {nft.owner.userName}
                       </BodyBold>
                     </Tooltip>
                   ) : (
@@ -1307,7 +1345,7 @@ const NFTDetails = (props) => {
                 <CaptionBoldShort>CREATOR</CaptionBoldShort>
                 <Spacer></Spacer>
 
-                {nft?.creator.userName ? (
+                {nft?.addressCreator ? (
                   <HStack
                     spacing="6px"
                     cursor={"pointer"}
@@ -1323,9 +1361,9 @@ const NFTDetails = (props) => {
                       backsize="cover"
                     ></IconImg>
 
-                    <Tooltip title={nft.creator.userName}>
+                    <Tooltip title={nft.addressCreator}>
                       <BodyBold>
-                        {truncateAddress(nft.creator.userName)}
+                        {nft.creator.userName}
                       </BodyBold>
                     </Tooltip>
                   </HStack>
@@ -1500,14 +1538,28 @@ const NFTDetails = (props) => {
                           height="18px"
                         ></IconImg>
                         <TitleBold18>
-                          {parseInt(highestOffer).toLocaleString(undefined, {
-                            maximumFractionDigits: 2,
-                          })}
+                          {highestOffer > 100000
+                          ? Intl.NumberFormat("en-US", {
+                              notation: "compact",
+                              maximumFractionDigits: 2,
+                            }).format(highestOffer)
+                          : highestOffer.toLocaleString(undefined, {
+                              maximumFractionDigits: 2,
+                            }) || "0"}
                         </TitleBold18>
                         <CaptionBoldShort>XDC</CaptionBoldShort>
-                        <CaptionRegular>{`(${(
-                          props.xdc.xdcPrice * parseInt(highestOffer)
-                        ).toFixed(2)} USD)`}</CaptionRegular>
+                        <CaptionRegular>{`(${
+                          props.xdc.xdcPrice * Number(highestOffer) > 100000
+                            ? Intl.NumberFormat("en-US", {
+                                notation: "compact",
+                                maximumFractionDigits: 2,
+                              }).format(props.xdc.xdcPrice * Number(highestOffer))
+                            : (
+                                props.xdc.xdcPrice * Number(highestOffer)
+                              ).toLocaleString(undefined, {
+                                maximumFractionDigits: 2,
+                              }) || "0"
+                        } USD)`}</CaptionRegular>
                       </>
                     )}
                   </HStack>
@@ -1518,7 +1570,7 @@ const NFTDetails = (props) => {
               <HStack>
                 {wallet?.connected ? (
                   nft?.isListed ? (
-                    nft?.owner.userName.toLowerCase() ===
+                    nft?.addressOwner.toLowerCase() ===
                     (isXdc(wallet?.address)
                       ? fromXdc(wallet?.address.toLowerCase())
                       : wallet?.address.toLowerCase()) ? (
@@ -1594,7 +1646,7 @@ const NFTDetails = (props) => {
                         ></ButtonApp>
                       </>
                     )
-                  ) : nft?.inBlacklist ? null : nft?.owner.userName.toLowerCase() ===
+                  ) : nft?.inBlacklist ? null : nft?.addressOwner.toLowerCase() ===
                     (isXdc(wallet?.address)
                       ? fromXdc(wallet?.address.toLowerCase())
                       : wallet?.address.toLowerCase()) ? (
@@ -1756,11 +1808,11 @@ const NFTDetails = (props) => {
                     <>
                       <TableOffersNft
                         key={i}
-                        imageBuyer={item.userId.urlProfile}
-                        offerBy={item.fromAddress}
-                        offerUser={item.userId._id}
+                        imageBuyer={item.userProfile}
+                        offerBy={(item.from === undefined || item.from === "") ? item.fromAddress : item.from}
+                        offerUser={item.userId}
                         wallet={wallet}
-                        owner={item.toAddress}
+                        owner={item.to}
                         offerAmount={item.price}
                         isWithdrawn={item.isWithdrawn}
                         withdrawStatus={withdrawOfferButtonStatus[i]}

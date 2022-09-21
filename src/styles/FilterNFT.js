@@ -137,6 +137,7 @@ function FilterNFT({
                       type="number"
                       min="1"
                       max="5"
+                      textplace={"rgba(0,0,0,0.6)"}
                     ></InputStyled>
                     <InputStyled
                       background={({ theme }) => theme.faded}
@@ -145,6 +146,7 @@ function FilterNFT({
                       type="number"
                       min="1"
                       max="5"
+                      textplace={"rgba(0,0,0,0.6)"}
                     ></InputStyled>
                   </HStack>
                   <HStack>
@@ -357,6 +359,7 @@ function FilterNFT({
                             type="number"
                             min="1"
                             max="5"
+                            textplace={"rgba(0,0,0,0.6)"}
                           ></InputStyled>
                           <InputStyled
                             background={({ theme }) => theme.faded}
@@ -365,6 +368,7 @@ function FilterNFT({
                             type="number"
                             min="1"
                             max="5"
+                            textplace={"rgba(0,0,0,0.6)"}
                           ></InputStyled>
                         </HStack>
                         <HStack>
