@@ -43,7 +43,7 @@ import { SearchCollection } from "../../styles/SearchCollection";
 import { FiltersButton } from "../../styles/FiltersButton";
 import { SortButtonNFTS } from "../../styles/SortButtonNFTS";
 import noResult from "../../images/noResult.png";
-import { StickySectionHeader } from "@mayank1513/sticky-section-header";
+import { StickySectionHeader } from "../../CustomModules/sticky/StickySectionHeader.js";
 
 const CollectionPage = (props) => {
   const size = useWindowSize();
@@ -632,7 +632,7 @@ const CollectionPage = (props) => {
 
       {/* Collection NFTs */}
       <CollectionContent id="scrollableDiv">
-        <StickySectionHeader top="90">
+        <StickySectionHeader top="68">
           {/* Filters Search and Sort */}
           <HStack
             background="rgb(0,0,0, 0.06)"
@@ -728,6 +728,7 @@ const CollectionPage = (props) => {
                       setIsPlaying={handleNFTLongPress}
                       isPlaying={nftPlaying[i]}
                       nftIndex={i}
+                      border={"6px"}
                     ></NftContainer>
                   </VStack>
                 ))

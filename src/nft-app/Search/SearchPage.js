@@ -320,13 +320,14 @@ function SearchPage(props) {
 
       <ContentSearch id="scrollableDiv">
         {/* Sticky bar with filters and sort for NFT and Collections */}
-        <StickySectionHeader top="69">
+        <StickySectionHeader top="68">
           {isSelected ? (
             <HStack
               style={{ zIndex: 1 }}
               background="rgb(0,0,0, 0.06)"
               padding="6px"
               border="9px"
+              blur="30px"
             >
               <FiltersButton
                 onChange={handleChangeFilter}
@@ -359,6 +360,7 @@ function SearchPage(props) {
               background="rgb(0,0,0, 0.06)"
               padding="6px"
               border="9px"
+              blur="30px"
             >
               <FiltersButton
                 isNftFilter={true}
@@ -535,6 +537,7 @@ function SearchPage(props) {
                             setIsPlaying={handleNFTLongPress}
                             isPlaying={nftPlaying[i]}
                             nftIndex={i}
+                            border="6px"
                           ></NftContainer>
                         </VStack>
                       ))}

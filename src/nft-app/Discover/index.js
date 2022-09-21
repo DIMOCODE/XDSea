@@ -562,6 +562,7 @@ const Discover = (props) => {
                               setIsPlaying={handleNFTLongPress}
                               isPlaying={nftPlaying[i]}
                               nftIndex={i}
+                              border="6px"
                             ></NftContainer>
                           </VStack>
                         ))
