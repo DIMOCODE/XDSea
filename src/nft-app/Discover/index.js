@@ -36,7 +36,7 @@ import { SortButtonNFTS } from "../../styles/SortButtonNFTS";
 import { FiltersButton } from "../../styles/FiltersButton";
 import { SortButtonCollections } from "../../styles/SortButtonCollections";
 import { StickySectionHeader } from "../../CustomModules/sticky/StickySectionHeader.js";
-import seamless from "../../images/newBlue.webp";
+import seamless from "../../images/newBlue.png";
 
 import "./customstyles.css";
 import { positions } from "@mui/system";

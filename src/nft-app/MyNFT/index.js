@@ -55,7 +55,7 @@ import walletBlue from "../../images/walletBlue.png";
 import useWindowSize from "../../styles/useWindowSize";
 import ButtonApp from "../../styles/Buttons";
 import { TextAreaStyled } from "../../styles/TextAreaStyled";
-import newBlue from "../../images/newBlue.webp";
+import newBlue from "../../images/newBlue.png";
 import warning from "../../images/alert.png";
 
 import { appStyle } from "../../styles/AppStyles";

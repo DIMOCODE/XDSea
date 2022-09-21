@@ -50,14 +50,14 @@ import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 
 import { Grid, FreeMode, Navigation, Thumbs, Pagination } from "swiper";
 
-import goldSphere from "../../images/GoldSphere.webp";
-import rocket3D from "../../images/Rocket3D.webp";
-import Star3D from "../../images/Star3D.webp";
-import firstPlaces from "../../images/firstplaces.webp";
-import nftIdea from "../../images/nftIdea.webp";
-import outlinesXDSEA from "../../images/logoShield.webp";
-import newBlue from "../../images/newBlue.webp";
-import CristalHeart from "../../images/CristalHeart.webp";
+import goldSphere from "../../images/GoldSphere.png";
+import rocket3D from "../../images/Rocket3D.png";
+import Star3D from "../../images/Star3D.png";
+import firstPlaces from "../../images/firstplaces.png";
+import nftIdea from "../../images/nftIdea.jpg";
+import outlinesXDSEA from "../../images/logoShield.png";
+import newBlue from "../../images/newBlue.png";
+import CristalHeart from "../../images/CristalHeart.png";
 
 import { SubtitleBubble } from "../../styles/SubtitleBubble";
 import { PricePosition } from "../../styles/PricePosition";

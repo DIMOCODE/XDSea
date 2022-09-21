@@ -55,7 +55,7 @@ import {
 import { createNFT, getSignedURLNFT, updateNFT } from "../../API/NFT";
 import { isVideo } from "../../common";
 import { uploadFileInS3Bucket } from "../../helpers/fileUploader";
-import seamless from "../../images/newBlue.webp";
+import seamless from "../../images/newBlue.png";
 
 function CreateNft(props) {
   const size = useWindowSize();

@@ -10,7 +10,7 @@ import {
 } from "../../styles/TextStyles";
 import { appStyle } from "../../styles/AppStyles";
 import { AnimatePresence, motion } from "framer-motion/dist/framer-motion";
-import DiscoverBar from "../../images/newBlue.webp";
+import DiscoverBar from "../../images/newBlue.png";
 import { SortButtonCollections } from "../../styles/SortButtonCollections";
 import useWindowSize from "../../styles/useWindowSize";
 import { FiltersButton } from "../../styles/FiltersButton";
