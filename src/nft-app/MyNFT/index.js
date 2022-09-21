@@ -437,7 +437,6 @@ const MyNFT = (props) => {
     }
 
     let userData = (await getUser(userId)).data;
-    setIsProfileUpdated(true);
     setUser(userData.user);
     setUserSettings(userData.settings);
     setIsProfileUpdated(false);
