@@ -44,7 +44,7 @@ function SearchPage(props) {
   const [loading, setLoading] = useState(true);
   const [collectionParams, setCollectionParams] = useState({
     page: 1,
-    searchTerm: searchTerm,
+    searchBy: searchTerm,
   });
   const [nftParams, setNftParams] = useState({
     page: 1,
@@ -67,7 +67,7 @@ function SearchPage(props) {
     setCollectionParams((prevState) => ({
       ...prevState,
       page: params.page + 1,
-      searchTerm: params.searchTerm,
+      searchBy: params.searchTerm,
     }));
   };
 
@@ -204,7 +204,7 @@ function SearchPage(props) {
       var newurl = location.pathname + `?searchTerm=${searchTerm}&mode=nft`;
       window.history.replaceState({ path: newurl }, "", newurl);
       getNFTData({ page: 1, searchBy: searchTerm });
-      setCollectionParams({ page: 1, searchTerm: searchTerm });
+      setCollectionParams({ page: 1, searchBy: searchTerm });
     }
     setNewResults(true);
   }, [searchTerm]);
@@ -269,6 +269,7 @@ function SearchPage(props) {
                       if (newResults) {
                         setLoading(true);
                         getCollectionData(collectionParams);
+                        console.log(collectionParams)
                       }
                       setNewResults(false);
                       var newurl =
@@ -322,11 +323,10 @@ function SearchPage(props) {
         <StickySectionHeader top="69">
           {isSelected ? (
             <HStack
+              style={{ zIndex: 1 }}
               background="rgb(0,0,0, 0.06)"
               padding="6px"
               border="9px"
-              width="100%"
-              blur="39px"
             >
               <FiltersButton
                 onChange={handleChangeFilter}
@@ -392,7 +392,7 @@ function SearchPage(props) {
         {/* Content results depending of search query */}
 
         {isSelected ? (
-          <VStack style={{ zIndex: "20" }} spacing="30px" padding="30px 12px">
+          <VStack spacing="30px" padding="30px 12px">
             {loading ? (
               <VStack minheight="300px">
                 <LoopLogo></LoopLogo>

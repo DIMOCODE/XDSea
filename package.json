@@ -43,6 +43,7 @@
     "react-use": "^17.4.0",
     "secure-ls": "^1.2.6",
     "serve": "^14.0.1",
+    "speakeasy": "^2.0.0",
     "styled-components": "^5.3.5",
     "swiper": "^8.3.2",
     "truffle-contract-size": "^2.0.1",

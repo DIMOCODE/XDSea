@@ -635,11 +635,11 @@ const CollectionPage = (props) => {
         <StickySectionHeader top="90">
           {/* Filters Search and Sort */}
           <HStack
-            responsive="true"
-            spacing="6px"
-            padding=" 6px"
+            background="rgb(0,0,0, 0.06)"
+            padding="6px"
+            border="9px"
+            width="100%"
             blur="30px"
-            border="6px"
           >
             <SearchCollection
               inputId={"collectionNFT"}

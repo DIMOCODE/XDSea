@@ -66,12 +66,15 @@ export const createSignedRequest = async (method, url, params, body) => {
  * @param  {Object} body OPTIONAL.  Body parameters needed in the request
  * @return {[Promise<Any>]}      Axios Promise Response
  */
-export const createRequest = async (method, url, params, body) => {
+export const createRequest = async (method, url, params, body, customHeaders) => {
   const bodyRequest = {
     url: `${URL_ROOT}/${url}`,
     method,
     params: params ?? {},
     data: body ?? {},
   };
+  if (typeof customHeaders === "object" && Object.keys(customHeaders).length) {
+    bodyRequest.headers = customHeaders;
+  }
   return await axios(bodyRequest);
 };
