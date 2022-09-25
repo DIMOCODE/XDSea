@@ -678,6 +678,7 @@ function CreateNft(props) {
             collectionId,
             tokenId,
             isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address,
+            nftmarketlayeraddress,
             price,
             royalty,
             name,
