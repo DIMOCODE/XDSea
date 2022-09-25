@@ -2630,6 +2630,9 @@ const MyNFT = (props) => {
                                   boxShadow:
                                     " 0px 11px 12px 0px rgba(0, 0, 0, 0.2)",
                                 }}
+                                onClick={() => {
+                                  props.redirect(`collection/${item.nickName}`)
+                                }}
                               >
                                 <ZItem>
                                   <IconImg
