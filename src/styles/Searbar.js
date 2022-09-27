@@ -43,13 +43,11 @@ function Searchbar({
   creatorImage,
   top,
   left,
-  width,
   widthInput,
   isPhone,
   backcolor,
   textcolor,
   onClickInput,
-  switchBarStatus,
   textplace,
 }) {
   const history = useHistory();
@@ -63,7 +61,6 @@ function Searchbar({
   const ref = useRef(null);
   const size = useWindowSize();
   useClickAway(ref, () => {
-    switchBarStatus(false);
     setShowResults(false);
   });
 
@@ -71,7 +68,6 @@ function Searchbar({
     setFilteredCollectionData([]);
     setFilteredNFTData([]);
     setSearchTerm("");
-    switchBarStatus(false);
     setShowResults(false);
   };
 
@@ -83,7 +79,6 @@ function Searchbar({
   function NavigateTo(route) {
     history.push(`/${route}`);
     setShowResults(false);
-    switchBarStatus(false);
   }
 
   /**
@@ -107,7 +102,6 @@ function Searchbar({
             }
 
             setLoading(false);
-            switchBarStatus(true);
             setShowResults(true);
           })
         );
@@ -115,7 +109,6 @@ function Searchbar({
         setFilteredCollectionData([]);
         setFilteredNFTData([]);
         setLoading(false);
-        switchBarStatus(false);
         setShowResults(false);
       }
     }, 1500);

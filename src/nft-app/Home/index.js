@@ -184,11 +184,10 @@ const Home = (props) => {
 
   return (
     <Content>
+      {/* Blue banner background */}
       <VStack
-        width="100%"
         backgroundimage={newBlue}
-        padding="90px 0px 21px 00px"
-        overflowx="hidden"
+        padding="90px 0px 21px 0px"
         spacing="30px"
       >
         {/* Logo marketplace */}
@@ -196,6 +195,7 @@ const Home = (props) => {
           url={outlinesXDSEA}
           width={size.width > 768 ? "190px" : "150px"}
           height={size.width > 768 ? "190px" : "150px"}
+          cursor={"pointer"}
         ></IconImg>
 
         {/* Slogan */}
@@ -224,7 +224,9 @@ const Home = (props) => {
                   minheight={size.width > 425 ? item.height + "px" : "150px"}
                   cursor="pointer"
                   onClick={() =>
-                    props.redirect(`nft/${item.collectionId.address}/${item.tokenId}`)
+                    props.redirect(
+                      `nft/${item.collectionId.address}/${item.tokenId}`
+                    )
                   }
                   onHoverStart={() => {
                     setFeaturedNFTPlaying((prevState) => {
@@ -290,7 +292,11 @@ const Home = (props) => {
                     })}
                   >
                     <VStack
-                      background="linear-gradient(190.5deg, rgba(0, 0, 0, 0) 75.64%, rgba(0, 0, 0, 0.90) 90.61%);"
+                      background={
+                        size.width > 425
+                          ? "linear-gradient(190.5deg, rgba(0, 0, 0, 0) 75.64%, rgba(0, 0, 0, 0.90) 90.61%)"
+                          : null
+                      }
                       border={size.width > 425 ? "6px" : "0px"}
                       alignment="flex-start"
                       cursor="pointer"
@@ -300,9 +306,7 @@ const Home = (props) => {
                         spacing="0px"
                         alignment="flex-start"
                         padding={
-                          size.width > 768
-                            ? "0 0 0px 15px"
-                            : "0 0 30px 15px"
+                          size.width > 768 ? "0 0 0px 15px" : "0 0 30px 15px"
                         }
                         maxheight="60px"
                         width="100%"
@@ -722,7 +726,9 @@ const Home = (props) => {
                     key={"newSlide_" + item._id}
                     style={{ cursor: "pointer" }}
                     onClick={() =>
-                      props.redirect(`nft/${item.collectionId.address}/${item.tokenId}`)
+                      props.redirect(
+                        `nft/${item.collectionId.address}/${item.tokenId}`
+                      )
                     }
                   >
                     <NftContainer

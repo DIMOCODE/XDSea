@@ -2138,7 +2138,7 @@ const MyNFT = (props) => {
                                 : "white"
                             }
                           >
-                            NFTs Purchased
+                            NFTs Owned
                           </TitleSemi18>
                           <VStack
                             width="auto"
@@ -2914,12 +2914,12 @@ const MyNFT = (props) => {
                   userSettings?.dashboardMode === "dark"
                     ? "#26272E"
                     : "white"
-                }>NFTs Purchased</BodyRegular>
+                }>NFTs Owned</BodyRegular>
                 : <BodyRegular cursor="pointer" textcolor={
                   userSettings?.dashboardMode === "dark"
                     ? "#26272E"
                     : "white"
-                }>NFTs Purchased</BodyRegular>
+                }>NFTs Owned</BodyRegular>
               }
               
               <VStack

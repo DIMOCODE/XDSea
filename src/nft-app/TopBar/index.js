@@ -102,15 +102,6 @@ function TopBar(props) {
   };
 
   /**
-   * Change the searchbar design
-   *
-   * @param {boolean} status the status of the searchbar
-   */
-  function handleBarStatus(status) {
-    setIsSearch(status);
-  }
-
-  /**
    * Connect Metamask wallet
    */
   const connectMetamask = async () => {
@@ -356,78 +347,44 @@ function TopBar(props) {
 
   return (
     <ContentBar>
-      {/* Top bar organized by Phone Tablet and Computer, each case of the switch have the content of the bar */}
+      {/* Top bar organized by Phone, Tablet and Computer */}
       <HStack height="69px" width="100%" justify="center" blur="30px">
         <>
-          <HStack
-            width={
-              size.width > 728 ? "1200px" : size.width > 425 ? "1024px" : "100%"
-            }
-            padding="0 6px "
-          >
-            {/* Logo */}
-            <HStack
-              spacing="9px"
-              onClick={() => props.redirect("")}
-              cursor={"pointer"}
-            >
+          <HStack width={size.width > 1200 ? "1200px" : "100%"} padding="0 6px">
+            {/* Logo and Beta version info */}
+            <HStack spacing="9px">
               <IconImg
                 url={XDSealogo}
                 width="52px"
                 height="52px"
                 cursor={"pointer"}
+                onClick={() => props.redirect("")}
               ></IconImg>
-              <VStack
-                cursor={"pointer"}
-                spacing="1px"
-                alignment="flex-start"
-                width="80px"
-              >
-                <BodyRegular animate={{ opacity: 1 }} textcolor="#FCD868">
-                  BETA
-                </BodyRegular>
-                {devMode ? (
-                  <BodyBold textcolor="#FFFFFF">Basilisk</BodyBold>
-                ) : (
-                  <HStack
-                    background=" linear-gradient(90.5deg, #FFF5B3 -30.32%, #FCD868 15.14%, #FBC34B 85.07%, #FF7A00 109.52%)"
-                    border="6px"
-                    padding="3px 6px"
-                    cursor={"pointer"}
-                  >
-                    <CaptionRegular textcolor="#7A4405">
-                      Developer
-                    </CaptionRegular>
-                  </HStack>
-                )}
+              <VStack spacing="1px" alignment="flex-start">
+                <BodyRegular textcolor="#FCD868">BETA</BodyRegular>
+                <BodyBold textcolor="#FFFFFF">Basilisk</BodyBold>
               </VStack>
             </HStack>
+
             <Spacer></Spacer>
 
-            {/* Search with Discover and Create hidden on mobile */}
-
-            {size.width > 425 ? (
+            {/* Search with Discover and Create NFT buttons for large sizes */}
+            {size.width > 768 ? (
               <HStack spacing="9px">
                 {location.pathname === "/SearchPage" ? null : (
                   <Searchbar
-                    top="54px"
-                    left={"-0px"}
                     placeholder="Search for NFTs and Collections"
-                    // widthInput={isSearch ? "741px" : "310px"}
-                    widthInput={size.width > 768 ? "520px" : "290px"}
-                    width="630px"
-                    switchBarStatus={handleBarStatus}
+                    widthInput={size.width > 1024 ? "520px" : "290px"}
                   ></Searchbar>
                 )}
 
                 <HStack
                   background={({ theme }) => theme.backElement}
-                  self="none"
+                  self="auto"
                   height="42px"
                   width="99px"
-                  padding="0"
                   border="6px"
-                  whiteTap={{ scale: 0.9 }}
+                  whileTap={{ scale: 0.9 }}
                   cursor="pointer"
                   onClick={() => props.redirect("discover/collections")}
                 >
@@ -438,13 +395,12 @@ function TopBar(props) {
                   background={
                     "linear-gradient(166.99deg, #2868F4 37.6%, #0E27C1 115.6%)"
                   }
-                  self="none"
+                  self="auto"
                   height="42px"
                   width="99px"
-                  padding="0px"
                   border="6px"
                   minwidth="300px"
-                  whiteTap={{ scale: 0.9 }}
+                  whileTap={{ scale: 0.9 }}
                   cursor="pointer"
                   onClick={() => props.redirect("create-nft")}
                 >
@@ -458,8 +414,9 @@ function TopBar(props) {
             <Spacer></Spacer>
 
             <HStack ref={ref}>
+              {/* Wallet button when connected */}
               {wallet?.connected ? (
-                <HStack self="none" minwith="52px" height="52px">
+                <HStack self="auto" height="52px">
                   <IconImg
                     url={user?.urlProfile}
                     width="52px"
@@ -554,7 +511,6 @@ function TopBar(props) {
                             textcolor={"rgba(0,0,0,0.6)"}
                             textplace={"rgba(0,0,0,0.6)"}
                             isPhone={true}
-                            switchBarStatus={handleBarStatus}
                             style={{ zIndex: 1 }}
                           ></Searchbar>
                         </HStack>
@@ -581,7 +537,7 @@ function TopBar(props) {
                               cursor="pointer"
                               onClick={() => {
                                 setShowMenu(!showMenu);
-                                props.redirect(`user/${user?._id}`);
+                                props.redirect(`user/${user?.nickName}`);
                               }}
                             >
                               <TitleRegular18

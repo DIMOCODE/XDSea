@@ -491,7 +491,14 @@ const NFTDetails = (props) => {
    */
   const getData = async () => {
     try {
-      const nftData = await (await getNFT(nftaddress, id)).data;
+      const nftData = await (
+        await getNFT(
+          isXdc(nftaddress.toLowerCase())
+            ? fromXdc(nftaddress.toLowerCase())
+            : nftaddress.toLowerCase(),
+          id
+        )
+      ).data;
 
       await Promise.all(
         [1, 2].map(async (i) => {
@@ -831,7 +838,7 @@ const NFTDetails = (props) => {
           PurchaisedNftName={nft.name}
           ListedImage={nft.urlFile.v0}
           confirmBtnPurchaise={() =>
-            props.redirect(`user/${LS.get(LS_ROOT_KEY).user._id}`)
+            props.redirect(`user/${LS.get(LS_ROOT_KEY).user.nickName}`)
           }
         ></TxModal>
       ) : null}
