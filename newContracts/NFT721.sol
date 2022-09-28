@@ -18,12 +18,15 @@ contract NFT721 is ERC721URIStorage, ERC721Royalty {
     */
     constructor(
         string memory _collectionName, 
-        string memory _collectionSymbol 
+        string memory _collectionSymbol,
+        uint96 contractRoyalty,
+        address royaltyReceiver 
     ) ERC721(
         _collectionName, 
         _collectionSymbol
     ) {
         owner = msg.sender;
+        _setDefaultRoyalty(royaltyReceiver, contractRoyalty);
         tokenCount = 0;
     }
 
@@ -37,13 +40,16 @@ contract NFT721 is ERC721URIStorage, ERC721Royalty {
         @param _tokenURI - URI of the NFT Metadata
         @return newItemId - token ID of the minted NFT
      */
-    function mint(string memory _tokenURI) public returns (uint256) {
+    function mint(string memory _tokenURI, address royaltyReceiver, uint96 tokenRoyalty) public returns (uint256) {
         _tokenIds.increment();
         uint256 newItemId = _tokenIds.current();
         tokenCount = newItemId;
 
         _safeMint(msg.sender, newItemId);
         _setTokenURI(newItemId, _tokenURI);
+        if(royaltyReceiver != address(0)) {
+            super._setTokenRoyalty(newItemId, royaltyReceiver, tokenRoyalty);
+        }
         return newItemId;
     }
 
@@ -52,7 +58,8 @@ contract NFT721 is ERC721URIStorage, ERC721Royalty {
         @param _tokenID - token ID of the NFT to be burned
      */
     function burn(uint256 _tokenID) public {
-        require(ownerOf(_tokenID) == msg.sender, "Owner of the NFT can only burn NFTs owned by them");
+        require(_isApprovedOrOwner(msg.sender, _tokenID), "Owner or Approved sender of the NFT can only burn NFTs owned by them");
+        require(_exists(_tokenID), "NFT does not exist");
         _burn(_tokenID);
     }
 
