@@ -643,7 +643,8 @@ function CreateNft(props) {
         const collectionCreation = await (
           await createCollection(
             collectionName,
-            user.XDCWallets[0],
+            nftaddress,
+            user.user.XDCWallets[0],
             collectionDescription,
             logoUrl,
             bannerUrl,
