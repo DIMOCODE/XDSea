@@ -460,7 +460,7 @@ const MyNFT = (props) => {
 
   return (
     <UserSection>
-      {size.width > 425 ? (
+      {size.width > 428 ? (
         <ZStack>
           <ZItem>
             <VStack width="100%" height="900px" justify="flex-start">
@@ -2953,7 +2953,7 @@ const MyNFT = (props) => {
                 </VStack>
               ) : collections?.length !== 0 ? (
                 <Swiper
-                    slidesPerView={size.width > 425 ? "3" : "1"}
+                    slidesPerView={size.width > 428 ? "3" : "1"}
                     spaceBetween={9}
                     centeredSlides={false}
                     loop={true}
@@ -3105,7 +3105,7 @@ const MyNFT = (props) => {
                 >
                   <Masonry
                     columnsCount={size.width > 1200 ? 4 : 3}
-                    gutter={size.width > 425
+                    gutter={size.width > 428
                       ? "15px"
                       : "2px"}
                     style={{
@@ -3114,7 +3114,7 @@ const MyNFT = (props) => {
                           ? "1200px"
                           : size.width > 1023
                           ? "1024px"
-                          : size.width > 425
+                          : size.width > 428
                             ? "768px"
                             : size.width - 4 + "px",
                     }}
@@ -3125,7 +3125,7 @@ const MyNFT = (props) => {
                         maxwidth="100%"
                         minheight={(item.height / 3) + "px"}
                         border={
-                          size.width > 425
+                          size.width > 428
                             ? "6px"
                             : "0px"
                         }
@@ -3136,7 +3136,7 @@ const MyNFT = (props) => {
                         <ZStack
                           cursor={"pointer"}
                           border={
-                            size.width > 425
+                            size.width > 428
                               ? "6px"
                               : "0px"
                           }
@@ -3182,7 +3182,7 @@ const MyNFT = (props) => {
                                 height="100%"
                                 backsize="cover"
                                 border={
-                                  size.width > 425
+                                  size.width > 428
                                     ? "6px"
                                     : "0px"
                                 }
@@ -3192,7 +3192,7 @@ const MyNFT = (props) => {
                                 width="100%"
                                 height="100%"
                                 border={
-                                  size.width > 425
+                                  size.width > 428
                                     ? "6px"
                                     : "0px"
                                 }
@@ -3217,7 +3217,7 @@ const MyNFT = (props) => {
                                 height="100%"
                                 backsize="cover"
                                 border={
-                                  size.width > 425
+                                  size.width > 428
                                     ? "6px"
                                     : "0px"
                                 }
@@ -3237,12 +3237,12 @@ const MyNFT = (props) => {
                               });
                             })}
                           >
-                            {size.width > 425
+                            {size.width > 428
                               ? <VStack
                                 padding="15px"
                                 background="linear-gradient(180deg, rgba(0, 0, 0, 0) 54.41%, #000000 91.67%)"
                                 border={
-                                  size.width > 425
+                                  size.width > 428
                                     ? "6px"
                                     : "0px"
                                 }

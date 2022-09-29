@@ -149,7 +149,7 @@ function Searchbar({
         height="42px"
       ></InputStyled>
       {showResults ? (
-        size.width > 425 ? (
+        size.width > 428 ? (
           <SearchResult top={top} left={left} ref={ref}>
             <VStack
               background={({ theme }) => theme.backElement}
@@ -185,7 +185,7 @@ function Searchbar({
 
               {size.width > 768 ? (
                 <HStack
-                  responsive={size.width > 425 ? false : true}
+                  responsive={size.width > 428 ? false : true}
                   alignment="flex-start"
                   overflowy="auto"
                   height={"auto"}
@@ -338,7 +338,7 @@ function Searchbar({
                 </HStack>
               ) : (
                 <VStack
-                  responsive={size.width > 425 ? false : true}
+                  responsive={size.width > 428 ? false : true}
                   alignment="flex-start"
                   overflowy="auto"
                   height={isPhone ? "490px" : "300px"}

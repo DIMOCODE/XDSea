@@ -113,7 +113,7 @@ const NFTApp = () => {
                 ? "computer"
                 : size.width > 768
                 ? "tablet"
-                : size.width > 425
+                : size.width > 428
                 ? "phone"
                 : "phone"
             }
