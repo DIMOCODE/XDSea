@@ -648,8 +648,8 @@ const Home = (props) => {
                         )
                       }
                       minwidth="46%"
-                      height={size.width < 426 ? "190px" : "390px"}
-                      minheight={size.width < 426 ? "190px" : "390px"}
+                      height={size.width < 429 ? "190px" : "390px"}
+                      minheight={size.width < 429 ? "190px" : "390px"}
                       border={size.width > 428 ? "6px" : "0px"}
                       setIsPlaying={handleNFTLongPress}
                       isPlaying={nftPlaying[i]}

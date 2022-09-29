@@ -500,7 +500,7 @@ function TopBar(props) {
                         ></WalletButton>
                       </HStack>
 
-                      {size.width < 426 && (
+                      {size.width < 429 && (
                         <HStack style={{ zIndex: 1 }}>
                           <Searchbar
                             placeholder="Search for NFTs and Collections"
@@ -988,7 +988,7 @@ function TopBar(props) {
                   <HStack
                     self="none"
                     background={({ theme }) => theme.walletButton}
-                    maxWidth={size.width < 426 ? "100%" : "560px"}
+                    maxWidth={size.width < 429 ? "100%" : "560px"}
                     padding="15px"
                     border="15px"
                     responsive={true}
