@@ -210,18 +210,18 @@ const Home = (props) => {
         ></SubtitleBubble>
 
         <Masonry
-          columnsCount={size.width > 425 ? 3 : 2}
-          gutter={size.width > 768 ? "15px" : size.width > 425 ? "8px" : "2px"}
+          columnsCount={size.width > 428 ? 3 : 2}
+          gutter={size.width > 768 ? "15px" : size.width > 428 ? "8px" : "2px"}
           style={{
             width: size.width > 1200 ? "1200px" : size.width,
             padding:
-              size.width > 768 ? "15px" : size.width > 425 ? "8px" : "2px",
+              size.width > 768 ? "15px" : size.width > 428 ? "8px" : "2px",
           }}
         >
           {featuredNFTs.length !== 0
             ? featuredNFTs?.map((item, i) => (
                 <ZStack
-                  minheight={size.width > 425 ? item.height + "px" : "150px"}
+                  minheight={size.width > 428 ? item.height + "px" : "150px"}
                   cursor="pointer"
                   onClick={() =>
                     props.redirect(
@@ -245,7 +245,7 @@ const Home = (props) => {
                     <VStack
                       key={"featured_" + item._id}
                       cursor="pointer"
-                      border={size.width > 425 ? "6px" : "0px"}
+                      border={size.width > 428 ? "6px" : "0px"}
                       overflowx="hidden"
                       overflowy="hidden"
                     >
@@ -255,13 +255,13 @@ const Home = (props) => {
                           backsize="cover"
                           width="100%"
                           height="100%"
-                          border={size.width > 425 ? "6px" : "0px"}
+                          border={size.width > 428 ? "6px" : "0px"}
                           cursor="pointer"
                         ></IconImg>
                       ) : (
                         <VStack
                           background="black"
-                          border={size.width > 425 ? "6px" : "0px"}
+                          border={size.width > 428 ? "6px" : "0px"}
                           overflowx="hidden"
                           animate={{ scale: 2 }}
                           cursor="pointer"
@@ -293,11 +293,11 @@ const Home = (props) => {
                   >
                     <VStack
                       background={
-                        size.width > 425
+                        size.width > 428
                           ? "linear-gradient(190.5deg, rgba(0, 0, 0, 0) 75.64%, rgba(0, 0, 0, 0.90) 90.61%)"
                           : null
                       }
-                      border={size.width > 425 ? "6px" : "0px"}
+                      border={size.width > 428 ? "6px" : "0px"}
                       alignment="flex-start"
                       cursor="pointer"
                     >
@@ -312,7 +312,7 @@ const Home = (props) => {
                         width="100%"
                         cursor="pointer"
                       >
-                        {size.width > 425 ? (
+                        {size.width > 428 ? (
                           <HStack spacing="6px" cursor="pointer">
                             <IconImg
                               url={item.creator.urlProfile}
@@ -339,7 +339,7 @@ const Home = (props) => {
                           </HStack>
                         ) : null}
 
-                        {size.width > 425 ? (
+                        {size.width > 428 ? (
                           <TitleRegular18 textcolor="white" cursor="pointer">
                             {item.collectionId.name}
                           </TitleRegular18>
@@ -359,7 +359,7 @@ const Home = (props) => {
           <AbsoluteObject top="90px" left="-260px">
             <IconImg
               url={goldshape1}
-              width={size.width > 425 ? "390px" : "320px"}
+              width={size.width > 428 ? "390px" : "320px"}
               height="390px"
               backsize="contain"
             ></IconImg>
@@ -368,7 +368,7 @@ const Home = (props) => {
           <AbsoluteObject top="990px" right="-260px">
             <IconImg
               url={goldshape2}
-              width={size.width > 425 ? "390px" : "320px"}
+              width={size.width > 428 ? "390px" : "320px"}
               height="390px"
               backsize="contain"
             ></IconImg>
@@ -393,7 +393,7 @@ const Home = (props) => {
           <HStack
             width="100%"
             padding={
-              size.width > 425
+              size.width > 428
                 ? "120px 0 0 0"
                 : size.width > 375
                 ? "45px 0 0 0"
@@ -405,19 +405,19 @@ const Home = (props) => {
             <VStack maxwidth="600px" height="360px">
               <IconImg
                 url={firstPlaces}
-                width={size.width > 425 ? "100%" : "95%"}
+                width={size.width > 428 ? "100%" : "95%"}
                 height="100%"
               ></IconImg>
 
               {/* 1st Place */}
               <Gold
                 animate={{
-                  scale: size.width > 425 ? 1 : size.width > 320 ? 0.81 : 0.65,
+                  scale: size.width > 428 ? 1 : size.width > 320 ? 0.81 : 0.65,
                 }}
                 top={
                   size.width > 768
                     ? "-64px"
-                    : size.width > 425
+                    : size.width > 428
                     ? "-64px"
                     : size.width > 375
                     ? "-12px"
@@ -451,10 +451,10 @@ const Home = (props) => {
               {/* 2nd Place */}
               <Silver
                 animate={{
-                  scale: size.width > 425 ? 1 : size.width > 320 ? 0.81 : 0.65,
+                  scale: size.width > 428 ? 1 : size.width > 320 ? 0.81 : 0.65,
                 }}
                 left={
-                  size.width > 425
+                  size.width > 428
                     ? "26px"
                     : size.width > 375
                     ? "2px"
@@ -463,7 +463,7 @@ const Home = (props) => {
                     : "-16px"
                 }
                 top={
-                  size.width > 425
+                  size.width > 428
                     ? "32px"
                     : size.width > 375
                     ? "52px"
@@ -497,10 +497,10 @@ const Home = (props) => {
               {/* 3rd Place */}
               <Cooper
                 animate={{
-                  scale: size.width > 425 ? 1 : size.width > 320 ? 0.81 : 0.65,
+                  scale: size.width > 428 ? 1 : size.width > 320 ? 0.81 : 0.65,
                 }}
                 top={
-                  size.width > 425
+                  size.width > 428
                     ? "80px"
                     : size.width > 375
                     ? "84px"
@@ -509,7 +509,7 @@ const Home = (props) => {
                     : "84px"
                 }
                 right={
-                  size.width > 425
+                  size.width > 428
                     ? "26px"
                     : size.width > 375
                     ? "0px"
@@ -605,7 +605,7 @@ const Home = (props) => {
           <AbsoluteObject top="90px" left="-300px">
             <IconImg
               url={goldshape3}
-              width={size.width > 425 ? "490px" : "380px"}
+              width={size.width > 428 ? "490px" : "380px"}
               height="490px"
               backsize="contain"
             ></IconImg>
@@ -628,9 +628,9 @@ const Home = (props) => {
           {/* Trending NFT Cards */}
           <HStack
             flexwrap="wrap"
-            padding={size.width > 425 ? "0 12px 0 12px" : "0 2px 0 2px"}
+            padding={size.width > 428 ? "0 12px 0 12px" : "0 2px 0 2px"}
             height="auto"
-            spacing={size.width > 425 ? "15px" : "2px"}
+            spacing={size.width > 428 ? "15px" : "2px"}
           >
             {trendingNFTs.length !== 0
               ? trendingNFTs
@@ -648,9 +648,9 @@ const Home = (props) => {
                         )
                       }
                       minwidth="46%"
-                      height={size.width < 426 ? "190px" : "390px"}
-                      minheight={size.width < 426 ? "190px" : "390px"}
-                      border={size.width > 425 ? "6px" : "0px"}
+                      height={size.width < 429 ? "190px" : "390px"}
+                      minheight={size.width < 429 ? "190px" : "390px"}
+                      border={size.width > 428 ? "6px" : "0px"}
                       setIsPlaying={handleNFTLongPress}
                       isPlaying={nftPlaying[i]}
                       nftIndex={i}
@@ -681,7 +681,7 @@ const Home = (props) => {
           <AbsoluteObject top="90px" right="-230px">
             <IconImg
               url={goldshape4}
-              width={size.width > 425 ? "390px" : "320px"}
+              width={size.width > 428 ? "390px" : "320px"}
               height="390px"
               backsize="contain"
             ></IconImg>
@@ -705,7 +705,7 @@ const Home = (props) => {
           </VStack>
 
           <Swiper
-            slidesPerView={size.width > 425 ? "3" : "1"}
+            slidesPerView={size.width > 428 ? "3" : "1"}
             spaceBetween={9}
             centeredSlides={false}
             loop={true}
@@ -750,7 +750,7 @@ const Home = (props) => {
                       collectionVerified={item.creator.isVerified}
                       width="100%"
                       height="100%"
-                      border={size.width > 425 ? "6px" : "0px"}
+                      border={size.width > 428 ? "6px" : "0px"}
                       setIsPlaying={handleNFTLongPress}
                       isPlaying={nftPlaying[i]}
                       nftIndex={i}

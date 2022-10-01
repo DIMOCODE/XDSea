@@ -462,14 +462,14 @@ function TopBar(props) {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -6 }}
                     transition={{ type: "spring", damping: 10 }}
-                    top={size.width > 425 ? "76px" : "69px"}
+                    top={size.width > 428 ? "76px" : "69px"}
                   >
                     <VStack
                       background={({ theme }) => theme.backElement}
-                      width={size.width > 425 ? "360px" : "100vw"}
+                      width={size.width > 428 ? "360px" : "100vw"}
                       padding="21px 30px"
-                      height={size.width > 425 ? "auto" : "94vh"}
-                      border={size.width > 425 ? "9px" : "0"}
+                      height={size.width > 428 ? "auto" : "94vh"}
+                      border={size.width > 428 ? "9px" : "0"}
                       alignment="flex-start"
                       spacing="15px"
                       style={{
@@ -500,7 +500,7 @@ function TopBar(props) {
                         ></WalletButton>
                       </HStack>
 
-                      {size.width < 426 && (
+                      {size.width < 429 && (
                         <HStack style={{ zIndex: 1 }}>
                           <Searchbar
                             placeholder="Search for NFTs and Collections"
@@ -988,7 +988,7 @@ function TopBar(props) {
                   <HStack
                     self="none"
                     background={({ theme }) => theme.walletButton}
-                    maxWidth={size.width < 426 ? "100%" : "560px"}
+                    maxWidth={size.width < 429 ? "100%" : "560px"}
                     padding="15px"
                     border="15px"
                     responsive={true}

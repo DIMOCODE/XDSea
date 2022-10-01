@@ -145,7 +145,7 @@ export const createCollection = (
     instagramUrl,
     discordUrl,
     websiteUrl,
-    isHidden,
+    isHidden: false,
   };
   return createSignedRequest(HTTP_METHODS.post, "collection", null, body);
 };
