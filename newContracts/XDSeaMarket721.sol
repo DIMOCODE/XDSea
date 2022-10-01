@@ -13,10 +13,11 @@ error NotOwner();
 error PriceMustBeAboveZero();
 error NotApprovedForMarketplace();
 error NotListed(address nftContract, uint256 tokenId);
-error PriceNotMet(address nftContract, uint256 tokenId, uint256 price);
+error PriceNotMet(address nftContract, uint256 tokenId, uint256 price, uint256 sent);
 error NotTheRightCurrency(address listingERC20Address, address transactionERC20Address);
 error CannotTransferToNull(address nftContract, uint256 tokenId, address receiver);
 error OwnerCannotBuyOwnNFT();
+error CannotPayNullAddress();
 
 contract XDSeaMarket721 is IERC721Receiver, ReentrancyGuard {
 
@@ -36,6 +37,7 @@ contract XDSeaMarket721 is IERC721Receiver, ReentrancyGuard {
         address erc20Address;
         uint256 royalty;
         address royaltyReceiver;
+        address payout;
         State state;
     }
 
@@ -103,22 +105,34 @@ contract XDSeaMarket721 is IERC721Receiver, ReentrancyGuard {
         marketOwner = payable(msg.sender);
     }
 
-    function list(address nftContract, uint256 tokenId, uint256 price, address erc20Address, uint256 royalty) 
-        external isOwner(nftContract, tokenId, msg.sender) {
+    function list(address nftContract, uint256 tokenId, uint256 price, address erc20Address, uint256 royalty, address receiver, address payout) 
+        external {
+            IERC721 nft = IERC721(nftContract);
+            address owner = nft.ownerOf(tokenId);
+            if(msg.sender != owner) {
+                revert NotOwner();
+            }
             if(price <= 0) {
                 revert PriceMustBeAboveZero();
             }
-            IERC721 nft = IERC721(nftContract);
             if(nft.getApproved(tokenId) != address(this)) {
                 revert NotApprovedForMarketplace();
+            }
+            if(payout == address(0)) {
+                revert CannotPayNullAddress();
             }
             if(_checkRoyalties(nftContract)) {
                 (address royaltyReceiver, uint256 royaltyAmount) = 
                     IERC2981(nftContract).royaltyInfo(tokenId, 10000);
-                _listings[nftContract][tokenId] = Listing(price, msg.sender, erc20Address, royaltyAmount, royaltyReceiver, State.LISTED);
+                _listings[nftContract][tokenId] = Listing(price, msg.sender, erc20Address, royaltyAmount, royaltyReceiver, payout, State.LISTED);
             }
             else {
-                _listings[nftContract][tokenId] = Listing(price, msg.sender, erc20Address, royalty, msg.sender, State.LISTED);
+                if(_listings[nftContract][tokenId].royaltyReceiver != address(0)) {
+                    _listings[nftContract][tokenId] = Listing(price, msg.sender, erc20Address, _listings[nftContract][tokenId].royalty, _listings[nftContract][tokenId].royaltyReceiver, payout, State.LISTED);
+                }
+                else {
+                    _listings[nftContract][tokenId] = Listing(price, msg.sender, erc20Address, royalty, receiver, payout, State.LISTED);
+                }
             }
             nft.safeTransferFrom(msg.sender, address(this), tokenId);
             emit NFTListed(msg.sender, nftContract, tokenId, erc20Address, price);
@@ -140,12 +154,12 @@ contract XDSeaMarket721 is IERC721Receiver, ReentrancyGuard {
             }
             if(msg.value < _getTotalPrice(listedNFT.price, SafeMath.add(200, commission))) {
                 if(erc20Address == address(0)) {
-                    revert PriceNotMet(nftContract, tokenId, listedNFT.price);
+                    revert PriceNotMet(nftContract, tokenId, _getTotalPrice(listedNFT.price, SafeMath.add(200, commission)), msg.value);
                 }
                 else{
                     IERC20 token = IERC20(listedNFT.erc20Address);
                     if(token.balanceOf(msg.sender) < _getTotalPrice(listedNFT.price, SafeMath.add(200, commission))) {
-                        revert PriceNotMet(nftContract, tokenId, listedNFT.price);
+                        revert PriceNotMet(nftContract, tokenId, _getTotalPrice(listedNFT.price, SafeMath.add(200, commission)), token.balanceOf(msg.sender));
                     }
                 }
             }
@@ -164,11 +178,11 @@ contract XDSeaMarket721 is IERC721Receiver, ReentrancyGuard {
                     (address royaltyReceiver, uint256 royaltyAmount) = 
                         IERC2981(nftContract).royaltyInfo(tokenId, listedNFT.price);
                     payable(royaltyReceiver).transfer(royaltyAmount);
-                    payable(listedNFT.seller).transfer(SafeMath.sub(listedNFT.price, royaltyAmount));
+                    payable(listedNFT.payout).transfer(SafeMath.sub(listedNFT.price, royaltyAmount));
                 }
                 else{
                     payable(listedNFT.royaltyReceiver).transfer(_calculateRoyaltyAmount(listedNFT.price, listedNFT.royalty));
-                    payable(listedNFT.seller).transfer(SafeMath.sub(listedNFT.price, _calculateRoyaltyAmount(listedNFT.price, listedNFT.royalty)));
+                    payable(listedNFT.payout).transfer(SafeMath.sub(listedNFT.price, _calculateRoyaltyAmount(listedNFT.price, listedNFT.royalty)));
                 }
                 IERC721(nftContract).safeTransferFrom(address(this), msg.sender, tokenId);
             }
@@ -182,11 +196,11 @@ contract XDSeaMarket721 is IERC721Receiver, ReentrancyGuard {
                     (address royaltyReceiver, uint256 royaltyAmount) = 
                         IERC2981(nftContract).royaltyInfo(tokenId, listedNFT.price);
                     token.transferFrom(msg.sender, payable(royaltyReceiver), royaltyAmount);
-                    token.transferFrom(msg.sender, payable(listedNFT.seller), SafeMath.sub(listedNFT.price, royaltyAmount));
+                    token.transferFrom(msg.sender, payable(listedNFT.payout), SafeMath.sub(listedNFT.price, royaltyAmount));
                 }
                 else{
                     token.transferFrom(msg.sender, payable(listedNFT.royaltyReceiver), _calculateRoyaltyAmount(listedNFT.price, listedNFT.royalty));
-                    token.transferFrom(msg.sender, payable(listedNFT.seller), SafeMath.sub(listedNFT.price, _calculateRoyaltyAmount(listedNFT.price, listedNFT.royalty)));
+                    token.transferFrom(msg.sender, payable(listedNFT.payout), SafeMath.sub(listedNFT.price, _calculateRoyaltyAmount(listedNFT.price, listedNFT.royalty)));
                 }
                 bytes memory bytesInput = abi.encodePacked(
                     "CUSTOMTOKEN0x", 
@@ -198,6 +212,7 @@ contract XDSeaMarket721 is IERC721Receiver, ReentrancyGuard {
             }
             _listings[nftContract][tokenId].state = State.SOLD;
             _listings[nftContract][tokenId].seller = msg.sender;
+            _listings[nftContract][tokenId].payout = msg.sender;
             emit NFTPurchased(msg.sender, nftContract, tokenId, _getTotalPrice(listedNFT.price, SafeMath.add(200, commission)));
         }
 

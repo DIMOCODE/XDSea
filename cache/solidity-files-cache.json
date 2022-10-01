@@ -591,8 +591,8 @@
       "artifacts": []
     },
     "C:\\Users\\priya\\XDSea\\newContracts\\XDSeaMarket721.sol": {
-      "lastModificationDate": 1664346264181,
-      "contentHash": "a81ebcd12a5c0458a1470dc3b98559c5",
+      "lastModificationDate": 1664474117534,
+      "contentHash": "9994bad3209cdb28d338be1ba840794a",
       "sourceName": "newContracts/XDSeaMarket721.sol",
       "solcConfig": {
         "version": "0.8.15",
@@ -848,6 +848,81 @@
       ],
       "artifacts": [
         "XRC20"
+      ]
+    },
+    "C:\\Users\\priya\\XDSea\\newContracts\\NFT.sol": {
+      "lastModificationDate": 1664456988059,
+      "contentHash": "1980a9a894a4fd4f2532380ac67382d5",
+      "sourceName": "newContracts/NFT.sol",
+      "solcConfig": {
+        "version": "0.8.15",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [
+        "@openzeppelin/contracts/utils/Counters.sol",
+        "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol",
+        "@openzeppelin/contracts/token/ERC721/ERC721.sol",
+        "hardhat/console.sol"
+      ],
+      "versionPragmas": [
+        "^0.8.3"
+      ],
+      "artifacts": [
+        "NFT"
+      ]
+    },
+    "C:\\Users\\priya\\XDSea\\node_modules\\hardhat\\console.sol": {
+      "lastModificationDate": 1663065305419,
+      "contentHash": "cc4777addd464ea56fa35b1c45df0591",
+      "sourceName": "hardhat/console.sol",
+      "solcConfig": {
+        "version": "0.8.15",
+        "settings": {
+          "optimizer": {
+            "enabled": false,
+            "runs": 200
+          },
+          "outputSelection": {
+            "*": {
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers",
+                "metadata"
+              ],
+              "": [
+                "ast"
+              ]
+            }
+          }
+        }
+      },
+      "imports": [],
+      "versionPragmas": [
+        ">=0.4.22 <0.9.0"
+      ],
+      "artifacts": [
+        "console"
       ]
     }
   }
