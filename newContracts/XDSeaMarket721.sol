@@ -4,6 +4,7 @@ pragma solidity ^0.8.15;
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/interfaces/IERC2981.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
@@ -18,8 +19,12 @@ error NotTheRightCurrency(address listingERC20Address, address transactionERC20A
 error CannotTransferToNull(address nftContract, uint256 tokenId, address receiver);
 error OwnerCannotBuyOwnNFT();
 error CannotPayNullAddress();
+error PriceAlreadyTheSame();
+error PayoutAlreadyTheSame();
 
 contract XDSeaMarket721 is IERC721Receiver, ReentrancyGuard {
+
+    using SafeERC20 for IERC20;
 
     address payable public marketOwner;
 
@@ -66,7 +71,8 @@ contract XDSeaMarket721 is IERC721Receiver, ReentrancyGuard {
         address indexed seller,
         address indexed nftContract,
         uint256 indexed tokenId,
-        uint256 price
+        uint256 price,
+        address payout
     );
 
     event NFTTransferred(
@@ -106,7 +112,7 @@ contract XDSeaMarket721 is IERC721Receiver, ReentrancyGuard {
     }
 
     function list(address nftContract, uint256 tokenId, uint256 price, address erc20Address, uint256 royalty, address receiver, address payout) 
-        external {
+        external nonReentrant {
             IERC721 nft = IERC721(nftContract);
             address owner = nft.ownerOf(tokenId);
             if(msg.sender != owner) {
@@ -139,7 +145,7 @@ contract XDSeaMarket721 is IERC721Receiver, ReentrancyGuard {
         }
 
     function withdrawListing(address nftContract, uint256 tokenId) 
-        external isSeller(nftContract, tokenId, msg.sender) {
+        external nonReentrant isSeller(nftContract, tokenId, msg.sender) {
             IERC721 nft = IERC721(nftContract);
             nft.safeTransferFrom(address(this), msg.sender, tokenId);
             _listings[nftContract][tokenId].state = State.WITHDRAWN;
@@ -189,18 +195,18 @@ contract XDSeaMarket721 is IERC721Receiver, ReentrancyGuard {
             else {
                 IERC20 token = IERC20(listedNFT.erc20Address);
                 if(commission != 0) {
-                    token.transferFrom(msg.sender, payable(commissionAddress), SafeMath.div(SafeMath.mul(listedNFT.price, commission), 10000));
+                    token.safeTransferFrom(msg.sender, payable(commissionAddress), SafeMath.div(SafeMath.mul(listedNFT.price, commission), 10000));
                 }
-                token.transferFrom(msg.sender, marketOwner, SafeMath.div(SafeMath.mul(listedNFT.price, 200), 10000));
+                token.safeTransferFrom(msg.sender, marketOwner, SafeMath.div(SafeMath.mul(listedNFT.price, 200), 10000));
                 if(_checkRoyalties(nftContract)) {
                     (address royaltyReceiver, uint256 royaltyAmount) = 
                         IERC2981(nftContract).royaltyInfo(tokenId, listedNFT.price);
-                    token.transferFrom(msg.sender, payable(royaltyReceiver), royaltyAmount);
-                    token.transferFrom(msg.sender, payable(listedNFT.payout), SafeMath.sub(listedNFT.price, royaltyAmount));
+                    token.safeTransferFrom(msg.sender, payable(royaltyReceiver), royaltyAmount);
+                    token.safeTransferFrom(msg.sender, payable(listedNFT.payout), SafeMath.sub(listedNFT.price, royaltyAmount));
                 }
                 else{
-                    token.transferFrom(msg.sender, payable(listedNFT.royaltyReceiver), _calculateRoyaltyAmount(listedNFT.price, listedNFT.royalty));
-                    token.transferFrom(msg.sender, payable(listedNFT.payout), SafeMath.sub(listedNFT.price, _calculateRoyaltyAmount(listedNFT.price, listedNFT.royalty)));
+                    token.safeTransferFrom(msg.sender, payable(listedNFT.royaltyReceiver), _calculateRoyaltyAmount(listedNFT.price, listedNFT.royalty));
+                    token.safeTransferFrom(msg.sender, payable(listedNFT.payout), SafeMath.sub(listedNFT.price, _calculateRoyaltyAmount(listedNFT.price, listedNFT.royalty)));
                 }
                 bytes memory bytesInput = abi.encodePacked(
                     "CUSTOMTOKEN0x", 
@@ -279,8 +285,27 @@ contract XDSeaMarket721 is IERC721Receiver, ReentrancyGuard {
             if(newPrice == 0) {
                 revert PriceMustBeAboveZero();
             }
+            if(newPrice == listedNFT.price) {
+                revert PriceAlreadyTheSame();
+            }
             _listings[nftContract][tokenId].price = newPrice;
-            emit NFTListEdited(msg.sender, nftContract, tokenId, newPrice);
+            emit NFTListEdited(msg.sender, nftContract, tokenId, newPrice, listedNFT.payout);
+        }
+    
+    function updatePayout(address nftContract, uint256 tokenId, address newPayout)
+        external nonReentrant isSeller(nftContract, tokenId, msg.sender) {
+            Listing memory listedNFT = _listings[nftContract][tokenId];
+            if(listedNFT.state != State.LISTED) {
+                revert NotListed(nftContract, tokenId);
+            }
+            if(newPayout == address(0)) {
+                revert CannotPayNullAddress();
+            }
+            if(newPayout == listedNFT.payout) {
+                revert PayoutAlreadyTheSame();
+            }
+            _listings[nftContract][tokenId].payout = newPayout;
+            emit NFTListEdited(msg.sender, nftContract, tokenId, listedNFT.price, newPayout);
         }
 
     function getListing(address nftContract, uint256 tokenId)
@@ -289,7 +314,7 @@ contract XDSeaMarket721 is IERC721Receiver, ReentrancyGuard {
         }
 
     function transfer(address nftContract, uint256 tokenId, address receiver)
-        external isOwner(nftContract, tokenId, msg.sender) {
+        external nonReentrant isOwner(nftContract, tokenId, msg.sender) {
             if(receiver == address(0)) {
                 revert CannotTransferToNull(nftContract, tokenId, receiver);
             }

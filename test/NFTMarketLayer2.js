@@ -13,12 +13,14 @@ describe("XDSeaMarket721", function() {
         const XDSeaMarket721 = await ethers.getContractFactory("XDSeaMarket721");
         const XRC20 = await ethers.getContractFactory("XRC20");
         const NFT = await ethers.getContractFactory("NFT");
+        const XDSeaMarketOffers = await ethers.getContractFactory("XDSeaMarketOffers");
         [deployer, addr1, addr2, commissionAddress, royaltyAddr1, royaltyAddr2] = await ethers.getSigners();
         nft = await NFT721.deploy("XDSea NFT v2", "XDSEAv2", 0, royaltyAddr1.address);
         nft2 = await NFT721.deploy("XDSea NFT v2.1", "XDSEAv2.1", 0, royaltyAddr2.address);
         marketplace = await XDSeaMarket721.deploy();
         xrc20 = await XRC20.deploy(100000);
         nft3 = await NFT.deploy(marketplace.address);
+        offers = await XDSeaMarketOffers.deploy();
         await xrc20.connect(addr1).mint(100000)
         await xrc20.connect(addr2).mint(100000)
         await xrc20.connect(commissionAddress).mint(100000)
@@ -72,92 +74,100 @@ describe("XDSeaMarket721", function() {
             await nft3.connect(addr1).createToken(URI)
         })
         it("Should be listed for a price greater than 0 XDC", async function() {
-            await expect(marketplace.connect(addr1).list(nft.address, 1, 0, nullAddress, 0, addr1.address)).to.be.revertedWith("PriceMustBeAboveZero");
+            await expect(marketplace.connect(addr1).list(nft.address, 1, 0, nullAddress, 0, addr1.address, addr1.address)).to.be.revertedWith("PriceMustBeAboveZero");
         })
         it("Should be listed for a price greater than 0 XRC20", async function() {
-            await expect(marketplace.connect(addr1).list(nft.address, 1, 0, xrc20.address, 0, addr1.address)).to.be.revertedWith("PriceMustBeAboveZero");
+            await expect(marketplace.connect(addr1).list(nft.address, 1, 0, xrc20.address, 0, addr1.address, addr1.address)).to.be.revertedWith("PriceMustBeAboveZero");
         })
         it("Should not list an NFT without approval", async function() {
-            await expect(marketplace.connect(addr1).list(nft.address, 1, toWei(100), nullAddress, 0, addr1.address)).to.be.revertedWith("NotApprovedForMarketplace");
+            await expect(marketplace.connect(addr1).list(nft.address, 1, toWei(100), nullAddress, 0, addr1.address, addr1.address)).to.be.revertedWith("NotApprovedForMarketplace");
+        })
+        it("Should not let payout address be null address", async function() {
+            await nft.connect(addr1).approve(marketplace.address, 1)
+            await expect(marketplace.connect(addr1).list(nft.address, 1, toWei(100), nullAddress, 0, addr1.address, nullAddress)).to.be.revertedWith("CannotPayNullAddress");
         })
         it("Should list an approved NFT", async function() {
             await nft.connect(addr1).approve(marketplace.address, 1)
-            await expect(marketplace.connect(addr1).list(nft.address, 1, toWei(100), nullAddress, 0, addr1.address)).to.emit(marketplace, "NFTListed").withArgs(addr1.address, nft.address, 1, nullAddress, toWei(100));
+            await expect(marketplace.connect(addr1).list(nft.address, 1, toWei(100), nullAddress, 0, addr1.address, addr1.address)).to.emit(marketplace, "NFTListed").withArgs(addr1.address, nft.address, 1, nullAddress, toWei(100));
         })
         it("Should list an approved NFT with XRC20 price", async function() {
             await nft.connect(addr1).approve(marketplace.address, 1)
-            await expect(marketplace.connect(addr1).list(nft.address, 1, toWei(100), xrc20.address, 0, addr1.address)).to.emit(marketplace, "NFTListed").withArgs(addr1.address, nft.address, 1, xrc20.address, toWei(100));
+            await expect(marketplace.connect(addr1).list(nft.address, 1, toWei(100), xrc20.address, 0, addr1.address, addr1.address)).to.emit(marketplace, "NFTListed").withArgs(addr1.address, nft.address, 1, xrc20.address, toWei(100));
         })
         it("Should list an approved NFT with external royalty", async function() {
             await nft3.connect(addr1).approve(marketplace.address, 1)
-            await expect(marketplace.connect(addr1).list(nft3.address, 1, toWei(100), nullAddress, 500, addr1.address)).to.emit(marketplace, "NFTListed").withArgs(addr1.address, nft3.address, 1, nullAddress, toWei(100));
+            await expect(marketplace.connect(addr1).list(nft3.address, 1, toWei(100), nullAddress, 500, addr1.address, addr1.address)).to.emit(marketplace, "NFTListed").withArgs(addr1.address, nft3.address, 1, nullAddress, toWei(100));
         })
         it("Should list an approved NFT for another contract", async function() {
             await nft2.connect(addr1).approve(marketplace.address, 1)
-            await expect(marketplace.connect(addr1).list(nft2.address, 1, toWei(100), nullAddress, 0, addr1.address)).to.emit(marketplace, "NFTListed").withArgs(addr1.address, nft2.address, 1, nullAddress, toWei(100));
+            await expect(marketplace.connect(addr1).list(nft2.address, 1, toWei(100), nullAddress, 0, addr1.address, addr1.address)).to.emit(marketplace, "NFTListed").withArgs(addr1.address, nft2.address, 1, nullAddress, toWei(100));
         })
         it("Should not list an already listed NFT", async function() {
             await nft.connect(addr1).approve(marketplace.address, 1)
-            await marketplace.connect(addr1).list(nft.address, 1, toWei(100), nullAddress, 0, addr1.address)
-            await expect(marketplace.connect(addr1).list(nft.address, 1, toWei(100), nullAddress, 0, addr1.address)).to.be.revertedWith("NotOwner");
+            await marketplace.connect(addr1).list(nft.address, 1, toWei(100), nullAddress, 0, addr1.address, addr1.address)
+            await expect(marketplace.connect(addr1).list(nft.address, 1, toWei(100), nullAddress, 0, addr1.address, addr1.address)).to.be.revertedWith("NotOwner");
         })
         it("Should transfer NFT from owner to marketplace", async function() {
             await nft.connect(addr1).approve(marketplace.address, 1)
-            await marketplace.connect(addr1).list(nft.address, 1, toWei(100), nullAddress, 0, addr1.address)
+            await marketplace.connect(addr1).list(nft.address, 1, toWei(100), nullAddress, 0, addr1.address, addr1.address)
             expect(await nft.ownerOf(1)).to.equal(marketplace.address);
         })
         it("Should update the listing ledger", async function() {
             await nft.connect(addr1).approve(marketplace.address, 1)
-            await marketplace.connect(addr1).list(nft.address, 1, toWei(100), nullAddress, 0, addr1.address)
+            await marketplace.connect(addr1).list(nft.address, 1, toWei(100), nullAddress, 0, addr1.address, addr1.address)
             await expect((await marketplace.getListing(nft.address, 1))[0]).to.equal(toWei(100));
             await expect((await marketplace.getListing(nft.address, 1))[1]).to.equal(addr1.address);
             await expect((await marketplace.getListing(nft.address, 1))[2]).to.equal(nullAddress);
             await expect((await marketplace.getListing(nft.address, 1))[3]).to.equal(0);
             await expect((await marketplace.getListing(nft.address, 1))[4]).to.equal(royaltyAddr1.address);
-            await expect((await marketplace.getListing(nft.address, 1))[5]).to.equal(1);
+            await expect((await marketplace.getListing(nft.address, 1))[5]).to.equal(addr1.address);
+            await expect((await marketplace.getListing(nft.address, 1))[6]).to.equal(1);
         })
         it("Should update the listing ledger for XRC20 token", async function() {
             await nft.connect(addr1).approve(marketplace.address, 1)
-            await marketplace.connect(addr1).list(nft.address, 1, toWei(100), xrc20.address, 0, addr1.address)
+            await marketplace.connect(addr1).list(nft.address, 1, toWei(100), xrc20.address, 0, addr1.address, addr1.address)
             await expect((await marketplace.getListing(nft.address, 1))[0]).to.equal(toWei(100));
             await expect((await marketplace.getListing(nft.address, 1))[1]).to.equal(addr1.address);
             await expect((await marketplace.getListing(nft.address, 1))[2]).to.equal(xrc20.address);
             await expect((await marketplace.getListing(nft.address, 1))[3]).to.equal(0);
             await expect((await marketplace.getListing(nft.address, 1))[4]).to.equal(royaltyAddr1.address);
-            await expect((await marketplace.getListing(nft.address, 1))[5]).to.equal(1);
+            await expect((await marketplace.getListing(nft.address, 1))[5]).to.equal(addr1.address);
+            await expect((await marketplace.getListing(nft.address, 1))[6]).to.equal(1);
         })
         it("Should update the listing ledger with external royalty", async function() {
             await nft3.connect(addr1).approve(marketplace.address, 1)
-            await marketplace.connect(addr1).list(nft3.address, 1, toWei(100), nullAddress, 500, addr1.address)
+            await marketplace.connect(addr1).list(nft3.address, 1, toWei(100), nullAddress, 500, addr1.address, addr1.address)
             await expect((await marketplace.getListing(nft3.address, 1))[0]).to.equal(toWei(100));
             await expect((await marketplace.getListing(nft3.address, 1))[1]).to.equal(addr1.address);
             await expect((await marketplace.getListing(nft3.address, 1))[2]).to.equal(nullAddress);
             await expect((await marketplace.getListing(nft3.address, 1))[3]).to.equal(500);
             await expect((await marketplace.getListing(nft3.address, 1))[4]).to.equal(addr1.address);
-            await expect((await marketplace.getListing(nft3.address, 1))[5]).to.equal(1);
+            await expect((await marketplace.getListing(nft3.address, 1))[5]).to.equal(addr1.address);
+            await expect((await marketplace.getListing(nft3.address, 1))[6]).to.equal(1);
         })
         it("Should not update the external royalty once set", async function() {
             await nft3.connect(addr1).approve(marketplace.address, 1)
-            await marketplace.connect(addr1).list(nft3.address, 1, toWei(100), nullAddress, 500, addr1.address)
+            await marketplace.connect(addr1).list(nft3.address, 1, toWei(100), nullAddress, 500, addr1.address, addr1.address)
             await marketplace.connect(addr1).withdrawListing(nft3.address, 1)
             await nft3.connect(addr1).approve(marketplace.address, 1)
-            await marketplace.connect(addr1).list(nft3.address, 1, toWei(1000), nullAddress, 1000, commissionAddress.address)
+            await marketplace.connect(addr1).list(nft3.address, 1, toWei(1000), nullAddress, 1000, commissionAddress.address, addr1.address)
             await expect((await marketplace.getListing(nft3.address, 1))[0]).to.equal(toWei(1000));
             await expect((await marketplace.getListing(nft3.address, 1))[1]).to.equal(addr1.address);
             await expect((await marketplace.getListing(nft3.address, 1))[2]).to.equal(nullAddress);
             await expect((await marketplace.getListing(nft3.address, 1))[3]).to.equal(500);
             await expect((await marketplace.getListing(nft3.address, 1))[4]).to.equal(addr1.address);
-            await expect((await marketplace.getListing(nft3.address, 1))[5]).to.equal(1);
+            await expect((await marketplace.getListing(nft3.address, 1))[5]).to.equal(addr1.address);
+            await expect((await marketplace.getListing(nft3.address, 1))[6]).to.equal(1);
         })
     })
     describe("Withdrawing NFT Listings", function() {
         beforeEach(async function() {
             await nft.connect(addr1).mint(URI, nullAddress, 0)
             await nft.connect(addr1).approve(marketplace.address, 1)
-            await marketplace.connect(addr1).list(nft.address, 1, toWei(100), nullAddress, 0, addr1.address)
+            await marketplace.connect(addr1).list(nft.address, 1, toWei(100), nullAddress, 0, addr1.address, addr1.address)
             await nft2.connect(addr1).mint(URI, nullAddress, 0)
             await nft2.connect(addr1).approve(marketplace.address, 1)
-            await marketplace.connect(addr1).list(nft2.address, 1, toWei(100), nullAddress, 0, addr1.address)
+            await marketplace.connect(addr1).list(nft2.address, 1, toWei(100), nullAddress, 0, addr1.address, addr1.address)
         })
         it("Should not let non-owner withdraw an NFT", async function() {
             await expect(marketplace.connect(addr2).withdrawListing(nft.address, 1)).to.be.revertedWith("NotOwner");
@@ -177,16 +187,22 @@ describe("XDSeaMarket721", function() {
         beforeEach(async function() {
             await nft.connect(addr1).mint(URI, nullAddress, 0)
             await nft.connect(addr1).approve(marketplace.address, 1)
-            await marketplace.connect(addr1).list(nft.address, 1, toWei(100), nullAddress, 0, addr1.address)
+            await marketplace.connect(addr1).list(nft.address, 1, toWei(100), nullAddress, 0, addr1.address, addr1.address)
             await nft2.connect(addr1).mint(URI, nullAddress, 0)
             await nft2.connect(addr1).approve(marketplace.address, 1)
-            await marketplace.connect(addr1).list(nft2.address, 1, toWei(100), nullAddress, 0, addr1.address)
+            await marketplace.connect(addr1).list(nft2.address, 1, toWei(100), nullAddress, 0, addr1.address, addr1.address)
             await nft.connect(addr1).mint(URI, nullAddress, 0)
             await nft.connect(addr1).approve(marketplace.address, 2)
-            await marketplace.connect(addr1).list(nft.address, 2, 100, xrc20.address, 0, addr1.address)
+            await marketplace.connect(addr1).list(nft.address, 2, 100, xrc20.address, 0, addr1.address, addr1.address)
             await nft3.connect(addr1).createToken(URI)
             await nft3.connect(addr1).approve(marketplace.address, 1)
-            await marketplace.connect(addr1).list(nft3.address, 1, toWei(100), nullAddress, 500, addr2.address)
+            await marketplace.connect(addr1).list(nft3.address, 1, toWei(100), nullAddress, 500, addr2.address, addr1.address)
+            await nft.connect(addr1).mint(URI, nullAddress, 0)
+            await nft.connect(addr1).approve(marketplace.address, 3)
+            await marketplace.connect(addr1).list(nft.address, 3, toWei(100), nullAddress, 0, addr1.address, commissionAddress.address)
+            await nft.connect(addr1).mint(URI, nullAddress, 0)
+            await nft.connect(addr1).approve(marketplace.address, 4)
+            await marketplace.connect(addr1).list(nft.address, 4, 100, xrc20.address, 0, addr1.address, commissionAddress.address)
         })
         it("Should not let non-listed NFT be purchased", async function() {
             await marketplace.connect(addr1).withdrawListing(nft.address, 1)
@@ -229,17 +245,17 @@ describe("XDSeaMarket721", function() {
             let deployerAddressBalanceAfter = await xrc20.balanceOf(deployer.address);
             expect(deployerAddressBalanceAfter - deployerAddressBalance).to.equal(2);
         })
-        it("Should pay the seller the price", async function() {
-            let addr1Balance = await addr1.getBalance();
-            await marketplace.connect(addr2).buy(nft.address, 1, nullAddress, 300, commissionAddress.address, { value: toWei(105) });
-            let addr1BalanceAfter = await addr1.getBalance();
-            expect(fromWei(addr1BalanceAfter) - fromWei(addr1Balance)).to.equal(100);
+        it("Should pay the payout address the price", async function() {
+            let commisionBalance = await commissionAddress.getBalance();
+            await marketplace.connect(addr2).buy(nft.address, 3, nullAddress, 300, commissionAddress.address, { value: toWei(105) });
+            let commissionBalanceAfter = await commissionAddress.getBalance();
+            expect(fromWei(commissionBalanceAfter) - fromWei(commisionBalance)).to.equal(103);
         })
-        it("Should pay the seller the price with XRC20 token", async function() {
-            let addr1Balance = await xrc20.balanceOf(addr1.address);
-            await marketplace.connect(addr2).buy(nft.address, 2, xrc20.address, 300, commissionAddress.address);
-            let addr1BalanceAfter = await xrc20.balanceOf(addr1.address);
-            expect(addr1BalanceAfter - addr1Balance).to.equal(100);
+        it("Should pay the payout address the price with XRC20 token", async function() {
+            let commisionBalance = await xrc20.balanceOf(commissionAddress.address);
+            await marketplace.connect(addr2).buy(nft.address, 4, xrc20.address, 300, commissionAddress.address);
+            let commissionBalanceAfter = await xrc20.balanceOf(commissionAddress.address);
+            expect(commissionBalanceAfter - commisionBalance).to.equal(103);
         })
         it("Should change ownership of NFT", async function() {
             await marketplace.connect(addr2).buy(nft.address, 1, nullAddress, 300, commissionAddress.address, { value: toWei(105) });
@@ -254,14 +270,16 @@ describe("XDSeaMarket721", function() {
             await expect((await marketplace.getListing(nft.address, 1))[2]).to.equal(nullAddress);
             await expect((await marketplace.getListing(nft.address, 1))[3]).to.equal(0);
             await expect((await marketplace.getListing(nft.address, 1))[4]).to.equal(royaltyAddr1.address);
-            await expect((await marketplace.getListing(nft.address, 1))[5]).to.equal(2);
+            await expect((await marketplace.getListing(nft.address, 1))[5]).to.equal(addr2.address);
+            await expect((await marketplace.getListing(nft.address, 1))[6]).to.equal(2);
             await marketplace.connect(addr2).buy(nft.address, 2, xrc20.address, 300, commissionAddress.address);
             await expect((await marketplace.getListing(nft.address, 2))[0]).to.equal(100);
             await expect((await marketplace.getListing(nft.address, 2))[1]).to.equal(addr2.address);
             await expect((await marketplace.getListing(nft.address, 2))[2]).to.equal(xrc20.address);
             await expect((await marketplace.getListing(nft.address, 2))[3]).to.equal(0);
             await expect((await marketplace.getListing(nft.address, 1))[4]).to.equal(royaltyAddr1.address);
-            await expect((await marketplace.getListing(nft.address, 1))[5]).to.equal(2);
+            await expect((await marketplace.getListing(nft.address, 2))[5]).to.equal(addr2.address);
+            await expect((await marketplace.getListing(nft.address, 1))[6]).to.equal(2);
         })
         it("Should buy an NFT", async function() {
             expect(await marketplace.connect(addr2).buy(nft.address, 1, nullAddress, 300, commissionAddress.address, { value: toWei(105) })).to.emit(marketplace, "NFTPurchased").withArgs(addr2.address, nft.address, 1, toWei(105));
@@ -272,19 +290,19 @@ describe("XDSeaMarket721", function() {
         })
         it("Should pay royalty payments to the right address", async function() {
             await nft.connect(addr1).mint(URI, royaltyAddr1.address, 500)
-            await nft.connect(addr1).approve(marketplace.address, 3)
-            await marketplace.connect(addr1).list(nft.address, 3, toWei(100), nullAddress, 0, addr1.address)
+            await nft.connect(addr1).approve(marketplace.address, 5)
+            await marketplace.connect(addr1).list(nft.address, 5, toWei(100), nullAddress, 0, addr1.address, addr1.address)
             let royaltyBalanceBefore = await royaltyAddr1.getBalance();
-            await marketplace.connect(addr2).buy(nft.address, 3, nullAddress, 0, nullAddress, { value: toWei(102) });
+            await marketplace.connect(addr2).buy(nft.address, 5, nullAddress, 0, nullAddress, { value: toWei(102) });
             let royaltyBalanceAfter = await royaltyAddr1.getBalance();
             expect(fromWei(royaltyBalanceAfter) - fromWei(royaltyBalanceBefore)).to.equal(5);
         })
         it("Should pay royalty payments to the right address with XRC20 tokens", async function() {
             await nft.connect(addr1).mint(URI, royaltyAddr1.address, 500)
-            await nft.connect(addr1).approve(marketplace.address, 3)
-            await marketplace.connect(addr1).list(nft.address, 3, 100, xrc20.address, 0, addr1.address)
+            await nft.connect(addr1).approve(marketplace.address, 5)
+            await marketplace.connect(addr1).list(nft.address, 5, 100, xrc20.address, 0, addr1.address, addr1.address)
             let royaltyBalanceBefore = await xrc20.balanceOf(royaltyAddr1.address);
-            await marketplace.connect(addr2).buy(nft.address, 3, xrc20.address, 0, nullAddress);
+            await marketplace.connect(addr2).buy(nft.address, 5, xrc20.address, 0, nullAddress);
             let royaltyBalanceAfter = await xrc20.balanceOf(royaltyAddr1.address);
             expect(royaltyBalanceAfter - royaltyBalanceBefore).to.equal(5);
         })
@@ -297,7 +315,7 @@ describe("XDSeaMarket721", function() {
         it("Should pay external royalty payments to the right address with XRC20 tokens", async function() {
             await nft3.connect(addr1).createToken(URI)
             await nft3.connect(addr1).approve(marketplace.address, 2)
-            await marketplace.connect(addr1).list(nft3.address, 2, 100, xrc20.address, 500, addr2.address)
+            await marketplace.connect(addr1).list(nft3.address, 2, 100, xrc20.address, 500, addr2.address, addr1.address)
             let royaltyBalanceBefore = await xrc20.balanceOf(addr2.address);
             await marketplace.connect(commissionAddress).buy(nft3.address, 2, xrc20.address, 0, nullAddress);
             let royaltyBalanceAfter = await xrc20.balanceOf(addr2.address);
@@ -308,10 +326,10 @@ describe("XDSeaMarket721", function() {
         beforeEach(async function() {
             await nft.connect(addr1).mint(URI, nullAddress, 0)
             await nft.connect(addr1).approve(marketplace.address, 1)
-            await marketplace.connect(addr1).list(nft.address, 1, toWei(100), nullAddress, 0, addr1.address)
+            await marketplace.connect(addr1).list(nft.address, 1, toWei(100), nullAddress, 0, addr1.address, addr1.address)
             await nft2.connect(addr1).mint(URI, nullAddress, 0)
             await nft2.connect(addr1).approve(marketplace.address, 1)
-            await marketplace.connect(addr1).list(nft2.address, 1, toWei(100), nullAddress, 0, addr1.address)
+            await marketplace.connect(addr1).list(nft2.address, 1, toWei(100), nullAddress, 0, addr1.address, addr1.address)
         })
         it("Should only allow owner to update listing", async function() {
             await expect(marketplace.connect(addr2).updateListing(nft.address, 1, toWei(200))).to.be.revertedWith("NotOwner");
@@ -319,14 +337,14 @@ describe("XDSeaMarket721", function() {
         it("Should only update listing if it exists", async function() {
             await nft.connect(addr1).mint(URI, nullAddress, 0)
             await nft.connect(addr1).approve(marketplace.address, 2)
-            await marketplace.connect(addr1).list(nft.address, 2, toWei(100), nullAddress, 0, addr1.address)
+            await marketplace.connect(addr1).list(nft.address, 2, toWei(100), nullAddress, 0, addr1.address, addr1.address)
             await marketplace.connect(addr1).withdrawListing(nft.address, 2)
             await expect(marketplace.connect(addr1).updateListing(nft.address, 2, toWei(200))).to.be.revertedWith("NotListed");
         })
         it("Should update the price to be greater than 0 XDC", async function() {
             await nft.connect(addr1).mint(URI, nullAddress, 0)
             await nft.connect(addr1).approve(marketplace.address, 2)
-            await marketplace.connect(addr1).list(nft.address, 2, toWei(100), nullAddress, 0, addr1.address)
+            await marketplace.connect(addr1).list(nft.address, 2, toWei(100), nullAddress, 0, addr1.address, addr1.address)
             await expect(marketplace.connect(addr1).updateListing(nft.address, 2, toWei(0))).to.be.revertedWith("PriceMustBeAboveZero");
         })
         it("Should update listings ledger", async function() {
@@ -336,13 +354,56 @@ describe("XDSeaMarket721", function() {
             await expect((await marketplace.getListing(nft.address, 1))[2]).to.equal(nullAddress);
             await expect((await marketplace.getListing(nft.address, 1))[3]).to.equal(0);
             await expect((await marketplace.getListing(nft.address, 1))[4]).to.equal(royaltyAddr1.address);
-            await expect((await marketplace.getListing(nft.address, 1))[5]).to.equal(1);
+            await expect((await marketplace.getListing(nft.address, 1))[5]).to.equal(addr1.address);
+            await expect((await marketplace.getListing(nft.address, 1))[6]).to.equal(1);
         })
         it("Should update NFT listing", async function() {
-            expect(await marketplace.connect(addr1).updateListing(nft.address, 1, toWei(200))).to.emit(marketplace, "NFTListEdited").withArgs(addr1.address, nft.address, 1, toWei(200));
+            expect(await marketplace.connect(addr1).updateListing(nft.address, 1, toWei(200))).to.emit(marketplace, "NFTListEdited").withArgs(addr1.address, nft.address, 1, toWei(200), addr1.address);
         })
         it("Should update NFT listing from another contract", async function() {
-            expect(await marketplace.connect(addr1).updateListing(nft2.address, 1, toWei(200))).to.emit(marketplace, "NFTListEdited").withArgs(addr1.address, nft2.address, 1, toWei(200));
+            expect(await marketplace.connect(addr1).updateListing(nft2.address, 1, toWei(200))).to.emit(marketplace, "NFTListEdited").withArgs(addr1.address, nft2.address, 1, toWei(200), addr1.address);
+        })
+    })
+    describe("Updating Payout", function() {
+        beforeEach(async function() {
+            await nft.connect(addr1).mint(URI, nullAddress, 0)
+            await nft.connect(addr1).approve(marketplace.address, 1)
+            await marketplace.connect(addr1).list(nft.address, 1, toWei(100), nullAddress, 0, addr1.address, addr1.address)
+            await nft2.connect(addr1).mint(URI, nullAddress, 0)
+            await nft2.connect(addr1).approve(marketplace.address, 1)
+            await marketplace.connect(addr1).list(nft2.address, 1, toWei(100), nullAddress, 0, addr1.address, addr1.address)
+        })
+        it("Should only allow owner to update payout", async function() {
+            await expect(marketplace.connect(addr2).updatePayout(nft.address, 1, addr2.address)).to.be.revertedWith("NotOwner");
+        })
+        it("Should only update payout if listing exists", async function() {
+            await nft.connect(addr1).mint(URI, nullAddress, 0)
+            await nft.connect(addr1).approve(marketplace.address, 2)
+            await marketplace.connect(addr1).list(nft.address, 2, toWei(100), nullAddress, 0, addr1.address, addr1.address)
+            await marketplace.connect(addr1).withdrawListing(nft.address, 2)
+            await expect(marketplace.connect(addr1).updatePayout(nft.address, 2, addr2.address)).to.be.revertedWith("NotListed");
+        })
+        it("Should update the price to not be the null address", async function() {
+            await nft.connect(addr1).mint(URI, nullAddress, 0)
+            await nft.connect(addr1).approve(marketplace.address, 2)
+            await marketplace.connect(addr1).list(nft.address, 2, toWei(100), nullAddress, 0, addr1.address, addr1.address)
+            await expect(marketplace.connect(addr1).updatePayout(nft.address, 2, nullAddress)).to.be.revertedWith("CannotPayNullAddress");
+        })
+        it("Should update listings ledger", async function() {
+            await marketplace.connect(addr1).updatePayout(nft.address, 1, addr2.address);
+            await expect((await marketplace.getListing(nft.address, 1))[0]).to.equal(toWei(100));
+            await expect((await marketplace.getListing(nft.address, 1))[1]).to.equal(addr1.address);
+            await expect((await marketplace.getListing(nft.address, 1))[2]).to.equal(nullAddress);
+            await expect((await marketplace.getListing(nft.address, 1))[3]).to.equal(0);
+            await expect((await marketplace.getListing(nft.address, 1))[4]).to.equal(royaltyAddr1.address);
+            await expect((await marketplace.getListing(nft.address, 1))[5]).to.equal(addr2.address);
+            await expect((await marketplace.getListing(nft.address, 1))[6]).to.equal(1);
+        })
+        it("Should update NFT listing", async function() {
+            expect(await marketplace.connect(addr1).updatePayout(nft.address, 1, addr2.address)).to.emit(marketplace, "NFTListEdited").withArgs(addr1.address, nft.address, 1, toWei(100), addr2.address);
+        })
+        it("Should update NFT listing from another contract", async function() {
+            expect(await marketplace.connect(addr1).updatePayout(nft2.address, 1, addr2.address)).to.emit(marketplace, "NFTListEdited").withArgs(addr1.address, nft2.address, 1, toWei(100), addr2.address);
         })
     })
     describe("Transferring NFTs", function () {
@@ -367,6 +428,64 @@ describe("XDSeaMarket721", function() {
         it("Should transfer ownership", async function() {
             await marketplace.connect(addr1).transfer(nft.address, 1, addr2.address)
             expect(await nft.ownerOf(1)).to.equal(addr2.address);
+        })
+    })
+    describe("Marketplace Offers", function () {
+        it("Should not receive funds sent by anyone else except deployer", async function() {
+            await expect(addr1.sendTransaction({
+                to: offers.address,
+                value: toWei(1.0)
+            })).to.be.revertedWith("NotOwner");
+        })
+        it("Should receive funds from the deployer", async function() {
+            let contractBalance = await offers.connect(addr1).balanceOf();
+            await deployer.sendTransaction({
+                to: offers.address,
+                value: toWei(5.0)
+            });
+            let contractBalanceAfter = await offers.connect(addr1).balanceOf();
+            expect(fromWei(contractBalanceAfter) - fromWei(contractBalance)).to.equal(5);
+        })
+        it("Should receive XRC20 tokens", async function() {
+            let contractBalance = await xrc20.balanceOf(offers.address);
+            await xrc20.connect(deployer).transfer(offers.address, 5);
+            let contractBalanceAfter = await xrc20.balanceOf(offers.address);
+            expect(contractBalanceAfter - contractBalance).to.equal(5);
+        })
+        it("Should not let everyone withdraw funds out of the contract", async function() {
+            await deployer.sendTransaction({
+                to: offers.address,
+                value: toWei(5.0)
+            });
+            await expect(offers.connect(addr1).withdrawToAddress(addr1.address, toWei(5), nullAddress)).to.be.revertedWith("NotOwner");
+        })
+        it("Should not let anyone withdraw more funds than available out of the contract", async function() {
+            await deployer.sendTransaction({
+                to: offers.address,
+                value: toWei(5.0)
+            });
+            await expect(offers.connect(deployer).withdrawToAddress(addr1.address, toWei(10), nullAddress)).to.be.revertedWith("NotEnoughBalance");
+        })
+        it("Should not let anyone withdraw more XRC20 funds than available out of the contract", async function() {
+            await xrc20.connect(deployer).transfer(offers.address, 5);
+            await expect(offers.connect(deployer).withdrawToAddress(addr1.address, 10, xrc20.address)).to.be.revertedWith("NotEnoughBalance");
+        })
+        it("Should let the deployer withdraw funds out of the contract", async function() {
+            await deployer.sendTransaction({
+                to: offers.address,
+                value: toWei(5.0)
+            });
+            let addressBalance = await addr1.getBalance();
+            await offers.connect(deployer).withdrawToAddress(addr1.address, toWei(5), nullAddress);
+            let addressBalanceAfter = await addr1.getBalance();
+            expect(fromWei(addressBalanceAfter) - fromWei(addressBalance)).to.equal(5);
+        })
+        it("Should let the deployer withdraw XRC20 funds out of the contract", async function() {
+            await xrc20.connect(deployer).transfer(offers.address, 5);
+            let addressBalance = await xrc20.balanceOf(addr1.address);
+            await offers.connect(deployer).withdrawToAddress(addr1.address, 5, xrc20.address);
+            let addressBalanceAfter = await xrc20.balanceOf(addr1.address);
+            expect(addressBalanceAfter - addressBalance).to.equal(5);
         })
     })
 })
