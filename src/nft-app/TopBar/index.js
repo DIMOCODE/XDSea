@@ -375,6 +375,7 @@ function TopBar(props) {
                   <Searchbar
                     placeholder="Search for NFTs and Collections"
                     widthInput={size.width > 1024 ? "520px" : "290px"}
+                    top={"46px"}
                   ></Searchbar>
                 )}
 
