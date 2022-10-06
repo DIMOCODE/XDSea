@@ -44,7 +44,7 @@ const xdcDomainConfig = {
     contractAddress: ""
   },
   mainnet: {
-    rpcUrl: "https://rpc.xinfin.network/",
+    rpcUrl: "https://xdsearpc.blocksscan.io/",
     contractAddress: "xdc295a7ab79368187a6cd03c464cfaab04d799784e"
   },
   defaultNetwork: "mainnnet"

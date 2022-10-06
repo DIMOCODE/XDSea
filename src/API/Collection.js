@@ -111,6 +111,7 @@ export const getCollectionNFTs = ({
  * Send a User-authorized HTTP request to create a new collection
  *
  * @param {string} name name of the collection
+ * @param {string} address contract address of the collection
  * @param {string} addressCreator wallet address of the creator
  * @param {string} description description of the collection
  * @param {string} logo url of the collection logo

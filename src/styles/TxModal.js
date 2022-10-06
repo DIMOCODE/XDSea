@@ -339,8 +339,8 @@ function TxModal(props) {
                   border="6px"
                 >
                   <CaptionRegular textcolor={appStyle.colors.darkRed}>
-                    The address does not seem right. Please use the wallet
-                    address with a "0x..." prefix and not the "xdc..." prefix.
+                    The address does not seem right. Please check the address 
+                    and try again.
                   </CaptionRegular>
                 </HStack>
               ) : null}

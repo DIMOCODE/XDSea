@@ -177,8 +177,8 @@ function NftContainer(props) {
                         <Mask img={verifiedMask}>
                           <IconImg
                             url={creatorImage}
-                            width="48px"
-                            height="48px"
+                            width="52px"
+                            height="52px"
                             border="120px"
                             backsize="cover"
                           ></IconImg>
@@ -188,15 +188,12 @@ function NftContainer(props) {
                       <ZItem>
                         <IconImg
                           url={verifiedShape}
-                          width="48px"
-                          height="48px"
+                          width="52px"
+                          height="52px"
                           border="120px"
                           whileTap={onClickCreator}
                           backsize="cover"
                           cursor={"pointer"}
-                          style={{
-                            boxShadow: "0px 4px 2px rgba(0, 0, 0, 0.15)",
-                          }}
                         ></IconImg>
                         <AbsoluteVerified>
                           <IconImg
@@ -416,7 +413,7 @@ const CreatorTag = styled(motion.div)`
 
 const AbsoluteVerified = styled(motion.div)`
   position: absolute;
-  bottom: -3px;
+  bottom: 0px;
   left: 30px;
 `;
 
@@ -427,7 +424,7 @@ const Mask = styled(motion.div)`
   mask-repeat: no-repeat;
 
   mask-position: 0% 0%;
-  mask-size: 48px;
-  height: 48px;
-  width: 48px;
+  mask-size: 52px;
+  height: 52px;
+  width: 52px;
 `;
