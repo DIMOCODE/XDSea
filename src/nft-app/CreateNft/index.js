@@ -278,7 +278,7 @@ function CreateNft(props) {
         setCollectionEmpty(false);
       }
       setLoadingIcon(empty);
-      setCollectionNickName(collectionNickName);
+      setCollectionNickName(collectionData.collection.nickName);
       return true;
     } else {
       setCollectionAllowed(true);
