@@ -67,7 +67,7 @@ import { getCollections } from "../../API/Collection";
 import { getUser, updateUser, updateUserSettings } from "../../API/User";
 import { isImage, isVideo, isAudio } from "../../common";
 import { CircleButton } from "../../styles/CircleButton";
-import { toXdc, truncateAddress } from "../../common/common";
+import { isXdc, toXdc, truncateAddress } from "../../common/common";
 import { Navigation, Pagination, Scrollbar, A11y, Mousewheel } from "swiper";
 import { StickySectionHeader } from "../../CustomModules/sticky/StickySectionHeader.js";
 import { Grid, FreeMode, Thumbs } from "swiper";
@@ -90,7 +90,8 @@ import { CollectionTab } from "./CollectionTab";
 import { Icon } from "@mui/material";
 import { uploadFileInS3Bucket } from "../../helpers/fileUploader";
 import { GuardSpinner, SwishSpinner, TraceSpinner } from "react-spinners-kit";
-import { getXdcDomain } from "../../constant";
+import { getXdcDomain, LS, LS_ROOT_KEY } from "../../constant";
+import { anonymousLogin } from "../../API/access";
 
 const MyNFT = (props) => {
   const { userId } = useParams();
@@ -444,9 +445,18 @@ const MyNFT = (props) => {
 
     let userData = (await getUser(nickname)).data;
     setUser(userData.user);
+    LS.removeAll();
+    const { data } = await anonymousLogin(userData.user.XDCWallets[0]);
+    LS.set(LS_ROOT_KEY, data);
+    props?.getUser();
     setUserSettings(userData.settings);
     setIsProfileUpdated(false);
     setIsEditing(false);
+    window.history.replaceState(
+      { path: `/user/${nickname}` },
+      "",
+      `/user/${nickname}`
+    );
   };
 
   const updateUserStatus = async () => {
@@ -772,11 +782,11 @@ const MyNFT = (props) => {
                                   userDomain
                                     ? userDomain
                                     : user?.XDCWallets
-                                    ? truncateAddress(user.XDCWallets[0])
+                                    ? truncateAddress(isXdc(user.XDCWallets[0]) ? user.XDCWallets[0].toLowerCase() : toXdc(user.XDCWallets[0].toLowerCase()))
                                     : ""
                                 }
                                 addressCreator={
-                                  user?.XDCWallets ? user.XDCWallets[0] : ""
+                                  user?.XDCWallets ? isXdc(user.XDCWallets[0]) ? user.XDCWallets[0].toLowerCase() : toXdc(user.XDCWallets[0].toLowerCase()): ""
                                 }
                                 icon={copyIcon}
                                 background={isDarkUI ? "#20222D" : "white"}
@@ -1369,11 +1379,11 @@ const MyNFT = (props) => {
                                   userDomain
                                     ? userDomain
                                     : user?.XDCWallets
-                                    ? truncateAddress(user.XDCWallets[0])
+                                    ? truncateAddress(isXdc(user.XDCWallets[0]) ? user.XDCWallets[0].toLowerCase() : toXdc(user.XDCWallets[0].toLowerCase()))
                                     : ""
                                 }
                                 addressCreator={
-                                  user?.XDCWallets ? user.XDCWallets[0] : ""
+                                  user?.XDCWallets ? isXdc(user.XDCWallets[0]) ? user.XDCWallets[0].toLowerCase() : toXdc(user.XDCWallets[0].toLowerCase()) : ""
                                 }
                                 icon={copyIcon}
                                 background={isDarkUI ? "#20222D" : "white"}
@@ -1933,11 +1943,11 @@ const MyNFT = (props) => {
                                   userDomain
                                     ? userDomain
                                     : user?.XDCWallets
-                                    ? truncateAddress(user.XDCWallets[0])
+                                    ? truncateAddress(isXdc(user.XDCWallets[0]) ? user.XDCWallets[0].toLowerCase() : toXdc(user.XDCWallets[0].toLowerCase()))
                                     : ""
                                 }
                                 addressCreator={
-                                  user?.XDCWallets ? user.XDCWallets[0] : ""
+                                  user?.XDCWallets ? isXdc(user.XDCWallets[0]) ? user.XDCWallets[0].toLowerCase() : toXdc(user.XDCWallets[0].toLowerCase()) : ""
                                 }
                                 icon={copyIcon}
                                 background={
@@ -2500,7 +2510,7 @@ const MyNFT = (props) => {
                                       border="6px"
                                       onClick={() => {
                                         props.redirect(
-                                          `nft/${item.nftContract}/${item.tokenId}`
+                                          `nft/${isXdc(item.nftContract) ? item.nftContract.toLowerCase() : toXdc(item.nftContract.toLowerCase())}/${item.tokenId}`
                                         );
                                       }}
                                       onHoverStart={() => {
@@ -3142,7 +3152,7 @@ const MyNFT = (props) => {
                           border={size.width > 428 ? "6px" : "0px"}
                           onClick={() => {
                             props.redirect(
-                              `nft/${item.nftContract}/${item.tokenId}`
+                              `nft/${isXdc(item.nftContract) ? item.nftContract.toLowerCase() : toXdc(item.nftContract.toLowerCase())}/${item.tokenId}`
                             );
                           }}
                           onHoverStart={() => {

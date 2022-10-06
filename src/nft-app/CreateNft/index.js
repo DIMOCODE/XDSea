@@ -11,7 +11,7 @@ import {
 } from "../../constant";
 import NFT from "../../abis/NFT.json";
 import { nftaddress, nftmarketlayeraddress } from "../../config";
-import { fromXdc, isXdc } from "../../common/common";
+import { fromXdc, isXdc, toXdc } from "../../common/common";
 import NFTMarketLayer1 from "../../abis/NFTMarketLayer1.json";
 import styled from "styled-components";
 import { Divider, HStack, IconImg, Spacer, VStack } from "../../styles/Stacks";
@@ -547,8 +547,8 @@ function CreateNft(props) {
                   properties: filteredProperties,
                   royalty,
                   creator: isXdc(wallet?.address)
-                    ? fromXdc(wallet?.address)
-                    : wallet?.address,
+                    ? fromXdc(wallet?.address.toLowerCase())
+                    : wallet?.address.toLowerCase(),
                   image: nftUrl,
                   fileType: nft.fileType,
                   preview: previewUrl,
@@ -643,8 +643,10 @@ function CreateNft(props) {
         const collectionCreation = await (
           await createCollection(
             collectionName,
-            nftaddress,
-            user.user.XDCWallets[0],
+            nftaddress.toLowerCase(),
+            isXdc(user.user.XDCWallets[0])
+              ? fromXdc(user.user.XDCWallets[0])
+              : user.user.XDCWallets[0],
             collectionDescription,
             logoUrl,
             bannerUrl,
@@ -658,8 +660,8 @@ function CreateNft(props) {
           await createNFT(
             collectionCreation._id,
             tokenId,
-            isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address,
-            nftmarketlayeraddress,
+            isXdc(wallet?.address) ? fromXdc(wallet?.address.toLowerCase()) : wallet?.address.toLowerCase(),
+            nftmarketlayeraddress.toLowerCase(),
             price,
             royalty,
             name,
@@ -678,8 +680,8 @@ function CreateNft(props) {
           await createNFT(
             collectionId,
             tokenId,
-            isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address,
-            nftmarketlayeraddress,
+            isXdc(wallet?.address) ? fromXdc(wallet?.address.toLowerCase()) : wallet?.address.toLowerCase(),
+            nftmarketlayeraddress.toLowerCase(),
             price,
             royalty,
             name,
@@ -854,7 +856,7 @@ function CreateNft(props) {
               mintName={name}
               mintedNFT={assetURL}
               confirmActionModal={() => {
-                props.redirect(`nft/${nftaddress}/${tokenId}`);
+                props.redirect(`nft/${isXdc(nftaddress) ? nftaddress.toLowerCase() : toXdc(nftaddress.toLowerCase())}/${tokenId}`);
               }}
             ></TxModal>
           </VStack>

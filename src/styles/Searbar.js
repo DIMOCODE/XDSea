@@ -30,7 +30,7 @@ import { Icon } from "@mui/material";
 import { getCollections } from "../API/Collection";
 import { getNFTs } from "../API/NFT";
 import loadingIcon from "../images/loadingDots.gif";
-import { truncateAddress } from "../common/common";
+import { truncateAddress, isXdc, toXdc } from "../common/common";
 import { nftaddress } from "../config";
 import useWindowSize from "../styles/useWindowSize";
 
@@ -203,7 +203,7 @@ function Searchbar({
                             padding="6px"
                             border="6px"
                             onClick={() =>
-                              NavigateTo(`nft/${nft.nftContract}/${nft.tokenId}`)
+                              NavigateTo(`nft/${isXdc(nft.nftContract) ? nft.nftContract.toLowerCase() : toXdc(nft.nftContract.toLowerCase())}/${nft.tokenId}`)
                             }
                             key={nft._id}
                           >

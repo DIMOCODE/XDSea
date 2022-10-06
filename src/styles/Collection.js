@@ -169,9 +169,6 @@ function Collection(props) {
                                 whileTap={onClickCreator}
                                 backsize="cover"
                                 cursor={"pointer"}
-                                style={{
-                                  boxShadow: "0px 4px 2px rgba(0, 0, 0, 0.15)",
-                                }}
                               ></IconImg>
                               <AbsoluteVerified>
                                 <IconImg

@@ -59,7 +59,7 @@ import iconMenu from "../../images/iconMenu.png";
 import zIndex from "@mui/material/styles/zIndex";
 
 function TopBar(props) {
-  const { device, themeToggler, devMode, onWalletChange } = props;
+  const { device, themeToggler, devMode, onWalletChange, getUser, user } = props;
   const location = useLocation();
   const ref = useRef(null);
   const size = useWindowSize();
@@ -78,7 +78,6 @@ function TopBar(props) {
   const [walletAddress, setWalletAddress] = useState("");
   const [isDomain, setIsDomain] = useState(false);
   const [searchPhone, setSearchPhone] = useState(false);
-  const [user, setUser] = useState(null);
 
   const variant1 = {
     open: {
@@ -106,7 +105,9 @@ function TopBar(props) {
    */
   const connectMetamask = async () => {
     if (window.ethereum) {
-      if (window.ethereum.isMetaMask && window.ethereum.chainId !== undefined) {
+      if (window.ethereum.isMetaMask && 
+        window.ethereum?.isDcentWallet === undefined && 
+        window.ethereum.chainId !== undefined) {
         try {
           if (window.ethereum.chainId === "0x32") {
             const res = await window.ethereum.request({
@@ -318,14 +319,9 @@ function TopBar(props) {
     }
     return xdcDomainName === "" 
       ? isXdc(address) 
-        ? fromXdc(address) 
-        : address 
+        ? address.toLowerCase() 
+        : toXdc(address.toLowerCase()) 
       : xdcDomainName;
-  };
-
-  const getUser = async () => {
-    const userData = await LS.get(LS_ROOT_KEY).user;
-    setUser(userData);
   };
 
   /**
@@ -753,6 +749,7 @@ function TopBar(props) {
                       whileTap={{
                         scale:
                           window.ethereum?.isMetaMask &&
+                          window.ethereum?.isDcentWallet === undefined &&
                           window.ethereum.chainId !== undefined
                             ? 0.98
                             : 1,
@@ -766,6 +763,7 @@ function TopBar(props) {
                         cursor="pointer"
                         url={
                           window.ethereum?.isMetaMask &&
+                          window.ethereum?.isDcentWallet === undefined &&
                           window.ethereum.chainId !== undefined
                             ? Metamask
                             : MetamaskBW
@@ -777,6 +775,7 @@ function TopBar(props) {
                         cursor="pointer"
                         textcolor={
                           window.ethereum?.isMetaMask &&
+                          window.ethereum?.isDcentWallet === undefined &&
                           window.ethereum.chainId !== undefined
                             ? "white"
                             : "grey"

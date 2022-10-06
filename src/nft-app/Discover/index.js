@@ -37,6 +37,8 @@ import { FiltersButton } from "../../styles/FiltersButton";
 import { SortButtonCollections } from "../../styles/SortButtonCollections";
 import { StickySectionHeader } from "../../CustomModules/sticky/StickySectionHeader.js";
 import seamless from "../../images/newBlue.png";
+import { getXdcDomain } from "../../constant";
+import { isXdc, toXdc, fromXdc } from "../../common/common";
 
 import "./customstyles.css";
 import { positions } from "@mui/system";
@@ -241,6 +243,17 @@ const Discover = (props) => {
       setNftPlaying([...newNftPlaying]);
     }
   }
+
+  const getXdcDomainAddress = async (address) => {
+    const xdcDomainName = isXdc(address)
+      ? (await getXdcDomain(address))
+      : (await getXdcDomain(toXdc(address)))
+    return xdcDomainName === "" 
+      ? isXdc(address) 
+        ? address.toLowerCase() 
+        : toXdc(address.toLowerCase()) 
+      : xdcDomainName;
+  };
 
   /**
    * React Hook re-render when the Collection/NFT switch is toggled
@@ -451,7 +464,7 @@ const Discover = (props) => {
                           creatorLogo={item.logo.v0}
                           collectionName={item.name}
                           collectionDescription={item.description}
-                          creatorName={item.addressCreator}
+                          creatorName={item.creator.userName}
                           onClickCollection={() =>
                             props.redirect(`collection/${item.nickName}`)
                           }
@@ -550,7 +563,7 @@ const Discover = (props) => {
                               background={({ theme }) => theme.backElement}
                               onClick={() =>
                                 props.redirect(
-                                  `nft/${item.nftContract}/${item.tokenId}`
+                                  `nft/${isXdc(item.nftContract) ? item.nftContract.toLowerCase() : toXdc(item.nftContract.toLowerCase())}/${item.tokenId}`
                                 )
                               }
                               onClickCreator={() =>

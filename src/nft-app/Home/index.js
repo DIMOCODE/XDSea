@@ -44,7 +44,7 @@ import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
 
 import Swipper from "../Home/Swiper.css";
 
-import { truncateAddress } from "../../common/common";
+import { isXdc, toXdc, truncateAddress } from "../../common/common";
 
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 
@@ -225,7 +225,7 @@ const Home = (props) => {
                   cursor="pointer"
                   onClick={() =>
                     props.redirect(
-                      `nft/${item.collectionId.address}/${item.tokenId}`
+                      `nft/${isXdc(item.collectionId.address) ? item.collectionId.address.toLowerCase() : toXdc(item.collectionId.address.toLowerCase())}/${item.tokenId}`
                     )
                   }
                   onHoverStart={() => {
@@ -644,7 +644,7 @@ const Home = (props) => {
                       background={({ theme }) => theme.backElement}
                       onClick={() =>
                         props.redirect(
-                          `nft/${item.collectionId.address}/${item.tokenId}`
+                          `nft/${isXdc(item.collectionId.address) ? item.collectionId.address.toLowerCase() : toXdc(item.collectionId.address.toLowerCase())}/${item.tokenId}`
                         )
                       }
                       minwidth="46%"
@@ -727,7 +727,7 @@ const Home = (props) => {
                     style={{ cursor: "pointer" }}
                     onClick={() =>
                       props.redirect(
-                        `nft/${item.collectionId.address}/${item.tokenId}`
+                        `nft/${isXdc(item.collectionId.address) ? item.collectionId.address.toLowerCase() : toXdc(item.collectionId.address.toLowerCase())}/${item.tokenId}`
                       )
                     }
                   >
@@ -743,7 +743,7 @@ const Home = (props) => {
                       background={({ theme }) => theme.backElement}
                       onClick={() =>
                         props.redirect(
-                          `nft/${item.collectionId.address}/${item.tokenId}`
+                          `nft/${isXdc(item.collectionId.address) ? item.collectionId.address.toLowerCase() : toXdc(item.collectionId.address.toLowerCase())}/${item.tokenId}`
                         )
                       }
                       usdPrice={props.xdc}

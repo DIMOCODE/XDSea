@@ -210,7 +210,7 @@ const NFTDetails = (props) => {
     }
     if (success) {
       setBuyButtonStatus(3);
-      await await buyNFTRequest(wallet?.address, nft.price, nft._id);
+      await buyNFTRequest(wallet?.address, nft.price, nft._id);
       setPurchased(true);
     } else {
       setBuyButtonStatus(4);
@@ -493,7 +493,7 @@ const NFTDetails = (props) => {
     try {
       const nftData = await (
         await getNFT(
-          isXdc(nftaddress.toLowerCase())
+          isXdc(nftaddress)
             ? fromXdc(nftaddress.toLowerCase())
             : nftaddress.toLowerCase(),
           id
@@ -513,7 +513,7 @@ const NFTDetails = (props) => {
                   _id: offer._id,
                   userProfile: offer.userId.urlProfile,
                   from: truncate(await getXdcDomainAddress(offer.fromAddress), 13),
-                  fromAddress: truncateAddress(offer.fromAddress),
+                  fromAddress: truncateAddress(isXdc(offer.fromAddress) ? offer.fromAddress.toLowerCase() : toXdc(offer.fromAddress.toLowerCase())),
                   isAccepted: offer.isAccepted,
                   isWithdrawn: offer.isWithdraw,
                   price: offer.price,
@@ -623,9 +623,9 @@ const NFTDetails = (props) => {
                     ),
                   price: item.price,
                   from: truncate(await getXdcDomainAddress(item.fromAddress), 13),
-                  fromAddress: item.fromAddress,
+                  fromAddress: isXdc(item.fromAddress) ? item.fromAddress.toLowerCase() : toXdc(item.fromAddress.toLowerCase()),
                   to: truncate(await getXdcDomainAddress(item.toAddress), 13),
-                  toAddress: item.toAddress,
+                  toAddress: isXdc(item.toAddress) ? item.toAddress.toLowerCase() : toXdc(item.toAddress.toLowerCase()),
                   date: item.timestamp,
                 };
                 return event;
@@ -1184,7 +1184,7 @@ const NFTDetails = (props) => {
                     border="18px"
                   ></IconImg>
                   {nft?.addressOwner ? (
-                    <Tooltip title={nft.addressOwner}>
+                    <Tooltip title={isXdc(nft.addressOwner) ? nft.addressOwner.toLowerCase() : toXdc(nft.addressOwner.toLowerCase())}>
                       <BodyBold cursor={"pointer"}>
                         {nft.owner.userName}
                       </BodyBold>
@@ -1298,9 +1298,9 @@ const NFTDetails = (props) => {
                             <CaptionBoldShort>NFT Address</CaptionBoldShort>
                             <Spacer></Spacer>
                             <HStack spacing="6px">
-                              <Tooltip title={nftaddress}>
+                              <Tooltip title={isXdc(nftaddress) ? nftaddress.toLowerCase() : toXdc(nftaddress.toLowerCase())}>
                                 <TitleBold18>
-                                  {truncateAddress(nftaddress)}
+                                  {truncateAddress(isXdc(nftaddress) ? nftaddress.toLowerCase() : toXdc(nftaddress.toLowerCase()))}
                                 </TitleBold18>
                               </Tooltip>
                             </HStack>
@@ -1368,7 +1368,7 @@ const NFTDetails = (props) => {
                       backsize="cover"
                     ></IconImg>
 
-                    <Tooltip title={nft.addressCreator}>
+                    <Tooltip title={isXdc(nft.addressCreator) ? nft.addressCreator.toLowerCase() : toXdc(nft.addressCreator.toLowerCase())}>
                       <BodyBold>
                         {nft.creator.userName}
                       </BodyBold>
@@ -1943,7 +1943,7 @@ const NFTDetails = (props) => {
                       background={({ theme }) => theme.backElement}
                       onClick={() => {
                         setNFT(null);
-                        props.redirect(`nft/${item.nftContract}/${item.tokenId}`);
+                        props.redirect(`nft/${isXdc(item.nftContract) ? item.nftContract.toLowerCase() : toXdc(item.nftContract.toLowerCase())}/${item.tokenId}`);
                       }}
                       onClickCreator={() =>
                         props.redirect(`user/${item.owner._id}`)
