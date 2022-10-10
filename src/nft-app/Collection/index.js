@@ -105,7 +105,7 @@ const CollectionPage = (props) => {
         addressCreator: isXdc(collectionData.collection.addressCreator)
           ? collectionData.collection.addressCreator.toLowerCase()
           : toXdc(collectionData.collection.addressCreator.toLowerCase()),
-        creatorId: collectionData.collection.creator._id,
+        creatorId: collectionData.collection.creator.nickName,
         isVerified: collectionData.collection.creator.isVerified,
         description: collectionData.collection.description,
         discordUrl: collectionData.collection.discordUrl,
@@ -725,7 +725,7 @@ const CollectionPage = (props) => {
                         props.redirect(`nft/${isXdc(item.nftContract) ? item.nftContract.toLowerCase() : toXdc(item.nftContract.toLowerCase())}/${item.tokenId}`)
                       }
                       onClickCreator={() =>
-                        props.redirect(`user/${item.owner._id}`)
+                        props.redirect(`user/${item.owner.nickName}`)
                       }
                       owner={true}
                       usdPrice={props.xdc}

@@ -2405,7 +2405,7 @@ const MyNFT = (props) => {
                             switched={subMenu === 1}
                             maxPrice={highestPrice}
                           ></FiltersButton>
-                          {/* <Swiper
+                          <Swiper
                             spaceBetween={0}
                             slidesPerView={"auto"}
                             grabCursor={true}
@@ -2441,7 +2441,7 @@ const MyNFT = (props) => {
                                   </SwiperSlide>
                                 ))
                               : null}
-                          </Swiper> */}
+                          </Swiper>
                           <SortButtonNFTS
                             onChange={handleChangeFilterNFT}
                             params={nftParams}
