@@ -455,7 +455,7 @@ function SearchPage(props) {
                                 collectionParams.sortBy === "volumeTrade"
                               }
                               onClickCreator={() =>
-                                props.redirect(`user/${item.creator._id}`)
+                                props.redirect(`user/${item.creator.nickName}`)
                               }
                               xdc={props.xdc}
                             ></Collection>
@@ -532,7 +532,7 @@ function SearchPage(props) {
                               )
                             }
                             onClickCreator={() =>
-                              props.redirect(`user/${item.creator._id}`)
+                              props.redirect(`user/${item.owner.nickName}`)
                             }
                             owner={true}
                             usdPrice={props.xdc}

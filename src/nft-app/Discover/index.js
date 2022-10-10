@@ -473,7 +473,7 @@ const Discover = (props) => {
                           nfts={item.totalNfts}
                           volumetraded={item.volumeTrade}
                           onClickCreator={() =>
-                            props.redirect(`user/${item.creator._id}`)
+                            props.redirect(`user/${item.creator.nickName}`)
                           }
                           sortFloor={collectionParams.sortBy === "floorPrice"}
                           sortOwners={collectionParams.sortBy === "owners"}
@@ -567,7 +567,7 @@ const Discover = (props) => {
                                 )
                               }
                               onClickCreator={() =>
-                                props.redirect(`user/${item.owner._id}`)
+                                props.redirect(`user/${item.owner.nickName}`)
                               }
                               owner={true}
                               usdPrice={props.xdc}

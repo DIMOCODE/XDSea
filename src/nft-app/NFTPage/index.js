@@ -518,7 +518,7 @@ const NFTDetails = (props) => {
                   isWithdrawn: offer.isWithdraw,
                   price: offer.price,
                   to: offer.toAddress,
-                  userId: offer.userId._id,
+                  userId: offer.userId.nickName,
                 };
                 return offerItem;
               })
@@ -1174,7 +1174,7 @@ const NFTDetails = (props) => {
                 <HStack
                   spacing="6px"
                   cursor="pointer"
-                  onClick={() => props.redirect(`user/${nft.owner._id}`)}
+                  onClick={() => props.redirect(`user/${nft.owner.nickName}`)}
                 >
                   <IconImg
                     url={nft?.owner.urlProfile}
@@ -1357,7 +1357,7 @@ const NFTDetails = (props) => {
                     spacing="6px"
                     cursor={"pointer"}
                     width="auto"
-                    onClick={() => props.redirect(`user/${nft.creator._id}`)}
+                    onClick={() => props.redirect(`user/${nft.creator.nickName}`)}
                   >
                     <IconImg
                       url={nft.creator.urlProfile}
@@ -1946,7 +1946,7 @@ const NFTDetails = (props) => {
                         props.redirect(`nft/${isXdc(item.nftContract) ? item.nftContract.toLowerCase() : toXdc(item.nftContract.toLowerCase())}/${item.tokenId}`);
                       }}
                       onClickCreator={() =>
-                        props.redirect(`user/${item.owner._id}`)
+                        props.redirect(`user/${item.owner.nickName}`)
                       }
                       usdPrice={props.xdc}
                       owner={true}
