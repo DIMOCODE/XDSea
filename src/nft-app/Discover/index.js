@@ -250,16 +250,16 @@ const Discover = (props) => {
       newNftPlaying[i] = !newNftPlaying[i];
       setNftPlaying([...newNftPlaying]);
     }
-  }
+  };
 
   const getXdcDomainAddress = async (address) => {
     const xdcDomainName = isXdc(address)
-      ? (await getXdcDomain(address))
-      : (await getXdcDomain(toXdc(address)))
-    return xdcDomainName === "" 
-      ? isXdc(address) 
-        ? address.toLowerCase() 
-        : toXdc(address.toLowerCase()) 
+      ? await getXdcDomain(address)
+      : await getXdcDomain(toXdc(address));
+    return xdcDomainName === ""
+      ? isXdc(address)
+        ? address.toLowerCase()
+        : toXdc(address.toLowerCase())
       : xdcDomainName;
   };
 
@@ -306,7 +306,12 @@ const Discover = (props) => {
     <DiscoverSection id="scrollableDiv" style={{ zIndex: 10 }}>
       {/* Discover top Section with tab bar*/}
       <HStack backgroundimage={seamless} padding="60px 0 0 0">
-        <HStack width="1200px" height="157px" padding="0px 9px">
+        <VStack
+          width="1200px"
+          height="147px"
+          spacing="36px"
+          padding="69px 0px 0px 0px"
+        >
           <TitleBold27 textcolor={appStyle.colors.white}>Discover</TitleBold27>
 
           {/* TabBar */}
@@ -506,11 +511,15 @@ const Discover = (props) => {
                             background={({ theme }) => theme.backElement}
                             onClick={() =>
                               props.redirect(
-                                `nft/${item.nftContract}/${item.tokenId}`
+                                `nft/${
+                                  isXdc(item.nftContract)
+                                    ? item.nftContract.toLowerCase()
+                                    : toXdc(item.nftContract.toLowerCase())
+                                }/${item.tokenId}`
                               )
                             }
                             onClickCreator={() =>
-                              props.redirect(`user/${item.owner._id}`)
+                              props.redirect(`user/${item.owner.nickName}`)
                             }
                             owner={true}
                             usdPrice={props.xdc}
