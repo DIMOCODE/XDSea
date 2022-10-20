@@ -107,6 +107,7 @@ const NFTApp = () => {
           ) : null}
 
           {/* This is the main TopBar of the website */}
+
           <TopBar
             device={
               size.width > 1024
@@ -220,10 +221,7 @@ const NFTApp = () => {
                 )}
               ></Route>
             </Switch>
-            <Footer
-              style={{ zIndex: -400 }}
-              redirect={NavigateTo}
-            ></Footer>
+            <Footer style={{ zIndex: -400 }} redirect={NavigateTo}></Footer>
           </ScrollView>
         </HomeStack>
       </>
