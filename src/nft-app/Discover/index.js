@@ -36,7 +36,9 @@ import { SortButtonNFTS } from "../../styles/SortButtonNFTS";
 import { FiltersButton } from "../../styles/FiltersButton";
 import { SortButtonCollections } from "../../styles/SortButtonCollections";
 import { StickySectionHeader } from "../../CustomModules/sticky/StickySectionHeader.js";
-import seamless from "../../images/newBlue.webp";
+import seamless from "../../images/newBlue.png";
+import { getXdcDomain } from "../../constant";
+import { isXdc, toXdc, fromXdc } from "../../common/common";
 
 import "./customstyles.css";
 import { positions } from "@mui/system";
@@ -248,6 +250,17 @@ const Discover = (props) => {
       newNftPlaying[i] = !newNftPlaying[i];
       setNftPlaying([...newNftPlaying]);
     }
+  }
+
+  const getXdcDomainAddress = async (address) => {
+    const xdcDomainName = isXdc(address)
+      ? (await getXdcDomain(address))
+      : (await getXdcDomain(toXdc(address)))
+    return xdcDomainName === "" 
+      ? isXdc(address) 
+        ? address.toLowerCase() 
+        : toXdc(address.toLowerCase()) 
+      : xdcDomainName;
   };
 
   /**
@@ -293,12 +306,7 @@ const Discover = (props) => {
     <DiscoverSection id="scrollableDiv" style={{ zIndex: 10 }}>
       {/* Discover top Section with tab bar*/}
       <HStack backgroundimage={seamless} padding="60px 0 0 0">
-        <VStack
-          width="1200px"
-          height="147px"
-          spacing="36px"
-          padding="69px 0px 0px 0px"
-        >
+        <HStack width="1200px" height="157px" padding="0px 9px">
           <TitleBold27 textcolor={appStyle.colors.white}>Discover</TitleBold27>
 
           {/* TabBar */}
@@ -404,7 +412,7 @@ const Discover = (props) => {
                           creatorLogo={item.logo.v0}
                           collectionName={item.name}
                           collectionDescription={item.description}
-                          creatorName={item.addressCreator}
+                          creatorName={item.creator.userName}
                           onClickCollection={() =>
                             props.redirect(`collection/${item.nickName}`)
                           }
@@ -413,7 +421,7 @@ const Discover = (props) => {
                           nfts={item.totalNfts}
                           volumetraded={item.volumeTrade}
                           onClickCreator={() =>
-                            props.redirect(`user/${item.creator._id}`)
+                            props.redirect(`user/${item.creator.nickName}`)
                           }
                           sortFloor={collectionParams.sortBy === "floorPrice"}
                           sortOwners={collectionParams.sortBy === "owners"}

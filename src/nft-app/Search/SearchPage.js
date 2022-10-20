@@ -10,7 +10,7 @@ import {
 } from "../../styles/TextStyles";
 import { appStyle } from "../../styles/AppStyles";
 import { AnimatePresence, motion } from "framer-motion/dist/framer-motion";
-import DiscoverBar from "../../images/newBlue.webp";
+import DiscoverBar from "../../images/newBlue.png";
 import { SortButtonCollections } from "../../styles/SortButtonCollections";
 import useWindowSize from "../../styles/useWindowSize";
 import { FiltersButton } from "../../styles/FiltersButton";
@@ -27,6 +27,7 @@ import { LayoutGroup } from "framer-motion/dist/framer-motion";
 import { Collection } from "../../styles/Collection";
 import { StickySectionHeader } from "../../CustomModules/sticky/StickySectionHeader.js";
 import { SearchCollection } from "../../styles/SearchCollection";
+import { isXdc, toXdc } from "../../common/common";
 
 function SearchPage(props) {
   const size = useWindowSize();
@@ -67,7 +68,7 @@ function SearchPage(props) {
     setCollectionParams((prevState) => ({
       ...prevState,
       page: params.page + 1,
-      searchBy: params.searchTerm,
+      searchBy: params.searchBy,
     }));
   };
 
@@ -79,6 +80,7 @@ function SearchPage(props) {
       await getCollections(collectionParams)
     ).data;
     setCollectionData([...collectionData, ...collectionResults.collections]);
+    console.log(collectionParams)
     setCollectionParams((prevState) => ({
       ...prevState,
       page: prevState.page + 1,
@@ -138,6 +140,7 @@ function SearchPage(props) {
   const fetchMoreNFTs = async () => {
     const nftResults = await (await getNFTs(nftParams)).data;
 
+    console.log(nftParams)
     setNftData([...nftData, ...nftResults.nfts]);
     setNftParams({
       ...nftParams,
@@ -452,7 +455,7 @@ function SearchPage(props) {
                                 collectionParams.sortBy === "volumeTrade"
                               }
                               onClickCreator={() =>
-                                props.redirect(`user/${item.creator._id}`)
+                                props.redirect(`user/${item.creator.nickName}`)
                               }
                               xdc={props.xdc}
                             ></Collection>
@@ -525,11 +528,11 @@ function SearchPage(props) {
                             background={({ theme }) => theme.backElement}
                             onClick={() =>
                               props.redirect(
-                                `nft/${item.nftContract}/${item.tokenId}`
+                                `nft/${isXdc(item.nftContract) ? item.nftContract.toLowerCase() : toXdc(item.nftContract.toLowerCase())}/${item.tokenId}`
                               )
                             }
                             onClickCreator={() =>
-                              props.redirect(`user/${item.creator._id}`)
+                              props.redirect(`user/${item.owner.nickName}`)
                             }
                             owner={true}
                             usdPrice={props.xdc}

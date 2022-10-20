@@ -30,7 +30,7 @@ import { Icon } from "@mui/material";
 import { getCollections } from "../API/Collection";
 import { getNFTs } from "../API/NFT";
 import loadingIcon from "../images/loadingDots.gif";
-import { truncateAddress } from "../common/common";
+import { truncateAddress, isXdc, toXdc } from "../common/common";
 import { nftaddress } from "../config";
 import useWindowSize from "../styles/useWindowSize";
 
@@ -43,13 +43,11 @@ function Searchbar({
   creatorImage,
   top,
   left,
-  width,
   widthInput,
   isPhone,
   backcolor,
   textcolor,
   onClickInput,
-  switchBarStatus,
   textplace,
 }) {
   const history = useHistory();
@@ -63,7 +61,6 @@ function Searchbar({
   const ref = useRef(null);
   const size = useWindowSize();
   useClickAway(ref, () => {
-    switchBarStatus(false);
     setShowResults(false);
   });
 
@@ -71,7 +68,6 @@ function Searchbar({
     setFilteredCollectionData([]);
     setFilteredNFTData([]);
     setSearchTerm("");
-    switchBarStatus(false);
     setShowResults(false);
   };
 
@@ -83,7 +79,6 @@ function Searchbar({
   function NavigateTo(route) {
     history.push(`/${route}`);
     setShowResults(false);
-    switchBarStatus(false);
   }
 
   /**
@@ -107,7 +102,6 @@ function Searchbar({
             }
 
             setLoading(false);
-            switchBarStatus(true);
             setShowResults(true);
           })
         );
@@ -115,7 +109,6 @@ function Searchbar({
         setFilteredCollectionData([]);
         setFilteredNFTData([]);
         setLoading(false);
-        switchBarStatus(false);
         setShowResults(false);
       }
     }, 1500);
@@ -156,7 +149,7 @@ function Searchbar({
         height="42px"
       ></InputStyled>
       {showResults ? (
-        size.width > 425 ? (
+        size.width > 428 ? (
           <SearchResult top={top} left={left} ref={ref}>
             <VStack
               background={({ theme }) => theme.backElement}
@@ -192,7 +185,7 @@ function Searchbar({
 
               {size.width > 768 ? (
                 <HStack
-                  responsive={size.width > 425 ? false : true}
+                  responsive={size.width > 428 ? false : true}
                   alignment="flex-start"
                   overflowy="auto"
                   height={"auto"}
@@ -210,7 +203,7 @@ function Searchbar({
                             padding="6px"
                             border="6px"
                             onClick={() =>
-                              NavigateTo(`nft/${nft.nftContract}/${nft.tokenId}`)
+                              NavigateTo(`nft/${isXdc(nft.nftContract) ? nft.nftContract.toLowerCase() : toXdc(nft.nftContract.toLowerCase())}/${nft.tokenId}`)
                             }
                             key={nft._id}
                           >
@@ -345,7 +338,7 @@ function Searchbar({
                 </HStack>
               ) : (
                 <VStack
-                  responsive={size.width > 425 ? false : true}
+                  responsive={size.width > 428 ? false : true}
                   alignment="flex-start"
                   overflowy="auto"
                   height={isPhone ? "490px" : "300px"}

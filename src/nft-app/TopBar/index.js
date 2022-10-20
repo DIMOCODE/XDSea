@@ -59,7 +59,7 @@ import iconMenu from "../../images/iconMenu.png";
 import zIndex from "@mui/material/styles/zIndex";
 
 function TopBar(props) {
-  const { device, themeToggler, devMode, onWalletChange } = props;
+  const { device, themeToggler, devMode, onWalletChange, getUser, user } = props;
   const location = useLocation();
   const ref = useRef(null);
   const size = useWindowSize();
@@ -78,7 +78,6 @@ function TopBar(props) {
   const [walletAddress, setWalletAddress] = useState("");
   const [isDomain, setIsDomain] = useState(false);
   const [searchPhone, setSearchPhone] = useState(false);
-  const [user, setUser] = useState(null);
 
   const variant1 = {
     open: {
@@ -102,20 +101,13 @@ function TopBar(props) {
   };
 
   /**
-   * Change the searchbar design
-   *
-   * @param {boolean} status the status of the searchbar
-   */
-  function handleBarStatus(status) {
-    setIsSearch(status);
-  }
-
-  /**
    * Connect Metamask wallet
    */
   const connectMetamask = async () => {
     if (window.ethereum) {
-      if (window.ethereum.isMetaMask && window.ethereum.chainId !== undefined) {
+      if (window.ethereum.isMetaMask && 
+        window.ethereum?.isDcentWallet === undefined && 
+        window.ethereum.chainId !== undefined) {
         try {
           if (window.ethereum.chainId === "0x32") {
             const res = await window.ethereum.request({
@@ -327,14 +319,9 @@ function TopBar(props) {
     }
     return xdcDomainName === "" 
       ? isXdc(address) 
-        ? fromXdc(address) 
-        : address 
+        ? address.toLowerCase() 
+        : toXdc(address.toLowerCase()) 
       : xdcDomainName;
-  };
-
-  const getUser = async () => {
-    const userData = await LS.get(LS_ROOT_KEY).user;
-    setUser(userData);
   };
 
   /**
@@ -356,78 +343,45 @@ function TopBar(props) {
 
   return (
     <ContentBar>
-      {/* Top bar organized by Phone Tablet and Computer, each case of the switch have the content of the bar */}
+      {/* Top bar organized by Phone, Tablet and Computer */}
       <HStack height="69px" width="100%" justify="center" blur="30px">
         <>
-          <HStack
-            width={
-              size.width > 728 ? "1200px" : size.width > 425 ? "1024px" : "100%"
-            }
-            padding="0 6px "
-          >
-            {/* Logo */}
-            <HStack
-              spacing="9px"
-              onClick={() => props.redirect("")}
-              cursor={"pointer"}
-            >
+          <HStack width={size.width > 1200 ? "1200px" : "100%"} padding="0 6px">
+            {/* Logo and Beta version info */}
+            <HStack spacing="9px">
               <IconImg
                 url={XDSealogo}
                 width="52px"
                 height="52px"
                 cursor={"pointer"}
+                onClick={() => props.redirect("")}
               ></IconImg>
-              <VStack
-                cursor={"pointer"}
-                spacing="1px"
-                alignment="flex-start"
-                width="80px"
-              >
-                <BodyRegular animate={{ opacity: 1 }} textcolor="#FCD868">
-                  BETA
-                </BodyRegular>
-                {devMode ? (
-                  <BodyBold textcolor="#FFFFFF">Basilisk</BodyBold>
-                ) : (
-                  <HStack
-                    background=" linear-gradient(90.5deg, #FFF5B3 -30.32%, #FCD868 15.14%, #FBC34B 85.07%, #FF7A00 109.52%)"
-                    border="6px"
-                    padding="3px 6px"
-                    cursor={"pointer"}
-                  >
-                    <CaptionRegular textcolor="#7A4405">
-                      Developer
-                    </CaptionRegular>
-                  </HStack>
-                )}
+              <VStack spacing="1px" alignment="flex-start">
+                <BodyRegular textcolor="#FCD868">BETA</BodyRegular>
+                <BodyBold textcolor="#FFFFFF">Basilisk</BodyBold>
               </VStack>
             </HStack>
+
             <Spacer></Spacer>
 
-            {/* Search with Discover and Create hidden on mobile */}
-
-            {size.width > 425 ? (
+            {/* Search with Discover and Create NFT buttons for large sizes */}
+            {size.width > 768 ? (
               <HStack spacing="9px">
                 {location.pathname === "/SearchPage" ? null : (
                   <Searchbar
-                    top="54px"
-                    left={"-0px"}
                     placeholder="Search for NFTs and Collections"
-                    // widthInput={isSearch ? "741px" : "310px"}
-                    widthInput={size.width > 768 ? "520px" : "290px"}
-                    width="630px"
-                    switchBarStatus={handleBarStatus}
+                    widthInput={size.width > 1024 ? "520px" : "290px"}
+                    top={"46px"}
                   ></Searchbar>
                 )}
 
                 <HStack
                   background={({ theme }) => theme.backElement}
-                  self="none"
+                  self="auto"
                   height="42px"
                   width="99px"
-                  padding="0"
                   border="6px"
-                  whiteTap={{ scale: 0.9 }}
+                  whileTap={{ scale: 0.9 }}
                   cursor="pointer"
                   onClick={() => props.redirect("discover/collections")}
                 >
@@ -438,13 +392,12 @@ function TopBar(props) {
                   background={
                     "linear-gradient(166.99deg, #2868F4 37.6%, #0E27C1 115.6%)"
                   }
-                  self="none"
+                  self="auto"
                   height="42px"
                   width="99px"
-                  padding="0px"
                   border="6px"
                   minwidth="300px"
-                  whiteTap={{ scale: 0.9 }}
+                  whileTap={{ scale: 0.9 }}
                   cursor="pointer"
                   onClick={() => props.redirect("create-nft")}
                 >
@@ -458,8 +411,9 @@ function TopBar(props) {
             <Spacer></Spacer>
 
             <HStack ref={ref}>
+              {/* Wallet button when connected */}
               {wallet?.connected ? (
-                <HStack self="none" minwith="52px" height="52px">
+                <HStack self="auto" height="52px">
                   <IconImg
                     url={user?.urlProfile}
                     width="52px"
@@ -505,14 +459,14 @@ function TopBar(props) {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -6 }}
                     transition={{ type: "spring", damping: 10 }}
-                    top={size.width > 425 ? "76px" : "69px"}
+                    top={size.width > 428 ? "76px" : "69px"}
                   >
                     <VStack
                       background={({ theme }) => theme.backElement}
-                      width={size.width > 425 ? "360px" : "100vw"}
+                      width={size.width > 428 ? "360px" : "100vw"}
                       padding="21px 30px"
-                      height={size.width > 425 ? "auto" : "94vh"}
-                      border={size.width > 425 ? "9px" : "0"}
+                      height={size.width > 428 ? "auto" : "94vh"}
+                      border={size.width > 428 ? "9px" : "0"}
                       alignment="flex-start"
                       spacing="15px"
                       style={{
@@ -543,7 +497,7 @@ function TopBar(props) {
                         ></WalletButton>
                       </HStack>
 
-                      {size.width < 426 && (
+                      {size.width < 429 && (
                         <HStack style={{ zIndex: 1 }}>
                           <Searchbar
                             placeholder="Search for NFTs and Collections"
@@ -554,7 +508,6 @@ function TopBar(props) {
                             textcolor={"rgba(0,0,0,0.6)"}
                             textplace={"rgba(0,0,0,0.6)"}
                             isPhone={true}
-                            switchBarStatus={handleBarStatus}
                             style={{ zIndex: 1 }}
                           ></Searchbar>
                         </HStack>
@@ -581,7 +534,7 @@ function TopBar(props) {
                               cursor="pointer"
                               onClick={() => {
                                 setShowMenu(!showMenu);
-                                props.redirect(`user/${user?._id}`);
+                                props.redirect(`user/${user?.nickName}`);
                               }}
                             >
                               <TitleRegular18
@@ -796,6 +749,7 @@ function TopBar(props) {
                       whileTap={{
                         scale:
                           window.ethereum?.isMetaMask &&
+                          window.ethereum?.isDcentWallet === undefined &&
                           window.ethereum.chainId !== undefined
                             ? 0.98
                             : 1,
@@ -809,6 +763,7 @@ function TopBar(props) {
                         cursor="pointer"
                         url={
                           window.ethereum?.isMetaMask &&
+                          window.ethereum?.isDcentWallet === undefined &&
                           window.ethereum.chainId !== undefined
                             ? Metamask
                             : MetamaskBW
@@ -820,6 +775,7 @@ function TopBar(props) {
                         cursor="pointer"
                         textcolor={
                           window.ethereum?.isMetaMask &&
+                          window.ethereum?.isDcentWallet === undefined &&
                           window.ethereum.chainId !== undefined
                             ? "white"
                             : "grey"
@@ -1032,7 +988,7 @@ function TopBar(props) {
                   <HStack
                     self="none"
                     background={({ theme }) => theme.walletButton}
-                    maxWidth={size.width < 426 ? "100%" : "560px"}
+                    maxWidth={size.width < 429 ? "100%" : "560px"}
                     padding="15px"
                     border="15px"
                     responsive={true}

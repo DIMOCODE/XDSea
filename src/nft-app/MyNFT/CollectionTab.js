@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import newBlue from "../../images/newBlue.webp";
+import newBlue from "../../images/newBlue.png";
 import { HStack, IconImg } from "../../styles/Stacks";
 import { BodyRegular } from "../../styles/TextStyles";
 

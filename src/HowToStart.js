@@ -2,7 +2,7 @@ import { VStack, HStack, Spacer, IconImg } from "./styles/Stacks";
 import styled from "styled-components";
 import { motion } from "framer-motion/dist/framer-motion";
 import { BodyRegular, TitleBold18, TitleBold27 } from "./styles/TextStyles";
-import backBar from "./images/newBlue.webp";
+import backBar from "./images/newBlue.png";
 import { appStyle } from "./styles/AppStyles";
 import Step1 from "./images/Step1v2.png";
 import Step2 from "./images/Step2v2.png";

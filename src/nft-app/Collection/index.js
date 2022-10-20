@@ -38,7 +38,7 @@ import {
   WhatsappShareButton,
 } from "react-share";
 import { getCollection, getCollectionNFTs } from "../../API/Collection";
-import { truncateAddress, toXdc } from "../../common/common";
+import { truncateAddress, toXdc, isXdc } from "../../common/common";
 import { SearchCollection } from "../../styles/SearchCollection";
 import { FiltersButton } from "../../styles/FiltersButton";
 import { SortButtonNFTS } from "../../styles/SortButtonNFTS";
@@ -102,8 +102,10 @@ const CollectionPage = (props) => {
         _id: collectionData.collection._id,
         banner: collectionData.collection.banner.v0,
         creator: await getXdcDomain(toXdc(collectionData.collection.addressCreator)),
-        addressCreator: collectionData.collection.addressCreator,
-        creatorId: collectionData.collection.creator._id,
+        addressCreator: isXdc(collectionData.collection.addressCreator)
+          ? collectionData.collection.addressCreator.toLowerCase()
+          : toXdc(collectionData.collection.addressCreator.toLowerCase()),
+        creatorId: collectionData.collection.creator.nickName,
         isVerified: collectionData.collection.creator.isVerified,
         description: collectionData.collection.description,
         discordUrl: collectionData.collection.discordUrl,
@@ -720,10 +722,10 @@ const CollectionPage = (props) => {
                       fileType={item.fileType}
                       background={({ theme }) => theme.backElement}
                       onClick={() =>
-                        props.redirect(`nft/${item.nftContract}/${item.tokenId}`)
+                        props.redirect(`nft/${isXdc(item.nftContract) ? item.nftContract.toLowerCase() : toXdc(item.nftContract.toLowerCase())}/${item.tokenId}`)
                       }
                       onClickCreator={() =>
-                        props.redirect(`user/${item.owner._id}`)
+                        props.redirect(`user/${item.owner.nickName}`)
                       }
                       owner={true}
                       usdPrice={props.xdc}

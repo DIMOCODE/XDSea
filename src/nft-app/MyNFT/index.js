@@ -55,7 +55,7 @@ import walletBlue from "../../images/walletBlue.png";
 import useWindowSize from "../../styles/useWindowSize";
 import ButtonApp from "../../styles/Buttons";
 import { TextAreaStyled } from "../../styles/TextAreaStyled";
-import newBlue from "../../images/newBlue.webp";
+import newBlue from "../../images/newBlue.png";
 import warning from "../../images/alert.png";
 
 import { appStyle } from "../../styles/AppStyles";
@@ -67,7 +67,7 @@ import { getCollections } from "../../API/Collection";
 import { getUser, updateUser, updateUserSettings } from "../../API/User";
 import { isImage, isVideo, isAudio } from "../../common";
 import { CircleButton } from "../../styles/CircleButton";
-import { toXdc, truncateAddress } from "../../common/common";
+import { isXdc, toXdc, truncateAddress } from "../../common/common";
 import { Navigation, Pagination, Scrollbar, A11y, Mousewheel } from "swiper";
 import { StickySectionHeader } from "../../CustomModules/sticky/StickySectionHeader.js";
 import { Grid, FreeMode, Thumbs } from "swiper";
@@ -90,7 +90,8 @@ import { CollectionTab } from "./CollectionTab";
 import { Icon } from "@mui/material";
 import { uploadFileInS3Bucket } from "../../helpers/fileUploader";
 import { GuardSpinner, SwishSpinner, TraceSpinner } from "react-spinners-kit";
-import { getXdcDomain } from "../../constant";
+import { getXdcDomain, LS, LS_ROOT_KEY } from "../../constant";
+import { anonymousLogin } from "../../API/access";
 
 const MyNFT = (props) => {
   const { userId } = useParams();
@@ -421,6 +422,7 @@ const MyNFT = (props) => {
         "urlCover"
       );
     }
+    let nickname = userId;
     if (
       user.userName !== newUserName ||
       user.instagram !== newInstagramUsername ||
@@ -433,6 +435,7 @@ const MyNFT = (props) => {
         twitter: newTwitterUsername,
         siteUrl: newWebsite,
       });
+      nickname = updateSuccess.data.user.nickName;
     }
     if (userSettings?.dashboardMode !== (isDarkUI ? "dark" : "light")) {
       const updateSettingsSuccess = await updateUserSettings({
@@ -440,11 +443,20 @@ const MyNFT = (props) => {
       });
     }
 
-    let userData = (await getUser(userId)).data;
+    let userData = (await getUser(nickname)).data;
     setUser(userData.user);
+    LS.removeAll();
+    const { data } = await anonymousLogin(userData.user.XDCWallets[0]);
+    LS.set(LS_ROOT_KEY, data);
+    props?.getUser();
     setUserSettings(userData.settings);
     setIsProfileUpdated(false);
     setIsEditing(false);
+    window.history.replaceState(
+      { path: `/user/${nickname}` },
+      "",
+      `/user/${nickname}`
+    );
   };
 
   const updateUserStatus = async () => {
@@ -453,14 +465,14 @@ const MyNFT = (props) => {
         newStatus,
       });
     }
-    let userData = await (await getUser(userId)).data;
+    let userData = await (await getUser(user.nickName)).data;
     setUser(userData.user);
     setNewMessage(false);
   };
 
   return (
     <UserSection>
-      {size.width > 425 ? (
+      {size.width > 428 ? (
         <ZStack>
           <ZItem>
             <VStack width="100%" height="900px" justify="flex-start">
@@ -767,10 +779,14 @@ const MyNFT = (props) => {
                               <BubbleCopied
                                 logo={walletBlue}
                                 address={
-                                  userDomain ? userDomain : user?.XDCWallets ? truncateAddress(user.XDCWallets[0]) : ""
+                                  userDomain
+                                    ? userDomain
+                                    : user?.XDCWallets
+                                    ? truncateAddress(isXdc(user.XDCWallets[0]) ? user.XDCWallets[0].toLowerCase() : toXdc(user.XDCWallets[0].toLowerCase()))
+                                    : ""
                                 }
                                 addressCreator={
-                                  user?.XDCWallets ? user.XDCWallets[0] : ""
+                                  user?.XDCWallets ? isXdc(user.XDCWallets[0]) ? user.XDCWallets[0].toLowerCase() : toXdc(user.XDCWallets[0].toLowerCase()): ""
                                 }
                                 icon={copyIcon}
                                 background={isDarkUI ? "#20222D" : "white"}
@@ -1360,10 +1376,14 @@ const MyNFT = (props) => {
                               <BubbleCopied
                                 logo={walletBlue}
                                 address={
-                                  userDomain ? userDomain : user?.XDCWallets ? truncateAddress(user.XDCWallets[0]) : ""
+                                  userDomain
+                                    ? userDomain
+                                    : user?.XDCWallets
+                                    ? truncateAddress(isXdc(user.XDCWallets[0]) ? user.XDCWallets[0].toLowerCase() : toXdc(user.XDCWallets[0].toLowerCase()))
+                                    : ""
                                 }
                                 addressCreator={
-                                  user?.XDCWallets ? user.XDCWallets[0] : ""
+                                  user?.XDCWallets ? isXdc(user.XDCWallets[0]) ? user.XDCWallets[0].toLowerCase() : toXdc(user.XDCWallets[0].toLowerCase()) : ""
                                 }
                                 icon={copyIcon}
                                 background={isDarkUI ? "#20222D" : "white"}
@@ -1809,17 +1829,19 @@ const MyNFT = (props) => {
                   <HStack
                     spacing="0px"
                     width="100%"
-                    height={size.width > 1024
-                      ? isLoggedIn
-                        ? "410px"
-                        : "280px"
-                      : size.width > 768
+                    height={
+                      size.width > 1024
+                        ? isLoggedIn
+                          ? "410px"
+                          : "280px"
+                        : size.width > 768
                         ? isLoggedIn
                           ? "430px"
                           : "310px"
                         : isLoggedIn
-                          ? "460px"
-                          : "440px"}
+                        ? "460px"
+                        : "440px"
+                    }
                     padding="90px 0 0 0"
                   >
                     <VStack
@@ -1918,10 +1940,14 @@ const MyNFT = (props) => {
                               <BubbleCopied
                                 logo={walletBlue}
                                 address={
-                                  userDomain ? userDomain : user?.XDCWallets ? truncateAddress(user.XDCWallets[0]) : ""
+                                  userDomain
+                                    ? userDomain
+                                    : user?.XDCWallets
+                                    ? truncateAddress(isXdc(user.XDCWallets[0]) ? user.XDCWallets[0].toLowerCase() : toXdc(user.XDCWallets[0].toLowerCase()))
+                                    : ""
                                 }
                                 addressCreator={
-                                  user?.XDCWallets ? user.XDCWallets[0] : ""
+                                  user?.XDCWallets ? isXdc(user.XDCWallets[0]) ? user.XDCWallets[0].toLowerCase() : toXdc(user.XDCWallets[0].toLowerCase()) : ""
                                 }
                                 icon={copyIcon}
                                 background={
@@ -1940,281 +1966,8 @@ const MyNFT = (props) => {
                         </VStack>
                       </HStack>
 
-                      {size.width < 769 
-                        && (
-                          <HStack>
-                            <VStack
-                              background={"rgba(0,0,0,0.42)"}
-                              alignment="flex-start"
-                              padding="26px 18px 26px 18px"
-                              border="6px"
-                              maxheight="235px"
-                              blur="30px"
-                            >
-                              {newMessage ? (
-                                <>
-                                  <TextAreaStyled
-                                    textplace="white"
-                                    padding="0px"
-                                    background="rgba(0,0,0,0)"
-                                    textColor={
-                                      userSettings?.dashboardMode === "dark"
-                                        ? "#363537"
-                                        : "#FAFAFA"
-                                    }
-                                    placeholder="Write new message only 90 characters"
-                                    fontSize="21px"
-                                    fontWeight="400"
-                                    height="165px"
-                                    resize="none"
-                                    maxLength="90"
-                                    letterSpacing="-0.03em"
-                                    lineHeight="33px"
-                                    onChange={(event) => {
-                                      setNewStatus(event.target.value);
-                                    }}
-                                  ></TextAreaStyled>
-                                  <HStack width="100%">
-                                    <HStack
-                                      width="100%"
-                                      minheight="42px"
-                                      background={({ theme }) => theme.backElement}
-                                      border="6px"
-                                      cursor="pointer"
-                                      whileTap={{ scale: 0.98 }}
-                                      onClick={() => setNewMessage(false)}
-                                    >
-                                      <BodyRegular cursor="pointer">
-                                        Cancel
-                                      </BodyRegular>
-                                    </HStack>
-                                    <HStack
-                                      width="100%"
-                                      minheight="42px"
-                                      background="linear-gradient(166.99deg, #2868F4 37.6%, #0E27C1 115.6%)"
-                                      border="6px"
-                                      cursor="pointer"
-                                      whileTap={{ scale: 0.98 }}
-                                      onClick={() => {
-                                        updateUserStatus();
-                                      }}
-                                    >
-                                      <BodyRegular
-                                        textcolor="white"
-                                        cursor="pointer"
-                                      >
-                                        Publish New
-                                      </BodyRegular>
-                                    </HStack>
-                                  </HStack>
-                                </>
-                              ) : (
-                                <VStack width="100%">
-                                  {/* Only 90 characters */}
-                                  <TitleSemi21
-                                    textcolor={
-                                      userSettings?.dashboardMode === "dark"
-                                        ? "#363537"
-                                        : "#FAFAFA"
-                                    }
-                                  >
-                                    {user?.statusRecord?.status
-                                      ? user.statusRecord.status
-                                      : "We just joined the XDSea NFT Marketplace 🤩 Stay tuned for more info related to our NFTs!"}
-                                  </TitleSemi21>
-                                  <HStack>
-                                    <CaptionSmallRegular
-                                      textcolor={
-                                        userSettings?.dashboardMode === "dark"
-                                          ? "#363537"
-                                          : "#FAFAFA"
-                                      }
-                                    >
-                                      {user?.statusRecord?.createdAt
-                                        ? determineAgoTime(
-                                            new Date(user.statusRecord.createdAt)
-                                          )
-                                        : determineAgoTime(new Date())}
-                                    </CaptionSmallRegular>
-                                    <Spacer></Spacer>
-                                  </HStack>
-                                  {isLoggedIn ? (
-                                    <HStack
-                                      background={
-                                        userSettings?.dashboardMode === "dark"
-                                          ? "#20222D"
-                                          : "white"
-                                      }
-                                      padding="6px 12px"
-                                      border="6px"
-                                      height="39px"
-                                      cursor="pointer"
-                                      width="100%"
-                                      whileTap={{ scale: 0.96 }}
-                                      onClick={() => setNewMessage(true)}
-                                    >
-                                      <BodyRegular
-                                        textcolor={
-                                          userSettings?.dashboardMode === "dark"
-                                            ? "#FAFAFA"
-                                            : "#363537"
-                                        }
-                                        cursor="pointer"
-                                      >
-                                        New Status
-                                      </BodyRegular>
-
-                                      <IconImg
-                                        url={editPencil}
-                                        width="18px"
-                                        height="18px"
-                                      ></IconImg>
-                                    </HStack>
-                                  ) : null}
-                                </VStack>
-                              )}
-                            </VStack>
-                          </HStack>
-                        )
-                      }
-                      {/* Filter Buttons */}
-
-                      <HStack spacing="30px">
-                        {/* Collections Button */}
-                        <HStack
-                          onClick={() => {
-                            setSubMenu(1);
-                          }}
-                          cursor={"pointer"}
-                          variants={selection}
-                          animate={subMenu === 1 ? "active" : "faded"}
-                        >
-                          <TitleSemi18
-                            cursor="pointer"
-                            textcolor={
-                              userSettings?.dashboardMode === "dark"
-                                ? "#26272E"
-                                : "white"
-                            }
-                          >
-                            Collections
-                          </TitleSemi18>
-                          <VStack
-                            width="auto"
-                            minwidth="26px"
-                            height="26px"
-                            border="30px"
-                            background={
-                              userSettings?.dashboardMode === "dark"
-                                ? "#20222D"
-                                : "white"
-                            }
-                            cursor="pointer"
-                          >
-                            <BodyRegular
-                              textcolor={
-                                userSettings?.dashboardMode === "dark"
-                                  ? "#FAFAFA"
-                                  : "#363537"
-                              }
-                            >
-                              {collections?.length}
-                            </BodyRegular>
-                          </VStack>
-                        </HStack>
-
-                        {/* Nft Button */}
-                        <HStack
-                          onClick={() => setSubMenu(0)}
-                          cursor={"pointer"}
-                          variants={selection}
-                          animate={subMenu === 0 ? "active" : "faded"}
-                        >
-                          <TitleSemi18
-                            cursor="pointer"
-                            textcolor={
-                              userSettings?.dashboardMode === "dark"
-                                ? "#20222D"
-                                : "white"
-                            }
-                          >
-                            NFTs Purchased
-                          </TitleSemi18>
-                          <VStack
-                            width="auto"
-                            minwidth="26px"
-                            height="26px"
-                            border="30px"
-                            background={
-                              userSettings?.dashboardMode === "dark"
-                                ? "#20222D"
-                                : "white"
-                            }
-                            cursor="pointer"
-                            padding="0px 9px"
-                          >
-                            <BodyRegular
-                              textcolor={
-                                userSettings?.dashboardMode === "dark"
-                                  ? "#FAFAFA"
-                                  : "#363537"
-                              }
-                            >
-                              {totalNfts}
-                            </BodyRegular>
-                          </VStack>
-                        </HStack>
-
-                        <Spacer></Spacer>
-                      </HStack>
-                    </VStack>
-
-                    {/* Sidebar Content */}
-                    <VStack
-                      minwidth="30%"
-                      height="100%"
-                      padding="12px 12px 0px 0"
-                      alignment="flex-end"
-                      justify="flex-start"
-                      spacing="12px"
-                    >
-                      {/* Edit button for the logged-in user */}
-                      {isLoggedIn ? (
-                        <HStack
-                          background={
-                            userSettings?.dashboardMode === "dark"
-                              ? "#20222D"
-                              : "white"
-                          }
-                          border="30px"
-                          cursor="pointer"
-                          minheight="42px"
-                          self="none"
-                          spacing="6px"
-                          padding="0 6px 0 9px"
-                          onClick={() => setIsEditing(true)}
-                        >
-                          <BodyRegular
-                            textcolor={
-                              userSettings?.dashboardMode === "dark"
-                                ? "#FAFAFA"
-                                : "#363537"
-                            }
-                            cursor="pointer"
-                          >
-                            Edit Profile
-                          </BodyRegular>
-                          <IconImg
-                            cursor="pointer"
-                            url={editProfile}
-                            width="30px"
-                            height="30px"
-                          ></IconImg>
-                        </HStack>
-                      ) : null}
-
-                      {size.width > 768
-                        ? <HStack>
+                      {size.width < 769 && (
+                        <HStack>
                           <VStack
                             background={"rgba(0,0,0,0.42)"}
                             alignment="flex-start"
@@ -2250,7 +2003,9 @@ const MyNFT = (props) => {
                                   <HStack
                                     width="100%"
                                     minheight="42px"
-                                    background={({ theme }) => theme.backElement}
+                                    background={({ theme }) =>
+                                      theme.backElement
+                                    }
                                     border="6px"
                                     cursor="pointer"
                                     whileTap={{ scale: 0.98 }}
@@ -2347,8 +2102,280 @@ const MyNFT = (props) => {
                             )}
                           </VStack>
                         </HStack>
-                        : null
-                      }
+                      )}
+                      {/* Filter Buttons */}
+
+                      <HStack spacing="30px">
+                        {/* Collections Button */}
+                        <HStack
+                          onClick={() => {
+                            setSubMenu(1);
+                          }}
+                          cursor={"pointer"}
+                          variants={selection}
+                          animate={subMenu === 1 ? "active" : "faded"}
+                        >
+                          <TitleSemi18
+                            cursor="pointer"
+                            textcolor={
+                              userSettings?.dashboardMode === "dark"
+                                ? "#26272E"
+                                : "white"
+                            }
+                          >
+                            Collections
+                          </TitleSemi18>
+                          <VStack
+                            width="auto"
+                            minwidth="26px"
+                            height="26px"
+                            border="30px"
+                            background={
+                              userSettings?.dashboardMode === "dark"
+                                ? "#20222D"
+                                : "white"
+                            }
+                            cursor="pointer"
+                          >
+                            <BodyRegular
+                              textcolor={
+                                userSettings?.dashboardMode === "dark"
+                                  ? "#FAFAFA"
+                                  : "#363537"
+                              }
+                            >
+                              {collections?.length}
+                            </BodyRegular>
+                          </VStack>
+                        </HStack>
+
+                        {/* Nft Button */}
+                        <HStack
+                          onClick={() => setSubMenu(0)}
+                          cursor={"pointer"}
+                          variants={selection}
+                          animate={subMenu === 0 ? "active" : "faded"}
+                        >
+                          <TitleSemi18
+                            cursor="pointer"
+                            textcolor={
+                              userSettings?.dashboardMode === "dark"
+                                ? "#20222D"
+                                : "white"
+                            }
+                          >
+                            NFTs Owned
+                          </TitleSemi18>
+                          <VStack
+                            width="auto"
+                            minwidth="26px"
+                            height="26px"
+                            border="30px"
+                            background={
+                              userSettings?.dashboardMode === "dark"
+                                ? "#20222D"
+                                : "white"
+                            }
+                            cursor="pointer"
+                            padding="0px 9px"
+                          >
+                            <BodyRegular
+                              textcolor={
+                                userSettings?.dashboardMode === "dark"
+                                  ? "#FAFAFA"
+                                  : "#363537"
+                              }
+                            >
+                              {totalNfts}
+                            </BodyRegular>
+                          </VStack>
+                        </HStack>
+
+                        <Spacer></Spacer>
+                      </HStack>
+                    </VStack>
+
+                    {/* Sidebar Content */}
+                    <VStack
+                      minwidth="30%"
+                      height="100%"
+                      padding="12px 12px 0px 0"
+                      alignment="flex-end"
+                      justify="flex-start"
+                      spacing="12px"
+                    >
+                      {/* Edit button for the logged-in user */}
+                      {isLoggedIn ? (
+                        <HStack
+                          background={
+                            userSettings?.dashboardMode === "dark"
+                              ? "#20222D"
+                              : "white"
+                          }
+                          border="30px"
+                          cursor="pointer"
+                          minheight="42px"
+                          self="none"
+                          spacing="6px"
+                          padding="0 6px 0 9px"
+                          onClick={() => setIsEditing(true)}
+                        >
+                          <BodyRegular
+                            textcolor={
+                              userSettings?.dashboardMode === "dark"
+                                ? "#FAFAFA"
+                                : "#363537"
+                            }
+                            cursor="pointer"
+                          >
+                            Edit Profile
+                          </BodyRegular>
+                          <IconImg
+                            cursor="pointer"
+                            url={editProfile}
+                            width="30px"
+                            height="30px"
+                          ></IconImg>
+                        </HStack>
+                      ) : null}
+
+                      {size.width > 768 ? (
+                        <HStack>
+                          <VStack
+                            background={"rgba(0,0,0,0.42)"}
+                            alignment="flex-start"
+                            padding="26px 18px 26px 18px"
+                            border="6px"
+                            maxheight="235px"
+                            blur="30px"
+                          >
+                            {newMessage ? (
+                              <>
+                                <TextAreaStyled
+                                  textplace="white"
+                                  padding="0px"
+                                  background="rgba(0,0,0,0)"
+                                  textColor={
+                                    userSettings?.dashboardMode === "dark"
+                                      ? "#363537"
+                                      : "#FAFAFA"
+                                  }
+                                  placeholder="Write new message only 90 characters"
+                                  fontSize="21px"
+                                  fontWeight="400"
+                                  height="165px"
+                                  resize="none"
+                                  maxLength="90"
+                                  letterSpacing="-0.03em"
+                                  lineHeight="33px"
+                                  onChange={(event) => {
+                                    setNewStatus(event.target.value);
+                                  }}
+                                ></TextAreaStyled>
+                                <HStack width="100%">
+                                  <HStack
+                                    width="100%"
+                                    minheight="42px"
+                                    background={({ theme }) =>
+                                      theme.backElement
+                                    }
+                                    border="6px"
+                                    cursor="pointer"
+                                    whileTap={{ scale: 0.98 }}
+                                    onClick={() => setNewMessage(false)}
+                                  >
+                                    <BodyRegular cursor="pointer">
+                                      Cancel
+                                    </BodyRegular>
+                                  </HStack>
+                                  <HStack
+                                    width="100%"
+                                    minheight="42px"
+                                    background="linear-gradient(166.99deg, #2868F4 37.6%, #0E27C1 115.6%)"
+                                    border="6px"
+                                    cursor="pointer"
+                                    whileTap={{ scale: 0.98 }}
+                                    onClick={() => {
+                                      updateUserStatus();
+                                    }}
+                                  >
+                                    <BodyRegular
+                                      textcolor="white"
+                                      cursor="pointer"
+                                    >
+                                      Publish New
+                                    </BodyRegular>
+                                  </HStack>
+                                </HStack>
+                              </>
+                            ) : (
+                              <VStack width="100%">
+                                {/* Only 90 characters */}
+                                <TitleSemi21
+                                  textcolor={
+                                    userSettings?.dashboardMode === "dark"
+                                      ? "#363537"
+                                      : "#FAFAFA"
+                                  }
+                                >
+                                  {user?.statusRecord?.status
+                                    ? user.statusRecord.status
+                                    : "We just joined the XDSea NFT Marketplace 🤩 Stay tuned for more info related to our NFTs!"}
+                                </TitleSemi21>
+                                <HStack>
+                                  <CaptionSmallRegular
+                                    textcolor={
+                                      userSettings?.dashboardMode === "dark"
+                                        ? "#363537"
+                                        : "#FAFAFA"
+                                    }
+                                  >
+                                    {user?.statusRecord?.createdAt
+                                      ? determineAgoTime(
+                                          new Date(user.statusRecord.createdAt)
+                                        )
+                                      : determineAgoTime(new Date())}
+                                  </CaptionSmallRegular>
+                                  <Spacer></Spacer>
+                                </HStack>
+                                {isLoggedIn ? (
+                                  <HStack
+                                    background={
+                                      userSettings?.dashboardMode === "dark"
+                                        ? "#20222D"
+                                        : "white"
+                                    }
+                                    padding="6px 12px"
+                                    border="6px"
+                                    height="39px"
+                                    cursor="pointer"
+                                    width="100%"
+                                    whileTap={{ scale: 0.96 }}
+                                    onClick={() => setNewMessage(true)}
+                                  >
+                                    <BodyRegular
+                                      textcolor={
+                                        userSettings?.dashboardMode === "dark"
+                                          ? "#FAFAFA"
+                                          : "#363537"
+                                      }
+                                      cursor="pointer"
+                                    >
+                                      New Status
+                                    </BodyRegular>
+
+                                    <IconImg
+                                      url={editPencil}
+                                      width="18px"
+                                      height="18px"
+                                    ></IconImg>
+                                  </HStack>
+                                ) : null}
+                              </VStack>
+                            )}
+                          </VStack>
+                        </HStack>
+                      ) : null}
 
                       {/* <Activity></Activity> */}
                     </VStack>
@@ -2364,11 +2391,13 @@ const MyNFT = (props) => {
                         blur="30px"
                         spacing="0px"
                       >
-                        <HStack width={
-                          size.width > 1024
-                            ? "1200px"
-                            : size.width - 12 + "px"
-                        }>
+                        <HStack
+                          width={
+                            size.width > 1024
+                              ? "1200px"
+                              : size.width - 12 + "px"
+                          }
+                        >
                           <FiltersButton
                             isNftFilter={true}
                             onChange={handleChangeFilterNFT}
@@ -2458,9 +2487,7 @@ const MyNFT = (props) => {
                             >
                               <Masonry
                                 columnsCount={size.width > 1200 ? 4 : 3}
-                                gutter={size.width > 1024
-                                  ? "15px"
-                                  : "12px"}
+                                gutter={size.width > 1024 ? "15px" : "12px"}
                                 style={{
                                   width:
                                     size.width > 1200
@@ -2483,7 +2510,7 @@ const MyNFT = (props) => {
                                       border="6px"
                                       onClick={() => {
                                         props.redirect(
-                                          `nft/${item.nftContract}/${item.tokenId}`
+                                          `nft/${isXdc(item.nftContract) ? item.nftContract.toLowerCase() : toXdc(item.nftContract.toLowerCase())}/${item.tokenId}`
                                         );
                                       }}
                                       onHoverStart={() => {
@@ -2616,9 +2643,10 @@ const MyNFT = (props) => {
                           ) : collections?.length !== 0 ? (
                             collections?.map((item) => (
                               <ZStack
-                                maxwidth={size.width > 1024
-                                  ? "49.25%"
-                                  : (size.width / 2) - 20 + "px"
+                                maxwidth={
+                                  size.width > 1024
+                                    ? "49.25%"
+                                    : size.width / 2 - 20 + "px"
                                 }
                                 minheight={
                                   size.width < 1112 ? "320px" : "590px"
@@ -2629,6 +2657,9 @@ const MyNFT = (props) => {
                                 style={{
                                   boxShadow:
                                     " 0px 11px 12px 0px rgba(0, 0, 0, 0.2)",
+                                }}
+                                onClick={() => {
+                                  props.redirect(`collection/${item.nickName}`);
                                 }}
                               >
                                 <ZItem>
@@ -2674,17 +2705,16 @@ const MyNFT = (props) => {
                                         Volume Traded
                                       </CaptionBoldShort>
                                       <BodyRegular textcolor="white">
-                                      {Number(item.volumeTrade) > 100000
-                                        ? Intl.NumberFormat("en-US", {
-                                            notation: "compact",
-                                            maximumFractionDigits: 2,
-                                          }).format(Number(item.volumeTrade))
-                                        : Number(item.volumeTrade).toLocaleString(
-                                            undefined,
-                                            {
+                                        {Number(item.volumeTrade) > 100000
+                                          ? Intl.NumberFormat("en-US", {
+                                              notation: "compact",
                                               maximumFractionDigits: 2,
-                                            }
-                                          ) || "0"}
+                                            }).format(Number(item.volumeTrade))
+                                          : Number(
+                                              item.volumeTrade
+                                            ).toLocaleString(undefined, {
+                                              maximumFractionDigits: 2,
+                                            }) || "0"}
                                       </BodyRegular>
 
                                       <IconImg
@@ -2756,28 +2786,22 @@ const MyNFT = (props) => {
 
           {/* Username and social networks    */}
           <VStack width="100%">
-          <TitleBold27
-            textcolor={
-              userSettings?.dashboardMode === "dark"
-                ? "#363537"
-                : "#FAFAFA"
-            }
-          >
-            {user?.userName}
-          </TitleBold27>
+            <TitleBold27
+              textcolor={
+                userSettings?.dashboardMode === "dark" ? "#363537" : "#FAFAFA"
+              }
+            >
+              {user?.userName}
+            </TitleBold27>
             <HStack spacing="12px" justify="center">
               {/* Instagram Button */}
               {user?.instagram ? (
                 <CircleButton
                   image={instagramColor}
                   background={
-                    userSettings?.dashboardMode === "dark"
-                      ? "#20222D"
-                      : "white"
+                    userSettings?.dashboardMode === "dark" ? "#20222D" : "white"
                   }
-                  onClick={() =>
-                    (window.location.href = user.instagram)
-                  }
+                  onClick={() => (window.location.href = user.instagram)}
                 ></CircleButton>
               ) : null}
 
@@ -2786,13 +2810,9 @@ const MyNFT = (props) => {
                 <CircleButton
                   image={twitterColor}
                   background={
-                    userSettings?.dashboardMode === "dark"
-                      ? "#20222D"
-                      : "white"
+                    userSettings?.dashboardMode === "dark" ? "#20222D" : "white"
                   }
-                  onClick={() =>
-                    (window.location.href = user.twitter)
-                  }
+                  onClick={() => (window.location.href = user.twitter)}
                 ></CircleButton>
               ) : null}
 
@@ -2801,25 +2821,22 @@ const MyNFT = (props) => {
                 <CircleButton
                   image={webColor}
                   background={
-                    userSettings?.dashboardMode === "dark"
-                      ? "#20222D"
-                      : "white"
+                    userSettings?.dashboardMode === "dark" ? "#20222D" : "white"
                   }
-                  onClick={() =>
-                    (window.location.href = user.siteUrl)
-                  }
+                  onClick={() => (window.location.href = user.siteUrl)}
                 ></CircleButton>
               ) : null}
 
               {/* Wallet button  */}
-              <CircleButton image={walletBlue}
+              <CircleButton
+                image={walletBlue}
                 background={
-                  userSettings?.dashboardMode === "dark"
-                    ? "#20222D"
-                    : "white"
+                  userSettings?.dashboardMode === "dark" ? "#20222D" : "white"
                 }
                 onClick={() => {
-                  navigator.clipboard.writeText(user?.XDCWallets.length !== 0 ? user.XDCWallets[0] : "")
+                  navigator.clipboard.writeText(
+                    user?.XDCWallets.length !== 0 ? user.XDCWallets[0] : ""
+                  );
                 }}
               ></CircleButton>
             </HStack>
@@ -2834,10 +2851,9 @@ const MyNFT = (props) => {
               maxheight="auto"
               blur="30px"
             >
-              <BodyRegular textcolor={
-                  userSettings?.dashboardMode === "dark"
-                    ? "#363537"
-                    : "#FAFAFA"
+              <BodyRegular
+                textcolor={
+                  userSettings?.dashboardMode === "dark" ? "#363537" : "#FAFAFA"
                 }
               >
                 {user?.statusRecord?.status
@@ -2845,22 +2861,23 @@ const MyNFT = (props) => {
                   : "We just joined the XDSea NFT Marketplace 🤩 Stay tuned for more info related to our NFTs!"}
               </BodyRegular>
 
-              <CaptionSmallRegular textcolor={
-                  userSettings?.dashboardMode === "dark"
-                    ? "#363537"
-                    : "#FAFAFA"
+              <CaptionSmallRegular
+                textcolor={
+                  userSettings?.dashboardMode === "dark" ? "#363537" : "#FAFAFA"
                 }
               >
                 {user?.statusRecord?.createdAt
-                  ? determineAgoTime(
-                      new Date(user.statusRecord.createdAt)
-                    )
+                  ? determineAgoTime(new Date(user.statusRecord.createdAt))
                   : determineAgoTime(new Date())}
               </CaptionSmallRegular>
             </VStack>
           </HStack>
 
-          <HStack spacing="30px" height="90px" style={{"margin-top" : "-30px"}}>
+          <HStack
+            spacing="30px"
+            height="90px"
+            style={{ "margin-top": "-30px" }}
+          >
             {/* Collections Button */}
             <HStack
               onClick={() => {
@@ -2870,29 +2887,34 @@ const MyNFT = (props) => {
               variants={selection}
               animate={subMenu === 1 ? "active" : "faded"}
             >
-              <BodyRegular cursor="pointer" textcolor={
-                userSettings?.dashboardMode === "dark"
-                  ? "#26272E"
-                  : "white"
-              }>Collections</BodyRegular>
+              <BodyRegular
+                cursor="pointer"
+                textcolor={
+                  userSettings?.dashboardMode === "dark" ? "#26272E" : "white"
+                }
+              >
+                Collections
+              </BodyRegular>
               <VStack
                 width="auto"
                 minwidth="26px"
                 height="26px"
                 border="30px"
                 background={
-                  userSettings?.dashboardMode === "dark"
-                    ? "#20222D"
-                    : "white"
+                  userSettings?.dashboardMode === "dark" ? "#20222D" : "white"
                 }
                 cursor="pointer"
                 padding="0px 9px"
               >
-                <BodyRegular textcolor={
-                  userSettings?.dashboardMode === "dark"
-                    ? "#FAFAFA"
-                    : "#363537"
-                }>{collections?.length}</BodyRegular>
+                <BodyRegular
+                  textcolor={
+                    userSettings?.dashboardMode === "dark"
+                      ? "#FAFAFA"
+                      : "#363537"
+                  }
+                >
+                  {collections?.length}
+                </BodyRegular>
               </VStack>
             </HStack>
 
@@ -2902,172 +2924,173 @@ const MyNFT = (props) => {
               cursor={"pointer"}
               variants={selection}
               animate={subMenu === 0 ? "active" : "faded"}
-              style={size.width > 320
-                ? {}
-                : {"margin-left" : "-15px"}}
+              style={size.width > 320 ? {} : { "margin-left": "-15px" }}
             >
-              {size.width > 320
-                ? <BodyRegular cursor="pointer" textcolor={
-                  userSettings?.dashboardMode === "dark"
-                    ? "#26272E"
-                    : "white"
-                }>NFTs Purchased</BodyRegular>
-                : <BodyRegular cursor="pointer" textcolor={
-                  userSettings?.dashboardMode === "dark"
-                    ? "#26272E"
-                    : "white"
-                }>NFTs Purchased</BodyRegular>
-              }
-              
+              {size.width > 320 ? (
+                <BodyRegular
+                  cursor="pointer"
+                  textcolor={
+                    userSettings?.dashboardMode === "dark" ? "#26272E" : "white"
+                  }
+                >
+                  NFTs Owned
+                </BodyRegular>
+              ) : (
+                <BodyRegular
+                  cursor="pointer"
+                  textcolor={
+                    userSettings?.dashboardMode === "dark" ? "#26272E" : "white"
+                  }
+                >
+                  NFTs Owned
+                </BodyRegular>
+              )}
+
               <VStack
                 width="auto"
                 minwidth="26px"
                 height="26px"
                 border="30px"
                 background={
-                  userSettings?.dashboardMode === "dark"
-                    ? "#26272E"
-                    : "white"
+                  userSettings?.dashboardMode === "dark" ? "#26272E" : "white"
                 }
                 cursor="pointer"
                 padding="0px 9px"
               >
-                <BodyRegular textcolor={
-                    userSettings?.dashboardMode === "dark"
-                      ? "white"
-                      : "#26272E"
+                <BodyRegular
+                  textcolor={
+                    userSettings?.dashboardMode === "dark" ? "white" : "#26272E"
                   }
                 >
-                {totalNfts}</BodyRegular>
+                  {totalNfts}
+                </BodyRegular>
               </VStack>
             </HStack>
           </HStack>
 
-          {subMenu === 1 && (
-              loadingCollection ? (
-                <VStack padding="120px">
-                  <LoopLogo></LoopLogo>
-                </VStack>
-              ) : collections?.length !== 0 ? (
-                <Swiper
-                    slidesPerView={size.width > 425 ? "3" : "1"}
-                    spaceBetween={9}
-                    centeredSlides={false}
-                    loop={true}
-                    style={{
-                      "--swiper-navigation-color": "#fff",
-                      "--swiper-pagination-color": "#fff",
-                      height: "390px",
-                    }}
-                    navigation={true}
-                    modules={[Grid, FreeMode, Navigation, Thumbs]}
-                    onSwiper={(swiper) => {}}
-                    onSlideChange={() => {}}
-                    className="mySwiper2"
-                  > 
-                    {collections?.map((item) => (
-                      <SwiperSlide
-                        key={"newSlide_" + item._id}
-                        style={{ cursor: "pointer", border: "6px" }}
-                        onClick={() =>
-                          props.redirect(`collection/${item.nickName}`)
-                        }
-                      >
-                        <ZStack
-                          height={"390px"}
+          {subMenu === 1 &&
+            (loadingCollection ? (
+              <VStack padding="120px">
+                <LoopLogo></LoopLogo>
+              </VStack>
+            ) : collections?.length !== 0 ? (
+              <Swiper
+                slidesPerView={size.width > 428 ? "3" : "1"}
+                spaceBetween={9}
+                centeredSlides={false}
+                loop={true}
+                style={{
+                  "--swiper-navigation-color": "#fff",
+                  "--swiper-pagination-color": "#fff",
+                  height: "390px",
+                }}
+                navigation={true}
+                modules={[Grid, FreeMode, Navigation, Thumbs]}
+                onSwiper={(swiper) => {}}
+                onSlideChange={() => {}}
+                className="mySwiper2"
+              >
+                {collections?.map((item) => (
+                  <SwiperSlide
+                    key={"newSlide_" + item._id}
+                    style={{ cursor: "pointer", border: "6px" }}
+                    onClick={() =>
+                      props.redirect(`collection/${item.nickName}`)
+                    }
+                  >
+                    <ZStack
+                      height={"390px"}
+                      border="6px"
+                      padding="12px"
+                      overflow="hidden"
+                      style={{
+                        boxShadow: "0px 11px 12px 0px rgba(0, 0, 0, 0.2)",
+                      }}
+                    >
+                      <ZItem>
+                        <IconImg
+                          url={item.banner.v0}
+                          width="100%"
+                          height="100%"
+                          backsize="cover"
                           border="6px"
-                          padding="12px"
-                          overflow="hidden"
-                          style={{
-                            boxShadow:
-                              "0px 11px 12px 0px rgba(0, 0, 0, 0.2)",
-                          }}
+                        ></IconImg>
+                      </ZItem>
+                      <ZItem>
+                        <VStack
+                          background="linear-gradient(180deg, rgba(0, 0, 0, 0) 54.41%, #000000 91.67%)"
+                          width="100%"
+                          height="100%"
+                          border="6px"
+                          padding="0 0 30px 0"
                         >
-                          <ZItem>
-                            <IconImg
-                              url={item.banner.v0}
-                              width="100%"
-                              height="100%"
-                              backsize="cover"
-                              border="6px"
-                            ></IconImg>
-                          </ZItem>
-                          <ZItem>
-                            <VStack
-                              background="linear-gradient(180deg, rgba(0, 0, 0, 0) 54.41%, #000000 91.67%)"
-                              width="100%"
-                              height="100%"
-                              border="6px"
-                              padding="0 0 30px 0"
-                            >
-                              <Spacer></Spacer>
-                              <IconImg
-                                url={item.logo.v0}
-                                width="90px"
-                                height="90px"
-                                backsize="cover"
-                                border="90px"
-                                bordersize="3px"
-                                bordercolor="white"
-                              ></IconImg>
-                              <TitleSemi18 textcolor="white">
-                                {item.name}
-                              </TitleSemi18>
-                              <HStack
-                                self="none"
-                                height="33px"
-                                border="30px"
-                                padding="0 15px "
-                                spacing="9px"
-                                background="linear-gradient(350.1deg, #0905C4 16.98%, #2D28FF 32.68%, #59E1FF 98.99%, #71FCF4 128.65%)"
-                              >
-                                <CaptionBoldShort textcolor="white">
-                                  Volume Traded
-                                </CaptionBoldShort>
-                                <BodyRegular textcolor="white">
-                                  {Number(item.volumeTrade) > 100000
-                                    ? Intl.NumberFormat("en-US", {
-                                        notation: "compact",
-                                        maximumFractionDigits: 2,
-                                      }).format(Number(item.volumeTrade))
-                                    : Number(item.volumeTrade).toLocaleString(
-                                        undefined,
-                                        {
-                                          maximumFractionDigits: 2,
-                                        }
-                                      ) || "0"}
-                                </BodyRegular>
+                          <Spacer></Spacer>
+                          <IconImg
+                            url={item.logo.v0}
+                            width="90px"
+                            height="90px"
+                            backsize="cover"
+                            border="90px"
+                            bordersize="3px"
+                            bordercolor="white"
+                          ></IconImg>
+                          <TitleSemi18 textcolor="white">
+                            {item.name}
+                          </TitleSemi18>
+                          <HStack
+                            self="none"
+                            height="33px"
+                            border="30px"
+                            padding="0 15px "
+                            spacing="9px"
+                            background="linear-gradient(350.1deg, #0905C4 16.98%, #2D28FF 32.68%, #59E1FF 98.99%, #71FCF4 128.65%)"
+                          >
+                            <CaptionBoldShort textcolor="white">
+                              Volume Traded
+                            </CaptionBoldShort>
+                            <BodyRegular textcolor="white">
+                              {Number(item.volumeTrade) > 100000
+                                ? Intl.NumberFormat("en-US", {
+                                    notation: "compact",
+                                    maximumFractionDigits: 2,
+                                  }).format(Number(item.volumeTrade))
+                                : Number(item.volumeTrade).toLocaleString(
+                                    undefined,
+                                    {
+                                      maximumFractionDigits: 2,
+                                    }
+                                  ) || "0"}
+                            </BodyRegular>
 
-                                <IconImg
-                                  url={logoWhiteX}
-                                  width="18px"
-                                  height="18px"
-                                ></IconImg>
-                              </HStack>
-                            </VStack>
-                          </ZItem>
-                        </ZStack>
-                      </SwiperSlide>
+                            <IconImg
+                              url={logoWhiteX}
+                              width="18px"
+                              height="18px"
+                            ></IconImg>
+                          </HStack>
+                        </VStack>
+                      </ZItem>
+                    </ZStack>
+                  </SwiperSlide>
                 ))}
-                </Swiper>
-              ) : (
-                <VStack
-                  border="15px"
-                  width="100%"
-                  minheight="300px"
-                  background={({ theme }) => theme.backElement}
-                >
-                  <IconImg
-                    url={emptyCollection}
-                    width="60px"
-                    height="60px"
-                  ></IconImg>
-                  <BodyRegular align="center">
-                    This creator has not yet created any collection
-                  </BodyRegular>
-                </VStack>
-              )
-          )}
+              </Swiper>
+            ) : (
+              <VStack
+                border="15px"
+                width="100%"
+                minheight="300px"
+                background={({ theme }) => theme.backElement}
+              >
+                <IconImg
+                  url={emptyCollection}
+                  width="60px"
+                  height="60px"
+                ></IconImg>
+                <BodyRegular align="center">
+                  This creator has not yet created any collection
+                </BodyRegular>
+              </VStack>
+            ))}
 
           {subMenu === 0 && (
             <VStack
@@ -3102,44 +3125,34 @@ const MyNFT = (props) => {
                 >
                   <Masonry
                     columnsCount={size.width > 1200 ? 4 : 3}
-                    gutter={size.width > 425
-                      ? "15px"
-                      : "2px"}
+                    gutter={size.width > 428 ? "15px" : "2px"}
                     style={{
                       width:
                         size.width > 1200
                           ? "1200px"
                           : size.width > 1023
                           ? "1024px"
-                          : size.width > 425
-                            ? "768px"
-                            : size.width - 4 + "px",
+                          : size.width > 428
+                          ? "768px"
+                          : size.width - 4 + "px",
                     }}
                   >
                     {nfts.map((item, i) => (
                       <VStack
                         key={item._id}
                         maxwidth="100%"
-                        minheight={(item.height / 3) + "px"}
-                        border={
-                          size.width > 425
-                            ? "6px"
-                            : "0px"
-                        }
+                        minheight={item.height / 3 + "px"}
+                        border={size.width > 428 ? "6px" : "0px"}
                         cursor="pointer"
                         overflow="hidden"
                         whileHover={{ scale: 1.009 }}
                       >
                         <ZStack
                           cursor={"pointer"}
-                          border={
-                            size.width > 425
-                              ? "6px"
-                              : "0px"
-                          }
+                          border={size.width > 428 ? "6px" : "0px"}
                           onClick={() => {
                             props.redirect(
-                              `nft/${item.nftContract}/${item.tokenId}`
+                              `nft/${isXdc(item.nftContract) ? item.nftContract.toLowerCase() : toXdc(item.nftContract.toLowerCase())}/${item.tokenId}`
                             );
                           }}
                           onHoverStart={() => {
@@ -3178,21 +3191,13 @@ const MyNFT = (props) => {
                                 width="100%"
                                 height="100%"
                                 backsize="cover"
-                                border={
-                                  size.width > 425
-                                    ? "6px"
-                                    : "0px"
-                                }
+                                border={size.width > 428 ? "6px" : "0px"}
                               ></IconImg>
                             ) : isVideo(item.fileType) ? (
                               <VStack
                                 width="100%"
                                 height="100%"
-                                border={
-                                  size.width > 425
-                                    ? "6px"
-                                    : "0px"
-                                }
+                                border={size.width > 428 ? "6px" : "0px"}
                                 background="black"
                                 overflow="hidden"
                                 animate={{ scale: 2.02 }}
@@ -3213,46 +3218,33 @@ const MyNFT = (props) => {
                                 width="100%"
                                 height="100%"
                                 backsize="cover"
-                                border={
-                                  size.width > 425
-                                    ? "6px"
-                                    : "0px"
-                                }
+                                border={size.width > 428 ? "6px" : "0px"}
                               ></IconImg>
                             ) : null}
                           </ZItem>
                           <ZItem
                             {...longPress(() => {
                               setOwnedNFTPlaying((prevState) => {
-                                const newOwnedNFTPlaying =
-                                  new Array(
-                                    ownedNFTPlaying.length
-                                  ).fill(false);
-                                newOwnedNFTPlaying[i] =
-                                  !newOwnedNFTPlaying[i];
+                                const newOwnedNFTPlaying = new Array(
+                                  ownedNFTPlaying.length
+                                ).fill(false);
+                                newOwnedNFTPlaying[i] = !newOwnedNFTPlaying[i];
                                 return [...newOwnedNFTPlaying];
                               });
                             })}
                           >
-                            {size.width > 425
-                              ? <VStack
+                            {size.width > 428 ? (
+                              <VStack
                                 padding="15px"
                                 background="linear-gradient(180deg, rgba(0, 0, 0, 0) 54.41%, #000000 91.67%)"
-                                border={
-                                  size.width > 425
-                                    ? "6px"
-                                    : "0px"
-                                }
+                                border={size.width > 428 ? "6px" : "0px"}
                               >
                                 <Spacer></Spacer>
-                                <BodyRegular
-                                  textcolor={appStyle.colors.white}
-                                >
+                                <BodyRegular textcolor={appStyle.colors.white}>
                                   {item.name}
                                 </BodyRegular>
                               </VStack>
-                              : null
-                            }                              
+                            ) : null}
                           </ZItem>
                         </ZStack>
                       </VStack>
@@ -3266,11 +3258,7 @@ const MyNFT = (props) => {
                   minheight="300px"
                   background={({ theme }) => theme.backElement}
                 >
-                  <IconImg
-                    url={emptyNFT}
-                    width="60px"
-                    height="60px"
-                  ></IconImg>
+                  <IconImg url={emptyNFT} width="60px" height="60px"></IconImg>
                   <BodyRegular align="center">
                     This creator does not have any NFTs yet
                   </BodyRegular>

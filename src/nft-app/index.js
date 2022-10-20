@@ -23,9 +23,10 @@ import { sizeWidth } from "@mui/system";
 import ReactGA from "react-ga";
 import { SearchPage } from "./Search/SearchPage";
 import { createRequest } from "../API";
-import { HTTP_METHODS } from "../constant";
+import { HTTP_METHODS, LS, LS_ROOT_KEY } from "../constant";
 const TRACKING_ID = "UA-105859386-2"; // OUR_TRACKING_ID
 ReactGA.initialize(TRACKING_ID);
+
 
 const NFTApp = () => {
   const history = useHistory();
@@ -36,6 +37,7 @@ const NFTApp = () => {
   const [isDevMode] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [xdcPrice, setXdcPrice] = useState(0);
+  const [user, setUser] = useState({});
 
   /**
    * Toggle the theme from light to dark
@@ -61,6 +63,11 @@ const NFTApp = () => {
       await createRequest(HTTP_METHODS.get, "ping/xdcPrice", null, null)
     ).data;
     setXdcPrice(price);
+  };
+
+  const getUser = async () => {
+    const userData = await LS.get(LS_ROOT_KEY).user;
+    setUser(userData);
   };
 
   /**
@@ -114,7 +121,7 @@ const NFTApp = () => {
                 ? "computer"
                 : size.width > 768
                 ? "tablet"
-                : size.width > 425
+                : size.width > 428
                 ? "phone"
                 : "phone"
             }
@@ -123,6 +130,8 @@ const NFTApp = () => {
             themeToggler={themeToggler}
             redirect={NavigateTo}
             showMenu={showMenu}
+            getUser={getUser}
+            user={user}
           ></TopBar>
 
           {/* This is where all the content of the site is rendering */}
@@ -170,6 +179,8 @@ const NFTApp = () => {
                     redirect={NavigateTo}
                     showMenu={showMenu}
                     wallet={wallet}
+                    getUser={getUser}
+                    user={user}
                   />
                 )}
               ></Route>
