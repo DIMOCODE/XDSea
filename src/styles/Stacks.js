@@ -196,12 +196,19 @@ export const ZItem = styled(motion.div).attrs((props) => ({
   cursor: props.cursor || "default",
   background: props.background || "rgba(255, 255, 255, 0)",
   backgroundimage: props.backgroundimage || "rgba(255, 255, 255, 0)",
+  overflow: props.overflow || "hidden",
+  overflowx: props.overflowx || "hidden",
+  overflowy: props.overflowy || "hidden",
+
   // heigth: props.height || "auto",
   // width: props.width || "auto",
 }))`
   grid-area: 1 / 1 / 1 / 1;
   width: 100%;
   height: 100%;
+  overflow: ${(props) => props.overflow};
+  overflow-x: ${(props) => props.overflowx};
+  overflow-y: ${(props) => props.overflowy};
   z-index: ${(props) => props.zindex};
   cursor: ${(props) => props.cursor};
   background: ${(props) => props.background};
@@ -214,6 +221,13 @@ export const Divider = styled.div`
   min-height: 2px;
   minwidth: 100%;
   background: rgba(153, 162, 175, 0.3);
+`;
+
+// Separator
+export const Separator = styled(HStack)`
+  height: 2px;
+  width: 100%;
+  background: rgba(153, 162, 175, 0.18);
 `;
 
 // Icon Image

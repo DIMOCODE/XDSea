@@ -24,7 +24,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { NftContainer } from "../../styles/NftContainer";
 import { nftaddress } from "../../config";
 import { LayoutGroup } from "framer-motion/dist/framer-motion";
-import { Collection } from "../../styles/Collection";
+import { Collection } from "../../styles/Collections/Collection";
 import { StickySectionHeader } from "../../CustomModules/sticky/StickySectionHeader.js";
 import { SearchCollection } from "../../styles/SearchCollection";
 import { isXdc, toXdc } from "../../common/common";
@@ -80,7 +80,7 @@ function SearchPage(props) {
       await getCollections(collectionParams)
     ).data;
     setCollectionData([...collectionData, ...collectionResults.collections]);
-    console.log(collectionParams)
+    console.log(collectionParams);
     setCollectionParams((prevState) => ({
       ...prevState,
       page: prevState.page + 1,
@@ -140,7 +140,7 @@ function SearchPage(props) {
   const fetchMoreNFTs = async () => {
     const nftResults = await (await getNFTs(nftParams)).data;
 
-    console.log(nftParams)
+    console.log(nftParams);
     setNftData([...nftData, ...nftResults.nfts]);
     setNftParams({
       ...nftParams,
@@ -179,18 +179,17 @@ function SearchPage(props) {
   };
 
   const handleNFTLongPress = (i, isNew) => {
-    if(!isNew) {
+    if (!isNew) {
       setNftPlaying((prevState) => {
         prevState[i] = !prevState[i];
         return [...prevState];
       });
-    }
-    else{
+    } else {
       const newNftPlaying = new Array(nftPlaying.length).fill(false);
       newNftPlaying[i] = !newNftPlaying[i];
       setNftPlaying([...newNftPlaying]);
     }
-  }
+  };
 
   /**
    * React Hook to re-render the component when the search term is updated
@@ -272,7 +271,7 @@ function SearchPage(props) {
                       if (newResults) {
                         setLoading(true);
                         getCollectionData(collectionParams);
-                        console.log(collectionParams)
+                        console.log(collectionParams);
                       }
                       setNewResults(false);
                       var newurl =
@@ -528,7 +527,11 @@ function SearchPage(props) {
                             background={({ theme }) => theme.backElement}
                             onClick={() =>
                               props.redirect(
-                                `nft/${isXdc(item.nftContract) ? item.nftContract.toLowerCase() : toXdc(item.nftContract.toLowerCase())}/${item.tokenId}`
+                                `nft/${
+                                  isXdc(item.nftContract)
+                                    ? item.nftContract.toLowerCase()
+                                    : toXdc(item.nftContract.toLowerCase())
+                                }/${item.tokenId}`
                               )
                             }
                             onClickCreator={() =>

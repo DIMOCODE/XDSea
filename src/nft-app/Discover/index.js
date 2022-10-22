@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Collection } from "../../styles/Collection";
+import { Collection } from "../../styles/Collections/Collection";
 import DiscoverBar from "../../images/DiscoverBar.png";
 import {
   LayoutGroup,
@@ -46,6 +46,8 @@ import zIndex from "@mui/material/styles/zIndex";
 import { useLocation, useParams } from "react-router-dom";
 import { TabBar } from "./TabBar";
 import { DynaMenu } from "../../styles/DynaMenu/DynaMenu";
+import { StakeSection } from "../Staking/StakeSection";
+import mountain from "../../images/mountain.jpg";
 
 const Discover = (props) => {
   const { mode } = useParams();
@@ -319,6 +321,13 @@ const Discover = (props) => {
         </VStack>
       </HStack>
 
+      <StakeSection
+        collection="XDSea Monkeys Original Art"
+        image={mountain}
+        title="XDSea Monkey #001"
+        price="300"
+      ></StakeSection>
+
       {/*Sticky bar for collections or for NFTs  */}
 
       {/* <StickySectionHeader top="69">
@@ -392,10 +401,15 @@ const Discover = (props) => {
               scrollableTarget="#scrollableDiv"
               style={{ overflow: "show", zIndex: -1 }}
             >
-              <HStack spacing="12px" flexwrap="wrap" justify="flex-start">
+              <HStack spacing="6px" flexwrap="wrap" justify="flex-start">
                 {loading ? (
                   loadingCollections.map((item, i) => (
-                    <VStack key={i} minwidth="326px" height="440px">
+                    <VStack
+                      key={i}
+                      minwidth="380px"
+                      width="380px"
+                      height="390px"
+                    >
                       <LoadingNftContainer></LoadingNftContainer>
                     </VStack>
                   ))
@@ -403,8 +417,9 @@ const Discover = (props) => {
                   collections.map((item, i) => (
                     <LayoutGroup id="collection" key={i + item._id}>
                       <VStack
-                        width="326px"
-                        height="440px"
+                        minwidth="380px"
+                        width="380px"
+                        height="380px"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                       >
