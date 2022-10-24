@@ -15,18 +15,23 @@ import {
   BodyRegular,
   CaptionRegular,
   CaptionBoldShort,
+  BodyMedium,
 } from "./TextStyles";
 import { motion } from "framer-motion/dist/framer-motion";
 import { AnimatePresence } from "framer-motion/dist/framer-motion";
 import ButtonApp from "./Buttons";
 import { LayoutGroup } from "framer-motion/dist/framer-motion";
-import { fromXdc, isXdc, truncateAddress } from "../common/common";
+import { fromXdc, isXdc, toXdc, truncateAddress } from "../common/common";
+import { getXdcDomain } from "../constant";
+import logoutIcon from "../images/shutdownWhite.png";
 
 function WalletButton(props) {
   const {
     status,
     wallet,
     logout,
+    walletAddress,
+    isDomain,
     onClickMetamask,
     isMetamask,
     isXdcPay,
@@ -72,6 +77,11 @@ function WalletButton(props) {
   };
 
   const [showAlert, setShowAlert] = useState(false);
+
+  const truncate = (str, n) => {
+    return str?.length > n ? str.substr(0, n - 1) + "..." : str;
+  };
+
   useEffect(() => {
     let timeout;
     if (showAlert) {
@@ -84,29 +94,61 @@ function WalletButton(props) {
     <LayoutGroup id="WalletButton">
       <AnimatePresence>
         <VStack
-          maxwidth={isMobile ? "390px" : "180px"}
-          onClick={props.onClick}
-          onTap={() => setIsVisible(true)}
-          onHoverEnd={() => setIsVisible(false)}
-          cursor={"pointer"}
+          width="100%"
+          onClick={!status ? clickAlert : () => {}}
+          cursor={!status ? "pointer" : "default"}
           spacing="12px"
           padding={isMobile ? "0 30px" : "0"}
         >
           <HStack
-            height={isMobile ? "auto" : "49px"}
-            width={status ? "auto" : "180px"}
-            background={({ theme }) => theme.walletButton}
-            border="9px"
+            height={"49px"}
+            width={"100%"}
+            background=" linear-gradient(1.75deg, #11101C 12.32%, #302F43 86.61%, #504E66 99.83%)"
+            border="6px"
             spacing="9px"
-            cursor="pointer"
             alignment="flex-start"
-            padding={isMobile ? "12px 9px" : "6px 9px"}
+            padding={"6px 18px"}
           >
-            <VStack minwidth="0" spacing="0px" alignment="flex-start">
+            {!status ? (
+              <HStack spacing="6px">
+                <IconImg
+                  url={walletIcon}
+                  width="26px"
+                  height="26px"
+                  onClick={clickAlert}
+                ></IconImg>
+              </HStack>
+            ) : isMetamask ? (
+              <HStack alignment={isMobile ? "flex-start" : "center"}>
+                <IconImg
+                  url={Metamask}
+                  width="30px"
+                  height="30px"
+                ></IconImg>
+              </HStack>
+            ) : isXdcPay ? (
+              <HStack alignment={isMobile ? "flex-start" : "center"}>
+                <IconImg
+                  url={XDClogo}
+                  width="26px"
+                  height="26px"
+                ></IconImg>
+              </HStack>
+            ) : (
+              <HStack alignment={isMobile ? "flex-start" : "center"}>
+                <IconImg
+                  url={dcentLogo}
+                  width="26px"
+                  height="26px"
+                ></IconImg>
+              </HStack>
+            )}
+
+            <VStack minwidth="0" spacing="0px" alignment="center">
               {status ? (
-                isMobile ? (
-                  <>
-                    <VStack spacing="15px">
+                <>
+                  <HStack>
+                    <VStack spacing="0px" alignment="flex-start">
                       <HStack
                         key="Connected"
                         variants={connectedWallet}
@@ -115,9 +157,12 @@ function WalletButton(props) {
                         exit="initial"
                         justify="flex-start"
                         spacing="6px"
-                        cursor={"pointer"}
-                        padding="6px"
                       >
+                        <CaptionRegular
+                          textcolor={({ theme }) => theme.walletText}
+                        >
+                          Connected
+                        </CaptionRegular>
                         <LedStatus
                           key="led"
                           initial={{ opacity: 0 }}
@@ -129,171 +174,28 @@ function WalletButton(props) {
                             duration: 0.9,
                           }}
                         ></LedStatus>
-                        <CaptionRegular
-                          textcolor={({ theme }) => theme.walletText}
-                        >
-                          Connected
-                        </CaptionRegular>
                       </HStack>
-                      <HStack>
-                        <CaptionBoldShort
-                          textcolor={({ theme }) => theme.walletText}
-                        >
-                          {showAlert
-                            ? "Address Copied"
-                            : isXdc(wallet?.address)
-                            ? fromXdc(wallet?.address?.toLowerCase())
-                            : wallet?.address?.toLowerCase()}
-                        </CaptionBoldShort>
-                      </HStack>
-                      <HStack>
-                        <ButtonApp
-                          cursor="pointer"
-                          height="39px"
-                          width="150px"
-                          text={showAlert ? "Copied" : "Copy Address"}
-                          textcolor="white"
-                          background={({ theme }) => theme.blue}
-                          icon={disconnect}
-                          iconWidth="18px"
-                          iconHeight="18px"
-                          onClick={() => {
-                            setShowAlert(true);
-                            navigator.clipboard.writeText(
-                              isXdc(wallet?.address)
-                                ? fromXdc(wallet?.address?.toLowerCase())
-                                : wallet?.address?.toLowerCase()
-                            );
-                          }}
-                          btnStatus={0}
-                        ></ButtonApp>
-                        <ButtonApp
-                          cursor="pointer"
-                          height="39px"
-                          width="150px"
-                          text="Disconnect"
-                          textcolor="white"
-                          background={({ theme }) => theme.blue}
-                          icon={disconnect}
-                          iconWidth="18px"
-                          iconHeight="18px"
-                          onClick={logout}
-                          btnStatus={0}
-                        ></ButtonApp>
-                      </HStack>
+
+                      <BodyRegular textcolor={({ theme }) => theme.walletText}>
+                        {isDomain
+                          ? truncate(walletAddress, 10)
+                          : truncateAddress(walletAddress)
+                        }
+                      </BodyRegular>
                     </VStack>
-                  </>
-                ) : (
-                  <>
-                    <HStack
-                      key="Connected"
-                      variants={connectedWallet}
-                      initial="initial"
-                      animate="hover"
-                      exit="initial"
-                      justify="flex-start"
-                      spacing="6px"
-                      cursor={"pointer"}
-                    >
-                      <LedStatus
-                        key="led"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{
-                          repeat: Infinity,
-                          repeatType: "reverse",
-                          duration: 0.9,
-                        }}
-                      ></LedStatus>
-                      <CaptionRegular
-                        textcolor={({ theme }) => theme.walletText}
-                      >
-                        Connected
-                      </CaptionRegular>
+                    <HStack spacing="6px" cursor="pointer" onClick={logout}>
+                      <CaptionBoldShort cursor="pointer" textcolor="white">
+                        LOGOUT
+                      </CaptionBoldShort>
+                      <IconImg
+                        url={logoutIcon}
+                        width="21px"
+                        height="21px"
+                        cursor="pointer"
+                      ></IconImg>
                     </HStack>
-                    <ZStack key="Wallet" height="20px">
-                      {isVisible && (
-                        <ZItem>
-                          <OptionsTooltip>
-                            <VStack
-                              key="ToolTip"
-                              variants={tooltipAnim}
-                              initial="initial"
-                              animate="hover"
-                              exit="initial"
-                              alignment="flex-end"
-                              spacing="6px"
-                            >
-                              <HStack
-                                background={({ theme }) => theme.walletButton}
-                                padding="9px 12px"
-                                border="6px"
-                                onClick={() => setShowAlert(true)}
-                                width="432px"
-                              >
-                                <BodyRegular
-                                  textcolor={({ theme }) => theme.walletText}
-                                >
-                                  {showAlert
-                                    ? "Address Copied"
-                                    : isXdc(wallet?.address)
-                                    ? fromXdc(wallet?.address?.toLowerCase())
-                                    : wallet?.address?.toLowerCase()}
-                                </BodyRegular>
-                                <IconImg
-                                  url={showAlert ? checkIcon : copyIcon}
-                                  width="18px"
-                                  height="18px"
-                                  cursor={"pointer"}
-                                  onClick={() => {
-                                    navigator.clipboard.writeText(
-                                      isXdc(wallet?.address)
-                                        ? fromXdc(
-                                            wallet?.address?.toLowerCase()
-                                          )
-                                        : wallet?.address?.toLowerCase()
-                                    );
-                                  }}
-                                ></IconImg>
-                              </HStack>
-                              <ButtonApp
-                                cursor="pointer"
-                                height="39px"
-                                width="171px"
-                                text="Disconnect"
-                                textcolor="white"
-                                background={({ theme }) => theme.blue}
-                                icon={disconnect}
-                                iconWidth="18px"
-                                iconHeight="18px"
-                                onClick={logout}
-                                btnStatus={0}
-                              ></ButtonApp>
-                            </VStack>
-                          </OptionsTooltip>
-                        </ZItem>
-                      )}
-                      <ZItem
-                        key="TruncatedText"
-                        animate={isVisible ? "hover" : "initial"}
-                        variants={opacityAnim}
-                        exit="initial"
-                        cursor={"pointer"}
-                      >
-                        <BodyRegular
-                          textcolor={({ theme }) => theme.walletText}
-                        >
-                          {truncateAddress(
-                            isXdc(wallet?.address)
-                              ? fromXdc(wallet?.address)
-                              : wallet?.address
-                          )}
-                        </BodyRegular>
-                      </ZItem>
-                    </ZStack>
-                  </>
-                )
+                  </HStack>
+                </>
               ) : (
                 <motion.div
                   key="Disconnected"
@@ -302,59 +204,10 @@ function WalletButton(props) {
                   animate="hover"
                   exit="initial"
                 >
-                  <BodyBold textcolor={({ theme }) => theme.walletText}>
-                    Connect Wallet
-                  </BodyBold>
+                  <BodyMedium cursor="pointer" textcolor="white">Connect your Wallet</BodyMedium>
                 </motion.div>
               )}
             </VStack>
-
-            {!status ? (
-              <HStack spacing="6px">
-                <a>
-                  <IconImg
-                    cursor={"pointer"}
-                    url={walletIcon}
-                    width="26px"
-                    height="26px"
-                    onClick={clickAlert}
-                  ></IconImg>
-                </a>
-              </HStack>
-            ) : isMetamask ? (
-              <HStack alignment={isMobile ? "flex-start" : "center"}>
-                <a>
-                  <IconImg
-                    cursor={"pointer"}
-                    url={Metamask}
-                    width="30px"
-                    height="30px"
-                  ></IconImg>
-                </a>
-              </HStack>
-            ) : isXdcPay ? (
-              <HStack alignment={isMobile ? "flex-start" : "center"}>
-                <a>
-                  <IconImg
-                    cursor={"pointer"}
-                    url={XDClogo}
-                    width="26px"
-                    height="26px"
-                  ></IconImg>
-                </a>
-              </HStack>
-            ) : (
-              <HStack alignment={isMobile ? "flex-start" : "center"}>
-                <a>
-                  <IconImg
-                    cursor={"pointer"}
-                    url={dcentLogo}
-                    width="26px"
-                    height="26px"
-                  ></IconImg>
-                </a>
-              </HStack>
-            )}
           </HStack>
         </VStack>
       </AnimatePresence>

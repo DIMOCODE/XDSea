@@ -45,6 +45,7 @@ function FiltersButton(props) {
     isSearchPage,
     switched,
     maxPrice,
+    isCollectionPage,
   } = props;
 
   const size = useWindowSize();
@@ -69,6 +70,7 @@ function FiltersButton(props) {
     },
   };
   const ref = useRef(null);
+
   useClickAway(ref, () => {
     setIsActive(false);
   });
@@ -90,12 +92,13 @@ function FiltersButton(props) {
 
   useEffect(() => {
     var filters = 0;
-    if ( activeSaleType && (
-      (params?.saleType1 !== "" && params?.saleType1) || 
-      (params?.saleType2 !== "" && params?.saleType2) ||
-      (params?.saleType3 !== "" && params?.saleType3) ||
-      (params?.saleType4 !== "" && params?.saleType4)
-    )) {
+    if (
+      activeSaleType &&
+      ((params?.saleType1 !== "" && params?.saleType1) ||
+        (params?.saleType2 !== "" && params?.saleType2) ||
+        (params?.saleType3 !== "" && params?.saleType3) ||
+        (params?.saleType4 !== "" && params?.saleType4))
+    ) {
       filters += 1;
     }
     if (params?.priceRangeStart) filters += 1;
@@ -181,6 +184,13 @@ function FiltersButton(props) {
                   searchTerm: params.searchTerm,
                   page: 1,
                 });
+            } else if (isCollectionPage) {
+              onChange({
+                collectionId: params.collectionId,
+                page: 1,
+                sortBy: "publication",
+                sortDirection: -1,
+              });
             } else {
               if (isNftFilter)
                 onChange({
@@ -227,6 +237,7 @@ function FiltersButton(props) {
                       inputId="MinFilterPrice"
                       onChange={(e) => setMinValue(e.target.value)}
                       background={({ theme }) => theme.faded}
+                      textplace={"rgba(0,0,0,0.6)"}
                     ></InputStyled>
                     <InputStyled
                       icon={xdcLogo}
@@ -236,6 +247,7 @@ function FiltersButton(props) {
                       onChange={(e) => setMaxValue(e.target.value)}
                       inputId="MaxFilterPrice"
                       background={({ theme }) => theme.faded}
+                      textplace={"rgba(0,0,0,0.6)"}
                     ></InputStyled>
                   </HStack>
 
@@ -271,8 +283,8 @@ function FiltersButton(props) {
                           priceRangeStart: "",
                           priceRangeEnd: "",
                         });
-                        if(activeFilters !== 0);
-                          setActiveFilters(activeFilters - 1);
+                        if (activeFilters !== 0);
+                        setActiveFilters(activeFilters - 1);
                       }}
                     >
                       <BodyRegular cursor="pointer">Remove</BodyRegular>
@@ -287,9 +299,8 @@ function FiltersButton(props) {
                       cursor="pointer"
                       whileTap={{ scale: 0.96 }}
                       onClick={() => {
-                        if(maxValue < minValue)
-                          setMaxValue(minValue);
-                          setMinValue(maxValue)
+                        if (maxValue < minValue) setMaxValue(minValue);
+                        setMinValue(maxValue);
                         setMinValue(
                           document
                             .getElementsByClassName("FilterPriceSlider")[0]
@@ -403,7 +414,7 @@ function FiltersButton(props) {
                           saleType1: "",
                           saleType2: "",
                           saleType3: "",
-                          saleType4: ""
+                          saleType4: "",
                         });
                         setBtnSold(false);
                         setBtnSale(false);
@@ -433,12 +444,10 @@ function FiltersButton(props) {
                           saleType3: !btnSold ? "SOLD" : "",
                           saleType4: !btnNFS ? "NOT_SALE" : "",
                         });
-                        if ( !activeSaleType && (
-                          btnSale ||
-                          btnSold ||
-                          btnNFS ||
-                          btnRelist
-                        )) {
+                        if (
+                          !activeSaleType &&
+                          (btnSale || btnSold || btnNFS || btnRelist)
+                        ) {
                           setActiveFilters(activeFilters + 1);
                           setActiveSaleType(true);
                         }

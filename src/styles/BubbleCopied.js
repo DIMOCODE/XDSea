@@ -9,9 +9,10 @@ import checkOk from "../images/checkOkIcon.png";
 import { motion } from "framer-motion/dist/framer-motion";
 import { Tooltip } from "@mui/material";
 import { truncateAddress } from "../common/common";
+import doneIcon from "../images/doneIcon.png";
 
 function BubbleCopied(props) {
-  const { logo, address, icon } = props;
+  const { logo, address, icon, background, textColor, addressCreator } = props;
 
   const [showAlertLink, setShowAlertLink] = useState(false);
 
@@ -26,43 +27,42 @@ function BubbleCopied(props) {
   return (
     <>
       <HStack
-        background={({ theme }) => theme.backElement}
+        background={background}
         border="30px"
-        spacing="6px"
-        padding="6px 12px"
+        spacing="9px"
+        padding="6px 18px"
+        height="48px"
         whileTap={{ scale: 0.97 }}
         cursor="pointer"
         onClick={() => setShowAlertLink(true)}
       >
         <IconImg url={logo} width="21px" height="21px"></IconImg>
         <Spacer></Spacer>
-        <Tooltip title={address}>
-          <CaptionBoldShort textcolor={({ theme }) => theme.text}>
-            {truncateAddress(address)}
-          </CaptionBoldShort>
+        <Tooltip title={addressCreator}>
+          {showAlertLink ? (
+            <CaptionBoldShort>Address Copied</CaptionBoldShort>
+          ) : (
+            <CaptionBoldShort textcolor={textColor}>
+              {address}
+            </CaptionBoldShort>
+          )}
         </Tooltip>
         <Spacer></Spacer>
-        <IconImg 
-          cursor="pointer" 
-          onClick={() => {
-            setShowAlertLink(true);
-            navigator.clipboard.writeText(address);
-          }} 
-          url={icon} 
-          width="21px" 
-          height="21px"
-        ></IconImg>
+        {showAlertLink ? (
+          <IconImg url={doneIcon} width="18px" height="18px"></IconImg>
+        ) : (
+          <IconImg
+            cursor="pointer"
+            onClick={() => {
+              setShowAlertLink(true);
+              navigator.clipboard.writeText(addressCreator);
+            }}
+            url={icon}
+            width="21px"
+            height="21px"
+          ></IconImg>
+        )}
       </HStack>
-      {showAlertLink && (
-        <AbsoluteBubble initial={{ y: 0 }} animate={{ y: 5 }}>
-          <HStack background={appStyle.colors.blue} height="36px" border="9px">
-            <CaptionBoldShort textcolor={appStyle.colors.white}>
-              Address Copied
-            </CaptionBoldShort>
-            <IconImg url={checkOk} width="18px" height="18px"></IconImg>
-          </HStack>
-        </AbsoluteBubble>
-      )}
     </>
   );
 }

@@ -1,11 +1,5 @@
-import React, { 
-  useState, 
-  useEffect, 
-  useRef 
-} from "react";
-import { 
-  useLocation 
-} from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { useLocation } from "react-router-dom";
 import styled from "styled-components";
 import {
   HStack,
@@ -24,15 +18,17 @@ import {
   BodyRegular,
   CaptionBold,
   TitleBold18,
+  BodyMedium,
+  TitleRegular21,
+  TitleRegular18,
 } from "../../styles/TextStyles";
 import { XdcConnect, Disconnect } from "xdc-connect";
 import XDSealogo from "../../images/LogoXDSEA.png";
+import mountain from "../../images/mountain.jpg";
 import { WalletButton } from "../../styles/walletButton";
+import { fromXdc, isXdc, toXdc } from "../../common/common";
 import { SwitchButton } from "../../styles/SwitchButton";
-import { 
-  motion, 
-  AnimatePresence 
-} from "framer-motion/dist/framer-motion";
+import { motion, AnimatePresence } from "framer-motion/dist/framer-motion";
 import { UserMenuButton } from "./UserMenuButton";
 import { appStyle } from "../../styles/AppStyles";
 import "../../styles/App.css";
@@ -44,29 +40,29 @@ import mail from "../../images/mailFaded.png";
 import gif from "../../images/gifConnect.gif";
 import search from "../../images/searchIcon.png";
 import XDClogo from "../../images/xdcpayLogo.png";
+import XDClogoBW from "../../images/xdcpayLogoBW.png";
 import Metamask from "../../images/metamaskIcon.png";
+import MetamaskBW from "../../images/metamaskIconBW.png";
 import dcentWallet from "../../images/dcent.png";
+import dcentWalletBW from "../../images/dcentBW.png";
 import { useClickAway } from "react-use";
 import { Searchbar } from "../../styles/Searbar";
 import { anonymousLogin, logout } from "../../API/access";
-import { 
-  LS, 
-  LS_ROOT_KEY 
-} from "../../constant";
-import { 
-  Divider, 
-  Icon 
-} from "@mui/material";
+import { LS, LS_ROOT_KEY, getXdcDomain } from "../../constant";
+import { Divider, Icon } from "@mui/material";
+import useWindowSize from "../../styles/useWindowSize";
+import howToStart from "../../images/HowToStart.png";
+import discoverIcon from "../../images/DiscoverIcon.png";
+import createNewIcon from "../../images/CreateNewIcon.png";
+import { createNFT } from "../../API/NFT";
+import iconMenu from "../../images/iconMenu.png";
+import zIndex from "@mui/material/styles/zIndex";
 
 function TopBar(props) {
-  const { 
-    device, 
-    themeToggler, 
-    devMode, 
-    onWalletChange 
-  } = props;
+  const { device, themeToggler, devMode, onWalletChange, getUser, user } = props;
   const location = useLocation();
   const ref = useRef(null);
+  const size = useWindowSize();
 
   const [wallet, setWallet] = useState({});
   const [deviceSize, setDeviceSize] = useState("");
@@ -79,79 +75,80 @@ function TopBar(props) {
   const [showInfo, setShowInfo] = useState(false);
   const [isSearch, setIsSearch] = useState(false);
   const [walletOptions, setWalletOptions] = useState(true);
+  const [walletAddress, setWalletAddress] = useState("");
+  const [isDomain, setIsDomain] = useState(false);
   const [searchPhone, setSearchPhone] = useState(false);
 
   const variant1 = {
-    open: { 
-      rotate: 0, 
-      y: 0 
+    open: {
+      rotate: 0,
+      y: 0,
     },
-    closed: { 
-      rotate: 45, 
-      y: 6 
+    closed: {
+      rotate: 45,
+      y: 6,
     },
   };
   const variant2 = {
-    open: { 
-      rotate: 0, 
-      y: 0 
+    open: {
+      rotate: 0,
+      y: 0,
     },
-    closed: { 
-      rotate: -45, 
-      y: -6 
+    closed: {
+      rotate: -45,
+      y: -6,
     },
   };
-
-  /**
-   * Change the searchbar design
-   * 
-   * @param {boolean} status the status of the searchbar
-   */
-  function handleBarStatus(status) {
-    setIsSearch(status);
-  }
 
   /**
    * Connect Metamask wallet
    */
   const connectMetamask = async () => {
     if (window.ethereum) {
-      try {
-        if (window.ethereum.chainId === "0x32") {
-          const res = await window.ethereum.request({
-            method: "eth_requestAccounts",
-          });
-          const { data } = await anonymousLogin(res[0]);
-          LS.set(LS_ROOT_KEY, data);
-          setWallet({
-            connected: true,
-            address: res[0],
-          });
-          onWalletChange({
-            connected: true,
-            address: res[0],
-          });
-          window.ethereum.on("accountsChanged", (accounts) => {
+      if (window.ethereum.isMetaMask && 
+        window.ethereum?.isDcentWallet === undefined && 
+        window.ethereum.chainId !== undefined) {
+        try {
+          if (window.ethereum.chainId === "0x32") {
+            const res = await window.ethereum.request({
+              method: "eth_requestAccounts",
+            });
+            const { data } = await anonymousLogin(res[0]);
+            LS.set(LS_ROOT_KEY, data);
             setWallet({
-              connected: false,
-              address: accounts[0],
+              connected: true,
+              address: res[0],
             });
             onWalletChange({
-              connected: false,
-              address: accounts[0],
+              connected: true,
+              address: res[0],
             });
-            logout();
-          });
-          setIsMetamask(true);
-          setShowMetamask(false);
-          setShowError(0);
-        } else if (window.ethereum.chainId === undefined) {
-          setShowError(3);
-        } else {
-          setShowError(4);
+            setWalletAddress(await getXdcDomainAddress(res[0]));
+            window.ethereum.on("accountsChanged", (accounts) => {
+              setWallet({
+                connected: false,
+                address: accounts[0],
+              });
+              onWalletChange({
+                connected: false,
+                address: accounts[0],
+              });
+              logout();
+              setWalletOptions(true);
+            });
+            getUser();
+            setIsMetamask(true);
+            setShowMetamask(false);
+            setShowError(0);
+            setShowInfo(false);
+          } else {
+            setShowError(4);
+          }
+        } catch (err) {
+          setShowError(2);
         }
-      } catch (err) {
-        setShowError(2);
+      } else {
+        setShowError(1);
       }
     } else {
       setShowError(1);
@@ -162,13 +159,13 @@ function TopBar(props) {
    * Connect XDCPay wallet
    */
   const connectXDCPay = async () => {
-    if (window.ethereum) {
-      try {
-        if (
-          (window.ethereum.publicConfigStore._state.networkVersion === "50" ||
-            window.ethereum.publicConfigStore._state.networkVersion === "51") &&
-          window.ethereum.publicConfigStore._state.selectedAddress !== undefined
-        ) {
+    try {
+      if (
+        (window.ethereum.publicConfigStore._state.networkVersion === "50" ||
+          window.ethereum.publicConfigStore._state.networkVersion === "51") &&
+        window.ethereum.publicConfigStore._state.selectedAddress !== undefined
+      ) {
+        try {
           const address =
             window.ethereum.publicConfigStore._state.selectedAddress;
           const { data } = await anonymousLogin(address);
@@ -181,13 +178,16 @@ function TopBar(props) {
             connected: true,
             address: address,
           });
+          getUser();
+          setWalletAddress(await getXdcDomainAddress(address));
           setShowMetamask(false);
           setShowError(0);
+          setShowInfo(false);
+        } catch (err) {
+          setShowError(2);
         }
-      } catch (err) {
-        setShowError(2);
       }
-    } else {
+    } catch (err) {
       setShowError(5);
     }
   };
@@ -197,41 +197,50 @@ function TopBar(props) {
    */
   const connectDcent = async () => {
     if (window.ethereum) {
-      try {
-        if (window.ethereum.chainId === "0x32") {
-          const res = await window.ethereum.request({
-            method: "eth_requestAccounts",
-          });
-          const { data } = await anonymousLogin(res[0]);
-          LS.set(LS_ROOT_KEY, data);
-          setWallet({
-            connected: true,
-            address: res[0],
-          });
-          onWalletChange({
-            connected: true,
-            address: res[0],
-          });
-          window.ethereum.on("accountsChanged", (accounts) => {
+      if (
+        window.ethereum.isDcentWallet &&
+        window.ethereum.chainId !== undefined
+      ) {
+        try {
+          if (window.ethereum.chainId === "0x32") {
+            const res = await window.ethereum.request({
+              method: "eth_requestAccounts",
+            });
+            const { data } = await anonymousLogin(res[0]);
+            LS.set(LS_ROOT_KEY, data);
             setWallet({
-              connected: false,
-              address: accounts[0],
+              connected: true,
+              address: res[0],
             });
             onWalletChange({
-              connected: false,
-              address: accounts[0],
+              connected: true,
+              address: res[0],
             });
-            logout();
-          });
-          setIsDcent(true);
-          setShowError(0);
-        } else if (window.ethereum.chainId === undefined) {
-          setShowError(3);
-        } else {
-          setShowError(4);
+            setWalletAddress(await getXdcDomainAddress(res[0]));
+            window.ethereum.on("accountsChanged", (accounts) => {
+              setWallet({
+                connected: false,
+                address: accounts[0],
+              });
+              onWalletChange({
+                connected: false,
+                address: accounts[0],
+              });
+              logout();
+              setWalletOptions(true);
+            });
+            getUser();
+            setIsDcent(true);
+            setShowError(0);
+            setShowInfo(false);
+          } else {
+            setShowError(4);
+          }
+        } catch (err) {
+          setShowError(2);
         }
-      } catch (err) {
-        setShowError(2);
+      } else {
+        setShowError(6);
       }
     } else {
       setShowError(6);
@@ -254,6 +263,8 @@ function TopBar(props) {
       address: res[0],
     });
     logout();
+    setWalletOptions(true);
+    setShowMenu(!showMenu);
     setIsMetamask(false);
   };
 
@@ -270,6 +281,8 @@ function TopBar(props) {
       address: wallet.address,
     });
     logout();
+    setWalletOptions(true);
+    setShowMenu(!showMenu);
     setIsXdcPay(false);
   };
 
@@ -289,13 +302,32 @@ function TopBar(props) {
       address: res[0],
     });
     logout();
+    setWalletOptions(true);
+    setShowMenu(!showMenu);
     setIsDcent(false);
+  };
+
+  const getXdcDomainAddress = async (address) => {
+    const xdcDomainName = isXdc(address)
+      ? (await getXdcDomain(address))
+      : (await getXdcDomain(toXdc(address)))
+    if(xdcDomainName === "") {
+      setIsDomain(false);
+    }
+    else{
+      setIsDomain(true);
+    }
+    return xdcDomainName === "" 
+      ? isXdc(address) 
+        ? address.toLowerCase() 
+        : toXdc(address.toLowerCase()) 
+      : xdcDomainName;
   };
 
   /**
    * Close the drop down menu when the outside is clicked
    */
-   useClickAway(ref, () => {
+  useClickAway(ref, () => {
     setShowMenu(false);
   });
 
@@ -311,546 +343,310 @@ function TopBar(props) {
 
   return (
     <ContentBar>
-      {/* Top bar organized by Phone Tablet and Computer, each case of the switch have the content of the bar */}
-      <HStack height="90px" width="100%" justify="center">
-        {(() => {
-          switch (deviceSize) {
-            case "phone":
-              return (
-                <AnimatePresence initial={false}>
-                  {showMenu && (
-                    <SlideMenu
-                      key="slidemenu"
-                      initial={{ opacity: 1, y: -12 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -12 }}
-                      transition={{ type: "spring", damping: 10 }}
-                    >
+      {/* Top bar organized by Phone, Tablet and Computer */}
+      <HStack height="69px" width="100%" justify="center" blur="30px">
+        <>
+          <HStack width={size.width > 1200 ? "1200px" : "100%"} padding="0 6px">
+            {/* Logo and Beta version info */}
+            <HStack spacing="9px">
+              <IconImg
+                url={XDSealogo}
+                width="52px"
+                height="52px"
+                cursor={"pointer"}
+                onClick={() => props.redirect("")}
+              ></IconImg>
+              <VStack spacing="1px" alignment="flex-start">
+                <BodyRegular textcolor="#FCD868">BETA</BodyRegular>
+                <BodyBold textcolor="#FFFFFF">Basilisk</BodyBold>
+              </VStack>
+            </HStack>
+
+            <Spacer></Spacer>
+
+            {/* Search with Discover and Create NFT buttons for large sizes */}
+            {size.width > 768 ? (
+              <HStack spacing="9px">
+                {location.pathname === "/SearchPage" ? null : (
+                  <Searchbar
+                    placeholder="Search for NFTs and Collections"
+                    widthInput={size.width > 1024 ? "520px" : "290px"}
+                    top={"46px"}
+                  ></Searchbar>
+                )}
+
+                <HStack
+                  background={({ theme }) => theme.backElement}
+                  self="auto"
+                  height="42px"
+                  width="99px"
+                  border="6px"
+                  whileTap={{ scale: 0.9 }}
+                  cursor="pointer"
+                  onClick={() => props.redirect("discover/collections")}
+                >
+                  <BodyMedium cursor="pointer">Discover</BodyMedium>
+                </HStack>
+
+                <HStack
+                  background={
+                    "linear-gradient(166.99deg, #2868F4 37.6%, #0E27C1 115.6%)"
+                  }
+                  self="auto"
+                  height="42px"
+                  width="99px"
+                  border="6px"
+                  minwidth="300px"
+                  whileTap={{ scale: 0.9 }}
+                  cursor="pointer"
+                  onClick={() => props.redirect("create-nft")}
+                >
+                  <BodyMedium cursor="pointer" textcolor="white">
+                    Create NFT
+                  </BodyMedium>
+                </HStack>
+              </HStack>
+            ) : null}
+
+            <Spacer></Spacer>
+
+            <HStack ref={ref}>
+              {/* Wallet button when connected */}
+              {wallet?.connected ? (
+                <HStack self="auto" height="52px">
+                  <IconImg
+                    url={user?.urlProfile}
+                    width="52px"
+                    height="52px"
+                    border="42px"
+                    bordersize="3px"
+                    bordercolor="white"
+                    backsize="cover"
+                    whileTap={{ scale: 0.96 }}
+                    onTapStart={() => setShowMenu(!showMenu)}
+                    cursor="pointer"
+                  ></IconImg>
+                  {/* <RedBubble>
                       <VStack
-                        background={({ theme }) => theme.backElement}
-                        width="375px"
-                        padding="60px 30px"
-                        height="420px"
-                        border="0 0 15px 15px"
+                        background="red"
+                        width="26px"
+                        height="26px"
+                        border="9px"
                       >
-                        <VStack
-                          alignment="flex-start"
-                          width="180px"
-                          spacing="21px"
-                          style={{ zIndex: -100 }}
-                        >
-                          <TitleBold21
-                            onClick={() => props.redirect("")}
-                            textcolor={({ theme }) => theme.text}
-                          >
-                            Home
-                          </TitleBold21>
-                          <TitleBold21
-                            onClick={() => props.redirect("Discover")}
-                            textcolor={({ theme }) => theme.text}
-                          >
-                            Discover
-                          </TitleBold21>
-                          <TitleBold21
-                            textcolor={({ theme }) => theme.text}
-                            onClick={() => props.redirect("HowToStart")}
-                          >
-                            How to Start
-                          </TitleBold21>
-                          <TitleBold21
-                            textcolor={({ theme }) => theme.text}
-                            onClick={() => props.redirect("CreateNFT")}
-                          >
-                            Create an NFT
-                          </TitleBold21>
-                        </VStack>
-
-                        <VStack style={{ zIndex: -100 }}>
-                          <WalletButton
-                            logout={
-                              isMetamask
-                                ? disconnectMetamask
-                                : isXdcPay
-                                ? disconnectXdcPay
-                                : disconnectDcent
-                            }
-                            status={wallet?.connected}
-                            wallet={wallet}
-                            onClickMetamask={() => setShowMetamask(true)}
-                            isMetamask={isMetamask}
-                            isDcent={isDcent}
-                            isXdcPay={isXdcPay}
-                            isMobile={true}
-                            hasAlert={showError > 0}
-                            clickAlert={() => setShowInfo(true)}
-                          ></WalletButton>
-                        </VStack>
-                        <Spacer></Spacer>
-                        <HStack style={{ zIndex: -100 }}>
-                          <SwitchButton
-                            clickOnSwitch={themeToggler}
-                          ></SwitchButton>
-                          {wallet?.connected ? (
-                            <UserMenuButton wallet={wallet} redirect={props.redirect}></UserMenuButton>
-                          ) : null}
-
-                          <a href="https://www.instagram.com/xdsea.nft/">
-                            <IconImg
-                              url={instagram}
-                              width="49px"
-                              height="49px"
-                              cursor="pointer"
-                            ></IconImg>
-                          </a>
-                          <a href="https://twitter.com/XDSeaNFT">
-                            <IconImg
-                              url={twitter}
-                              width="49px"
-                              height="49px"
-                              cursor="pointer"
-                            ></IconImg>
-                          </a>
-                          <a href="mailto:support@xdsea.com">
-                            <IconImg
-                              url={mail}
-                              width="49px"
-                              height="49px"
-                              cursor="pointer"
-                            ></IconImg>
-                          </a>
-                        </HStack>
+                        <CaptionBold textcolor="white">1</CaptionBold>
                       </VStack>
-                    </SlideMenu>
-                  )}
+                    </RedBubble> */}
+                </HStack>
+              ) : (
+                <VStack
+                  minwith="52px"
+                  height="52px"
+                  padding="17px"
+                  background="rgba(0,0,0,0.3)"
+                  border="52px"
+                  onTapStart={() => setShowMenu(!showMenu)}
+                  whileTap={{ scale: 0.96 }}
+                >
+                  <IconImg url={iconMenu} width="18px" height="18px"></IconImg>
+                </VStack>
+              )}
 
-                  {searchPhone ? (
-                    <HStack width="100%" padding=" 0 12px">
-                      <Searchbar
-                        placeholder="Search for NFTs and Collections"
-                        top="46px"
-                        left="-12px"
-                        width="100vw"
-                        widthInput="70%"
-                        isPhone={true}
-                        switchBarStatus={handleBarStatus}
-                      ></Searchbar>
-                      <VStack
-                        maxwidth="46px"
-                        height="46px"
-                        border="12px"
-                        background={({ theme }) => theme.faded}
-                        whileTap={{ scale: 0.9 }}
-                        onClick={() => setSearchPhone(!searchPhone)}
-                      >
-                        <IconImg
-                          url={chevronRight}
-                          width="21px"
-                          height="21px"
-                          cursor={"pointer"}
-                        ></IconImg>
-                      </VStack>
-                    </HStack>
-                  ) : (
-                    <HStack
-                      width="100%"
-                      padding="0 12px"
-                      style={{ position: "relative" }}
-                    >
-                      <HStack onClick={() => props.redirect("")} cursor={"pointer"}>
-                        <IconImg
-                          url={XDSealogo}
-                          width="52px"
-                          height="52px"
-                          cursor={"pointer"}
-                        ></IconImg>
-                        <VStack
-                          cursor={"pointer"}
-                          spacing="1px"
-                          alignment="flex-start"
-                        >
-                          <BodyBold textcolor={({ theme }) => theme.text}>
-                            XDSea
-                          </BodyBold>
-                          {devMode ? (
-                            <BodyBold textcolor={({ theme }) => theme.blue}>
-                              βeta v1.6.3
-                            </BodyBold>
-                          ) : (
-                            <HStack
-                              background="linear-gradient(180deg, #044DC4 0%, #192EA6 100%)"
-                              border="6px"
-                              padding="3px 6px"
-                              cursor={"pointer"}
-                            >
-                              <CaptionRegular textcolor={appStyle.colors.white}>
-                                Developer
-                              </CaptionRegular>
-                            </HStack>
-                          )}
-                        </VStack>
-                      </HStack>
-                      <Spacer></Spacer>
-
-                      <VStack
-                        maxwidth="46px"
-                        height="46px"
-                        border="12px"
-                        background={({ theme }) => theme.faded}
-                        whileTap={{ scale: 0.9 }}
-                        onClick={() => setSearchPhone(!searchPhone)}
-                      >
-                        <IconImg
-                          url={search}
-                          width="26px"
-                          height="26px"
-                          cursor={"pointer"}
-                        ></IconImg>
-                      </VStack>
-
-                      <VStack
-                        maxwidth="46px"
-                        height="46px"
-                        border="12px"
-                        background={({ theme }) => theme.faded}
-                        whileTap={{ scale: 0.9 }}
-                        onClick={() => setShowMenu(!showMenu)}
-                        ref={ref}
-                      >
-                        <svg
-                          width="26"
-                          height="26"
-                          viewBox="-2 0 26 26"
-                          fill={"#5C6976"}
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <motion.path
-                            animate={showMenu ? "open" : "closed"}
-                            variants={variant1}
-                            d="M2.16108 19.8381C1.18477 18.8618 1.18477 17.2789 2.16108 16.3025L16.3032 2.16041C17.2795 1.1841 18.8624 1.1841 19.8387 2.16041V2.16041C20.8151 3.13672 20.8151 4.71963 19.8387 5.69594L5.69661 19.8381C4.7203 20.8144 3.13739 20.8144 2.16108 19.8381V19.8381Z"
-                          />
-                          <motion.path
-                            animate={showMenu ? "open" : "closed"}
-                            variants={variant2}
-                            d="M2.16143 2.16035C3.13774 1.18403 4.72066 1.18403 5.69697 2.16035L19.8391 16.3025C20.8154 17.2788 20.8154 18.8617 19.8391 19.838V19.838C18.8628 20.8143 17.2799 20.8143 16.3036 19.838L2.16143 5.69588C1.18512 4.71957 1.18512 3.13666 2.16143 2.16035V2.16035Z"
-                          />
-                        </svg>
-                      </VStack>
-                    </HStack>
-                  )}
-                </AnimatePresence>
-              );
-            case "tablet":
-              return (
-                <AnimatePresence initial={false}>
-                  {showMenu && (
-                    <SlideMenuTablet
-                      key="slidemenu"
-                      initial={{ opacity: 1, y: -12 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -12 }}
-                      transition={{ type: "spring", damping: 10 }}
-                    >
-                      <VStack
-                        background={({ theme }) => theme.backElement}
-                        width="300px"
-                        padding="60px 30px"
-                        height="300px"
-                        border="0 0 15px 15px"
-                      >
-                        <VStack
-                          alignment="flex-end"
-                          width="180px"
-                          spacing="21px"
-                        >
-                          <TitleBold21
-                            onClick={() => props.redirect("")}
-                            textcolor={({ theme }) => theme.text}
-                          >
-                            Home
-                          </TitleBold21>
-                          <TitleBold21
-                            onClick={() => props.redirect("Discover")}
-                            textcolor={({ theme }) => theme.text}
-                          >
-                            Discover
-                          </TitleBold21>
-                          <TitleBold21
-                            textcolor={({ theme }) => theme.text}
-                            onClick={() => props.redirect("HowToStart")}
-                          >
-                            How to Start
-                          </TitleBold21>
-                          <TitleBold21
-                            textcolor={({ theme }) => theme.text}
-                            onClick={() => props.redirect("CreateNFT")}
-                          >
-                            Create an NFT
-                          </TitleBold21>
-                        </VStack>
-
-                        <HStack>
-                          <a href="https://www.instagram.com/xdsea.nft/">
-                            <IconImg
-                              url={instagram}
-                              width="49px"
-                              height="49px"
-                              cursor="pointer"
-                            ></IconImg>
-                          </a>
-                          <a href="https://twitter.com/XDSeaNFT">
-                            <IconImg
-                              url={twitter}
-                              width="49px"
-                              height="49px"
-                              cursor="pointer"
-                            ></IconImg>
-                          </a>
-                          <a href="mailto:support@xdsea.com">
-                            <IconImg
-                              url={mail}
-                              width="49px"
-                              height="49px"
-                              cursor="pointer"
-                            ></IconImg>
-                          </a>
-                        </HStack>
-                      </VStack>
-                    </SlideMenuTablet>
-                  )}
-                  <HStack
-                    width="100%"
-                    padding="0 26px"
-                    style={{ position: "relative" }}
+              <AnimatePresence initial={false}>
+                {showMenu && (
+                  <SlideMenuTablet
+                    key="slidemenu"
+                    initial={{ opacity: 1, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ type: "spring", damping: 10 }}
+                    top={size.width > 428 ? "76px" : "69px"}
                   >
-                    <HStack onClick={() => props.redirect("")} cursor={"pointer"}>
-                      <IconImg
-                        url={XDSealogo}
-                        width="52px"
-                        height="52px"
-                        cursor={"pointer"}
-                      ></IconImg>
-                      <VStack
-                        cursor={"pointer"}
-                        spacing="1px"
-                        alignment="flex-start"
-                      >
-                        <BodyBold textcolor={({ theme }) => theme.text}>
-                          XDSea
-                        </BodyBold>
-                        {devMode ? (
-                          <BodyBold textcolor={({ theme }) => theme.blue}>
-                            βeta v1.6.3
-                          </BodyBold>
-                        ) : (
-                          <HStack
-                            background="linear-gradient(180deg, #044DC4 0%, #192EA6 100%)"
-                            border="6px"
-                            padding="3px 6px"
-                            cursor={"pointer"}
-                          >
-                            <CaptionRegular textcolor={appStyle.colors.white}>
-                              Developer
-                            </CaptionRegular>
-                          </HStack>
-                        )}
-                      </VStack>
-                    </HStack>
-
-                    {/* Search  */}
-                    <Searchbar
-                      placeholder="Search for NFTs and Collections"
-                      top="58px"
-                      left="0px"
-                      widthInput="50%"
-                      width="68%"
-                      switchBarStatus={handleBarStatus}
-                    ></Searchbar>
-                    <Spacer></Spacer>
-
-                    <VStack maxwidth="180px">
-                      <ZStack>
-                        <ZItem>
-                          <WalletButton
-                            logout={
-                              isMetamask
-                                ? disconnectMetamask
-                                : isXdcPay
-                                ? disconnectXdcPay
-                                : disconnectDcent
-                            }
-                            status={wallet?.connected}
-                            wallet={wallet}
-                            onClickMetamask={() => setShowMetamask(true)}
-                            isMetamask={isMetamask}
-                            isDcent={isDcent}
-                            isXdcPay={isXdcPay}
-                            hasAlert={showError > 0}
-                            clickAlert={() => setShowInfo(true)}
-                          ></WalletButton>
-                        </ZItem>
-                      </ZStack>
-                    </VStack>
-
-                    <SwitchButton clickOnSwitch={themeToggler}></SwitchButton>
-                    {wallet?.connected ? (
-                      <UserMenuButton wallet={wallet} redirect={props.redirect}></UserMenuButton>
-                    ) : null}
-
                     <VStack
-                      minwidth="46px"
-                      height="46px"
-                      border="12px"
-                      background={({ theme }) => theme.faded}
-                      whileTap={{ scale: 0.9 }}
-                      onTapStart={() => setShowMenu(!showMenu)}
-                      ref={ref}
+                      background={({ theme }) => theme.backElement}
+                      width={size.width > 428 ? "360px" : "100vw"}
+                      padding="21px 30px"
+                      height={size.width > 428 ? "auto" : "94vh"}
+                      border={size.width > 428 ? "9px" : "0"}
+                      alignment="flex-start"
+                      spacing="15px"
+                      style={{
+                        boxShadow: " 0px 11px 12px 0px rgba(0, 0, 0, 0.1)",
+                      }}
                     >
-                      <svg
-                        width="26"
-                        height="26"
-                        viewBox="-2 0 26 26"
-                        fill={"#5C6976"}
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <motion.path
-                          animate={showMenu ? "open" : "closed"}
-                          variants={variant1}
-                          d="M2.16108 19.8381C1.18477 18.8618 1.18477 17.2789 2.16108 16.3025L16.3032 2.16041C17.2795 1.1841 18.8624 1.1841 19.8387 2.16041V2.16041C20.8151 3.13672 20.8151 4.71963 19.8387 5.69594L5.69661 19.8381C4.7203 20.8144 3.13739 20.8144 2.16108 19.8381V19.8381Z"
-                        />
-                        <motion.path
-                          animate={showMenu ? "open" : "closed"}
-                          variants={variant2}
-                          d="M2.16143 2.16035C3.13774 1.18403 4.72066 1.18403 5.69697 2.16035L19.8391 16.3025C20.8154 17.2788 20.8154 18.8617 19.8391 19.838V19.838C18.8628 20.8143 17.2799 20.8143 16.3036 19.838L2.16143 5.69588C1.18512 4.71957 1.18512 3.13666 2.16143 2.16035V2.16035Z"
-                        />
-                      </svg>
-                    </VStack>
-                  </HStack>
-                </AnimatePresence>
-              );
-            case "computer":
-              return (
-                <>
-                  <HStack width="1200px">
-                    <HStack onClick={() => props.redirect("")} cursor={"pointer"}>
-                      <IconImg
-                        url={XDSealogo}
-                        width="66px"
-                        height="66px"
-                        cursor={"pointer"}
-                      ></IconImg>
-                      <VStack
-                        cursor={"pointer"}
-                        spacing="1px"
-                        alignment="flex-start"
-                        width="80px"
-                      >
-                        <BodyBold textcolor={({ theme }) => theme.text}>
-                          XDSea
-                        </BodyBold>
-                        {devMode ? (
-                          <BodyBold textcolor={({ theme }) => theme.blue}>
-                            βeta v1.6.3
-                          </BodyBold>
-                        ) : (
-                          <HStack
-                            background="linear-gradient(180deg, #044DC4 0%, #192EA6 100%)"
-                            border="6px"
-                            padding="3px 6px"
-                            cursor={"pointer"}
-                          >
-                            <CaptionRegular textcolor={appStyle.colors.white}>
-                              Developer
-                            </CaptionRegular>
-                          </HStack>
-                        )}
-                      </VStack>
-                    </HStack>
-                    <Spacer></Spacer>
-                    {/* Search  */}
-                    {location.pathname === "/SearchPage" ? null : (
-                      <Searchbar
-                        top="54px"
-                        left="0px"
-                        placeholder="Search for NFTs and Collections"
-                        widthInput={isSearch ? "741px" : "310px"}
-                        width="741px"
-                        switchBarStatus={handleBarStatus}
-                      ></Searchbar>
-                    )}
+                      <HStack minheight="42px">
+                        <WalletButton
+                          logout={
+                            isMetamask
+                              ? disconnectMetamask
+                              : isXdcPay
+                              ? disconnectXdcPay
+                              : disconnectDcent
+                          }
+                          status={wallet?.connected}
+                          wallet={wallet}
+                          walletAddress={walletAddress}
+                          onClickMetamask={() => setShowMetamask(true)}
+                          isMetamask={isMetamask}
+                          isDcent={isDcent}
+                          isXdcPay={isXdcPay}
+                          isDomain={isDomain}
+                          hasAlert={showError > 0}
+                          clickAlert={() => {
+                            setShowInfo(true);
+                          }}
+                        ></WalletButton>
+                      </HStack>
 
-                    <AnimatePresence>
-                      {!isSearch && (
-                        <HStack
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          spacing="3px"
-                        >
-                          <ButtonApp
-                            background="rgba(255, 255, 255, 0)"
-                            textcolor={({ theme }) => theme.text}
-                            text="Discover"
-                            cursor="pointer"
-                            onClick={() => props.redirect("Discover")}
-                            btnStatus={0}
-                          ></ButtonApp>
-                          <ButtonApp
-                            background="rgba(255, 255, 255, 0)"
-                            textcolor={({ theme }) => theme.text}
-                            text="How To Start"
-                            cursor="pointer"
-                            onClick={() => props.redirect("HowToStart")}
-                            btnStatus={0}
-                            width="150px"
-                            padding="0px"
-                          ></ButtonApp>
-                          <ButtonApp
-                            background="rgba(255, 255, 255, 0)"
-                            textcolor={({ theme }) => theme.blue}
-                            text="Create an NFT"
-                            cursor="pointer"
-                            onClick={() => props.redirect("CreateNFT")}
-                            btnStatus={0}
-                            width="150px"
-                            padding="0px"
-                          ></ButtonApp>
+                      {size.width < 429 && (
+                        <HStack style={{ zIndex: 1 }}>
+                          <Searchbar
+                            placeholder="Search for NFTs and Collections"
+                            top="46px"
+                            left="0px"
+                            widthInput={size.width - 60 + "px"}
+                            backcolor="rgba(0,0,0,0.1)"
+                            textcolor={"rgba(0,0,0,0.6)"}
+                            textplace={"rgba(0,0,0,0.6)"}
+                            isPhone={true}
+                            style={{ zIndex: 1 }}
+                          ></Searchbar>
                         </HStack>
                       )}
-                    </AnimatePresence>
 
-                    <Spacer></Spacer>
-                    <VStack maxwidth="180px">
-                      <ZStack>
-                        <ZItem>
-                          <WalletButton
-                            logout={
-                              isMetamask
-                                ? disconnectMetamask
-                                : isXdcPay
-                                ? disconnectXdcPay
-                                : disconnectDcent
-                            }
-                            status={wallet?.connected}
-                            wallet={wallet}
-                            onClickMetamask={() => setShowMetamask(true)}
-                            isMetamask={isMetamask}
-                            isDcent={isDcent}
-                            isXdcPay={isXdcPay}
-                            hasAlert={showError > 0}
-                            clickAlert={() => setShowInfo(true)}
-                          ></WalletButton>
-                        </ZItem>
-                      </ZStack>
+                      <VStack
+                        alignment="flex-end"
+                        width="100%"
+                        spacing="12px"
+                        style={{ zIndex: 0 }}
+                        justify="flex-start"
+                        padding="30px 0 0 0"
+                      >
+                        <HStack height="30px">
+                          <TitleRegular18 textcolor="rgba(0,0,0,0.3)">
+                            MENU
+                          </TitleRegular18>
+                          <Spacer></Spacer>
+                        </HStack>
+                        {wallet?.connected ? (
+                          <>
+                            <HStack
+                              minheight="42px"
+                              cursor="pointer"
+                              onClick={() => {
+                                setShowMenu(!showMenu);
+                                props.redirect(`user/${user?.nickName}`);
+                              }}
+                            >
+                              <TitleRegular18
+                                textcolor={({ theme }) => theme.text}
+                              >
+                                User Profile
+                              </TitleRegular18>
+                              <Spacer></Spacer>
+
+                              <IconImg
+                                url={user?.urlProfile}
+                                width="35px"
+                                height="35px"
+                                border="42px"
+                                bordersize="3px"
+                                bordercolor="white"
+                                backsize="cover"
+                                whileTap={{ scale: 0.96 }}
+                                cursor="pointer"
+                              ></IconImg>
+                            </HStack>
+                            <HStack
+                              background="rgba(0,0,0, 0.15)"
+                              minheight="1px"
+                              width="100%"
+                            ></HStack>
+                          </>
+                        ) : null}
+
+                        <HStack
+                          minheight="42px"
+                          cursor="pointer"
+                          onClick={() => {
+                            setShowMenu(!showMenu);
+                            props.redirect("how-to-start");
+                          }}
+                        >
+                          <TitleRegular18 textcolor={({ theme }) => theme.text}>
+                            How To Start
+                          </TitleRegular18>
+                          <Spacer></Spacer>
+
+                          <IconImg
+                            cursor="pointer"
+                            url={howToStart}
+                            width="35px"
+                            height="39px"
+                          ></IconImg>
+                        </HStack>
+
+                        <HStack
+                          background="rgba(0,0,0, 0.15)"
+                          minheight="1px"
+                          width="100%"
+                        ></HStack>
+
+                        <HStack
+                          minheight="42px"
+                          cursor="pointer"
+                          onClick={() => {
+                            setShowMenu(!showMenu);
+                            props.redirect("discover/collections");
+                          }}
+                        >
+                          <TitleRegular18 textcolor={({ theme }) => theme.text}>
+                            Discover
+                          </TitleRegular18>
+                          <Spacer></Spacer>
+
+                          <IconImg
+                            cursor="pointer"
+                            url={discoverIcon}
+                            width="35px"
+                            height="35px"
+                          ></IconImg>
+                        </HStack>
+
+                        <HStack
+                          background="rgba(0,0,0, 0.15)"
+                          minheight="1px"
+                          width="100%"
+                        ></HStack>
+
+                        <HStack
+                          minheight="42px"
+                          cursor="pointer"
+                          onClick={() => {
+                            setShowMenu(!showMenu);
+                            props.redirect("create-nft");
+                          }}
+                        >
+                          <TitleRegular18 textcolor={({ theme }) => theme.text}>
+                            Create An NFT
+                          </TitleRegular18>
+                          <Spacer></Spacer>
+
+                          <IconImg
+                            cursor="pointer"
+                            url={createNewIcon}
+                            width="35px"
+                            height="35px"
+                          ></IconImg>
+                        </HStack>
+                      </VStack>
+                      <Spacer></Spacer>
                     </VStack>
-
-                    <SwitchButton clickOnSwitch={themeToggler}></SwitchButton>
-                    {wallet?.connected ? (
-                      <UserMenuButton wallet={wallet} redirect={props.redirect}></UserMenuButton>
-                    ) : null}
-                  </HStack>
-                </>
-              );
-          }
-        })()}
+                  </SlideMenuTablet>
+                )}
+              </AnimatePresence>
+            </HStack>
+          </HStack>
+        </>
       </HStack>
 
       {showInfo ? (
@@ -896,20 +692,51 @@ function TopBar(props) {
                       background="rgb(0,0,0,0.3)"
                       padding="9px"
                       border="6px"
-                      whileTap={{ scale: 0.98 }}
+                      whileTap={{
+                        scale:
+                          (window.ethereum?.publicConfigStore?._state
+                            ?.networkVersion === "50" ||
+                            window.ethereum?.publicConfigStore?._state
+                              ?.networkVersion === "51") &&
+                          window.ethereum?.publicConfigStore?._state
+                            ?.selectedAddress !== undefined
+                            ? 0.98
+                            : 1,
+                      }}
                       onClick={() => {
+                        setShowError(0);
                         connectXDCPay();
                         setIsXdcPay(true);
-                        setShowInfo(false);
                       }}
                     >
                       <IconImg
                         cursor="pointer"
-                        url={XDClogo}
+                        url={
+                          (window.ethereum?.publicConfigStore?._state
+                            ?.networkVersion === "50" ||
+                            window.ethereum?.publicConfigStore?._state
+                              ?.networkVersion === "51") &&
+                          window.ethereum?.publicConfigStore?._state
+                            ?.selectedAddress !== undefined
+                            ? XDClogo
+                            : XDClogoBW
+                        }
                         width="30px"
                         height="30px"
                       ></IconImg>
-                      <BodyRegular cursor="pointer" textcolor="white">
+                      <BodyRegular
+                        cursor="pointer"
+                        textcolor={
+                          (window.ethereum?.publicConfigStore?._state
+                            ?.networkVersion === "50" ||
+                            window.ethereum?.publicConfigStore?._state
+                              ?.networkVersion === "51") &&
+                          window.ethereum?.publicConfigStore?._state
+                            ?.selectedAddress !== undefined
+                            ? "white"
+                            : "grey"
+                        }
+                      >
                         XDC Pay
                       </BodyRegular>
                     </HStack>
@@ -919,7 +746,14 @@ function TopBar(props) {
                       background="rgb(0,0,0,0.3)"
                       padding="9px"
                       border="6px"
-                      whileTap={{ scale: 0.98 }}
+                      whileTap={{
+                        scale:
+                          window.ethereum?.isMetaMask &&
+                          window.ethereum?.isDcentWallet === undefined &&
+                          window.ethereum.chainId !== undefined
+                            ? 0.98
+                            : 1,
+                      }}
                       onClick={() => {
                         setShowMetamask(true);
                         setWalletOptions(false);
@@ -927,11 +761,26 @@ function TopBar(props) {
                     >
                       <IconImg
                         cursor="pointer"
-                        url={Metamask}
+                        url={
+                          window.ethereum?.isMetaMask &&
+                          window.ethereum?.isDcentWallet === undefined &&
+                          window.ethereum.chainId !== undefined
+                            ? Metamask
+                            : MetamaskBW
+                        }
                         width="30px"
                         height="30px"
                       ></IconImg>
-                      <BodyRegular cursor="pointer" textcolor="white">
+                      <BodyRegular
+                        cursor="pointer"
+                        textcolor={
+                          window.ethereum?.isMetaMask &&
+                          window.ethereum?.isDcentWallet === undefined &&
+                          window.ethereum.chainId !== undefined
+                            ? "white"
+                            : "grey"
+                        }
+                      >
                         Metamask
                       </BodyRegular>
                     </HStack>
@@ -941,20 +790,38 @@ function TopBar(props) {
                       background="rgb(0,0,0,0.3)"
                       padding="9px"
                       border="6px"
-                      whileTap={{ scale: 0.98 }}
+                      whileTap={{
+                        scale:
+                          window.ethereum?.isDcentWallet &&
+                          window.ethereum.chainId !== undefined
+                            ? 0.98
+                            : 1,
+                      }}
                       onClick={() => {
+                        setShowError(0);
                         connectDcent();
-                        setIsDcent(true);
-                        setShowInfo(false);
                       }}
                     >
                       <IconImg
                         cursor="pointer"
-                        url={dcentWallet}
+                        url={
+                          window.ethereum?.isDcentWallet &&
+                          window.ethereum.chainId !== undefined
+                            ? dcentWallet
+                            : dcentWalletBW
+                        }
                         width="30px"
                         height="30px"
                       ></IconImg>
-                      <BodyRegular cursor="pointer" textcolor="white">
+                      <BodyRegular
+                        cursor="pointer"
+                        textcolor={
+                          window.ethereum?.isDcentWallet &&
+                          window.ethereum.chainId !== undefined
+                            ? "white"
+                            : "grey"
+                        }
+                      >
                         Dcent Wallet
                       </BodyRegular>
                     </HStack>
@@ -1016,8 +883,17 @@ function TopBar(props) {
                         align="center"
                         textcolor={appStyle.colors.darkYellow}
                       >
-                        Metamask is not detected. Install the official wallet to
-                        connect with our marketplace
+                        Metamask is not detected. Install the{" "}
+                        <a
+                          style={{
+                            "text-decoration": "underline",
+                            color: appStyle.colors.darkYellow,
+                          }}
+                          href="https://metamask.io/download/"
+                        >
+                          official wallet
+                        </a>{" "}
+                        to connect with our marketplace
                       </BodyRegular>
                     </HStack>
                   )}
@@ -1064,8 +940,17 @@ function TopBar(props) {
                         align="center"
                         textcolor={appStyle.colors.darkYellow}
                       >
-                        XDCPay is not detected. Install the official wallet to
-                        connect with our marketplace
+                        XDCPay is not detected. Install the{" "}
+                        <a
+                          style={{
+                            "text-decoration": "underline",
+                            color: appStyle.colors.darkYellow,
+                          }}
+                          href="https://chrome.google.com/webstore/detail/xdcpay/bocpokimicclpaiekenaeelehdjllofo"
+                        >
+                          official wallet
+                        </a>{" "}
+                        to connect with our marketplace
                       </BodyRegular>
                     </HStack>
                   )}
@@ -1080,8 +965,17 @@ function TopBar(props) {
                         align="center"
                         textcolor={appStyle.colors.darkYellow}
                       >
-                        DCent Wallet is not detected. Install the official
-                        wallet application to connect with our marketplace
+                        DCent Wallet is not detected. Install the{" "}
+                        <a
+                          style={{
+                            "text-decoration": "underline",
+                            color: appStyle.colors.darkYellow,
+                          }}
+                          href="https://play.google.com/store/apps/details?id=com.kr.iotrust.dcent.wallet&hl=en_NZ&gl=US"
+                        >
+                          official wallet application
+                        </a>{" "}
+                        to connect with our marketplace
                       </BodyRegular>
                     </HStack>
                   )}
@@ -1094,7 +988,7 @@ function TopBar(props) {
                   <HStack
                     self="none"
                     background={({ theme }) => theme.walletButton}
-                    width={deviceSize === "phone" ? "100%" : "560px"}
+                    maxWidth={size.width < 429 ? "100%" : "560px"}
                     padding="15px"
                     border="15px"
                     responsive={true}
@@ -1204,6 +1098,15 @@ function TopBar(props) {
                           </BodyRegular>
                         </VStack>
                       </VStack>
+                      {deviceSize === "phone" ? (
+                        <IconImg
+                          url={gif}
+                          width="240px"
+                          height="360px"
+                          backsize="contain"
+                          border="9px"
+                        ></IconImg>
+                      ) : null}
 
                       <Spacer></Spacer>
                       <HStack
@@ -1214,8 +1117,8 @@ function TopBar(props) {
                         border="9px"
                         cursor="pointer"
                         onClick={() => {
+                          setShowError(0);
                           connectMetamask();
-                          setShowInfo(false);
                         }}
                       >
                         <BodyBold cursor="pointer" textcolor="white">
@@ -1236,7 +1139,9 @@ function TopBar(props) {
                           cursor="pointer"
                         >
                           <BodyBold textcolor={appStyle.colors.darkYellow}>
-                            Install Metamask
+                            <a href="https://metamask.io/download/">
+                              Install Metamask
+                            </a>
                           </BodyBold>
                         </HStack>
                       )}
@@ -1255,22 +1160,6 @@ function TopBar(props) {
                           </BodyBold>
                         </HStack>
                       )}
-                      {showError === 3 && (
-                        <HStack
-                          whileHover={{ opacity: 0.8 }}
-                          whileTap={{ scale: 0.98 }}
-                          minheight="39px"
-                          border="9px"
-                          bordersize="1px"
-                          bordercolor={appStyle.colors.yellow}
-                          background={appStyle.colors.yellow}
-                          cursor="pointer"
-                        >
-                          <BodyBold textcolor={appStyle.colors.darkYellow}>
-                            Use XDCPay Button
-                          </BodyBold>
-                        </HStack>
-                      )}
                       {showError === 4 && (
                         <HStack
                           whileHover={{ opacity: 0.8 }}
@@ -1283,38 +1172,6 @@ function TopBar(props) {
                         >
                           <BodyBold textcolor={appStyle.colors.darkRed}>
                             Connect to XDC Mainnet
-                          </BodyBold>
-                        </HStack>
-                      )}
-                      {showError === 5 && (
-                        <HStack
-                          whileHover={{ opacity: 0.8 }}
-                          whileTap={{ scale: 0.98 }}
-                          minheight="39px"
-                          border="9px"
-                          bordersize="1px"
-                          bordercolor={appStyle.colors.yellow}
-                          background={appStyle.colors.yellow}
-                          cursor="pointer"
-                        >
-                          <BodyBold textcolor={appStyle.colors.darkYellow}>
-                            Install XDCPay
-                          </BodyBold>
-                        </HStack>
-                      )}
-                      {showError === 6 && (
-                        <HStack
-                          whileHover={{ opacity: 0.8 }}
-                          whileTap={{ scale: 0.98 }}
-                          minheight="39px"
-                          border="9px"
-                          bordersize="1px"
-                          bordercolor={appStyle.colors.yellow}
-                          background={appStyle.colors.yellow}
-                          cursor="pointer"
-                        >
-                          <BodyBold textcolor={appStyle.colors.darkYellow}>
-                            Use Dcent Wallet Application
                           </BodyBold>
                         </HStack>
                       )}
@@ -1338,22 +1195,29 @@ const ContentBar = styled(motion.div)`
   justify-content: center;
   top: 0;
   left: 0;
-  background: ${({ theme }) => theme.backElement};
+  background: ${({ theme }) => theme.topbar};
   width: 100%;
   z-index: 10;
 `;
 
 const SlideMenu = styled(motion.div)`
   position: fixed;
-  top: 80px;
+  top: 60px;
+  right: 10px;
   z-index: 1;
 `;
 
 const SlideMenuTablet = styled(motion.div)`
   position: fixed;
-  top: 80px;
-  right: 0px;
-  z-index: 1;
+  top: ${(props) => props.top};
+  right: -6px;
+  width: auto;
+  height: auto;
+  z-index: 30;
+  overflowy: auto;
+
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
 `;
 
 const Connect = styled(motion.div)`
@@ -1368,4 +1232,10 @@ const MetamaskSteps = styled(motion.div)`
   width: 100vw;
   height: 100vh;
   z-index: 100;
+`;
+
+const RedBubble = styled(motion.div)`
+  position: absolute;
+  right: -6px;
+  top: 0px;
 `;

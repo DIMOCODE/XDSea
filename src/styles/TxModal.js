@@ -158,6 +158,7 @@ function TxModal(props) {
                 input={offerPrice}
                 height="51px"
                 min={"0.0001"}
+                textplace={"rgba(0,0,0,0.6)"}
                 onChange={onChangeOffer}
                 background={appStyle.colors.darkgrey10}
               ></InputStyled>
@@ -215,6 +216,7 @@ function TxModal(props) {
                 fontsize="30px"
                 input={editPrice}
                 height="51px"
+                textplace={"rgba(0,0,0,0.6)"}
                 min={"0.0001"}
                 onChange={onChangeEdit}
                 background={appStyle.colors.darkgrey10}
@@ -270,6 +272,7 @@ function TxModal(props) {
                 input={listPrice}
                 height="51px"
                 min={"0.0001"}
+                textplace={"rgba(0,0,0,0.6)"}
                 onChange={onChangeList}
                 background={appStyle.colors.darkgrey10}
               ></InputStyled>
@@ -325,6 +328,7 @@ function TxModal(props) {
                 fontsize="30px"
                 input={transferAddress}
                 height="51px"
+                textplace={"rgba(0,0,0,0.6)"}
                 onChange={onChangeTransfer}
                 background={appStyle.colors.darkgrey10}
               ></InputStyled>
@@ -335,8 +339,8 @@ function TxModal(props) {
                   border="6px"
                 >
                   <CaptionRegular textcolor={appStyle.colors.darkRed}>
-                    The address does not seem right. Please use the wallet
-                    address with a "0x..." prefix and not the "xdc..." prefix.
+                    The address does not seem right. Please check the address 
+                    and try again.
                   </CaptionRegular>
                 </HStack>
               ) : null}

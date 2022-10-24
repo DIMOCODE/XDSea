@@ -32,10 +32,7 @@ function UserMenuButton(props) {
           bordercolor="#99A2AF"
           bordersize="3px"
           whileTap={{ scale: 0.9 }}
-          onClick={async () => {
-            const userId = await LS.get(LS_ROOT_KEY).user._id;
-            props.redirect(`UserProfile/${userId}`);
-          }}
+          onClick={props?.handleChange}
           cursor={"pointer"}
           exit="normal"
         >

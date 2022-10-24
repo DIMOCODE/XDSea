@@ -1,18 +1,7 @@
-import React, { 
-  useEffect, 
-  useState 
-} from "react";
-import { 
-  useParams, 
-  useLocation 
-} from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useParams, useLocation } from "react-router-dom";
 import Xdc3 from "xdc3";
-import { 
-  DEFAULT_PROVIDER, 
-  HEADER, 
-  LS, 
-  LS_ROOT_KEY 
-} from "../../constant";
+import { DEFAULT_PROVIDER, HEADER, LS, LS_ROOT_KEY, getXdcDomain, getXdcOwner } from "../../constant";
 import { nftmarketlayeraddress } from "../../config";
 import NFT from "../../abis/NFT.json";
 import { Divider } from "../../styles/Stacks";
@@ -28,12 +17,7 @@ import {
   WithdrawOffer,
   AcceptOffer,
 } from "../../common";
-import { 
-  fromXdc, 
-  isSafari, 
-  isXdc, 
-  truncateAddress 
-} from "../../common/common";
+import { fromXdc, isXdc, toXdc, truncateAddress } from "../../common/common";
 import Tooltip from "@mui/material/Tooltip";
 import lock from "../../images/unlockable2.gif";
 import mint from "../../images/mintIcon.png";
@@ -110,19 +94,12 @@ import {
   withdrawListingNFTRequest,
   withdrawOfferRequest,
 } from "../../API/NFT";
-import { 
-  isImage,
-  isVideo,
-  isAudio 
-} from "../../common";
+import { isImage, isVideo, isAudio } from "../../common";
 
 const NFTDetails = (props) => {
   const webLocation = useLocation();
   const size = useWindowSize();
-  const { 
-    id, 
-    nftaddress 
-  } = useParams();
+  const { id, nftaddress } = useParams();
 
   const [wallet, setWallet] = useState(null);
   const [nft, setNFT] = useState(null);
@@ -150,7 +127,9 @@ const NFTDetails = (props) => {
   const [isActive, setIsActive] = useState(1);
   const [highestOffer, setHighestOffer] = useState(0);
   const [addressIsInvalid, setAddressIsInvalid] = useState(false);
-  const [withdrawOfferButtonStatus, setWithdrawOfferButtonStatus] = useState([]);
+  const [withdrawOfferButtonStatus, setWithdrawOfferButtonStatus] = useState(
+    []
+  );
   const [acceptOfferButtonStatus, setAcceptOfferButtonStatus] = useState([]);
   const [processingOffer, setIsProcessingOffer] = useState(false);
   const [processingBuying, setIsProcessingBuying] = useState(false);
@@ -158,7 +137,8 @@ const NFTDetails = (props) => {
   const [processingEditing, setIsProcessingEditing] = useState(false);
   const [processingListing, setIsProcessingListing] = useState(false);
   const [processingTransferring, setIsProcessingTransferring] = useState(false);
-  const [processingWithdrawingOffer, setIsProcessingWithdrawingOffer] = useState(false);
+  const [processingWithdrawingOffer, setIsProcessingWithdrawingOffer] =
+    useState(false);
   const [processingAccepting, setIsProcessingAccepting] = useState(false);
   const [actions, setActions] = useState(0);
   const [loadingOffers, setLoadingOffers] = useState(false);
@@ -177,7 +157,8 @@ const NFTDetails = (props) => {
     { id: 4, name: "NFT 4" },
   ]);
   const [copied, setCopied] = useState(false);
-  
+  const [nftPlaying, setNftPlaying] = useState([]);
+
   const variants = {
     selected: { opacity: 1 },
     normal: { opacity: 0.3 },
@@ -225,11 +206,11 @@ const NFTDetails = (props) => {
     if (nft.inBlacklist) {
       success = await LegacyBuyNFT(nft, wallet.address);
     } else {
-      success = await BuyNFT(nft, wallet.address);
+      success = await BuyNFT(nft, wallet.address, nftaddress);
     }
     if (success) {
       setBuyButtonStatus(3);
-      await (await buyNFTRequest(wallet?.address, nft.price, nft._id));
+      await buyNFTRequest(wallet?.address, nft.price, nft._id);
       setPurchased(true);
     } else {
       setBuyButtonStatus(4);
@@ -258,11 +239,13 @@ const NFTDetails = (props) => {
     setPlacingOffer(false);
     var success = false;
     if (!nft.inBlacklist) {
-      success = await Offer(approved, nft, offerPrice, wallet.address);
+      success = await Offer(approved, nft, offerPrice, wallet.address, nftaddress);
     }
     if (success) {
       setOfferButtonStatus(3);
-      await (await placeOfferRequest(offerPrice, wallet.address, nft._id)).data;
+      await (
+        await placeOfferRequest(offerPrice, wallet.address, nft._id)
+      ).data;
     } else {
       setOfferButtonStatus(4);
     }
@@ -283,11 +266,13 @@ const NFTDetails = (props) => {
     if (nft.inBlacklist) {
       success = await LegacyWithdrawListing(approved, nft, wallet.address);
     } else {
-      success = await WithdrawListing(approved, nft, wallet.address);
+      success = await WithdrawListing(approved, nft, wallet.address, nftaddress);
     }
     if (success) {
       setWithdrawButtonStatus(3);
-      await (await withdrawListingNFTRequest(nft._id)).data;
+      await (
+        await withdrawListingNFTRequest(nft._id)
+      ).data;
     } else {
       setWithdrawButtonStatus(4);
     }
@@ -316,11 +301,13 @@ const NFTDetails = (props) => {
     setEditingListing(false);
     var success = false;
     if (!nft.inBlacklist) {
-      success = await EditNFT(approved, nft, editPrice, wallet.address);
+      success = await EditNFT(approved, nft, editPrice, wallet.address, nftaddress);
     }
     if (success) {
       setEditButtonStatus(3);
-      await (await editListingNFTRequest(editPrice, nft._id)).data;
+      await (
+        await editListingNFTRequest(editPrice, nft._id)
+      ).data;
     } else {
       setEditButtonStatus(4);
     }
@@ -339,6 +326,11 @@ const NFTDetails = (props) => {
     setListButtonStatus(1);
   };
 
+  /**
+   * Send the transaction to list the NFT on the marketplace
+   * 
+   * @returns {void} none
+   */
   const listNFT = async () => {
     setIsProcessingListing(true);
     if (isNaN(parseFloat(listPrice))) {
@@ -349,11 +341,13 @@ const NFTDetails = (props) => {
     setListingNFT(false);
     var success = false;
     if (!nft.inBlacklist) {
-      success = await SellNFT(approved, nft, listPrice, wallet.address);
+      success = await SellNFT(approved, nft, listPrice, wallet.address, nftaddress);
     }
     if (success) {
       setListButtonStatus(3);
-      await (await listNFTRequest(listPrice, nft._id)).data;
+      await (
+        await listNFTRequest(listPrice, nft._id)
+      ).data;
     } else {
       setListButtonStatus(4);
     }
@@ -375,18 +369,26 @@ const NFTDetails = (props) => {
   const transferNFT = async () => {
     setIsProcessingTransferring(true);
     setTransferring(false);
+    var address = transferAddress.split('.')[1] !== undefined
+      ? (await getXdcOwner(transferAddress)).owner0x
+      : isXdc(transferAddress)
+        ? fromXdc(transferAddress)
+        : transferAddress;
     var success = false;
     if (!nft.inBlacklist) {
       success = await TransferNFT(
         approved,
         nft,
-        transferAddress,
-        wallet.address
+        address,
+        wallet.address,
+        nftaddress
       );
     }
     if (success) {
       setTransferButtonStatus(3);
-      await (await transferNFTRequest(wallet?.address, transferAddress, nft._id)).data;
+      await (
+        await transferNFTRequest(wallet?.address, address, nft._id)
+      ).data;
     } else {
       setTransferButtonStatus(4);
     }
@@ -399,7 +401,7 @@ const NFTDetails = (props) => {
 
   /**
    * Start the offer withdrawing process
-   * 
+   *
    * @param {number} i index of the offer placed
    * @param {string} id the offer DB object ID
    */
@@ -411,14 +413,23 @@ const NFTDetails = (props) => {
     });
     var success = false;
     if (!nft.inBlacklist) {
-      success = await WithdrawOffer(approved, nft.tokenId, i + 1, wallet.address);
+      success = await WithdrawOffer(
+        approved,
+        nft.tokenId,
+        i + 1,
+        wallet.address,
+        nftaddress,
+        nft.marketAddress
+      );
     }
     if (success) {
       setWithdrawOfferButtonStatus((prevState) => {
         prevState[i] = 3;
         return [...prevState];
       });
-      await (await withdrawOfferRequest(id)).data;
+      await (
+        await withdrawOfferRequest(id)
+      ).data;
     } else {
       setWithdrawOfferButtonStatus((prevState) => {
         prevState[i] = 4;
@@ -437,7 +448,7 @@ const NFTDetails = (props) => {
 
   /**
    * Start the offer accepting process
-   * 
+   *
    * @param {number} i index of the offer placed
    * @param {string} id the offer DB object ID
    */
@@ -449,14 +460,16 @@ const NFTDetails = (props) => {
     });
     var success = false;
     if (!nft.inBlacklist) {
-      success = await AcceptOffer(approved, nft.tokenId, i + 1, wallet.address);
+      success = await AcceptOffer(approved, nft.tokenId, i + 1, wallet.address, nftaddress, nft.marketAddress);
     }
     if (success) {
       setAcceptOfferButtonStatus((prevState) => {
         prevState[i] = 3;
         return [...prevState];
       });
-      await (await acceptOfferRequest(id)).data;
+      await (
+        await acceptOfferRequest(id)
+      ).data;
     } else {
       setAcceptOfferButtonStatus((prevState) => {
         prevState[i] = 4;
@@ -478,18 +491,43 @@ const NFTDetails = (props) => {
    */
   const getData = async () => {
     try {
-      const nftData = await (await getNFT(id)).data;
+      const nftData = await (
+        await getNFT(
+          isXdc(nftaddress)
+            ? fromXdc(nftaddress.toLowerCase())
+            : nftaddress.toLowerCase(),
+          id
+        )
+      ).data;
 
       await Promise.all(
         [1, 2].map(async (i) => {
           if (i === 1) {
             const offerData = await (
               await getNFTOffers(nftData.nft._id)
-            ).data.offers;
+            ).data;
+            var highestOffer = offerData.higherOffer;
+            const offerList = await Promise.all(
+              offerData.offers.map(async (offer) => {
+                let offerItem = {
+                  _id: offer._id,
+                  userProfile: offer.userId.urlProfile,
+                  from: truncate(await getXdcDomainAddress(offer.fromAddress), 13),
+                  fromAddress: truncateAddress(isXdc(offer.fromAddress) ? offer.fromAddress.toLowerCase() : toXdc(offer.fromAddress.toLowerCase())),
+                  isAccepted: offer.isAccepted,
+                  isWithdrawn: offer.isWithdraw,
+                  price: offer.price,
+                  to: offer.toAddress,
+                  userId: offer.userId.nickName,
+                };
+                return offerItem;
+              })
+            );
 
-            setOffers(offerData);
-            setAcceptOfferButtonStatus(new Array(offerData.length).fill(0));
-            setWithdrawOfferButtonStatus(new Array(offerData.length).fill(0));
+            setOffers(offerList);
+            setHighestOffer(highestOffer);
+            setAcceptOfferButtonStatus(new Array(offerList.length).fill(0));
+            setWithdrawOfferButtonStatus(new Array(offerList.length).fill(0));
             setLoadingOffers(false);
           } else {
             const eventData = await (
@@ -502,7 +540,7 @@ const NFTDetails = (props) => {
                   id: i + 1,
                   event:
                     item.eventTypeId.eventCode === "MINTED" ? (
-                      <HStack>
+                      <HStack key={"event_" + i}>
                         <IconImg
                           url={mint}
                           width="26px"
@@ -511,7 +549,7 @@ const NFTDetails = (props) => {
                         <CaptionBoldShort>Mint</CaptionBoldShort>
                       </HStack>
                     ) : item.eventTypeId.eventCode === "LISTED" ? (
-                      <HStack>
+                      <HStack key={"event_" + i}>
                         <IconImg
                           url={list}
                           width="26px"
@@ -520,7 +558,7 @@ const NFTDetails = (props) => {
                         <CaptionBoldShort>List</CaptionBoldShort>
                       </HStack>
                     ) : item.eventTypeId.eventCode === "WITHDRAWN" ? (
-                      <HStack>
+                      <HStack key={"event_" + i}>
                         <IconImg
                           url={withdrawList}
                           width="26px"
@@ -529,7 +567,7 @@ const NFTDetails = (props) => {
                         <CaptionBoldShort>Withdraw Listing</CaptionBoldShort>
                       </HStack>
                     ) : item.eventTypeId.eventCode === "SALE" ? (
-                      <HStack>
+                      <HStack key={"event_" + i}>
                         <IconImg
                           url={sale}
                           width="26px"
@@ -538,7 +576,7 @@ const NFTDetails = (props) => {
                         <CaptionBoldShort>Sale</CaptionBoldShort>
                       </HStack>
                     ) : item.eventTypeId.eventCode === "TRANSFER" ? (
-                      <HStack>
+                      <HStack key={"event_" + i}>
                         <IconImg
                           url={transferIcon}
                           width="26px"
@@ -547,7 +585,7 @@ const NFTDetails = (props) => {
                         <CaptionBoldShort>Transfer</CaptionBoldShort>
                       </HStack>
                     ) : item.eventTypeId.eventCode === "EDIT" ? (
-                      <HStack>
+                      <HStack key={"event_" + i}>
                         <IconImg
                           url={editListingIcon}
                           width="26px"
@@ -556,7 +594,7 @@ const NFTDetails = (props) => {
                         <CaptionBoldShort>Edit Listing</CaptionBoldShort>
                       </HStack>
                     ) : item.eventTypeId.eventCode === "OFFER_RECEIVED" ? (
-                      <HStack>
+                      <HStack key={"event_" + i}>
                         <IconImg
                           url={offerPlacedIcon}
                           width="26px"
@@ -565,7 +603,7 @@ const NFTDetails = (props) => {
                         <CaptionBoldShort>Offer Placed</CaptionBoldShort>
                       </HStack>
                     ) : item.eventTypeId.eventCode === "OFFER_WITHDRAWN" ? (
-                      <HStack>
+                      <HStack key={"event_" + i}>
                         <IconImg
                           url={offerRejectedIcon}
                           width="26px"
@@ -574,7 +612,7 @@ const NFTDetails = (props) => {
                         <CaptionBoldShort>Offer Withdrawn</CaptionBoldShort>
                       </HStack>
                     ) : (
-                      <HStack>
+                      <HStack key={"event_" + i}>
                         <IconImg
                           url={offerAcceptedIcon}
                           width="26px"
@@ -584,14 +622,16 @@ const NFTDetails = (props) => {
                       </HStack>
                     ),
                   price: item.price,
-                  from: item.fromAddress,
-                  to: item.toAddress,
+                  from: truncate(await getXdcDomainAddress(item.fromAddress), 13),
+                  fromAddress: isXdc(item.fromAddress) ? item.fromAddress.toLowerCase() : toXdc(item.fromAddress.toLowerCase()),
+                  to: truncate(await getXdcDomainAddress(item.toAddress), 13),
+                  toAddress: isXdc(item.toAddress) ? item.toAddress.toLowerCase() : toXdc(item.toAddress.toLowerCase()),
                   date: item.timestamp,
                 };
                 return event;
               })
             );
-            
+
             setEventHistory(eventList);
             setLoadingEvents(false);
           }
@@ -600,29 +640,60 @@ const NFTDetails = (props) => {
 
       setNFT(nftData.nft);
       setMoreFromCollectionNfts(nftData.relatedNfts);
+      setNftPlaying(new Array(nftData.relatedNfts.length).fill(false));
       setLoadingMore(false);
+      return nftData.nft.marketAddress;
     } catch (error) {
       console.log(error);
+      return "";
     }
   };
-  
+
+  const getXdcDomainAddress = async (address) => {
+    const xdcDomainName = isXdc(address)
+      ? (await getXdcDomain(address))
+      : (await getXdcDomain(toXdc(address)))
+    return xdcDomainName;
+  };
+
+  const truncate = (str, n) => {
+    return str?.length > n ? str.substr(0, n - 1) + "..." : str;
+  };
+
   /**
    * Check if the user has approved the marketplace
    */
-  const getApproval = async () => {
-    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
+  const getApproval = async (marketAddress) => {
+    const xdc3 = new Xdc3(
+      new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER)
+    );
     const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
     if (props?.wallet?.address !== "" && props?.wallet?.address !== undefined)
-      var getVal = await nftContract.methods.isApprovedForAll(
+      var getVal = await nftContract.methods
+        .isApprovedForAll(
           isXdc(props?.wallet?.address)
             ? fromXdc(props?.wallet?.address)
             : props?.wallet?.address,
-          nftmarketlayeraddress
+          marketAddress
         )
         .call();
     setApproved(getVal);
   };
 
+  const handleNFTLongPress = (i, isNew) => {
+    if(!isNew) {
+      setNftPlaying((prevState) => {
+        prevState[i] = !prevState[i];
+        return [...prevState];
+      });
+    }
+    else{
+      const newNftPlaying = new Array(nftPlaying.length).fill(false);
+      newNftPlaying[i] = !newNftPlaying[i];
+      setNftPlaying([...newNftPlaying]);
+    }
+  }
+  
   /**
    * React Hook to re-render component when the token ID or the action state changes
    */
@@ -632,8 +703,8 @@ const NFTDetails = (props) => {
     setLoadingOffers(true);
     setLoadingEvents(true);
     setLoadingMore(true);
-    getData();
-    if (!approved) getApproval();
+    const address = getData();
+    if (!approved) getApproval(address);
   }, [id, actions]);
 
   /**
@@ -641,7 +712,7 @@ const NFTDetails = (props) => {
    */
   useEffect(() => {
     setWallet(props?.wallet);
-    getApproval();
+    getApproval(nft?.marketAddress);
   }, [props?.wallet]);
 
   return (
@@ -765,17 +836,14 @@ const NFTDetails = (props) => {
         <TxModal
           isPurchaised={true}
           PurchaisedNftName={nft.name}
-          ListedImage={isSafari
-            ? nft.urlFile.v1
-            : nft.urlFile.v0
-          }
+          ListedImage={nft.urlFile.v0}
           confirmBtnPurchaise={() =>
-            props.redirect(`UserProfile/${LS.get(LS_ROOT_KEY).user._id}`)
+            props.redirect(`user/${LS.get(LS_ROOT_KEY).user.nickName}`)
           }
         ></TxModal>
       ) : null}
       <ContentNftPage>
-        <VStack height="auto" padding="90px 0 0 0 ">
+        <VStack height="auto" padding="69px 0 0 0 ">
           <HStack height="100%" responsive={true} alignment="flex-start">
             {/* NFT Image  */}
             <VStack width="100%" padding="21px">
@@ -791,7 +859,9 @@ const NFTDetails = (props) => {
                       textcolor={({ theme }) => theme.walletText}
                       cursor="pointer"
                       onClick={() =>
-                        props.redirect(`collection/${nft.collectionId.nickName}`)
+                        props.redirect(
+                          `collection/${nft.collectionId.nickName}`
+                        )
                       }
                       btnStatus={0}
                     ></ButtonApp>
@@ -890,7 +960,7 @@ const NFTDetails = (props) => {
                         {(isXdc(wallet?.address)
                           ? fromXdc(wallet?.address?.toLowerCase())
                           : wallet?.address?.toLowerCase()) ===
-                          nft.owner.userName.toLowerCase() &&
+                          nft.addressOwner.toLowerCase() &&
                         nft.unlockableContent !== undefined &&
                         nft.unlockableContent !== "" ? (
                           <AnimatePresence>
@@ -934,10 +1004,7 @@ const NFTDetails = (props) => {
                         ) : null}
 
                         <IconImg
-                          url={isSafari
-                            ? nft.urlFile.v1
-                            : nft.urlFile.v0
-                          }
+                          url={nft.urlFile.v0}
                           width="100%"
                           height="540px"
                           border="15px"
@@ -961,7 +1028,7 @@ const NFTDetails = (props) => {
                         {(isXdc(wallet?.address)
                           ? fromXdc(wallet?.address?.toLowerCase())
                           : wallet?.address?.toLowerCase()) ===
-                          nft.owner.userName.toLowerCase() &&
+                          nft.addressOwner.toLowerCase() &&
                         nft.unlockableContent !== undefined &&
                         nft.unlockableContent !== "" ? (
                           <AnimatePresence>
@@ -1004,10 +1071,7 @@ const NFTDetails = (props) => {
                           </AnimatePresence>
                         ) : null}
                         <ReactPlayer
-                          url={isSafari
-                            ? nft.urlFile.v1
-                            : nft.urlFile.v0
-                          }
+                          url={nft.urlFile.v0}
                           playing={true}
                           muted={true}
                           volume={0}
@@ -1022,10 +1086,7 @@ const NFTDetails = (props) => {
                         width="100%"
                         height="540px"
                         border="15px"
-                        backgroundimage={isSafari
-                          ? nft.preview.v1
-                          : nft.preview.v0
-                        }
+                        backgroundimage={nft.preview.v0}
                         overflow="hidden"
                         cursor="pointer"
                         padding="15px"
@@ -1033,7 +1094,7 @@ const NFTDetails = (props) => {
                         {(isXdc(wallet?.address)
                           ? fromXdc(wallet?.address?.toLowerCase())
                           : wallet?.address?.toLowerCase()) ===
-                          nft.owner.userName.toLowerCase() &&
+                          nft.addressOwner.toLowerCase() &&
                         nft.unlockableContent !== undefined &&
                         nft.unlockableContent !== "" ? (
                           <AnimatePresence>
@@ -1076,10 +1137,7 @@ const NFTDetails = (props) => {
                           </AnimatePresence>
                         ) : null}
                         <ReactPlayer
-                          url={isSafari
-                            ? nft.urlFile.v1
-                            : nft.urlFile.v0
-                          }
+                          url={nft.urlFile.v0}
                           playing={true}
                           muted={true}
                           controls={true}
@@ -1116,19 +1174,19 @@ const NFTDetails = (props) => {
                 <HStack
                   spacing="6px"
                   cursor="pointer"
-                  onClick={() => props.redirect(`UserProfile/${nft.owner._id}`)}
+                  onClick={() => props.redirect(`user/${nft.owner.nickName}`)}
                 >
                   <IconImg
-                    url={nft?.owner.userProfile}
+                    url={nft?.owner.urlProfile}
                     width="18px"
                     height="18px"
                     backsize="cover"
                     border="18px"
                   ></IconImg>
-                  {nft?.owner.userName ? (
-                    <Tooltip title={nft.owner.userName}>
+                  {nft?.addressOwner ? (
+                    <Tooltip title={isXdc(nft.addressOwner) ? nft.addressOwner.toLowerCase() : toXdc(nft.addressOwner.toLowerCase())}>
                       <BodyBold cursor={"pointer"}>
-                        {truncateAddress(nft.owner.userName)}
+                        {nft.owner.userName}
                       </BodyBold>
                     </Tooltip>
                   ) : (
@@ -1240,9 +1298,9 @@ const NFTDetails = (props) => {
                             <CaptionBoldShort>NFT Address</CaptionBoldShort>
                             <Spacer></Spacer>
                             <HStack spacing="6px">
-                              <Tooltip title={nftaddress}>
+                              <Tooltip title={isXdc(nftaddress) ? nftaddress.toLowerCase() : toXdc(nftaddress.toLowerCase())}>
                                 <TitleBold18>
-                                  {truncateAddress(nftaddress)}
+                                  {truncateAddress(isXdc(nftaddress) ? nftaddress.toLowerCase() : toXdc(nftaddress.toLowerCase()))}
                                 </TitleBold18>
                               </Tooltip>
                             </HStack>
@@ -1294,12 +1352,12 @@ const NFTDetails = (props) => {
                 <CaptionBoldShort>CREATOR</CaptionBoldShort>
                 <Spacer></Spacer>
 
-                {nft?.creator.userName ? (
+                {nft?.addressCreator ? (
                   <HStack
                     spacing="6px"
                     cursor={"pointer"}
                     width="auto"
-                    onClick={() => props.redirect(`UserProfile/${nft.creator._id}`)}
+                    onClick={() => props.redirect(`user/${nft.creator.nickName}`)}
                   >
                     <IconImg
                       url={nft.creator.urlProfile}
@@ -1310,8 +1368,10 @@ const NFTDetails = (props) => {
                       backsize="cover"
                     ></IconImg>
 
-                    <Tooltip title={nft.creator.userName}>
-                      <BodyBold>{truncateAddress(nft.creator.userName)}</BodyBold>
+                    <Tooltip title={isXdc(nft.addressCreator) ? nft.addressCreator.toLowerCase() : toXdc(nft.addressCreator.toLowerCase())}>
+                      <BodyBold>
+                        {nft.creator.userName}
+                      </BodyBold>
                     </Tooltip>
                   </HStack>
                 ) : (
@@ -1485,14 +1545,28 @@ const NFTDetails = (props) => {
                           height="18px"
                         ></IconImg>
                         <TitleBold18>
-                          {parseInt(highestOffer).toLocaleString(undefined, {
-                            maximumFractionDigits: 2,
-                          })}
+                          {highestOffer > 100000
+                          ? Intl.NumberFormat("en-US", {
+                              notation: "compact",
+                              maximumFractionDigits: 2,
+                            }).format(highestOffer)
+                          : highestOffer.toLocaleString(undefined, {
+                              maximumFractionDigits: 2,
+                            }) || "0"}
                         </TitleBold18>
                         <CaptionBoldShort>XDC</CaptionBoldShort>
-                        <CaptionRegular>{`(${(
-                          props.xdc.xdcPrice * parseInt(highestOffer)
-                        ).toFixed(2)} USD)`}</CaptionRegular>
+                        <CaptionRegular>{`(${
+                          props.xdc.xdcPrice * Number(highestOffer) > 100000
+                            ? Intl.NumberFormat("en-US", {
+                                notation: "compact",
+                                maximumFractionDigits: 2,
+                              }).format(props.xdc.xdcPrice * Number(highestOffer))
+                            : (
+                                props.xdc.xdcPrice * Number(highestOffer)
+                              ).toLocaleString(undefined, {
+                                maximumFractionDigits: 2,
+                              }) || "0"
+                        } USD)`}</CaptionRegular>
                       </>
                     )}
                   </HStack>
@@ -1503,7 +1577,7 @@ const NFTDetails = (props) => {
               <HStack>
                 {wallet?.connected ? (
                   nft?.isListed ? (
-                    nft?.owner.userName.toLowerCase() ===
+                    nft?.addressOwner.toLowerCase() ===
                     (isXdc(wallet?.address)
                       ? fromXdc(wallet?.address.toLowerCase())
                       : wallet?.address.toLowerCase()) ? (
@@ -1579,7 +1653,7 @@ const NFTDetails = (props) => {
                         ></ButtonApp>
                       </>
                     )
-                  ) : nft?.inBlacklist ? null : nft?.owner.userName.toLowerCase() ===
+                  ) : nft?.inBlacklist ? null : nft?.addressOwner.toLowerCase() ===
                     (isXdc(wallet?.address)
                       ? fromXdc(wallet?.address.toLowerCase())
                       : wallet?.address.toLowerCase()) ? (
@@ -1669,10 +1743,15 @@ const NFTDetails = (props) => {
                   </HStack>
                 </HStack>
                 {loadingOffers ? (
-                  loadingOffersArray.map((i) => (
+                  loadingOffersArray.map((item) => (
                     <>
-                      <Divider></Divider>
-                      <HStack width="100%" height={"69px"} spacing="6px">
+                      <Divider key={"offerLoadingDivider_" + item.id}></Divider>
+                      <HStack
+                        key={"offerLoading_" + item.id}
+                        width="100%"
+                        height={"69px"}
+                        spacing="6px"
+                      >
                         <HStack background={"transparent"} width={"100%"}>
                           <VStack
                             alignment="flex-start"
@@ -1736,11 +1815,11 @@ const NFTDetails = (props) => {
                     <>
                       <TableOffersNft
                         key={i}
-                        imageBuyer={item.userId.urlProfile}
-                        offerBy={item.fromAddress}
-                        offerUser={item.userId._id}
+                        imageBuyer={item.userProfile}
+                        offerBy={(item.from === undefined || item.from === "") ? item.fromAddress : item.from}
+                        offerUser={item.userId}
                         wallet={wallet}
-                        owner={item.toAddress}
+                        owner={item.to}
                         offerAmount={item.price}
                         isWithdrawn={item.isWithdrawn}
                         withdrawStatus={withdrawOfferButtonStatus[i]}
@@ -1842,7 +1921,7 @@ const NFTDetails = (props) => {
             <HStack flexwrap="wrap" padding="0 15px">
               {loadingMore ? (
                 loadingNFTs.map((item) => (
-                  <VStack minwidth="240px" height="390px" key={item.name}>
+                  <VStack minwidth="240px" height="390px" key={item.id}>
                     <LoadingNftContainer></LoadingNftContainer>
                   </VStack>
                 ))
@@ -1856,24 +1935,26 @@ const NFTDetails = (props) => {
                       key={item.name}
                       fileType={item.fileType}
                       creatorImage={item.owner.urlProfile}
-                      itemImage={isSafari
-                        ? item.urlFile.v1
-                        : item.urlFile.v0
-                      }
+                      itemImage={item.urlFile.v0}
+                      itemPreview={item.preview.v0}
                       price={item.price}
                       collectionName={item.collectionId.name}
                       itemNumber={item.name}
                       background={({ theme }) => theme.backElement}
                       onClick={() => {
                         setNFT(null);
-                        props.redirect(`nft/${nftaddress}/${item.tokenId}`);
+                        props.redirect(`nft/${isXdc(item.nftContract) ? item.nftContract.toLowerCase() : toXdc(item.nftContract.toLowerCase())}/${item.tokenId}`);
                       }}
                       onClickCreator={() =>
-                        props.redirect(`UserProfile/${item.owner._id}`)
+                        props.redirect(`user/${item.owner.nickName}`)
                       }
                       usdPrice={props.xdc}
                       owner={true}
                       collectionVerified={item.creator.isVerified}
+                      setIsPlaying={handleNFTLongPress}
+                      isPlaying={nftPlaying[i]}
+                      nftIndex={i}
+                      border="6px"
                     ></NftContainer>
                   </VStack>
                 ))
@@ -1920,7 +2001,6 @@ const LockedContent = styled(motion.div)`
 const NFTPage = styled(motion.div)`
   padding: 30px 0;
   width: 100%;
-  background: rgba(0, 0, 0, 0.06);
 `;
 
 const ContentNftPage = styled(motion.div)`

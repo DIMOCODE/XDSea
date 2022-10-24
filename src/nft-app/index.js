@@ -23,9 +23,10 @@ import { sizeWidth } from "@mui/system";
 import ReactGA from "react-ga";
 import { SearchPage } from "./Search/SearchPage";
 import { createRequest } from "../API";
-import { HTTP_METHODS } from "../constant";
+import { HTTP_METHODS, LS, LS_ROOT_KEY } from "../constant";
 const TRACKING_ID = "UA-105859386-2"; // OUR_TRACKING_ID
 ReactGA.initialize(TRACKING_ID);
+
 
 const NFTApp = () => {
   const history = useHistory();
@@ -36,6 +37,7 @@ const NFTApp = () => {
   const [isDevMode] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [xdcPrice, setXdcPrice] = useState(0);
+  const [user, setUser] = useState({});
 
   /**
    * Toggle the theme from light to dark
@@ -46,7 +48,7 @@ const NFTApp = () => {
 
   /**
    * Update the state with the wallet information
-   * 
+   *
    * @param {*} connectedWallet the wallet object
    */
   const handleWallet = (connectedWallet) => {
@@ -63,15 +65,20 @@ const NFTApp = () => {
     setXdcPrice(price);
   };
 
+  const getUser = async () => {
+    const userData = await LS.get(LS_ROOT_KEY).user;
+    setUser(userData);
+  };
+
   /**
    * Redirect the user to a specific path
-   * 
+   *
    * @param {string} route path to redirect to
    */
-   const NavigateTo = (route) => {
+  const NavigateTo = (route) => {
     setShowMenu(false);
     history.push(`/${route}`);
-  }
+  };
 
   /**
    * React Hook to initialise Google Analytics and get the USD prices
@@ -89,11 +96,7 @@ const NFTApp = () => {
           {isDevMode ? (
             <DevMode>
               <HStack padding="15px 21px" spacing="9px">
-                <IconImg
-                  url={alertWhite}
-                  width="21px"
-                  height="21px"
-                ></IconImg>
+                <IconImg url={alertWhite} width="21px" height="21px"></IconImg>
                 <CaptionRegular textcolor="white">
                   <b>
                     This Developer Page is for feature testing purposes. All
@@ -102,8 +105,8 @@ const NFTApp = () => {
                   &nbsp;made on the developer page
                   <b>
                     {" "}
-                    are executed on the test network. They will not affect
-                    your XDC balance.
+                    are executed on the test network. They will not affect your
+                    XDC balance.
                   </b>
                 </CaptionRegular>
               </HStack>
@@ -111,13 +114,14 @@ const NFTApp = () => {
           ) : null}
 
           {/* This is the main TopBar of the website */}
+
           <TopBar
             device={
               size.width > 1024
                 ? "computer"
                 : size.width > 768
                 ? "tablet"
-                : size.width > 425
+                : size.width > 428
                 ? "phone"
                 : "phone"
             }
@@ -126,6 +130,8 @@ const NFTApp = () => {
             themeToggler={themeToggler}
             redirect={NavigateTo}
             showMenu={showMenu}
+            getUser={getUser}
+            user={user}
           ></TopBar>
 
           {/* This is where all the content of the site is rendering */}
@@ -135,42 +141,98 @@ const NFTApp = () => {
               <Route
                 exact
                 path="/"
-                render={() => <Home xdc={xdcPrice} redirect={NavigateTo} showMenu={showMenu} />}
+                render={() => (
+                  <Home
+                    xdc={xdcPrice}
+                    redirect={NavigateTo}
+                    showMenu={showMenu}
+                  />
+                )}
               ></Route>
               <Route
                 exact
-                path="/discover"
-                render={() => <Discover xdc={xdcPrice} redirect={NavigateTo} showMenu={showMenu} />}
+                path="/discover/:mode"
+                render={() => (
+                  <Discover
+                    xdc={xdcPrice}
+                    redirect={NavigateTo}
+                    showMenu={showMenu}
+                  />
+                )}
               ></Route>
               <Route
                 exact
                 path="/SearchPage"
-                render={() => <SearchPage xdc={xdcPrice} redirect={NavigateTo} showMenu={showMenu} />}
+                render={() => (
+                  <SearchPage
+                    xdc={xdcPrice}
+                    redirect={NavigateTo}
+                    showMenu={showMenu}
+                  />
+                )}
               ></Route>
               <Route
                 exact
-                path="/UserProfile/:userId"
-                render={() => <MyNFT redirect={NavigateTo} showMenu={showMenu} />}
+                path="/user/:userId"
+                render={() => (
+                  <MyNFT
+                    redirect={NavigateTo}
+                    showMenu={showMenu}
+                    wallet={wallet}
+                    getUser={getUser}
+                    user={user}
+                  />
+                )}
               ></Route>
               <Route
                 exact
-                path="/CreateNFT"
-                render={() => <CreateNft wallet={wallet} redirect={NavigateTo} showMenu={showMenu} />}
+                path="/create-nft"
+                render={() => (
+                  <CreateNft
+                    wallet={wallet}
+                    redirect={NavigateTo}
+                    showMenu={showMenu}
+                  />
+                )}
               ></Route>
               <Route
                 exact
                 path="/collection/:collectionNickName"
-                render={() => <Collection xdc={xdcPrice} redirect={NavigateTo} showMenu={showMenu} />}
+                render={() => (
+                  <Collection
+                    xdc={xdcPrice}
+                    redirect={NavigateTo}
+                    showMenu={showMenu}
+                  />
+                )}
               ></Route>
               <Route
                 exact
                 path="/nft/:nftaddress/:id"
-                render={() => <NFTPage wallet={wallet} xdc={xdcPrice} redirect={NavigateTo} showMenu={showMenu} />}
+                render={() => (
+                  <NFTPage
+                    wallet={wallet}
+                    xdc={xdcPrice}
+                    redirect={NavigateTo}
+                    showMenu={showMenu}
+                  />
+                )}
               ></Route>
-              <Route exact path="/HowToStart" render={ () => <HowToStart redirect={NavigateTo} showMenu={showMenu} />}></Route>
-              <Route path="**" render={() => <Home redirect={NavigateTo} showMenu={showMenu} />}></Route>
+              <Route
+                exact
+                path="/how-to-start"
+                render={() => (
+                  <HowToStart redirect={NavigateTo} showMenu={showMenu} />
+                )}
+              ></Route>
+              <Route
+                path="**"
+                render={() => (
+                  <Home redirect={NavigateTo} showMenu={showMenu} />
+                )}
+              ></Route>
             </Switch>
-            <Footer redirect={NavigateTo} ></Footer>
+            <Footer style={{ zIndex: -400 }} redirect={NavigateTo}></Footer>
           </ScrollView>
         </HomeStack>
       </>
@@ -186,7 +248,15 @@ const HomeStack = styled(motion.div)`
   height: 100%;
   width: 100%;
   box-sizing: border-box;
-  background: ${({ theme }) => theme.background};
+  background: linear-gradient(
+    180deg,
+    #f1eff0 20.8%,
+    #efeff1 32.39%,
+    #dce0ef 51.62%,
+    #c7d0d7 64.26%,
+    #dce3e8 85.56%,
+    #f8fbfd 100%
+  );
 `;
 
 const ScrollView = styled(motion.div)`

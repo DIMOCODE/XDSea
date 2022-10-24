@@ -34,6 +34,8 @@ export const VStack = styled(motion.div).attrs((props) => ({
   flex: props.flex || "1",
   cursor: props.cursor || "default",
   blur: props.blur || "0px",
+  backsize: props.backsize || "cover",
+  backrepeat: props.backrepeat || "no-repeat",
 }))`
   display: flex;
   flex: ${(props) => props.flex};
@@ -48,6 +50,9 @@ export const VStack = styled(motion.div).attrs((props) => ({
   gap: ${(props) => props.spacing};
   background: ${(props) => props.background};
   background-image: url(${(props) => props.backgroundimage});
+  background-position: center;
+  background-repeat: ${(props) => props.backrepeat};
+  background-size: ${(props) => props.backsize};
   padding: ${(props) => props.padding};
   max-width: ${(props) => props.maxwidth};
   min-width: ${(props) => props.minwidth};
@@ -59,21 +64,21 @@ export const VStack = styled(motion.div).attrs((props) => ({
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   border-style: solid;
-  background-size: contain;
+  position: relative;
   border-color: ${(props) => props.bordercolor};
   border-width: ${(props) => props.bordersize};
-  -webkit-backface-visibility: hidden;
-  -moz-backface-visibility: hidden;
-  -webkit-transform: translate3d(0, 0, 0);
-  -moz-transform: translate3d(0, 0, 0);
+  // -webkit-backface-visibility: hidden;
+  // -moz-backface-visibility: hidden;
+  // -webkit-transform: translate3d(0, 0, 0);
+  // -moz-transform: translate3d(0, 0, 0);
   @media (max-width: 768px) {
     flex-direction: ${(props) => (props.responsive ? "row" : "column")};
   }
   margin-top: ${(props) => props.marginTop};
   cursor: ${(props) => props.cursor};
 
-  -webkit-backdrop-filter: blur(${(props) => props.blur}) !important;
-  backdrop-filter: blur(${(props) => props.blur}) !important;
+  backdrop-filter: blur(${(props) => props.blur});
+  -webkit-backdrop-filter: blur(${(props) => props.blur});
 
   *::-webkit-scrollbar {
     width: 4px;
@@ -138,7 +143,8 @@ export const HStack = styled(motion.div).attrs((props) => ({
   position: relative;
   overflow-x: ${(props) => props.overflowx};
   overflow-y: ${(props) => props.overflowy};
-
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
   -webkit-backdrop-filter: blur(${(props) => props.blur});
   backdrop-filter: blur(${(props) => props.blur});
   @media (max-width: 768px) {
@@ -151,19 +157,33 @@ export const ZStack = styled(motion.div).attrs((props) => ({
   background: props.background || "rgba(255, 255, 255, 0)",
   padding: props.padding || "0",
   height: props.height || "100%",
-  overflow: props.overflow || "visible",
+  width: props.width || "100%",
+  maxwidth: props.maxwidth || "auto",
+  minwidth: props.minwidth || "auto",
+  maxheight: props.maxheight || "auto",
+  minheight: props.minheight || "auto",
+  overflow: props.overflow || "hidden",
+  overflowx: props.overflowx || "hidden",
+  overflowy: props.overflowy || "hidden",
+
   border: props.border || "0",
   cursor: props.cursor || "default",
 }))`
   position: relative;
   display: grid;
   overflow: ${(props) => props.overflow};
+  overflow-x: ${(props) => props.overflowx};
+  overflow-y: ${(props) => props.overflowy};
   justify-items: strech;
   align-items: strech;
-  width: 100%;
-  height: 100%;
+
   background: ${(props) => props.background};
+  max-width: ${(props) => props.maxwidth};
+  min-width: ${(props) => props.minwidth};
+  width: ${(props) => props.width};
   height: ${(props) => props.height};
+  max-height: ${(props) => props.maxheight};
+  min-height: ${(props) => props.minheight};
   padding: ${(props) => props.padding}px;
   border-radius: ${(props) => props.border};
   cursor: ${(props) => props.cursor};
@@ -174,23 +194,40 @@ export const ZStack = styled(motion.div).attrs((props) => ({
 export const ZItem = styled(motion.div).attrs((props) => ({
   zindex: props.zindex || "0",
   cursor: props.cursor || "default",
+  background: props.background || "rgba(255, 255, 255, 0)",
   backgroundimage: props.backgroundimage || "rgba(255, 255, 255, 0)",
+  overflow: props.overflow || "hidden",
+  overflowx: props.overflowx || "hidden",
+  overflowy: props.overflowy || "hidden",
+
   // heigth: props.height || "auto",
   // width: props.width || "auto",
 }))`
   grid-area: 1 / 1 / 1 / 1;
   width: 100%;
   height: 100%;
+  overflow: ${(props) => props.overflow};
+  overflow-x: ${(props) => props.overflowx};
+  overflow-y: ${(props) => props.overflowy};
   z-index: ${(props) => props.zindex};
   cursor: ${(props) => props.cursor};
+  background: ${(props) => props.background};
   background-image: url(${(props) => props.backgroundimage});
+  position: relative;
 `;
 
 // Divider
 export const Divider = styled.div`
-  min-height: 1px;
+  min-height: 2px;
+  minwidth: 100%;
+  background: rgba(153, 162, 175, 0.3);
+`;
+
+// Separator
+export const Separator = styled(HStack)`
+  height: 2px;
   width: 100%;
-  background: rgba(153, 162, 175, 0.36);
+  background: rgba(153, 162, 175, 0.18);
 `;
 
 // Icon Image
