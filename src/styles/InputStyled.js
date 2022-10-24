@@ -36,6 +36,7 @@ function InputStyled(props) {
     iconLeft,
     disabled,
     textplace,
+    border,
   } = props;
 
   const [hasURL] = useState(false);
@@ -62,6 +63,7 @@ function InputStyled(props) {
         textalign={textalign}
         padding={padding}
         fontsize={fontsize}
+        border={border}
         texttransform={texttransform}
         height={height}
         iconWidth={iconWidth}
@@ -116,11 +118,12 @@ const Input = styled.input.attrs((props) => ({
   height: props.height || "39px",
   textcolor: props.textcolor || props.theme.text,
   textplace: props.textplace || "rgba(255,255,255, 0.8)",
+  border: props.border || "6px",
 }))`
   background: ${(props) => props.background};
   width: 100%;
   height: ${(props) => props.height};
-  border-radius: 6px;
+  border-radius: ${(props) => props.border};
   padding: ${(props) => props.padding};
   border-style: solid;
   border-color: rgba(255, 255, 255, 0);

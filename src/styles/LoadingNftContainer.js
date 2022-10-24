@@ -6,11 +6,11 @@ function LoadingNftContainer() {
   return (
     <VStack
       overflow="hidden"
-      border="27px"
+      border="9px"
       background="rgba(153, 162, 175, 0.12)"
       spacing="0"
       width="100%"
-      height="450px"
+      height="100%"
     >
       <LoopLogo></LoopLogo>
     </VStack>

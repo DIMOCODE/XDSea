@@ -102,7 +102,7 @@ export const TitleBold27 = styled(motion.h2).attrs((props) => ({
   align: props.align || "left",
 }))`
   font-style: normal;
-  font-weight: bold;
+  font-weight: 600;
   font-size: 27px;
   letter-spacing: -0.03em;
   line-height: 33px;
