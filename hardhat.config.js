@@ -12,6 +12,6 @@ module.exports = {
         artifacts: "./artifacts",
         sources: "./newContracts",
         cache: "./cache",
-        tests: "./test"
+        tests: "./test/stakingTest"
     },
 };
