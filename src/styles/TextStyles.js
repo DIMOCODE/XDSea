@@ -397,6 +397,27 @@ export const CaptionSmallRegular = styled(motion.p).attrs((props) => ({
   user-select: none;
 `;
 
+export const CaptionTiny = styled(motion.p).attrs((props) => ({
+  textcolor: props.textcolor || props.theme.text,
+  align: props.align || "Left",
+  padding: props.padding || "0px",
+  cursor: props.cursor || "default",
+}))`
+  text-align: ${(props) => props.align};
+  font-weight: 500;
+  font-size: 10px;
+  line-height: 15px;
+  letter-spacing: -0.01em;
+  padding: ${(props) => props.padding};
+  color: ${(props) => props.textcolor};
+  cursor: ${(props) => props.cursor};
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -o-user-select: none;
+  user-select: none;
+`;
+
 export const CaptionRegular = styled(motion.p).attrs((props) => ({
   textcolor: props.textcolor || props.theme.text,
   align: props.align || "Left",

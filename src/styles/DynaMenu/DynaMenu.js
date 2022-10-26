@@ -74,7 +74,7 @@ function DynaMenu() {
               iconw="24px"
               iconh="24px"
               onClick={() => {
-                setIsSearch(true), setIsSort(false), setIsFilter(false);
+                setIsSearch(true); setIsSort(false); setIsFilter(false);
               }}
             ></BtnMenu>
             <BtnMenu
@@ -83,7 +83,7 @@ function DynaMenu() {
               iconw="21px"
               iconh="21px"
               onClick={() => {
-                setIsFilter(true), setIsSort(false);
+                setIsFilter(true); setIsSort(false);
               }}
             ></BtnMenu>
             <BtnMenu
@@ -92,7 +92,7 @@ function DynaMenu() {
               iconw="24px"
               iconh="24px"
               onClick={() => {
-                setIsSort(true), setIsFilter(false);
+                setIsSort(true); setIsFilter(false);
               }}
             ></BtnMenu>
             <BtnMenu
@@ -103,7 +103,7 @@ function DynaMenu() {
               background="blue"
               border="0 30px 30px 0"
               onClick={() => {
-                setIsStake(true), setIsSort(false), setIsFilter(false);
+                setIsStake(true); setIsSort(false); setIsFilter(false);
               }}
             ></BtnMenu>
           </HStack>
