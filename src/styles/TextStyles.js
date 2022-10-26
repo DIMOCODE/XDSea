@@ -175,12 +175,14 @@ export const TitleRegular21 = styled(motion.h2).attrs((props) => ({
 
 export const TitleBold18 = styled(motion.h3).attrs((props) => ({
   textcolor: props.textcolor || props.theme.text,
+  align: props.align,
 }))`
   font-style: normal;
   font-weight: bold;
   letter-spacing: -0.04em;
   font-size: 18px;
   color: ${(props) => props.textcolor};
+  text-align: ${(props) => props.align};
 `;
 
 export const TitleSemi18 = styled(motion.h3).attrs((props) => ({

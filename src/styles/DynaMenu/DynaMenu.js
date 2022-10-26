@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRef } from "react";
 import { useClickAway } from "react-use";
 
@@ -31,8 +31,23 @@ import { SortNFTs } from "./Sort/SortNFTs";
 
 import { StakeBtn } from "./StakeBtn";
 
-function DynaMenu() {
+function DynaMenu(props) {
+  const {
+    isStake,
+    setIsStake,
+    collectionParams,
+    handleFilterCollections,
+    nftParams,
+    handleFilterNFTs,
+    isCollections,
+  } = props;
   const ref = useRef(null);
+
+  const [isSearch, setIsSearch] = useState(false);
+  const [isFilter, setIsFilter] = useState(false);
+  const [isSort, setIsSort] = useState(false);
+  const [collectionSearchTerm, setCollectionSearchTerm] = useState("");
+  const [nftSearchTerm, setNftSearchTerm] = useState("");
 
   useClickAway(ref, () => {
     setIsSearch(false);
@@ -40,15 +55,53 @@ function DynaMenu() {
     setIsSort(false);
   });
 
-  const [isSearch, setIsSearch] = useState(false);
-  const [isFilter, setIsFilter] = useState(false);
-  const [isSort, setIsSort] = useState(false);
-  const [isStake, setIsStake] = useState(false);
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(async () => {
+      if (isSearch) {
+        if (collectionSearchTerm !== "") {
+          handleFilterCollections({
+            ...collectionParams,
+            searchBy: collectionSearchTerm,
+            page: 1,
+          });
+        } else {
+          handleFilterCollections({
+            ...collectionParams,
+            searchBy: "",
+            page: 1,
+          });
+        }
+      }
+    }, 1500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [collectionSearchTerm]);
+
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(async () => {
+      if (isSearch) {
+        if (nftSearchTerm !== "") {
+            handleFilterNFTs({
+              ...nftParams,
+              searchBy: nftSearchTerm,
+              page: 1,
+            });
+        } else {
+            handleFilterNFTs({
+              ...nftParams,
+              searchBy: "",
+              page: 1,
+            });
+        }
+      }
+    }, 1500);
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [nftSearchTerm]);
 
   return (
     <HStack overflowx="visible" ref={ref}>
       {/* Black menu bar */}
-
       <HStack
         layout
         height="52px"
@@ -60,7 +113,24 @@ function DynaMenu() {
       >
         {isSearch ? (
           <motion.div layout>
-            <SearchOption onClick={() => setIsSearch(false)}></SearchOption>
+            <SearchOption
+              placeholder={isCollections ? collectionSearchTerm : nftSearchTerm}
+              onChange={(e) => {
+                if (isCollections) {
+                  setCollectionSearchTerm(e.target.value);
+                } else {
+                  setNftSearchTerm(e.target.value);
+                }
+              }}
+              onClickBack={() => setIsSearch(false)}
+              onClickCancel={() => {
+                if (isCollections) {
+                  setCollectionSearchTerm("");
+                } else {
+                  setNftSearchTerm("");
+                }
+              }}
+            ></SearchOption>
           </motion.div>
         ) : isStake ? (
           <motion.div layout>
@@ -74,7 +144,9 @@ function DynaMenu() {
               iconw="24px"
               iconh="24px"
               onClick={() => {
-                setIsSearch(true); setIsSort(false); setIsFilter(false);
+                setIsSearch(true);
+                setIsSort(false);
+                setIsFilter(false);
               }}
             ></BtnMenu>
             <BtnMenu
@@ -83,7 +155,8 @@ function DynaMenu() {
               iconw="21px"
               iconh="21px"
               onClick={() => {
-                setIsFilter(true); setIsSort(false);
+                setIsFilter(true);
+                setIsSort(false);
               }}
             ></BtnMenu>
             <BtnMenu
@@ -92,7 +165,8 @@ function DynaMenu() {
               iconw="24px"
               iconh="24px"
               onClick={() => {
-                setIsSort(true); setIsFilter(false);
+                setIsSort(true);
+                setIsFilter(false);
               }}
             ></BtnMenu>
             <BtnMenu
@@ -103,7 +177,9 @@ function DynaMenu() {
               background="blue"
               border="0 30px 30px 0"
               onClick={() => {
-                setIsStake(true); setIsSort(false); setIsFilter(false);
+                setIsStake(true);
+                setIsSort(false);
+                setIsFilter(false);
               }}
             ></BtnMenu>
           </HStack>

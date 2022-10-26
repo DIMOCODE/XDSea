@@ -4,8 +4,8 @@ import { HStack } from "../../styles/Stacks";
 import { BodyMedium, CaptionBoldShort } from "../../styles/TextStyles";
 
 function TabBar(props) {
-  const { onClick } = props;
-  const [isTab, setIsTab] = useState(false);
+  const { onClick, initialTab } = props;
+  const [isTab, setIsTab] = useState(initialTab);
   const toggleTab = (active) => {
     setIsTab(active);
     onClick(active);
