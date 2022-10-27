@@ -1,6 +1,6 @@
 import React from "react";
-import { VStack, IconImg } from "../Stacks";
-import { CaptionTiny } from "../TextStyles";
+import { VStack, IconImg, Spacer } from "../Stacks";
+import { CaptionBoldShort, CaptionTiny } from "../TextStyles";
 import logoutIcon from "../../images/shutdownWhite.png";
 
 function LogoutButton(props) {
@@ -13,6 +13,7 @@ function LogoutButton(props) {
       cursor="pointer"
       onClick={onClick}
       alignment="center"
+      maxheight="36px"
     >
       <IconImg
         url={logoutIcon}
