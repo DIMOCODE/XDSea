@@ -4,14 +4,25 @@ import { VStack, HStack } from "../../Stacks";
 import { BodyRegular } from "../../TextStyles";
 
 function SortCollection(props) {
-  const { onChange, params, isSearchPage } = props;
-  const [isSelected, setIsSelected] = useState(isSearchPage ? 6 : 1);
-  const [isOld, setIsOld] = useState(false);
-  const [isVolumeTop, setIsVolumeTop] = useState(true);
-  const [isTopOwners, setIsTopOwners] = useState(false);
-  const [isTopQuantity, setIsTopQuantity] = useState(false);
-  const [isTopFloor, setIsTopFloor] = useState(false);
-  const [isAtoZ, setIsAtoZ] = useState(false);
+  const {
+    onChange,
+    params,
+    isSearchPage,
+    isSelected,
+    setIsSelected,
+    isOld,
+    setIsOld,
+    isVolumeTop,
+    setIsVolumeTop,
+    isTopOwners,
+    setIsTopOwners,
+    isTopFloor,
+    setIsTopFloor,
+    isTopQuantity,
+    setIsTopQuantity,
+    isAtoZ,
+    setIsAtoZ,
+  } = props;
 
   return (
     <VStack width="100%">
@@ -30,9 +41,7 @@ function SortCollection(props) {
         >
           {/* Option1  */}
           <HStack
-            background={
-              isSelected === 6 ? ({ theme }) => theme.blue : "transparent"
-            }
+            background={isSelected === 6 ? "blue" : "transparent"}
             width="100%"
             border="6px"
             cursor="pointer"
@@ -46,10 +55,7 @@ function SortCollection(props) {
               });
             }}
           >
-            <BodyRegular
-              cursor="pointer"
-              textcolor={isSelected === 6 ? "white" : ({ theme }) => theme.text}
-            >
+            <BodyRegular cursor="pointer" textcolor={"white"}>
               Most Relevance
             </BodyRegular>
           </HStack>
@@ -70,11 +76,7 @@ function SortCollection(props) {
         {/* Option1  */}
         <HStack
           background={
-            isSelected === 0
-              ? isOld
-                ? ({ theme }) => theme.blue
-                : "transparent"
-              : null
+            isSelected === 0 ? (isOld ? "blue" : "transparent") : null
           }
           width="100%"
           border="6px"
@@ -89,16 +91,7 @@ function SortCollection(props) {
             });
           }}
         >
-          <BodyRegular
-            cursor="pointer"
-            textcolor={
-              isSelected === 0
-                ? isOld
-                  ? "white"
-                  : ({ theme }) => theme.text
-                : ({ theme }) => theme.text
-            }
-          >
+          <BodyRegular cursor="pointer" textcolor={"white"}>
             Oldest
           </BodyRegular>
         </HStack>
@@ -109,11 +102,7 @@ function SortCollection(props) {
           width="100%"
           border="6px"
           background={
-            isSelected === 0
-              ? isOld
-                ? "transparent"
-                : ({ theme }) => theme.blue
-              : null
+            isSelected === 0 ? (isOld ? "transparent" : "blue") : null
           }
           onClick={() => {
             setIsOld(false);
@@ -125,16 +114,7 @@ function SortCollection(props) {
             });
           }}
         >
-          <BodyRegular
-            cursor="pointer"
-            textcolor={
-              isSelected === 0
-                ? isOld
-                  ? ({ theme }) => theme.text
-                  : "white"
-                : ({ theme }) => theme.text
-            }
-          >
+          <BodyRegular cursor="pointer" textcolor={"white"}>
             Newest
           </BodyRegular>
         </HStack>
@@ -154,11 +134,7 @@ function SortCollection(props) {
         {/* Option1  */}
         <HStack
           background={
-            isSelected === 1
-              ? isVolumeTop
-                ? ({ theme }) => theme.blue
-                : "transparent"
-              : null
+            isSelected === 1 ? (isVolumeTop ? "blue" : "transparent") : null
           }
           width="100%"
           border="6px"
@@ -173,16 +149,7 @@ function SortCollection(props) {
             });
           }}
         >
-          <BodyRegular
-            cursor="pointer"
-            textcolor={
-              isSelected === 1
-                ? isVolumeTop
-                  ? "white"
-                  : ({ theme }) => theme.text
-                : ({ theme }) => theme.text
-            }
-          >
+          <BodyRegular cursor="pointer" textcolor={"white"}>
             Greatest Volume
           </BodyRegular>
         </HStack>
@@ -193,11 +160,7 @@ function SortCollection(props) {
           width="100%"
           border="6px"
           background={
-            isSelected === 1
-              ? isVolumeTop
-                ? "transparent"
-                : ({ theme }) => theme.blue
-              : null
+            isSelected === 1 ? (isVolumeTop ? "transparent" : "blue") : null
           }
           onClick={() => {
             setIsVolumeTop(false);
@@ -209,16 +172,7 @@ function SortCollection(props) {
             });
           }}
         >
-          <BodyRegular
-            cursor="pointer"
-            textcolor={
-              isSelected === 1
-                ? isVolumeTop
-                  ? ({ theme }) => theme.text
-                  : "white"
-                : ({ theme }) => theme.text
-            }
-          >
+          <BodyRegular cursor="pointer" textcolor={"white"}>
             Least Volume
           </BodyRegular>
         </HStack>
@@ -238,11 +192,7 @@ function SortCollection(props) {
         {/* Option1  */}
         <HStack
           background={
-            isSelected === 2
-              ? isTopOwners
-                ? ({ theme }) => theme.blue
-                : "transparent"
-              : null
+            isSelected === 2 ? (isTopOwners ? "blue" : "transparent") : null
           }
           width="100%"
           border="6px"
@@ -257,16 +207,7 @@ function SortCollection(props) {
             });
           }}
         >
-          <BodyRegular
-            cursor="pointer"
-            textcolor={
-              isSelected === 2
-                ? isTopOwners
-                  ? "white"
-                  : ({ theme }) => theme.text
-                : ({ theme }) => theme.text
-            }
-          >
+          <BodyRegular cursor="pointer" textcolor={"white"}>
             Most Owners
           </BodyRegular>
         </HStack>
@@ -277,11 +218,7 @@ function SortCollection(props) {
           width="100%"
           border="6px"
           background={
-            isSelected === 2
-              ? isTopOwners
-                ? "transparent"
-                : ({ theme }) => theme.blue
-              : null
+            isSelected === 2 ? (isTopOwners ? "transparent" : "blue") : null
           }
           onClick={() => {
             setIsTopOwners(false);
@@ -293,16 +230,7 @@ function SortCollection(props) {
             });
           }}
         >
-          <BodyRegular
-            cursor="pointer"
-            textcolor={
-              isSelected === 2
-                ? isTopOwners
-                  ? ({ theme }) => theme.text
-                  : "white"
-                : ({ theme }) => theme.text
-            }
-          >
+          <BodyRegular cursor="pointer" textcolor={"white"}>
             Least Owners
           </BodyRegular>
         </HStack>
@@ -323,11 +251,7 @@ function SortCollection(props) {
         {/* Option1  */}
         <HStack
           background={
-            isSelected === 3
-              ? isTopFloor
-                ? ({ theme }) => theme.blue
-                : "transparent"
-              : null
+            isSelected === 3 ? (isTopFloor ? "blue" : "transparent") : null
           }
           width="100%"
           border="6px"
@@ -343,16 +267,7 @@ function SortCollection(props) {
             });
           }}
         >
-          <BodyRegular
-            cursor="pointer"
-            textcolor={
-              isSelected === 3
-                ? isTopFloor
-                  ? "white"
-                  : ({ theme }) => theme.text
-                : ({ theme }) => theme.text
-            }
-          >
+          <BodyRegular cursor="pointer" textcolor={"white"}>
             Highest Floor Price
           </BodyRegular>
         </HStack>
@@ -363,11 +278,7 @@ function SortCollection(props) {
           width="100%"
           border="6px"
           background={
-            isSelected === 3
-              ? isTopFloor
-                ? "transparent"
-                : ({ theme }) => theme.blue
-              : null
+            isSelected === 3 ? (isTopFloor ? "transparent" : "blue") : null
           }
           onClick={() => {
             setIsTopFloor(false);
@@ -380,16 +291,7 @@ function SortCollection(props) {
           }}
           height="43px"
         >
-          <BodyRegular
-            cursor="pointer"
-            textcolor={
-              isSelected === 3
-                ? isTopFloor
-                  ? ({ theme }) => theme.text
-                  : "white"
-                : ({ theme }) => theme.text
-            }
-          >
+          <BodyRegular cursor="pointer" textcolor={"white"}>
             Lowest Floor Price
           </BodyRegular>
         </HStack>
@@ -409,11 +311,7 @@ function SortCollection(props) {
         {/* Option1  */}
         <HStack
           background={
-            isSelected === 4
-              ? isTopQuantity
-                ? ({ theme }) => theme.blue
-                : "transparent"
-              : null
+            isSelected === 4 ? (isTopQuantity ? "blue" : "transparent") : null
           }
           width="100%"
           border="6px"
@@ -428,16 +326,7 @@ function SortCollection(props) {
             });
           }}
         >
-          <BodyRegular
-            cursor="pointer"
-            textcolor={
-              isSelected === 4
-                ? isTopQuantity
-                  ? "white"
-                  : ({ theme }) => theme.text
-                : ({ theme }) => theme.text
-            }
-          >
+          <BodyRegular cursor="pointer" textcolor={"white"}>
             Most NFTs
           </BodyRegular>
         </HStack>
@@ -448,11 +337,7 @@ function SortCollection(props) {
           width="100%"
           border="6px"
           background={
-            isSelected === 4
-              ? isTopQuantity
-                ? "transparent"
-                : ({ theme }) => theme.blue
-              : null
+            isSelected === 4 ? (isTopQuantity ? "transparent" : "blue") : null
           }
           onClick={() => {
             setIsTopQuantity(false);
@@ -464,16 +349,7 @@ function SortCollection(props) {
             });
           }}
         >
-          <BodyRegular
-            cursor="pointer"
-            textcolor={
-              isSelected === 4
-                ? isTopQuantity
-                  ? ({ theme }) => theme.text
-                  : "white"
-                : ({ theme }) => theme.text
-            }
-          >
+          <BodyRegular cursor="pointer" textcolor={"white"}>
             Least NFTs
           </BodyRegular>
         </HStack>
@@ -493,11 +369,7 @@ function SortCollection(props) {
         {/* Option1  */}
         <HStack
           background={
-            isSelected === 5
-              ? isAtoZ
-                ? ({ theme }) => theme.blue
-                : "transparent"
-              : null
+            isSelected === 5 ? (isAtoZ ? "blue" : "transparent") : null
           }
           width="100%"
           border="6px"
@@ -512,16 +384,7 @@ function SortCollection(props) {
             });
           }}
         >
-          <BodyRegular
-            cursor="pointer"
-            textcolor={
-              isSelected === 5
-                ? isAtoZ
-                  ? "white"
-                  : ({ theme }) => theme.text
-                : ({ theme }) => theme.text
-            }
-          >
+          <BodyRegular cursor="pointer" textcolor={"white"}>
             A to Z
           </BodyRegular>
         </HStack>
@@ -532,11 +395,7 @@ function SortCollection(props) {
           width="100%"
           border="6px"
           background={
-            isSelected === 5
-              ? isAtoZ
-                ? "transparent"
-                : ({ theme }) => theme.blue
-              : null
+            isSelected === 5 ? (isAtoZ ? "transparent" : "blue") : null
           }
           onClick={() => {
             setIsAtoZ(false);
@@ -548,16 +407,7 @@ function SortCollection(props) {
             });
           }}
         >
-          <BodyRegular
-            cursor="pointer"
-            textcolor={
-              isSelected === 5
-                ? isAtoZ
-                  ? ({ theme }) => theme.text
-                  : "white"
-                : ({ theme }) => theme.text
-            }
-          >
+          <BodyRegular cursor="pointer" textcolor={"white"}>
             Z to A
           </BodyRegular>
         </HStack>

@@ -6,22 +6,30 @@ import { BodyBold, CaptionBoldShort } from "../../TextStyles";
 
 import verifiedBlue from "../../../images/verifiedBlue.png";
 
-function VerifiedStatus() {
-  const [btnVerified, setBtnVerified] = useState(false);
+function VerifiedStatus(props) {
+  const { onChange, params, isVerified, setVerified } = props;
+  
   return (
-    <VStack width="100%" alignment="flex-start" spacing="9px" cursor="pointer">
-      <CaptionBoldShort cursor="pointer">Status</CaptionBoldShort>
-      <HStack cursor="pointer">
-        <BodyBold cursor="pointer">Verified Only</BodyBold>
+    <VStack width="100%" alignment="flex-start" spacing="9px">
+      <CaptionBoldShort textcolor="white">
+        Status
+      </CaptionBoldShort>
+      <HStack>
+        <BodyBold textcolor="white">
+          Verified Only
+        </BodyBold>
         <Spacer></Spacer>
         <IconImg
           cursor="pointer"
           url={verifiedBlue}
           width="30px"
           height="30px"
-          animate={btnVerified ? { opacity: 1 } : { opacity: 0.3 }}
+          animate={isVerified ? { opacity: 1 } : { opacity: 0.3 }}
           onClick={() => {
-            setBtnVerified(!btnVerified);
+            setVerified(!isVerified);
+            if (!isVerified)
+              onChange({ ...params, page: 1, verified: !isVerified });
+            else onChange({ ...params, page: 1, verified: "" });
           }}
         ></IconImg>
       </HStack>

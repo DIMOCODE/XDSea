@@ -175,12 +175,14 @@ export const TitleRegular21 = styled(motion.h2).attrs((props) => ({
 
 export const TitleBold18 = styled(motion.h3).attrs((props) => ({
   textcolor: props.textcolor || props.theme.text,
+  align: props.align,
 }))`
   font-style: normal;
   font-weight: bold;
   letter-spacing: -0.04em;
   font-size: 18px;
   color: ${(props) => props.textcolor};
+  text-align: ${(props) => props.align};
 `;
 
 export const TitleSemi18 = styled(motion.h3).attrs((props) => ({
@@ -385,6 +387,27 @@ export const CaptionSmallRegular = styled(motion.p).attrs((props) => ({
   text-align: ${(props) => props.align};
   font-weight: 500;
   font-size: 11px;
+  line-height: 15px;
+  letter-spacing: -0.01em;
+  padding: ${(props) => props.padding};
+  color: ${(props) => props.textcolor};
+  cursor: ${(props) => props.cursor};
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -o-user-select: none;
+  user-select: none;
+`;
+
+export const CaptionTiny = styled(motion.p).attrs((props) => ({
+  textcolor: props.textcolor || props.theme.text,
+  align: props.align || "Left",
+  padding: props.padding || "0px",
+  cursor: props.cursor || "default",
+}))`
+  text-align: ${(props) => props.align};
+  font-weight: 500;
+  font-size: 10px;
   line-height: 15px;
   letter-spacing: -0.01em;
   padding: ${(props) => props.padding};

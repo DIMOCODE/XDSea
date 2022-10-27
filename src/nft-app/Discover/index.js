@@ -59,12 +59,12 @@ const Discover = (props) => {
   const [collections, setCollections] = useState([]);
   const [nfts, setNfts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isStake, setIsStake] = useState(false);
   const [isSelected, setIsSelected] = useState(
     mode === "collections" ? true : false
   );
 
   const tabDidChange = (status) => {
-    console.log(status);
     setIsSelected(status);
   };
   // This function bridge the active prop from child component active -> status
@@ -112,6 +112,7 @@ const Discover = (props) => {
   });
   const [totalCollections, setTotalCollections] = useState(0);
   const [totalNFTs, setTotalNFTs] = useState(0);
+  const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(0);
   const [nftPlaying, setNftPlaying] = useState([]);
 
@@ -188,6 +189,7 @@ const Discover = (props) => {
    * @param {*} params - Collection Search Params
    */
   const updateCollections = async (params) => {
+    console.log(params)
     const collectionData = await (await getCollections(params)).data;
 
     setCollections(collectionData.collections);
@@ -308,7 +310,7 @@ const Discover = (props) => {
   return (
     <DiscoverSection id="scrollableDiv" style={{ zIndex: 10 }}>
       {/* Discover top Section with tab bar*/}
-      <HStack backgroundimage={seamless} padding="60px 0 0 0">
+      <HStack backgroundimage={seamless} padding="60px 0 0 0" style={{zIndex: "1"}}>
         <VStack
           width="1200px"
           height="147px"
@@ -318,19 +320,21 @@ const Discover = (props) => {
           <TitleBold27 textcolor={appStyle.colors.white}>Discover</TitleBold27>
 
           {/* TabBar */}
-          <TabBar onClick={tabDidChange}></TabBar>
+          <TabBar
+            onClick={tabDidChange}
+            initialTab={mode === "collections" ? true : false}
+          ></TabBar>
         </VStack>
       </HStack>
 
-      <StakeSection
+      {/* <StakeSection
         collection="XDSea Monkeys Original Art"
         image={mountain}
         title="XDSea Monkey #001"
         price="300"
-      ></StakeSection>
+      ></StakeSection> */}
 
       {/*Sticky bar for collections or for NFTs  */}
-
       {/* <StickySectionHeader top="69">
         {isSelected ? (
           <HStack
@@ -449,6 +453,8 @@ const Discover = (props) => {
                           sortNFTs={collectionParams.sortBy === "nfts"}
                           sortVolume={collectionParams.sortBy === "volumeTrade"}
                           xdc={props.xdc}
+                          isStake={isStake}
+                          stakeEnabled={item.isStakeable}
                         ></Collection>
                       </VStack>
                     </LayoutGroup>
@@ -575,7 +581,19 @@ const Discover = (props) => {
       </ContentDiscover>
 
       <BottomStick>
-        <DynaMenu></DynaMenu>
+        <DynaMenu
+          isCollections={isSelected}
+          handleFilterCollections={handleChangeFilter}
+          handleFilterNFTs={handleChangeFilterNFT}
+          collectionParams={collectionParams}
+          nftParams={nftParams}
+          isStake={isStake}
+          setIsStake={setIsStake}
+          maxPrice={maxPrice}
+          setMaxPrice={setMaxPrice}
+          minPrice={minPrice}
+          setMinPrice={setMinPrice}
+        ></DynaMenu>
       </BottomStick>
       {/* 
       <StakingModal oneToken={true}></StakingModal> */}
@@ -609,4 +627,5 @@ const BottomStick = styled(motion.div)`
   bottom: 0%;
   left: 50%;
   transform: translate(-50%, -50%);
+  z-index: 1;
 `;
