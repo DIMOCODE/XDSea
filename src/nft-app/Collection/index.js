@@ -11,10 +11,11 @@ import {
   TitleBold21,
   TitleBold18,
 } from "../../styles/TextStyles";
-import instagram from "../../images/instagramMini.png";
-import twitter from "../../images/twitter.png";
-import link from "../../images/link.png";
-import discord from "../../images/discordIcon.png";
+import instagram from "../../images/instagramColor.png";
+import twitter from "../../images/twitterColor.png";
+import link from "../../images/webColor.png";
+import discord from "../../images/discordColor.png";
+
 import miniXdcLogo from "../../images/miniXdcLogo.png";
 import useWindowSize from "../../styles/useWindowSize";
 import { motion } from "framer-motion/dist/framer-motion";
@@ -48,6 +49,7 @@ import { StickySectionHeader } from "../../CustomModules/sticky/StickySectionHea
 import { getXdcDomain } from "../../constant";
 import { BannerMobile } from "./BannerMobile";
 import { CollectionStats } from "./CollectionStats";
+import { CircleButton } from "../../styles/CircleButton";
 
 const CollectionPage = (props) => {
   const size = useWindowSize();
@@ -390,27 +392,97 @@ const CollectionPage = (props) => {
               ></IconImg>
 
               {/* Collection Name */}
-              <VStack
-                background={({ theme }) => theme.walletButton}
-                padding="6px 15px"
-                border="9px"
-                spacing="3px"
-                style={{
-                  boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
-                }}
-                alignment="flex-start"
-              >
-                <CaptionBold initial={{ opacity: 0.6 }} textcolor="white">
-                  COLLECTION
-                </CaptionBold>
-
-                <TitleBold18
-                  align="center"
-                  textcolor={({ theme }) => theme.walletText}
+              <HStack self="none">
+                <VStack
+                  background={({ theme }) => theme.walletButton}
+                  padding="6px 15px"
+                  border="9px"
+                  spacing="3px"
+                  style={{
+                    boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
+                  }}
+                  alignment="flex-start"
                 >
-                  {collection.name}
-                </TitleBold18>
-              </VStack>
+                  <CaptionBold initial={{ opacity: 0.6 }} textcolor="white">
+                    COLLECTION
+                  </CaptionBold>
+
+                  <TitleBold18
+                    align="center"
+                    textcolor={({ theme }) => theme.walletText}
+                  >
+                    {collection.name}
+                  </TitleBold18>
+                </VStack>
+
+                {/* Collection Social Links */}
+                <HStack>
+                  {collection.twitterUrl ? (
+                    <a
+                      href={collection.twitterUrl}
+                      style={{
+                        boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
+                        borderRadius: 9,
+                      }}
+                    >
+                      <CircleButton
+                        image={twitter}
+                        background={"#151515"}
+                      ></CircleButton>
+                    </a>
+                  ) : (
+                    <></>
+                  )}
+                  {collection.instagramUrl ? (
+                    <a
+                      href={collection.instagramUrl}
+                      style={{
+                        boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
+                        borderRadius: 9,
+                      }}
+                    >
+                      <CircleButton
+                        image={instagram}
+                        background={"#151515"}
+                      ></CircleButton>
+                    </a>
+                  ) : (
+                    <></>
+                  )}
+                  {collection.discordUrl ? (
+                    <a
+                      href={collection.discordUrl}
+                      style={{
+                        boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
+                        borderRadius: 9,
+                      }}
+                    >
+                      <CircleButton
+                        image={discord}
+                        background={"#151515"}
+                      ></CircleButton>
+                    </a>
+                  ) : (
+                    <></>
+                  )}
+                  {collection.websiteUrl ? (
+                    <a
+                      href={collection.websiteUrl}
+                      style={{
+                        boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
+                        borderRadius: 9,
+                      }}
+                    >
+                      <CircleButton
+                        image={link}
+                        background={"#151515"}
+                      ></CircleButton>
+                    </a>
+                  ) : (
+                    <></>
+                  )}
+                </HStack>
+              </HStack>
 
               {/* Collection Statistics */}
               <CollectionStats
@@ -438,6 +510,28 @@ const CollectionPage = (props) => {
                 }
                 width="390px"
               ></CollectionStats>
+            </VStack>
+
+            {/* Collection Description */}
+            <VStack
+              padding="15px 60px"
+              maxwidth="1200px"
+              background={({ theme }) => theme.backElement}
+              border="6px"
+            >
+              {collection.description !== undefined ? (
+                <BodyRegular
+                  textcolor={({ theme }) => theme.text}
+                  align="flex-start"
+                >
+                  {collection.description}
+                </BodyRegular>
+              ) : (
+                <VStack maxwidth="1200px">
+                  <LoopBars width="340px"></LoopBars>
+                  <LoopBars width="300px"></LoopBars>
+                </VStack>
+              )}
             </VStack>
           </VStack>
         </HStack>
@@ -470,127 +564,6 @@ const CollectionPage = (props) => {
         ></BannerMobile>
       )}
 
-      {/* Collection Description */}
-      <VStack padding="15px 12px">
-        {collection.description !== undefined ? (
-          <BodyRegular textcolor={({ theme }) => theme.text} align="flex-start">
-            {collection.description}
-          </BodyRegular>
-        ) : (
-          <VStack>
-            <LoopBars width="340px"></LoopBars>
-            <LoopBars width="300px"></LoopBars>
-          </VStack>
-        )}
-
-        {/* Collection Social Links */}
-        <HStack>
-          {collection.twitterUrl ? (
-            <a
-              href={collection.twitterUrl}
-              style={{
-                boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
-                borderRadius: 9,
-              }}
-            >
-              <ButtonApp
-                width="39px"
-                height="39px"
-                icon={twitter}
-                iconWidth="18px"
-                iconHeight="18px"
-                hasImage={true}
-                background={({ theme }) => theme.backElement}
-                style={{
-                  boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
-                }}
-                cursor={"pointer"}
-                btnStatus={0}
-              ></ButtonApp>
-            </a>
-          ) : (
-            <></>
-          )}
-          {collection.instagramUrl ? (
-            <a
-              href={collection.instagramUrl}
-              style={{
-                boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
-                borderRadius: 9,
-              }}
-            >
-              <ButtonApp
-                width="39px"
-                height="39px"
-                icon={instagram}
-                iconWidth="18px"
-                iconHeight="18px"
-                hasImage={true}
-                background={({ theme }) => theme.backElement}
-                style={{
-                  boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
-                }}
-                cursor={"pointer"}
-                btnStatus={0}
-              ></ButtonApp>
-            </a>
-          ) : (
-            <></>
-          )}
-          {collection.discordUrl ? (
-            <a
-              href={collection.discordUrl}
-              style={{
-                boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
-                borderRadius: 9,
-              }}
-            >
-              <ButtonApp
-                width="39px"
-                height="39px"
-                icon={discord}
-                iconWidth="18px"
-                iconHeight="18px"
-                hasImage={true}
-                background={({ theme }) => theme.backElement}
-                style={{
-                  boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
-                }}
-                cursor={"pointer"}
-                btnStatus={0}
-              ></ButtonApp>
-            </a>
-          ) : (
-            <></>
-          )}
-          {collection.websiteUrl ? (
-            <a
-              href={collection.websiteUrl}
-              style={{
-                boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
-                borderRadius: 9,
-              }}
-            >
-              <ButtonApp
-                width="39px"
-                height="39px"
-                icon={link}
-                iconWidth="18px"
-                iconHeight="18px"
-                hasImage={true}
-                background={({ theme }) => theme.backElement}
-                style={{
-                  boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
-                }}
-                cursor={"pointer"}
-                btnStatus={0}
-              ></ButtonApp>
-            </a>
-          ) : (
-            <></>
-          )}
-        </HStack>
-      </VStack>
       {/* Collection NFTs */}
       <CollectionContent id="scrollableDiv">
         <StickySectionHeader top="68">
