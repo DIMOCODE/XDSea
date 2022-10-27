@@ -141,7 +141,7 @@ export const TitleBold21 = styled(motion.h2).attrs((props) => ({
   align: props.align || "left",
 }))`
   font-style: normal;
-  font-weight: bold;
+  font-weight: 600;
   font-size: 21px;
   color: ${(props) => props.textcolor};
   display: ${(props) => props.display};

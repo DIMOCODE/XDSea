@@ -1,6 +1,11 @@
 import React from "react";
 import { VStack, IconImg } from "./Stacks";
-import { BodyBold, CaptionBoldShort, CaptionRegular } from "./TextStyles";
+import {
+  BodyBold,
+  CaptionBoldShort,
+  CaptionMedium,
+  CaptionRegular,
+} from "./TextStyles";
 import styled from "styled-components";
 import { motion } from "framer-motion/dist/framer-motion";
 import gold from "../images/gold.png";
@@ -34,10 +39,10 @@ function Property(props) {
           height="18px"
         ></IconImg>
       </RarityIcon>
-      <CaptionBoldShort align="center" textcolor={({ theme }) => theme.blue}>
+      <CaptionMedium align="center" textcolor={({ theme }) => theme.blue}>
         {Title || "Title"}
-      </CaptionBoldShort>
-      <BodyBold align="center">{Property || "Property"}</BodyBold>
+      </CaptionMedium>
+      <CaptionMedium align="center">{Property || "Property"}</CaptionMedium>
       <CaptionRegular align="center">
         {Rarity || "Rarity"}% have this trait.
       </CaptionRegular>

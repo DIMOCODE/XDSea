@@ -48,6 +48,7 @@ import { TabBar } from "./TabBar";
 import { DynaMenu } from "../../styles/DynaMenu/DynaMenu";
 import { StakeSection } from "../Staking/StakeSection";
 import mountain from "../../images/mountain.jpg";
+import { StakingModal } from "../Staking/StakingModal";
 
 const Discover = (props) => {
   const { mode } = useParams();
@@ -505,14 +506,15 @@ const Discover = (props) => {
                   >
                     {loading ? (
                       loadingNFTs.map((item, i) => (
-                        <VStack minwidth="240px" height="390px" key={i}>
+                        <VStack minwidth="290px" height="290px" key={i}>
                           <LoadingNftContainer></LoadingNftContainer>
                         </VStack>
                       ))
                     ) : nfts.length !== 0 ? (
                       nfts.map((item, i) => (
-                        <VStack key={item._id} minwidth="240px" height="390px">
+                        <VStack key={item._id} minwidth="290px" height="290px">
                           <NftContainer
+                            hasStaking={true}
                             isVerified={item.owner.isVerified}
                             iconStatus={item.saleType.toLowerCase()}
                             hasOffers={item.hasOpenOffer}
@@ -575,6 +577,8 @@ const Discover = (props) => {
       <BottomStick>
         <DynaMenu></DynaMenu>
       </BottomStick>
+      {/* 
+      <StakingModal oneToken={true}></StakingModal> */}
     </DiscoverSection>
   );
 };

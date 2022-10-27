@@ -59,7 +59,7 @@ function Collection(props) {
 
   const [isVisible, setIsVisible] = useState(false);
 
-  const [isStake, setIsStake] = useState(true);
+  const [isStake, setIsStake] = useState(false);
 
   return (
     <VStack

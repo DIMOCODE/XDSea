@@ -24,7 +24,7 @@ export const lightTheme = {
     "linear-gradient(180deg, rgba(21, 35, 51, 0.78) 0%, rgba(24, 33, 44, 0) 267.5%)",
   backgroundModal: "rgba(214, 214, 219, 0.84)",
   menu: "#5C6976",
-  fadedlocked: "rgba(30, 32, 42, 1)",
+  fadedlocked: "rgba(30, 32, 42, 0.9)",
   searchInput: "rgba(0,0,0,0.3)",
 };
 
@@ -43,8 +43,9 @@ export const darkTheme = {
   faded: "rgba(255, 255, 255, 0.09)",
   faded30: "rgba(255, 255, 255, 0.3)",
   faded60: "rgba(255, 255, 255, 0.6)",
+
   backgroundModal: "rgba(18, 18, 18, 1)",
   menu: "white",
-  fadedlocked: "rgba(41, 45, 65, 1)",
+  fadedlocked: "rgba(41, 45, 65, 0.9)",
   searchInput: "rgba(0,0,0,0.8)",
 };
