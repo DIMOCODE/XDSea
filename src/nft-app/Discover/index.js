@@ -111,6 +111,7 @@ const Discover = (props) => {
   });
   const [totalCollections, setTotalCollections] = useState(0);
   const [totalNFTs, setTotalNFTs] = useState(0);
+  const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(0);
   const [nftPlaying, setNftPlaying] = useState([]);
 
@@ -308,7 +309,7 @@ const Discover = (props) => {
   return (
     <DiscoverSection id="scrollableDiv" style={{ zIndex: 10 }}>
       {/* Discover top Section with tab bar*/}
-      <HStack backgroundimage={seamless} padding="60px 0 0 0">
+      <HStack backgroundimage={seamless} padding="60px 0 0 0" style={{zIndex: "1"}}>
         <VStack
           width="1200px"
           height="147px"
@@ -586,6 +587,10 @@ const Discover = (props) => {
           nftParams={nftParams}
           isStake={isStake}
           setIsStake={setIsStake}
+          maxPrice={maxPrice}
+          setMaxPrice={setMaxPrice}
+          minPrice={minPrice}
+          setMinPrice={setMinPrice}
         ></DynaMenu>
       </BottomStick>
     </DiscoverSection>
@@ -618,4 +623,5 @@ const BottomStick = styled(motion.div)`
   bottom: 0%;
   left: 50%;
   transform: translate(-50%, -50%);
+  z-index: 1;
 `;

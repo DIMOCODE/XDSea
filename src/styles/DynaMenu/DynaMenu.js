@@ -10,7 +10,7 @@ import {
   motion,
 } from "framer-motion/dist/framer-motion";
 
-import { HStack, IconImg, VStack } from "../Stacks";
+import { HStack, IconImg, Spacer, VStack } from "../Stacks";
 import { BodyRegular } from "../TextStyles";
 
 import searchW from "../../images/searchW.png";
@@ -40,6 +40,11 @@ function DynaMenu(props) {
     nftParams,
     handleFilterNFTs,
     isCollections,
+    maxPrice,
+    setMaxPrice,
+    minPrice,
+    setMinPrice,
+    isSearchPage,
   } = props;
   const ref = useRef(null);
 
@@ -48,6 +53,24 @@ function DynaMenu(props) {
   const [isSort, setIsSort] = useState(false);
   const [collectionSearchTerm, setCollectionSearchTerm] = useState("");
   const [nftSearchTerm, setNftSearchTerm] = useState("");
+  const [btnSale, setBtnSale] = useState(false);
+  const [btnSold, setBtnSold] = useState(false);
+  const [btnRelist, setBtnRelist] = useState(false);
+  const [btnNFS, setBtnNFS] = useState(false);
+  const [nftVerified, setNftVerified] = useState(false);
+  const [collectionVerified, setCollectionVerified] = useState(false);
+  const [isCollectionSelected, setIsCollectionSelected] = useState(isSearchPage ? 6 : 1);
+  const [isCollectionOld, setIsCollectionOld] = useState(false);
+  const [isVolumeTop, setIsVolumeTop] = useState(true);
+  const [isTopOwners, setIsTopOwners] = useState(false);
+  const [isTopQuantity, setIsTopQuantity] = useState(false);
+  const [isTopFloor, setIsTopFloor] = useState(false);
+  const [isCollectionAtoZ, setIsCollectionAtoZ] = useState(false);
+  const [isNftSelected, setIsNftSelected] = useState(isSearchPage ? 2 : 0);
+  const [isNftOld, setIsNftOld] = useState(false);
+  const [isTopPrice, setIsTopPrice] = useState(false);
+  const [isTopOffer, setIsTopOffer] = useState(false);
+  const [isNftAtoZ, setIsNftAtoZ] = useState(false);
 
   useClickAway(ref, () => {
     setIsSearch(false);
@@ -81,17 +104,17 @@ function DynaMenu(props) {
     const delayDebounceFn = setTimeout(async () => {
       if (isSearch) {
         if (nftSearchTerm !== "") {
-            handleFilterNFTs({
-              ...nftParams,
-              searchBy: nftSearchTerm,
-              page: 1,
-            });
+          handleFilterNFTs({
+            ...nftParams,
+            searchBy: nftSearchTerm,
+            page: 1,
+          });
         } else {
-            handleFilterNFTs({
-              ...nftParams,
-              searchBy: "",
-              page: 1,
-            });
+          handleFilterNFTs({
+            ...nftParams,
+            searchBy: "",
+            page: 1,
+          });
         }
       }
     }, 1500);
@@ -202,22 +225,54 @@ function DynaMenu(props) {
             }}
             exit={{
               opacity: 0,
-              y: 0,
+              y: 6,
             }}
             transition={{ type: "spring", damping: 10 }}
           >
             <VStack
-              background="white"
-              width="390px"
+              background="black"
+              width="376px"
               height="auto"
-              border="9px"
+              border="29px"
               padding="39px 39px"
               spacing="36px"
             >
-              <PriceRange></PriceRange>
-              <SaleType></SaleType>
-              <VerifiedStatus></VerifiedStatus>
-
+              {!isCollections && (
+                <>
+                  <PriceRange
+                    color="white"
+                    oppColor="black"
+                    minValue={minPrice}
+                    setMinValue={setMinPrice}
+                    maxValue={maxPrice}
+                    setMaxValue={setMaxPrice}
+                    params={nftParams}
+                    onChange={handleFilterNFTs}
+                  ></PriceRange>
+                  <SaleType
+                    params={nftParams}
+                    onChange={handleFilterNFTs}
+                    btnSale={btnSale}
+                    setBtnSale={setBtnSale}
+                    btnNFS={btnNFS}
+                    setBtnNFS={setBtnNFS}
+                    btnRelist={btnRelist}
+                    setBtnRelist={setBtnRelist}
+                    btnSold={btnSold}
+                    setBtnSold={setBtnSold}
+                  ></SaleType>
+                </>
+              )}
+              <VerifiedStatus
+                isVerified={isCollections ? collectionVerified : nftVerified}
+                setVerified={
+                  isCollections ? setCollectionVerified : setNftVerified
+                }
+                params={isCollections ? collectionParams : nftParams}
+                onChange={
+                  isCollections ? handleFilterCollections : handleFilterNFTs
+                }
+              ></VerifiedStatus>
               <CloseBtn>
                 <CloseIconBtn onClick={() => setIsFilter(false)}></CloseIconBtn>
               </CloseBtn>
@@ -242,20 +297,55 @@ function DynaMenu(props) {
             }}
             exit={{
               opacity: 0,
-              y: 0,
+              y: 6,
             }}
             transition={{ type: "spring", damping: 10 }}
           >
             <VStack
-              background="white"
-              width="390px"
+              background="black"
+              width="376px"
               height="auto"
-              border="9px"
+              border="29px"
               padding="39px 39px"
               spacing="36px"
             >
-              {/* <SortCollection></SortCollection> */}
-              <SortNFTs></SortNFTs>
+              {isCollections ? (
+                <SortCollection
+                  onChange={handleFilterCollections}
+                  params={collectionParams}
+                  isSearchPage={isSearchPage}
+                  isSelected={isCollectionSelected}
+                  setIsSelected={setIsCollectionSelected}
+                  isOld={isCollectionOld}
+                  setIsOld={setIsCollectionOld}
+                  isVolumeTop={isVolumeTop}
+                  setIsVolumeTop={setIsVolumeTop}
+                  isTopOwners={isTopOwners}
+                  setIsTopOwners={setIsTopOwners}
+                  isTopFloor={isTopFloor}
+                  setIsTopFloor={setIsTopFloor}
+                  isTopQuantity={isTopQuantity}
+                  setIsTopQuantity={setIsTopQuantity}
+                  isAtoZ={isCollectionAtoZ}
+                  setIsAtoZ={setIsCollectionAtoZ}
+                ></SortCollection>
+              ) : (
+                <SortNFTs
+                  onChange={handleFilterNFTs}
+                  params={nftParams}
+                  isSearchPage={isSearchPage}
+                  isSelected={isNftSelected}
+                  setIsSelected={setIsNftSelected}
+                  isOld={isNftOld}
+                  setIsOld={setIsNftOld}
+                  isTopPrice={isTopPrice}
+                  setIsTopPrice={setIsTopPrice}
+                  isTopOffer={isTopOffer}
+                  setIsTopOffer={setIsTopOffer}
+                  isAtoZ={isNftAtoZ}
+                  setIsAtoZ={setIsNftAtoZ}
+                ></SortNFTs>
+              )}
               <CloseBtn>
                 <CloseIconBtn onClick={() => setIsSort(false)}></CloseIconBtn>
               </CloseBtn>
@@ -271,7 +361,8 @@ export { DynaMenu };
 
 const AbsoluteWindow = styled(motion.div)`
   position: absolute;
-  bottom: 62px;
+  bottom: 0px;
+  z-index: 0;
 `;
 
 const CloseBtn = styled(motion.div)`
