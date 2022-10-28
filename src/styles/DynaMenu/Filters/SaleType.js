@@ -11,7 +11,19 @@ import sale from "../../../images/sale.png";
 
 import { ButtonM } from "../../Buttons/ButtonM";
 
-function SaleType() {
+function SaleType(props) {
+  const {
+    onChange,
+    params,
+    btnSale,
+    setBtnSale,
+    btnRelist,
+    setBtnRelist,
+    btnNFS,
+    setBtnNFS,
+    btnSold,
+    setBtnSold,
+  } = props;
   const activated = {
     on: {
       opacity: 1,
@@ -23,15 +35,12 @@ function SaleType() {
     },
   };
 
-  const [btnSale, setBtnSale] = useState(false);
-  const [btnSold, setBtnSold] = useState(false);
-  const [btnRelist, setBtnRelist] = useState(false);
-  const [btnNFS, setBtnNFS] = useState(false);
-
   return (
     <VStack width="100%" alignment="flex-start" spacing="15px">
       <HStack width="100%" spacing="15px">
-        <CaptionBoldShort cursor="pointer">Sale Type</CaptionBoldShort>
+        <CaptionBoldShort textcolor="white" cursor="pointer">
+          Sale Type
+        </CaptionBoldShort>
 
         <Spacer></Spacer>
         <IconImg
@@ -85,13 +94,37 @@ function SaleType() {
 
       <HStack>
         <ButtonM
-          background={({ theme }) => theme.faded30}
+          textcolor={"white"}
           title="Remove"
+          onClick={() => {
+            onChange({
+              ...params,
+              page: 1,
+              saleType1: "",
+              saleType2: "",
+              saleType3: "",
+              saleType4: "",
+            });
+            setBtnSold(false);
+            setBtnSale(false);
+            setBtnNFS(false);
+            setBtnRelist(false);
+          }}
         ></ButtonM>
         <ButtonM
-          background={({ theme }) => theme.blue}
+          background={"blue"}
           textcolor="white"
           title="Apply"
+          onClick={() => {
+            onChange({
+              ...params,
+              page: 1,
+              saleType1: !btnSale ? "SALE" : "",
+              saleType2: !btnRelist ? "RELIST" : "",
+              saleType3: !btnSold ? "SOLD" : "",
+              saleType4: !btnNFS ? "NOT_SALE" : "",
+            });
+          }}
         ></ButtonM>
       </HStack>
     </VStack>

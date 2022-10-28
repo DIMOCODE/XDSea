@@ -1,6 +1,6 @@
 import React from "react";
 
-import closeIcon from "../../images/closeIconRound.png";
+import crossW from "../../images/crossWhite.png";
 import { IconImg } from "../Stacks";
 
 function CloseIconBtn(props) {
@@ -8,7 +8,7 @@ function CloseIconBtn(props) {
 
   return (
     <IconImg
-      url={closeIcon}
+      url={crossW}
       width="30px"
       height="30px"
       cursor="pointer"

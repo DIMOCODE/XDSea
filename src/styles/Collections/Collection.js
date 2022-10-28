@@ -42,6 +42,8 @@ function Collection(props) {
     sortNFTs,
     sortVolume,
     sortDate,
+    isStake,
+    stakeEnabled
   } = props;
 
   const scaleImage = {
@@ -58,8 +60,6 @@ function Collection(props) {
   };
 
   const [isVisible, setIsVisible] = useState(false);
-
-  const [isStake, setIsStake] = useState(true);
 
   return (
     <VStack
@@ -213,27 +213,28 @@ function Collection(props) {
         </ZItem>
       </ZStack>
 
-      <StakeBtn>
-        <VStack
-          spacing="0px"
-          background={({ theme }) => theme.blue}
-          padding="9px"
-          border="0px 9px 0px 9px"
-          onClick={() => setIsStake(true)}
-        >
-          <HStack spacing="3px">
-            <CaptionBoldShort initial={{ opacity: 0.6 }} textcolor="white">
-              STAKE
-            </CaptionBoldShort>
-            <IconImg url={star} width="12px" height="12px"></IconImg>
-          </HStack>
+      {stakeEnabled && (
+        <StakeBtn>
+          <VStack
+            spacing="0px"
+            background={({ theme }) => theme.blue}
+            padding="9px"
+            border="0px 9px 0px 9px"
+          >
+            <HStack spacing="3px">
+              <CaptionBoldShort initial={{ opacity: 0.6 }} textcolor="white">
+                STAKE
+              </CaptionBoldShort>
+              <IconImg url={star} width="12px" height="12px"></IconImg>
+            </HStack>
 
-          <BodyBold textcolor="white">56%</BodyBold>
-          <CaptionBoldShort textcolor="white" initial={{ opacity: 0.6 }}>
-            APR
-          </CaptionBoldShort>
-        </VStack>
-      </StakeBtn>
+            <BodyBold textcolor="white">56%</BodyBold>
+            <CaptionBoldShort textcolor="white" initial={{ opacity: 0.6 }}>
+              APR
+            </CaptionBoldShort>
+          </VStack>
+        </StakeBtn>
+      )}
     </VStack>
   );
 }
