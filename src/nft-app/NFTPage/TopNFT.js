@@ -26,9 +26,9 @@ import {
  */
 const copy = async () => {
   await navigator.clipboard.writeText(webLink);
-  setCopied(true);
+  // setCopied(true);
   setTimeout(() => {
-    setCopied(false);
+    // setCopied(false);
   }, 1500);
 };
 // const webLocation = useLocation();

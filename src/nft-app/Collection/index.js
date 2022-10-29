@@ -50,6 +50,7 @@ import { getXdcDomain } from "../../constant";
 import { BannerMobile } from "./BannerMobile";
 import { CollectionStats } from "./CollectionStats";
 import { CircleButton } from "../../styles/CircleButton";
+import { DynaMenu } from "../../styles/DynaMenu/DynaMenu";
 
 const CollectionPage = (props) => {
   const size = useWindowSize();
@@ -73,14 +74,14 @@ const CollectionPage = (props) => {
     { id: 12, name: "NFT 12" },
   ]);
   const [maxPrice, setMaxPrice] = useState(0);
-  const [searchTerm, setSearchTerm] = useState("");
   const [params, setParams] = useState({
     page: 1,
-    searchBy: searchTerm,
   });
   const [copied, setCopied] = useState(false);
   const [nftNumber, setNftNumber] = useState(0);
   const [nftPlaying, setNftPlaying] = useState([]);
+  const [isStake, setIsStake] = useState(false);
+  const [minPrice, setMinPrice] = useState(0);
 
   const webLink = `https://www.xdsea.com/collection/${collectionNickName}`;
 
@@ -96,9 +97,8 @@ const CollectionPage = (props) => {
   /**
    * Get collection NFT data for the first page
    *
-   * @param {string} searchBy search word to filter NFT results
    */
-  const getData = async (searchBy) => {
+  const getData = async () => {
     try {
       const collectionData = await (
         await getCollection(collectionNickName)
@@ -125,13 +125,13 @@ const CollectionPage = (props) => {
         websiteUrl: collectionData.collection.websiteUrl,
         nftsCount: collectionData.metrics.nftsCount,
         owners: collectionData.metrics.owners,
+        isStakingEnabled: collectionData.collection.isStakingEnabled,
       };
       const collectionNFTData = await (
         await getCollectionNFTs({
           ...params,
           page: 1,
           collectionId: collectionData.collection._id,
-          searchBy: searchBy,
         })
       ).data;
 
@@ -139,7 +139,6 @@ const CollectionPage = (props) => {
       setMaxPrice(collectionNFTData.higherPrice);
       setParams({
         collectionId: collectionData.collection._id,
-        searchBy: searchBy,
         page: params.page + 1,
       });
       setNfts(collectionNFTData.nfts);
@@ -213,8 +212,8 @@ const CollectionPage = (props) => {
    */
   useEffect(() => {
     window.scrollTo(0, 0);
-    getData(searchTerm);
-  }, [searchTerm]);
+    getData();
+  }, []);
 
   return (
     <CollectionSection>
@@ -223,7 +222,7 @@ const CollectionPage = (props) => {
         <IconImg
           url={collection.banner}
           width="100%"
-          height={size.width > 425 ? "369px" : "269px"}
+          height={size.width > 428 ? "369px" : "269px"}
           backsize="cover"
           key="imageBanner"
           initial={{ opacity: 0 }}
@@ -232,7 +231,7 @@ const CollectionPage = (props) => {
         ></IconImg>
       </BannerAbsolute>
 
-      {size.width > 425 ? (
+      {size.width > 428 ? (
         <HStack style={{ zIndex: 1 }} padding="0 9px">
           <VStack
             padding="69px 0 0 0"
@@ -336,7 +335,7 @@ const CollectionPage = (props) => {
                 <HStack
                   onClick={() => props.redirect(`user/${collection.creatorId}`)}
                   border="0 6px 6px 0"
-                  padding="6px 9px"
+                  padding={"6px 9px"}
                   height="42px"
                   style={{
                     boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
@@ -539,8 +538,16 @@ const CollectionPage = (props) => {
         <BannerMobile
           collectionImage={collection.logo}
           collectionName={collection.name}
+          addressCreator={
+            collection.creator !== ""
+              ? collection.creator
+              : truncateAddress(collection.addressCreator)
+          }
+          onClickCreator={() => props.redirect(`user/${collection.creatorId}`)}
           owners={collection.owners}
+          isVerified={collection.isVerified}
           nftCount={collection.nftsCount}
+          collectionNickName={collectionNickName}
           floorPrice={
             collection.floorPrice > 100000
               ? Intl.NumberFormat("en-US", {
@@ -561,13 +568,17 @@ const CollectionPage = (props) => {
                   maximumFractionDigits: 2,
                 }) || "0"
           }
+          collectionDescription={collection.description}
+          twitterUrl={collection.twitterUrl}
+          instagramUrl={collection.instagramUrl}
+          discordUrl={collection.discordUrl}
+          websiteUrl={collection.websiteUrl}
         ></BannerMobile>
       )}
 
       {/* Collection NFTs */}
       <CollectionContent id="scrollableDiv">
-        <StickySectionHeader top="68">
-          {/* Filters Search and Sort */}
+        {/* <StickySectionHeader top="68">
           <HStack
             background="rgb(0,0,0, 0.06)"
             padding="6px"
@@ -602,7 +613,7 @@ const CollectionPage = (props) => {
               ></SortButtonNFTS>
             </HStack>
           </HStack>
-        </StickySectionHeader>
+        </StickySectionHeader> */}
 
         {/* Collection NFT Cards */}
         <InfiniteScroll
@@ -703,6 +714,21 @@ const CollectionPage = (props) => {
           </HStack>
         </InfiniteScroll>
       </CollectionContent>
+
+      <BottomStick>
+        <DynaMenu
+          isCollections={false}
+          handleFilterNFTs={handleChangeFilterNFT}
+          nftParams={params}
+          isStake={isStake}
+          setIsStake={setIsStake}
+          maxPrice={maxPrice}
+          setMaxPrice={setMaxPrice}
+          minPrice={minPrice}
+          setMinPrice={setMinPrice}
+          isStakingEnabled={collection.isStakingEnabled}
+        ></DynaMenu>
+      </BottomStick>
     </CollectionSection>
   );
 };
@@ -737,4 +763,12 @@ const SocialAbsolute = styled(motion.div)`
   position: absolute;
   bottom: 45px;
   right: 0px;
+`;
+
+const BottomStick = styled(motion.div)`
+  position: fixed;
+  bottom: 0%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
 `;

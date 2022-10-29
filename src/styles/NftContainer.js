@@ -378,13 +378,13 @@ function NftContainer(props) {
                   </CaptionMedium>
 
                   <Spacer></Spacer>
-                  {!hasOffers && (
+                  {hasOffers && (
                     <HStack
                       background="linear-gradient(180deg, #FF5A5A 0%, rgba(255, 90, 90, 0.88) 100%)"
                       border="30px"
                       padding="6px 11px"
                     >
-                      <CaptionBoldShort textcolor="white">1</CaptionBoldShort>
+                      <CaptionBoldShort textcolor="white">!</CaptionBoldShort>
                     </HStack>
                   )}
                 </HStack>

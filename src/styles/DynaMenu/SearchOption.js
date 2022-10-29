@@ -22,6 +22,7 @@ function SearchOption(props) {
         background="transparent"
         textcolor="white"
         border="6px 30px 30px 6px"
+        inputId="SearchbarDynaMenu"
         onChange={onChange}
       ></InputStyled>
 

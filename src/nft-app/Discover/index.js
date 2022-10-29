@@ -406,14 +406,13 @@ const Discover = (props) => {
               scrollableTarget="#scrollableDiv"
               style={{ overflow: "show", zIndex: -1 }}
             >
-              <HStack spacing="6px" flexwrap="wrap" justify="flex-start">
+              <HStack spacing="12px" flexwrap="wrap" justify="flex-start">
                 {loading ? (
                   loadingCollections.map((item, i) => (
                     <VStack
                       key={i}
-                      minwidth="380px"
-                      width="380px"
-                      height="390px"
+                      minwidth="290px"
+                      height="380px"
                     >
                       <LoadingNftContainer></LoadingNftContainer>
                     </VStack>
@@ -422,8 +421,7 @@ const Discover = (props) => {
                   collections.map((item, i) => (
                     <LayoutGroup id="collection" key={i + item._id}>
                       <VStack
-                        minwidth="380px"
-                        width="380px"
+                        minwidth="290px"
                         height="380px"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -520,7 +518,7 @@ const Discover = (props) => {
                       nfts.map((item, i) => (
                         <VStack key={item._id} minwidth="290px" height="290px">
                           <NftContainer
-                            hasStaking={true}
+                            hasStaking={item.isStakeable}
                             isVerified={item.owner.isVerified}
                             iconStatus={item.saleType.toLowerCase()}
                             hasOffers={item.hasOpenOffer}
@@ -593,6 +591,7 @@ const Discover = (props) => {
           setMaxPrice={setMaxPrice}
           minPrice={minPrice}
           setMinPrice={setMinPrice}
+          isStakingEnabled={true}
         ></DynaMenu>
       </BottomStick>
       {/* 
