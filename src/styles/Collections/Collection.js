@@ -43,7 +43,7 @@ function Collection(props) {
     sortVolume,
     sortDate,
     isStake,
-    stakeEnabled
+    stakeEnabled,
   } = props;
 
   const scaleImage = {

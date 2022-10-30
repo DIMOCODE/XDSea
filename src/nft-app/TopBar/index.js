@@ -559,7 +559,7 @@ function TopBar(props) {
                           ></WalletButton>
                         </HStack>
 
-                        {size.width < 533 && (
+                        {location.pathname === "/SearchPage" ? null : size.width < 533 && (
                           <HStack style={{ zIndex: 1 }}>
                             <Searchbar
                               placeholder="Search for NFTs and Collections"

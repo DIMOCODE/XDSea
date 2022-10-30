@@ -48,6 +48,7 @@ import { TabBar } from "./TabBar";
 import { DynaMenu } from "../../styles/DynaMenu/DynaMenu";
 import { StakeSection } from "../Staking/StakeSection";
 import mountain from "../../images/mountain.jpg";
+import { StakingModal } from "../Staking/StakingModal";
 
 const Discover = (props) => {
   const { mode } = useParams();
@@ -405,14 +406,13 @@ const Discover = (props) => {
               scrollableTarget="#scrollableDiv"
               style={{ overflow: "show", zIndex: -1 }}
             >
-              <HStack spacing="6px" flexwrap="wrap" justify="flex-start">
+              <HStack spacing="12px" flexwrap="wrap" justify="flex-start">
                 {loading ? (
                   loadingCollections.map((item, i) => (
                     <VStack
                       key={i}
-                      minwidth="380px"
-                      width="380px"
-                      height="390px"
+                      minwidth="290px"
+                      height="380px"
                     >
                       <LoadingNftContainer></LoadingNftContainer>
                     </VStack>
@@ -421,8 +421,7 @@ const Discover = (props) => {
                   collections.map((item, i) => (
                     <LayoutGroup id="collection" key={i + item._id}>
                       <VStack
-                        minwidth="380px"
-                        width="380px"
+                        minwidth="290px"
                         height="380px"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -511,14 +510,15 @@ const Discover = (props) => {
                   >
                     {loading ? (
                       loadingNFTs.map((item, i) => (
-                        <VStack minwidth="240px" height="390px" key={i}>
+                        <VStack minwidth="290px" height="290px" key={i}>
                           <LoadingNftContainer></LoadingNftContainer>
                         </VStack>
                       ))
                     ) : nfts.length !== 0 ? (
                       nfts.map((item, i) => (
-                        <VStack key={item._id} minwidth="240px" height="390px">
+                        <VStack key={item._id} minwidth="290px" height="290px">
                           <NftContainer
+                            hasStaking={item.isStakeable}
                             isVerified={item.owner.isVerified}
                             iconStatus={item.saleType.toLowerCase()}
                             hasOffers={item.hasOpenOffer}
@@ -591,8 +591,11 @@ const Discover = (props) => {
           setMaxPrice={setMaxPrice}
           minPrice={minPrice}
           setMinPrice={setMinPrice}
+          isStakingEnabled={true}
         ></DynaMenu>
       </BottomStick>
+      {/* 
+      <StakingModal oneToken={true}></StakingModal> */}
     </DiscoverSection>
   );
 };

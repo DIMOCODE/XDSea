@@ -45,6 +45,9 @@ function DynaMenu(props) {
     minPrice,
     setMinPrice,
     isSearchPage,
+    isStakingEnabled,
+    searchTerm,
+    setSearchTerm,
   } = props;
   const ref = useRef(null);
 
@@ -59,7 +62,9 @@ function DynaMenu(props) {
   const [btnNFS, setBtnNFS] = useState(false);
   const [nftVerified, setNftVerified] = useState(false);
   const [collectionVerified, setCollectionVerified] = useState(false);
-  const [isCollectionSelected, setIsCollectionSelected] = useState(isSearchPage ? 6 : 1);
+  const [isCollectionSelected, setIsCollectionSelected] = useState(
+    isSearchPage ? 6 : 1
+  );
   const [isCollectionOld, setIsCollectionOld] = useState(false);
   const [isVolumeTop, setIsVolumeTop] = useState(true);
   const [isTopOwners, setIsTopOwners] = useState(false);
@@ -76,6 +81,7 @@ function DynaMenu(props) {
     setIsSearch(false);
     setIsFilter(false);
     setIsSort(false);
+    setIsStake(false);
   });
 
   useEffect(() => {
@@ -137,27 +143,55 @@ function DynaMenu(props) {
         {isSearch ? (
           <motion.div layout>
             <SearchOption
-              placeholder={isCollections ? collectionSearchTerm : nftSearchTerm}
+              placeholder={searchTerm !== undefined ? searchTerm : isCollections ? collectionSearchTerm : nftSearchTerm}
               onChange={(e) => {
-                if (isCollections) {
-                  setCollectionSearchTerm(e.target.value);
-                } else {
-                  setNftSearchTerm(e.target.value);
+                if(searchTerm !== undefined) {
+                  setSearchTerm(e.target.value);
+                }
+                else {
+                  if (isCollections) {
+                    setCollectionSearchTerm(e.target.value);
+                  } else {
+                    setNftSearchTerm(e.target.value);
+                  }
                 }
               }}
               onClickBack={() => setIsSearch(false)}
               onClickCancel={() => {
-                if (isCollections) {
-                  setCollectionSearchTerm("");
-                } else {
-                  setNftSearchTerm("");
+                if(searchTerm !== undefined) {
+                  setSearchTerm("");
                 }
+                else {
+                  if (isCollections) {
+                    setCollectionSearchTerm("");
+                  } else {
+                    setNftSearchTerm("");
+                  }
+                }
+                document.getElementById("SearchbarDynaMenu").value = "";
               }}
             ></SearchOption>
           </motion.div>
         ) : isStake ? (
           <motion.div layout>
-            <StakeBtn onClick={() => setIsStake(false)}></StakeBtn>
+            <StakeBtn
+              onClick={() => {
+                setIsStake(false);
+                if (isCollections) {
+                  handleFilterCollections({
+                    ...collectionParams,
+                    page: 1,
+                    staking: "",
+                  });
+                } else {
+                  handleFilterNFTs({
+                    ...nftParams,
+                    page: 1,
+                    staking: "",
+                  });
+                }
+              }}
+            ></StakeBtn>
           </motion.div>
         ) : (
           <HStack layout spacing="0">
@@ -192,19 +226,34 @@ function DynaMenu(props) {
                 setIsFilter(false);
               }}
             ></BtnMenu>
-            <BtnMenu
-              name="Stake"
-              icon={stakeStar}
-              iconw="24px"
-              iconh="24px"
-              background="blue"
-              border="0 30px 30px 0"
-              onClick={() => {
-                setIsStake(true);
-                setIsSort(false);
-                setIsFilter(false);
-              }}
-            ></BtnMenu>
+            {isStakingEnabled && (
+              <BtnMenu
+                name="Stake"
+                icon={stakeStar}
+                iconw="24px"
+                iconh="24px"
+                background="blue"
+                border="0 30px 30px 0"
+                onClick={() => {
+                  setIsStake(true);
+                  setIsSort(false);
+                  setIsFilter(false);
+                  if (isCollections) {
+                    handleFilterCollections({
+                      ...collectionParams,
+                      page: 1,
+                      staking: true,
+                    });
+                  } else {
+                    handleFilterNFTs({
+                      ...nftParams,
+                      page: 1,
+                      staking: true,
+                    });
+                  }
+                }}
+              ></BtnMenu>
+            )}
           </HStack>
         )}
       </HStack>
@@ -273,7 +322,7 @@ function DynaMenu(props) {
                   isCollections ? handleFilterCollections : handleFilterNFTs
                 }
               ></VerifiedStatus>
-              <CloseBtn>
+              <CloseBtn layout>
                 <CloseIconBtn onClick={() => setIsFilter(false)}></CloseIconBtn>
               </CloseBtn>
             </VStack>
@@ -346,7 +395,7 @@ function DynaMenu(props) {
                   setIsAtoZ={setIsNftAtoZ}
                 ></SortNFTs>
               )}
-              <CloseBtn>
+              <CloseBtn layout>
                 <CloseIconBtn onClick={() => setIsSort(false)}></CloseIconBtn>
               </CloseBtn>
             </VStack>

@@ -104,7 +104,7 @@ function WalletButton(props) {
                 </motion.div>
               ) : (
                 <>
-                  <HStack>
+                  <HStack self="none">
                     <VStack spacing="0px" alignment="flex-start">
                       <HStack
                         key="Connected"
