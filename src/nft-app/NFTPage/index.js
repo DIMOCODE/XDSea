@@ -63,6 +63,7 @@ import {
   TitleBold27,
   CaptionBold,
   BodyMedium,
+  CaptionMedium,
 } from "../../styles/TextStyles";
 import ButtonApp from "../../styles/Buttons";
 import { Property } from "../../styles/Property";
@@ -672,6 +673,14 @@ const NFTDetails = (props) => {
       );
 
       setNFT(nftData.nft);
+      if(nftData.nft.properties.length === 0) {
+        if(nftData.nft.description === "") {
+          setIsActive(2);
+        }
+        else {
+          setIsActive(3);
+        }
+      }
       setMoreFromCollectionNfts(nftData.relatedNfts);
       setNftPlaying(new Array(nftData.relatedNfts.length).fill(false));
       setLoadingMore(false);
@@ -875,7 +884,14 @@ const NFTDetails = (props) => {
         ></TxModal>
       ) : null}
 
-      <TopNFT></TopNFT>
+      <TopNFT
+        onClickCollection={() => {
+          props.redirect(`collection/${nft?.collectionId?.nickName}`);
+        }}
+        collectionName={nft?.collectionId?.name}
+        collectionLogo={nft?.collectionId?.logo?.v0}
+        collectionBanner={nft?.collectionId?.banner?.v0}
+      ></TopNFT>
       <ContentNftPage>
         <VStack height="auto" padding="30px 0 0 0 ">
           {/* NFT & Properties */}
@@ -1184,9 +1200,90 @@ const NFTDetails = (props) => {
                     border="9px"
                     width="260px"
                     height="30px"
+                    justify="center"
                   ></HStack>
+                </VStack>
+              )}
+
+              <HStack
+                height="52px"
+                spacing="50px"
+                justify="center"
+                background={({ theme }) => theme.backElement}
+                border="6px"
+              >
+                {nft?.addressCreator ? (
+                  <HStack
+                    spacing="6px"
+                    cursor={"pointer"}
+                    width="auto"
+                    onClick={() => props.redirect(`user/${nft.creator.nickName}`)}
+                  >
+                    <IconImg
+                      url={nft.creator.urlProfile}
+                      width="36px"
+                      height="36px"
+                      border="36px"
+                      cursor={"pointer"}
+                      backsize="cover"
+                    ></IconImg>
+
+                    <VStack cursor={"pointer"} spacing="0px">
+                      <CaptionBoldShort cursor={"pointer"} align="left" textcolor={({theme}) => theme.faded60}>CREATOR</CaptionBoldShort>
+                      <Tooltip title={isXdc(nft.addressCreator) ? nft.addressCreator.toLowerCase() : toXdc(nft.addressCreator.toLowerCase())}>
+                        <BodyBold cursor={"pointer"}>
+                          {nft.creator.userName}
+                        </BodyBold>
+                      </Tooltip>
+                    </VStack>
+                  </HStack>
+                ) : (
                   <HStack
                     background="rgba(153, 162, 175, 0.21)"
+                    key="Owner"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{
+                      repeat: Infinity,
+                      repeatType: "reverse",
+                      duration: 0.6,
+                      delay: 0,
+                    }}
+                    spacing="6px"
+                    cursor={"pointer"}
+                    width="auto"
+                  ></HStack>
+                )}
+
+                {nft?.addressOwner ? (
+                  <HStack
+                    spacing="6px"
+                    cursor={"pointer"}
+                    width="auto"
+                    onClick={() => props.redirect(`user/${nft.owner.nickName}`)}
+                  >
+                    <IconImg
+                      url={nft.owner.urlProfile}
+                      width="36px"
+                      height="36px"
+                      border="36px"
+                      cursor={"pointer"}
+                      backsize="cover"
+                    ></IconImg>
+
+                    <VStack cursor={"pointer"} spacing="0px">
+                      <CaptionBoldShort cursor={"pointer"} align="left" textcolor={({theme}) => theme.faded60}>OWNER</CaptionBoldShort>
+                      <Tooltip title={isXdc(nft.addressOwner) ? nft.addressOwner.toLowerCase() : toXdc(nft.addressOwner.toLowerCase())}>
+                        <BodyBold cursor={"pointer"}>
+                          {nft.owner.userName}
+                        </BodyBold>
+                      </Tooltip>
+                    </VStack>
+                  </HStack>
+                ) : (
+                  <HStack
+                    background="rgb(153, 162, 175)"
                     key="Creator"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
@@ -1197,12 +1294,13 @@ const NFTDetails = (props) => {
                       duration: 0.6,
                       delay: 0,
                     }}
-                    border="9px"
-                    width="360px"
-                    height="26px"
+                    spacing="6px"
+                    cursor={"pointer"}
+                    width="auto"
                   ></HStack>
-                </VStack>
-              )}
+                )}
+
+              </HStack>
 
               {/* NFT Description Tabs */}
 
@@ -1214,23 +1312,27 @@ const NFTDetails = (props) => {
                 border="6px"
               >
                 <Spacer></Spacer>
-                <BodyBold
-                  animate={isActive === 1 ? "selected" : "normal"}
-                  variants={variants}
-                  onClick={() => setIsActive(1)}
-                  cursor="pointer"
-                >
-                  Properties
-                </BodyBold>
+                {nft?.properties?.length !== 0 && (
+                  <BodyBold
+                    animate={isActive === 1 ? "selected" : "normal"}
+                    variants={variants}
+                    onClick={() => setIsActive(1)}
+                    cursor="pointer"
+                  >
+                    Properties
+                  </BodyBold>
+                )}
                 <Spacer></Spacer>
-                <BodyBold
-                  animate={isActive === 3 ? "selected" : "normal"}
-                  variants={variants}
-                  onClick={() => setIsActive(3)}
-                  cursor="pointer"
-                >
-                  Details
-                </BodyBold>
+                {nft?.description !== "" && (
+                  <BodyBold
+                    animate={isActive === 3 ? "selected" : "normal"}
+                    variants={variants}
+                    onClick={() => setIsActive(3)}
+                    cursor="pointer"
+                  >
+                    Description
+                  </BodyBold>
+                )}
                 <Spacer></Spacer>
                 <BodyBold
                   animate={isActive === 2 ? "selected" : "normal"}
@@ -1470,12 +1572,6 @@ const NFTDetails = (props) => {
                 </HStack>
               </VStack>
 
-              <HStack>
-                <TransferBtn></TransferBtn>
-                <StakeBtn></StakeBtn>
-                <ListBtn></ListBtn>
-              </HStack>
-
               {/* Buttons for interacting with NFT */}
               <HStack>
                 {wallet?.connected ? (
@@ -1561,6 +1657,13 @@ const NFTDetails = (props) => {
                       ? fromXdc(wallet?.address.toLowerCase())
                       : wallet?.address.toLowerCase()) ? (
                     <>
+                      <TransferBtn
+                        status={transferButtonStatus}
+                        onClick={() => {
+                          startTransfer();
+                        }}
+                      ></TransferBtn>
+                      {nft?.isStakeable && <StakeBtn></StakeBtn>}
                       <ButtonApp
                         icon={tagWhite}
                         btnStatus={listButtonStatus}
@@ -1570,20 +1673,6 @@ const NFTDetails = (props) => {
                         text="List NFT"
                         onClick={() => {
                           startSale();
-                        }}
-                        cursor="pointer"
-                        textcolor={appStyle.colors.white}
-                        width="100%"
-                      ></ButtonApp>
-                      <ButtonApp
-                        icon={tagWhite}
-                        btnStatus={transferButtonStatus}
-                        func={"Transfer"}
-                        iconWidth="21px"
-                        iconHeight="21px"
-                        text="Transfer"
-                        onClick={() => {
-                          startTransfer();
                         }}
                         cursor="pointer"
                         textcolor={appStyle.colors.white}

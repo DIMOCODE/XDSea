@@ -183,6 +183,7 @@ export const TitleBold18 = styled(motion.h3).attrs((props) => ({
   font-size: 18px;
   color: ${(props) => props.textcolor};
   text-align: ${(props) => props.align};
+  margin-bottom: 0px;
 `;
 
 export const TitleSemi18 = styled(motion.h3).attrs((props) => ({
@@ -208,6 +209,7 @@ export const TitleRegular18 = styled(motion.h3).attrs((props) => ({
   text-align: ${(props) => props.align};
   width: ${(props) => props.width};
   color: ${(props) => props.textcolor};
+  margin-bottom: 0px;
 `;
 
 export const SubtTitleRegular18 = styled(motion.h3).attrs((props) => ({

@@ -46,6 +46,8 @@ function DynaMenu(props) {
     setMinPrice,
     isSearchPage,
     isStakingEnabled,
+    searchTerm,
+    setSearchTerm,
   } = props;
   const ref = useRef(null);
 
@@ -141,20 +143,30 @@ function DynaMenu(props) {
         {isSearch ? (
           <motion.div layout>
             <SearchOption
-              placeholder={isCollections ? collectionSearchTerm : nftSearchTerm}
+              placeholder={searchTerm !== undefined ? searchTerm : isCollections ? collectionSearchTerm : nftSearchTerm}
               onChange={(e) => {
-                if (isCollections) {
-                  setCollectionSearchTerm(e.target.value);
-                } else {
-                  setNftSearchTerm(e.target.value);
+                if(searchTerm !== undefined) {
+                  setSearchTerm(e.target.value);
+                }
+                else {
+                  if (isCollections) {
+                    setCollectionSearchTerm(e.target.value);
+                  } else {
+                    setNftSearchTerm(e.target.value);
+                  }
                 }
               }}
               onClickBack={() => setIsSearch(false)}
               onClickCancel={() => {
-                if (isCollections) {
-                  setCollectionSearchTerm("");
-                } else {
-                  setNftSearchTerm("");
+                if(searchTerm !== undefined) {
+                  setSearchTerm("");
+                }
+                else {
+                  if (isCollections) {
+                    setCollectionSearchTerm("");
+                  } else {
+                    setNftSearchTerm("");
+                  }
                 }
                 document.getElementById("SearchbarDynaMenu").value = "";
               }}

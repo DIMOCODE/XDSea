@@ -231,7 +231,7 @@ const CollectionPage = (props) => {
         ></IconImg>
       </BannerAbsolute>
 
-      {size.width > 428 ? (
+      {size.width > 710 ? (
         <HStack style={{ zIndex: 1 }} padding="0 9px">
           <VStack
             padding="69px 0 0 0"
