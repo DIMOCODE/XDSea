@@ -327,63 +327,6 @@ const Discover = (props) => {
         </VStack>
       </HStack>
 
-      {/* <StakeSection
-        collection="XDSea Monkeys Original Art"
-        image={mountain}
-        title="XDSea Monkey #001"
-        price="300"
-      ></StakeSection> */}
-
-      {/*Sticky bar for collections or for NFTs  */}
-      {/* <StickySectionHeader top="69">
-        {isSelected ? (
-          <HStack
-            background="rgb(0,0,0, 0.06)"
-            padding="6px"
-            border="9px"
-            width="100%"
-            blur="30px"
-          >
-            <HStack width="1200px">
-              <FiltersButton
-                onChange={handleChangeFilter}
-                params={collectionParams}
-                isNftFilter={false}
-                switched={isSelected}
-              ></FiltersButton>
-              <Spacer></Spacer>
-              <SortButtonCollections
-                onChange={handleChangeFilter}
-                params={collectionParams}
-              ></SortButtonCollections>
-            </HStack>
-          </HStack>
-        ) : (
-          <HStack
-            background="rgb(0,0,0, 0.06)"
-            padding="6px"
-            border="9px"
-            width="100%"
-            blur="30px"
-          >
-            <HStack width="1200px">
-              <FiltersButton
-                isNftFilter={true}
-                onChange={handleChangeFilterNFT}
-                params={nftParams}
-                switched={isSelected}
-                maxPrice={maxPrice}
-              ></FiltersButton>
-              <Spacer></Spacer>
-              <SortButtonNFTS
-                onChange={handleChangeFilterNFT}
-                params={nftParams}
-              ></SortButtonNFTS>
-            </HStack>
-          </HStack>
-        )}
-      </StickySectionHeader> */}
-
       {/* Content of discover filtering */}
       <ContentDiscover id="scrollableDiv" style={{ zIndex: "0" }}>
         {/* Show Collection or NFTS Content */}

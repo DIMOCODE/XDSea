@@ -931,7 +931,7 @@ const NFTDetails = (props) => {
                         nft.unlockableContent !== undefined &&
                         nft.unlockableContent !== "" ? (
                           <AnimatePresence>
-                            <Lock key="unlock" style={{ cursor: "pointer!" }}>
+                            <Lock key="unlock" style={{ cursor: "pointer" }}>
                               <HStack
                                 background="white"
                                 border="6px"

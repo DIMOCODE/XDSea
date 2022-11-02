@@ -3,7 +3,7 @@ import domainjs from "xdcdomainjs";
 
 export const HTTP_PROVIDER = {
   50: "https://xdsearpc.blocksscan.io",
-  51: "https://rpc.apothem.network",
+  51: "https://apothem.xdcrpc.com",
 };
 
 const NETWORK_DICT = {

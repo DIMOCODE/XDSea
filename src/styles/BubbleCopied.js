@@ -1,8 +1,8 @@
 import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
-import { HStack, IconImg, Spacer } from "./Stacks";
-import { CaptionBoldShort } from "./TextStyles";
+import { HStack, VStack, IconImg, Spacer } from "./Stacks";
+import { CaptionBoldShort, CaptionSmallRegular, CaptionTiny } from "./TextStyles";
 import { appStyle } from "./AppStyles";
 import styled from "styled-components";
 import checkOk from "../images/checkOkIcon.png";
@@ -29,24 +29,25 @@ function BubbleCopied(props) {
       <HStack
         background={background}
         border="30px"
-        spacing="9px"
-        padding="6px 18px"
-        height="48px"
+        spacing="3px"
+        padding="6px 12px"
+        height="32px"
         whileTap={{ scale: 0.97 }}
         cursor="pointer"
         onClick={() => setShowAlertLink(true)}
       >
-        <IconImg url={logo} width="21px" height="21px"></IconImg>
-        <Spacer></Spacer>
-        <Tooltip title={addressCreator}>
-          {showAlertLink ? (
-            <CaptionBoldShort>Address Copied</CaptionBoldShort>
-          ) : (
-            <CaptionBoldShort textcolor={textColor}>
-              {address}
-            </CaptionBoldShort>
-          )}
-        </Tooltip>
+        <VStack spacing="0px" alignment="flex-start">
+          <CaptionTiny textcolor={({ theme }) => theme.faded60} style={{"margin-bottom": "0px"}}>WALLET</CaptionTiny>
+          <Tooltip title={addressCreator}>
+            {showAlertLink ? (
+              <CaptionBoldShort style={{"white-space": "nowrap"}}>Address Copied</CaptionBoldShort>
+            ) : (
+              <CaptionBoldShort textcolor={textColor}>
+                {address}
+              </CaptionBoldShort>
+            )}
+          </Tooltip>
+        </VStack>
         <Spacer></Spacer>
         {showAlertLink ? (
           <IconImg url={doneIcon} width="18px" height="18px"></IconImg>

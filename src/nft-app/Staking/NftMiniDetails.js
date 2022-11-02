@@ -4,7 +4,7 @@ import { BodyBold, CaptionBoldShort } from "../../styles/TextStyles";
 import xdc from "../../images/miniXdcLogo.png";
 
 function NftMiniDetails(props) {
-  const { image, title, price, width } = props;
+  const { image, title, price, width, usdPrice } = props;
 
   return (
     <HStack width={width || "100%"} self="none">
@@ -28,7 +28,17 @@ function NftMiniDetails(props) {
             height="18px"
           ></IconImg>
           <CaptionBoldShort cursor="pointer" initial={{ opacity: 0.6 }}>
-            (000 usd)
+            ({(usdPrice?.xdcPrice * Number(price) > 100000
+                      ? Intl.NumberFormat("en-US", {
+                          notation: "compact",
+                          maximumFractionDigits: 2,
+                        }).format(usdPrice?.xdcPrice * Number(price))
+                      : (usdPrice?.xdcPrice * Number(price)).toLocaleString(
+                          undefined,
+                          {
+                            maximumFractionDigits: 2,
+                          }
+                        ) || "0") + " USD"})
           </CaptionBoldShort>
           <Spacer></Spacer>
         </HStack>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import { nftaddress } from "../../config";
-import { AnimatePresence } from "framer-motion/dist/framer-motion";
+import { AnimatePresence, LayoutGroup } from "framer-motion/dist/framer-motion";
 import { LoopLogo } from "../../styles/LoopLogo";
 import emptyCollection from "../../images/emptyCollection.png";
 import emptyNFT from "../../images/emptyNFT.png";
@@ -27,6 +27,7 @@ import {
   TitleSemi21,
   CaptionSmallRegular,
   TitleSemi18,
+  TitleBold21,
   BodyBold,
   TitleRegular18,
   BodyMedium,
@@ -46,7 +47,8 @@ import doneIconWhite from "../../images/doneIconWhite.png";
 import minusIcon from "../../images/minusIcon.png";
 import editProfile from "../../images/editProfile.png";
 import mountain from "../../images/mountain.jpg";
-
+import { Collection } from "../../styles/Collections/Collection";
+import { DynaMenu } from "../../styles/DynaMenu/DynaMenu";
 import exampleImage from "../../images/audioCover0.png";
 import instagramColor from "../../images/instagramColor.png";
 import twitterColor from "../../images/twitterColor.png";
@@ -76,7 +78,19 @@ import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 import editPencil from "../../images/editPencil.png";
 import editPencilWhite from "../../images/editPencilWhite.png";
 import confirmation from "../../images/confirmation.png";
-
+import {
+  FacebookShareButton,
+  TwitterShareButton,
+  TelegramShareButton,
+  WhatsappShareButton,
+} from "react-share";
+import linkSocial from "../../images/linkSocial.png";
+import whatsSocial from "../../images/whatsSocial.png";
+import telegramSocial from "../../images/telegramSocial.png";
+import twitterSocial from "../../images/twitterSocial.png";
+import facebookSocial from "../../images/facebookSocial.png";
+import copiedLink from "../../images/oklink.png";
+import { NftContainer } from "../../styles/NftContainer";
 // Import Swiper styles
 import "swiper/swiper-bundle.min.css";
 import "swiper/swiper.min.css";
@@ -92,6 +106,7 @@ import { uploadFileInS3Bucket } from "../../helpers/fileUploader";
 import { GuardSpinner, SwishSpinner, TraceSpinner } from "react-spinners-kit";
 import { getXdcDomain, LS, LS_ROOT_KEY } from "../../constant";
 import { anonymousLogin } from "../../API/access";
+import { TabBar } from "../Discover/TabBar";
 
 const MyNFT = (props) => {
   const { userId } = useParams();
@@ -108,7 +123,10 @@ const MyNFT = (props) => {
     pageSize: 15,
     page: 1,
   });
-  const [subMenu, setSubMenu] = useState(0);
+  const [collectionParams, setCollectionParams] = useState({
+    page: 1,
+  });
+  const [isSelected, setIsSelected] = useState(true);
   const [, setShowMenu] = useState(props.showMenu);
   const [scrollTop, setScrollTop] = useState();
   const [scrolling, setScrolling] = useState();
@@ -135,8 +153,14 @@ const MyNFT = (props) => {
   const [newStatus, setNewStatus] = useState("");
   const [isProfileUpdated, setIsProfileUpdated] = useState(false);
   const [userDomain, setUserDomain] = useState("");
+  const [copied, setCopied] = useState(false);
+  const [maxPrice, setMaxPrice] = useState(0);
+  const [minPrice, setMinPrice] = useState(0);
+  const [isStake, setIsStake] = useState(false);
 
   const heights = [260, 360, 300];
+
+  const webLink = `https://www.xdsea.com/user/${userId}`;
 
   let position = Math.round(Math.random() * 2);
 
@@ -308,14 +332,27 @@ const MyNFT = (props) => {
       return Math.floor(interval) + " minutes ago";
     }
     return Math.floor(seconds) + " seconds ago";
-  }
+  };
+
+  const handleNFTLongPress = (i, isNew) => {
+    if (!isNew) {
+      setOwnedNFTPlaying((prevState) => {
+        prevState[i] = !prevState[i];
+        return [...prevState];
+      });
+    } else {
+      const newNftPlaying = new Array(ownedNFTPlaying.length).fill(false);
+      newNftPlaying[i] = !newNftPlaying[i];
+      setOwnedNFTPlaying([...newNftPlaying]);
+    }
+  };
 
   /**
    * React Hook to re-render the component when the userId state changes
    */
   useEffect(() => {
     window.scrollTo(0, 0);
-    setSubMenu(1);
+    setIsSelected(true);
     setLoading(true);
     getData();
     setIsLoggedIn(false);
@@ -406,6 +443,16 @@ const MyNFT = (props) => {
     updateNFTs(params);
   };
 
+  /**
+   * Update Collection list based on the filters chosen by the user
+   *
+   * @param {*} params parameters used to filter query results
+   */
+   const handleChangeFilter = (params) => {
+    setCollectionParams(params);
+    // updateCollections(params);
+  };
+
   const updateUserProfile = async () => {
     setIsProfileUpdated(true);
     if (profilePicture.raw !== "") {
@@ -475,7 +522,7 @@ const MyNFT = (props) => {
       {size.width > 428 ? (
         <ZStack>
           <ZItem>
-            <VStack width="100%" height="900px" justify="flex-start">
+            <VStack width="100%" height="250px" justify="flex-start">
               <VStack
                 width="100%"
                 minwidth="100%"
@@ -642,7 +689,7 @@ const MyNFT = (props) => {
                         alignment="flex-start"
                         padding="24px 12px 12px 12px"
                       >
-                        <HStack>
+                        <HStack width>
                           {/* User image uploader*/}
                           <VStack
                             maxwidth="96px"
@@ -1823,7 +1870,7 @@ const MyNFT = (props) => {
               </ZItem>
             </>
           ) : (
-            <ZItem zindex="0">
+            <ZItem zindex="1">
               <Content>
                 <VStack>
                   <HStack
@@ -1845,8 +1892,9 @@ const MyNFT = (props) => {
                     padding="90px 0 0 0"
                   >
                     <VStack
-                      spacing="30px"
+                      spacing="26px"
                       minwidth="70%"
+                      width="100%"
                       padding="12px 0 0 12px"
                       justify="flex-start"
                     >
@@ -1879,8 +1927,8 @@ const MyNFT = (props) => {
                         </VStack>
 
                         {/* Username and social networks    */}
-                        <VStack alignment="flex-start">
-                          <TitleBold27
+                        <VStack alignment="flex-start" spacing="0px">
+                          <TitleBold21
                             textcolor={
                               userSettings?.dashboardMode === "dark"
                                 ? "#363537"
@@ -1888,8 +1936,37 @@ const MyNFT = (props) => {
                             }
                           >
                             {user?.userName}
-                          </TitleBold27>
+                          </TitleBold21>
                           <HStack spacing="12px" justify="flex-start">
+                            
+                            {/* Wallet button  */}
+                            {user?.XDCWallets?.length !== 0 ? (
+                              <BubbleCopied
+                                logo={walletBlue}
+                                address={
+                                  userDomain
+                                    ? userDomain
+                                    : user?.XDCWallets
+                                    ? truncateAddress(isXdc(user.XDCWallets[0]) ? user.XDCWallets[0].toLowerCase() : toXdc(user.XDCWallets[0].toLowerCase()))
+                                    : ""
+                                }
+                                addressCreator={
+                                  user?.XDCWallets ? isXdc(user.XDCWallets[0]) ? user.XDCWallets[0].toLowerCase() : toXdc(user.XDCWallets[0].toLowerCase()) : ""
+                                }
+                                icon={copyIcon}
+                                background={
+                                  userSettings?.dashboardMode === "dark"
+                                    ? "#20222D"
+                                    : "white"
+                                }
+                                textColor={
+                                  userSettings?.dashboardMode === "dark"
+                                    ? "#FAFAFA"
+                                    : "#363537"
+                                }
+                              ></BubbleCopied>
+                            ) : null}
+
                             {/* Instagram Button */}
                             {user?.instagram ? (
                               <CircleButton
@@ -1934,39 +2011,48 @@ const MyNFT = (props) => {
                                 }
                               ></CircleButton>
                             ) : null}
+                            
+                            <Spacer></Spacer>
 
-                            {/* Wallet button  */}
-                            {user?.XDCWallets?.length !== 0 ? (
-                              <BubbleCopied
-                                logo={walletBlue}
-                                address={
-                                  userDomain
-                                    ? userDomain
-                                    : user?.XDCWallets
-                                    ? truncateAddress(isXdc(user.XDCWallets[0]) ? user.XDCWallets[0].toLowerCase() : toXdc(user.XDCWallets[0].toLowerCase()))
-                                    : ""
-                                }
-                                addressCreator={
-                                  user?.XDCWallets ? isXdc(user.XDCWallets[0]) ? user.XDCWallets[0].toLowerCase() : toXdc(user.XDCWallets[0].toLowerCase()) : ""
-                                }
-                                icon={copyIcon}
+                            {/* Edit button for the logged-in user */}
+                            {isLoggedIn ? (
+                              <HStack
                                 background={
                                   userSettings?.dashboardMode === "dark"
                                     ? "#20222D"
                                     : "white"
                                 }
-                                textColor={
-                                  userSettings?.dashboardMode === "dark"
-                                    ? "#FAFAFA"
-                                    : "#363537"
-                                }
-                              ></BubbleCopied>
+                                border="10px"
+                                cursor="pointer"
+                                minheight="32px"
+                                self="none"
+                                spacing="6px"
+                                padding="0 6px 0 9px"
+                                onClick={() => setIsEditing(true)}
+                              >
+                                <BodyRegular
+                                  textcolor={
+                                    userSettings?.dashboardMode === "dark"
+                                      ? "#FAFAFA"
+                                      : "#363537"
+                                  }
+                                  cursor="pointer"
+                                >
+                                  Edit Profile
+                                </BodyRegular>
+                                <IconImg
+                                  cursor="pointer"
+                                  url={editProfile}
+                                  width="24px"
+                                  height="24px"
+                                ></IconImg>
+                              </HStack>
                             ) : null}
                           </HStack>
                         </VStack>
                       </HStack>
 
-                      {size.width < 769 && (
+                      {/* {size.width < 769 && (
                         <HStack>
                           <VStack
                             background={"rgba(0,0,0,0.42)"}
@@ -2037,7 +2123,6 @@ const MyNFT = (props) => {
                               </>
                             ) : (
                               <VStack width="100%">
-                                {/* Only 90 characters */}
                                 <TitleSemi21
                                   textcolor={
                                     userSettings?.dashboardMode === "dark"
@@ -2102,101 +2187,105 @@ const MyNFT = (props) => {
                             )}
                           </VStack>
                         </HStack>
-                      )}
+                      )} */}
+                      
                       {/* Filter Buttons */}
-
-                      <HStack spacing="30px">
-                        {/* Collections Button */}
-                        <HStack
-                          onClick={() => {
-                            setSubMenu(1);
-                          }}
-                          cursor={"pointer"}
-                          variants={selection}
-                          animate={subMenu === 1 ? "active" : "faded"}
-                        >
-                          <TitleSemi18
-                            cursor="pointer"
-                            textcolor={
-                              userSettings?.dashboardMode === "dark"
-                                ? "#26272E"
-                                : "white"
-                            }
-                          >
-                            Collections
-                          </TitleSemi18>
-                          <VStack
-                            width="auto"
-                            minwidth="26px"
-                            height="26px"
-                            border="30px"
-                            background={
-                              userSettings?.dashboardMode === "dark"
-                                ? "#20222D"
-                                : "white"
-                            }
-                            cursor="pointer"
-                          >
-                            <BodyRegular
-                              textcolor={
-                                userSettings?.dashboardMode === "dark"
-                                  ? "#FAFAFA"
-                                  : "#363537"
-                              }
-                            >
-                              {collections?.length}
-                            </BodyRegular>
-                          </VStack>
-                        </HStack>
-
-                        {/* Nft Button */}
-                        <HStack
-                          onClick={() => setSubMenu(0)}
-                          cursor={"pointer"}
-                          variants={selection}
-                          animate={subMenu === 0 ? "active" : "faded"}
-                        >
-                          <TitleSemi18
-                            cursor="pointer"
-                            textcolor={
-                              userSettings?.dashboardMode === "dark"
-                                ? "#20222D"
-                                : "white"
-                            }
-                          >
-                            NFTs Owned
-                          </TitleSemi18>
-                          <VStack
-                            width="auto"
-                            minwidth="26px"
-                            height="26px"
-                            border="30px"
-                            background={
-                              userSettings?.dashboardMode === "dark"
-                                ? "#20222D"
-                                : "white"
-                            }
-                            cursor="pointer"
-                            padding="0px 9px"
-                          >
-                            <BodyRegular
-                              textcolor={
-                                userSettings?.dashboardMode === "dark"
-                                  ? "#FAFAFA"
-                                  : "#363537"
-                              }
-                            >
-                              {totalNfts}
-                            </BodyRegular>
-                          </VStack>
-                        </HStack>
-
+                      <HStack style={{alignSelf: "flex-start"}} width="100%">
+                        <TabBar initialTab={isSelected} alignment="flex-start" userProfile={true} userSettings={userSettings} collectionLength={collections?.length} nftLength={totalNfts} onClick={(status) => setIsSelected(status)}></TabBar>
                         <Spacer></Spacer>
+                        <SocialAbsolute>
+                          <HStack
+                            justify="flex-start"
+                            border="30px"
+                            padding="0 15px"
+                            spacing="15px"
+                            height="42px"
+                            background={({ theme }) => theme.backElement}
+                          >
+                            <CaptionBoldShort>SHARE</CaptionBoldShort>
+
+                            <FacebookShareButton
+                              url={webLink}
+                              quote={"Check out this Creator on XDSea!"}
+                              hashtag={["#XDSea"]}
+                              description={"XDSea"}
+                              className="Demo__some-network__share-button"
+                            >
+                              <a>
+                                <IconImg
+                                  url={facebookSocial}
+                                  width="30px"
+                                  height="30px"
+                                ></IconImg>
+                              </a>
+                            </FacebookShareButton>
+                            <TwitterShareButton
+                              title={"Check out this Creator on XDSea!"}
+                              url={webLink}
+                              hashtags={["XDSea", "BuildItOnXDC"]}
+                            >
+                              <a>
+                                <IconImg
+                                  url={twitterSocial}
+                                  width="30px"
+                                  height="30px"
+                                ></IconImg>
+                              </a>
+                            </TwitterShareButton>
+                            <TelegramShareButton
+                              title={"Check out this Creator on XDSea!"}
+                              url={webLink}
+                            >
+                              <a>
+                                <IconImg
+                                  url={telegramSocial}
+                                  width="30px"
+                                  height="30px"
+                                ></IconImg>
+                              </a>
+                            </TelegramShareButton>
+                            <WhatsappShareButton
+                              title={"Check out this Creator on XDSea!"}
+                              url={webLink}
+                            >
+                              <a>
+                                <IconImg
+                                  url={whatsSocial}
+                                  width="30px"
+                                  height="30px"
+                                ></IconImg>
+                              </a>
+                            </WhatsappShareButton>
+
+                            {copied ? (
+                              <IconImg
+                                url={copiedLink}
+                                width="28px"
+                                height="28px"
+                              ></IconImg>
+                            ) : (
+                              <a>
+                                <IconImg
+                                  onClick={() => {
+                                    navigator.clipboard.writeText(
+                                      user?.XDCWallets.length !== 0 ? user.XDCWallets[0] : ""
+                                    );
+                                    setCopied(true);
+                                    setTimeout(() => setCopied(false), 1500);
+                                  }}
+                                  url={linkSocial}
+                                  width="30px"
+                                  height="30px"
+                                ></IconImg>
+                              </a>
+                            )}
+                          </HStack>
+                        </SocialAbsolute>
                       </HStack>
                     </VStack>
 
                     {/* Sidebar Content */}
-                    <VStack
+                    {/* <VStack
                       minwidth="30%"
                       height="100%"
                       padding="12px 12px 0px 0"
@@ -2204,40 +2293,6 @@ const MyNFT = (props) => {
                       justify="flex-start"
                       spacing="12px"
                     >
-                      {/* Edit button for the logged-in user */}
-                      {isLoggedIn ? (
-                        <HStack
-                          background={
-                            userSettings?.dashboardMode === "dark"
-                              ? "#20222D"
-                              : "white"
-                          }
-                          border="30px"
-                          cursor="pointer"
-                          minheight="42px"
-                          self="none"
-                          spacing="6px"
-                          padding="0 6px 0 9px"
-                          onClick={() => setIsEditing(true)}
-                        >
-                          <BodyRegular
-                            textcolor={
-                              userSettings?.dashboardMode === "dark"
-                                ? "#FAFAFA"
-                                : "#363537"
-                            }
-                            cursor="pointer"
-                          >
-                            Edit Profile
-                          </BodyRegular>
-                          <IconImg
-                            cursor="pointer"
-                            url={editProfile}
-                            width="30px"
-                            height="30px"
-                          ></IconImg>
-                        </HStack>
-                      ) : null}
 
                       {size.width > 768 ? (
                         <HStack>
@@ -2310,7 +2365,6 @@ const MyNFT = (props) => {
                               </>
                             ) : (
                               <VStack width="100%">
-                                {/* Only 90 characters */}
                                 <TitleSemi21
                                   textcolor={
                                     userSettings?.dashboardMode === "dark"
@@ -2377,11 +2431,11 @@ const MyNFT = (props) => {
                         </HStack>
                       ) : null}
 
-                      {/* <Activity></Activity> */}
-                    </VStack>
+                      <Activity></Activity>
+                    </VStack> */}
                   </HStack>
 
-                  {subMenu === 0 && (
+                  {!isSelected && (
                     <StickySectionHeader top="120">
                       <HStack
                         background="rgb(0,0,0, 0.3)"
@@ -2398,13 +2452,13 @@ const MyNFT = (props) => {
                               : size.width - 12 + "px"
                           }
                         >
-                          <FiltersButton
+                          {/* <FiltersButton
                             isNftFilter={true}
                             onChange={handleChangeFilterNFT}
                             params={nftParams}
-                            switched={subMenu === 1}
+                            switched={!isSelected}
                             maxPrice={highestPrice}
-                          ></FiltersButton>
+                          ></FiltersButton> */}
                           <Swiper
                             spaceBetween={0}
                             slidesPerView={"auto"}
@@ -2412,7 +2466,7 @@ const MyNFT = (props) => {
                             onSwiper={(swiper) => console.log(swiper)}
                             onSlideChange={() => console.log("slide change")}
                             style={{
-                              width: "730px",
+                              width: "100%",
                               margin: "0 0 0 0",
                             }}
                             mousewheel={true}
@@ -2442,10 +2496,10 @@ const MyNFT = (props) => {
                                 ))
                               : null}
                           </Swiper>
-                          <SortButtonNFTS
+                          {/* <SortButtonNFTS
                             onChange={handleChangeFilterNFT}
                             params={nftParams}
-                          ></SortButtonNFTS>
+                          ></SortButtonNFTS> */}
                         </HStack>
                       </HStack>
                     </StickySectionHeader>
@@ -2454,7 +2508,7 @@ const MyNFT = (props) => {
                   {/* Collection or NFT Purchased  */}
                   <HStack>
                     <ZStack height="auto" width="100%" padding="0 0 12px 0">
-                      {subMenu === 0 && (
+                      {!isSelected && (
                         <VStack
                           width="100%"
                           key={"Created"}
@@ -2496,117 +2550,40 @@ const MyNFT = (props) => {
                                 }}
                               >
                                 {nfts.map((item, i) => (
-                                  <VStack
-                                    key={item._id}
-                                    maxwidth="100%"
-                                    minheight={item.height + "px"}
-                                    border="6px"
-                                    cursor="pointer"
-                                    overflow="hidden"
-                                    whileHover={{ scale: 1.009 }}
-                                  >
-                                    <ZStack
-                                      cursor={"pointer"}
-                                      border="6px"
-                                      onClick={() => {
+                                  <VStack key={item._id} minwidth="290px" minheight={item.height + "px"}>
+                                    <NftContainer
+                                      hasStaking={item.isStakeable}
+                                      isVerified={item.owner.isVerified}
+                                      iconStatus={item.saleType.toLowerCase()}
+                                      hasOffers={item.hasOpenOffer}
+                                      creatorImage={item.owner.urlProfile}
+                                      itemImage={item.urlFile.v0}
+                                      itemPreview={item.preview.v0}
+                                      price={item.price}
+                                      collectionName={item.collectionId.name}
+                                      itemNumber={item.name}
+                                      fileType={item.fileType}
+                                      background={({ theme }) => theme.backElement}
+                                      onClick={() =>
                                         props.redirect(
-                                          `nft/${isXdc(item.nftContract) ? item.nftContract.toLowerCase() : toXdc(item.nftContract.toLowerCase())}/${item.tokenId}`
-                                        );
-                                      }}
-                                      onHoverStart={() => {
-                                        setOwnedNFTPlaying((prevState) => {
-                                          prevState[i] = true;
-                                          return [...prevState];
-                                        });
-                                      }}
-                                      onHoverEnd={() => {
-                                        setOwnedNFTPlaying((prevState) => {
-                                          prevState[i] = false;
-                                          return [...prevState];
-                                        });
-                                      }}
-                                    >
-                                      {item.hasOpenOffer ? (
-                                        <BubbleOffers>
-                                          <HStack
-                                            background="linear-gradient(180deg, #FF5A5A 0%, rgba(255, 90, 90, 0.88) 100%)"
-                                            width="26px"
-                                            height="26px"
-                                            border="300px"
-                                            padding="0 6px"
-                                            spacing="6px"
-                                          >
-                                            <CaptionBoldShort textcolor="white">
-                                              !
-                                            </CaptionBoldShort>
-                                          </HStack>
-                                        </BubbleOffers>
-                                      ) : null}
-                                      <ZItem>
-                                        {isImage(item.fileType) ? (
-                                          <IconImg
-                                            url={item.urlFile.v0}
-                                            width="100%"
-                                            height="100%"
-                                            backsize="cover"
-                                            border="15px"
-                                          ></IconImg>
-                                        ) : isVideo(item.fileType) ? (
-                                          <VStack
-                                            width="100%"
-                                            height="100%"
-                                            border="9px"
-                                            background="black"
-                                            overflow="hidden"
-                                            animate={{ scale: 2.02 }}
-                                          >
-                                            <ReactPlayer
-                                              url={item.urlFile.v0}
-                                              playing={ownedNFTPlaying[i]}
-                                              volume={0}
-                                              muted={true}
-                                              loop={true}
-                                              width="100%"
-                                              height="160%"
-                                            />
-                                          </VStack>
-                                        ) : isAudio(item.fileType) ? (
-                                          <IconImg
-                                            url={item.preview.v0}
-                                            width="100%"
-                                            height="100%"
-                                            backsize="cover"
-                                            border="15px"
-                                          ></IconImg>
-                                        ) : null}
-                                      </ZItem>
-                                      <ZItem
-                                        {...longPress(() => {
-                                          setOwnedNFTPlaying((prevState) => {
-                                            const newOwnedNFTPlaying =
-                                              new Array(
-                                                ownedNFTPlaying.length
-                                              ).fill(false);
-                                            newOwnedNFTPlaying[i] =
-                                              !newOwnedNFTPlaying[i];
-                                            return [...newOwnedNFTPlaying];
-                                          });
-                                        })}
-                                      >
-                                        <VStack
-                                          padding="15px"
-                                          background="linear-gradient(180deg, rgba(0, 0, 0, 0) 54.41%, #000000 91.67%)"
-                                          border="9px"
-                                        >
-                                          <Spacer></Spacer>
-                                          <BodyRegular
-                                            textcolor={appStyle.colors.white}
-                                          >
-                                            {item.name}
-                                          </BodyRegular>
-                                        </VStack>
-                                      </ZItem>
-                                    </ZStack>
+                                          `nft/${
+                                            isXdc(item.nftContract)
+                                              ? item.nftContract.toLowerCase()
+                                              : toXdc(item.nftContract.toLowerCase())
+                                          }/${item.tokenId}`
+                                        )
+                                      }
+                                      onClickCreator={() =>
+                                        props.redirect(`user/${item.owner.nickName}`)
+                                      }
+                                      owner={true}
+                                      usdPrice={props.xdc}
+                                      collectionVerified={item.creator.isVerified}
+                                      setIsPlaying={handleNFTLongPress}
+                                      isPlaying={ownedNFTPlaying[i]}
+                                      nftIndex={i}
+                                      border="6px"
+                                    ></NftContainer>
                                   </VStack>
                                 ))}
                               </Masonry>
@@ -2630,7 +2607,7 @@ const MyNFT = (props) => {
                           )}
                         </VStack>
                       )}
-                      {subMenu === 1 && (
+                      {isSelected && (
                         <HStack
                           flexwrap="wrap"
                           justify="flex-start"
@@ -2641,91 +2618,39 @@ const MyNFT = (props) => {
                               <LoopLogo></LoopLogo>
                             </VStack>
                           ) : collections?.length !== 0 ? (
-                            collections?.map((item) => (
-                              <ZStack
-                                maxwidth={
-                                  size.width > 1024
-                                    ? "49.25%"
-                                    : size.width / 2 - 20 + "px"
-                                }
-                                minheight={
-                                  size.width < 1112 ? "320px" : "590px"
-                                }
-                                height={size.width < 1112 ? "320px" : "590px"}
-                                border="9px"
-                                overflow="hidden"
-                                style={{
-                                  boxShadow:
-                                    " 0px 11px 12px 0px rgba(0, 0, 0, 0.2)",
-                                }}
-                                onClick={() => {
-                                  props.redirect(`collection/${item.nickName}`);
-                                }}
-                              >
-                                <ZItem>
-                                  <IconImg
-                                    url={item.banner.v0}
-                                    width="100%"
-                                    height="100%"
-                                    backsize="cover"
-                                    border="9px"
-                                  ></IconImg>
-                                </ZItem>
-                                <ZItem>
-                                  <VStack
-                                    background="linear-gradient(180deg, rgba(0, 0, 0, 0) 54.41%, #000000 91.67%)"
-                                    width="100%"
-                                    height="100%"
-                                    border="12px"
-                                    padding="0 0 30px 0"
-                                  >
-                                    <Spacer></Spacer>
-
-                                    <IconImg
-                                      url={item.logo.v0}
-                                      width="90px"
-                                      height="90px"
-                                      backsize="cover"
-                                      border="90px"
-                                      bordersize="3px"
-                                      bordercolor="white"
-                                    ></IconImg>
-                                    <TitleSemi21 textcolor="white">
-                                      {item.name}
-                                    </TitleSemi21>
-                                    <HStack
-                                      self="none"
-                                      height="33px"
-                                      border="30px"
-                                      padding="0 15px "
-                                      spacing="9px"
-                                      background="linear-gradient(350.1deg, #0905C4 16.98%, #2D28FF 32.68%, #59E1FF 98.99%, #71FCF4 128.65%)"
-                                    >
-                                      <CaptionBoldShort textcolor="white">
-                                        Volume Traded
-                                      </CaptionBoldShort>
-                                      <BodyRegular textcolor="white">
-                                        {Number(item.volumeTrade) > 100000
-                                          ? Intl.NumberFormat("en-US", {
-                                              notation: "compact",
-                                              maximumFractionDigits: 2,
-                                            }).format(Number(item.volumeTrade))
-                                          : Number(
-                                              item.volumeTrade
-                                            ).toLocaleString(undefined, {
-                                              maximumFractionDigits: 2,
-                                            }) || "0"}
-                                      </BodyRegular>
-
-                                      <IconImg
-                                        url={logoWhiteX}
-                                        width="18px"
-                                        height="18px"
-                                      ></IconImg>
-                                    </HStack>
-                                  </VStack>
-                                </ZItem>
-                              </ZStack>
+                            collections?.map((item, i) => (
+                              <LayoutGroup id="collection" key={i + item._id}>
+                                <VStack
+                                  maxwidth="290px"
+                                  height="380px"
+                                  initial={{ opacity: 0 }}
+                                  animate={{ opacity: 1 }}
+                                >
+                                  <Collection
+                                    key={item.name}
+                                    isVerified={item.creator.isVerified}
+                                    keyContent={item.name}
+                                    keyID={item.addressCreator}
+                                    collectionImage={item.banner.v0}
+                                    creatorLogo={item.logo.v0}
+                                    collectionName={item.name}
+                                    collectionDescription={item.description}
+                                    creatorName={item.creator.userName}
+                                    onClickCollection={() =>
+                                      props.redirect(`collection/${item.nickName}`)
+                                    }
+                                    floorprice={item.floorPrice}
+                                    owners={item.owners}
+                                    nfts={item.totalNfts}
+                                    volumetraded={item.volumeTrade}
+                                    onClickCreator={() =>
+                                      props.redirect(`user/${item.creator.nickName}`)
+                                    }
+                                    sortVolume={true}
+                                    xdc={props.xdc}
+                                  ></Collection>
+                                </VStack>
+                              </LayoutGroup>
                             ))
                           ) : (
                             <VStack
@@ -2749,6 +2674,22 @@ const MyNFT = (props) => {
                     </ZStack>
                   </HStack>
                 </VStack>
+                <BottomStick>
+                  <DynaMenu
+                    isCollections={isSelected}
+                    handleFilterCollections={handleChangeFilter}
+                    handleFilterNFTs={handleChangeFilterNFT}
+                    collectionParams={collectionParams}
+                    nftParams={nftParams}
+                    isStake={isStake}
+                    setIsStake={setIsStake}
+                    maxPrice={maxPrice}
+                    setMaxPrice={setMaxPrice}
+                    minPrice={minPrice}
+                    setMinPrice={setMinPrice}
+                    isStakingEnabled={true}
+                  ></DynaMenu>
+                </BottomStick>
               </Content>
             </ZItem>
           )}
@@ -2881,11 +2822,11 @@ const MyNFT = (props) => {
             {/* Collections Button */}
             <HStack
               onClick={() => {
-                setSubMenu(1);
+                setIsSelected(false);
               }}
               cursor={"pointer"}
               variants={selection}
-              animate={subMenu === 1 ? "active" : "faded"}
+              animate={isSelected ? "active" : "faded"}
             >
               <BodyRegular
                 cursor="pointer"
@@ -2920,10 +2861,10 @@ const MyNFT = (props) => {
 
             {/* Nft Button  */}
             <HStack
-              onClick={() => setSubMenu(0)}
+              onClick={() => setIsSelected(true)}
               cursor={"pointer"}
               variants={selection}
-              animate={subMenu === 0 ? "active" : "faded"}
+              animate={!isSelected ? "active" : "faded"}
               style={size.width > 320 ? {} : { "margin-left": "-15px" }}
             >
               {size.width > 320 ? (
@@ -2968,7 +2909,7 @@ const MyNFT = (props) => {
             </HStack>
           </HStack>
 
-          {subMenu === 1 &&
+          {isSelected &&
             (loadingCollection ? (
               <VStack padding="120px">
                 <LoopLogo></LoopLogo>
@@ -3092,7 +3033,7 @@ const MyNFT = (props) => {
               </VStack>
             ))}
 
-          {subMenu === 0 && (
+          {!isSelected && (
             <VStack
               width="100%"
               key={"Created"}
@@ -3286,7 +3227,7 @@ const Content = styled(motion.div)`
   max-width: 1200px;
   margin: 0 auto;
 
-  z-index: 30px;
+  z-index: 30;
 `;
 
 const CreatorTag = styled(motion.div)`
@@ -3363,4 +3304,17 @@ const FadedBack = styled(motion.div)`
   height: 100vh;
   z-index: 100;
   background: ${appStyle.colors.darkgrey60};
+`;
+
+const SocialAbsolute = styled(motion.div)`
+  bottom: 45px;
+  right: 0px;
+`;
+
+const BottomStick = styled(motion.div)`
+  position: fixed;
+  bottom: 0%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
 `;
