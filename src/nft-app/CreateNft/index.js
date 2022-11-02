@@ -552,6 +552,7 @@ function CreateNft(props) {
                   image: nftUrl,
                   fileType: nft.fileType,
                   preview: previewUrl,
+                  unlockableContent: unlockableContent,
                 });
                 const added = await client.add(uploadData);
                 const url = `https://xdsea.infura-ipfs.io/ipfs/${added.path}`;
@@ -669,7 +670,8 @@ function CreateNft(props) {
             nftUrl,
             nft.fileType,
             previewURL,
-            filteredProperties
+            filteredProperties,
+            unlockableContent
           )
         ).data.nft;
       } else {
@@ -689,7 +691,8 @@ function CreateNft(props) {
             nftUrl,
             nft.fileType,
             previewURL,
-            filteredProperties
+            filteredProperties,
+            unlockableContent
           )
         ).data.nft;
       }
@@ -856,7 +859,7 @@ function CreateNft(props) {
               mintName={name}
               mintedNFT={assetURL}
               confirmActionModal={() => {
-                props.redirect(`nft/${isXdc(nftaddress) ? nftaddress.toLowerCase() : toXdc(nftaddress.toLowerCase())}/${tokenId}`);
+                props.redirect(`nft/${isXdc(nftaddress) ? nftaddress.toLowerCase() : toXdc(nftaddress.toLowerCase())}/${parseInt(tokenId, 16)}`);
               }}
             ></TxModal>
           </VStack>

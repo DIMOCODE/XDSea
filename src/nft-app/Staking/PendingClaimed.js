@@ -9,9 +9,32 @@ import { GemCounter } from "./GemCounter";
 import { TabedButtons } from "../../styles/Buttons/TabedButtons";
 
 function PendingClaimed(props) {
-  const { onlyOneToken } = props;
+  const { onlyOneToken, stakeData, rewardRate, backedValue } = props;
 
   const [isOneToken, setIsOneToken] = useState(onlyOneToken);
+
+  const getReward = (id) => {
+    var rewards = {};
+    rewardRate?.map((reward) => {
+      if(reward._id === id) {
+        rewards = reward.amount * backedValue;
+      }
+      return rewards;
+    });
+    return rewards;
+  }
+
+  const getClaimed = () => {
+    var amount = 0;
+    stakeData?.rewardsClaimed?.map((reward) => {
+      amount += reward.amountOfPeriods * getReward(reward._id);
+    });
+    return amount;
+  }
+
+  const getPending = () => {
+    return stakeData?.amountminutesSinceLastReward / (stakeData?.stakingPoolId?.rewardFrecuency * 60) * getReward(stakeData?.stakingPoolId?.rewardRates[0]?._id);
+  }
 
   return (
     <HStack
@@ -22,14 +45,24 @@ function PendingClaimed(props) {
     >
       {isOneToken ? (
         <>
-          <VStack width="100%" spacing="3px">
+          <VStack width="100%" spacing="15px">
             <CaptionBold initial={{ opacity: 0.6 }}>PENDING</CaptionBold>
-            <XdcCounter amount="100" period={0}></XdcCounter>
+            <XdcCounter amount={isNaN(getPending()) ? "-" : (getPending() > 100000
+                      ? Intl.NumberFormat("en-US", {
+                          notation: "compact",
+                          maximumFractionDigits: 2,
+                        }).format(getPending())
+                      : (getPending()).toLocaleString(
+                          undefined,
+                          {
+                            maximumFractionDigits: 2,
+                          }
+                        ) || "0")} period={0}></XdcCounter>
           </VStack>
 
-          <VStack width="100%" spacing="3px">
+          <VStack width="100%" spacing="15px">
             <CaptionBold initial={{ opacity: 0.6 }}>CLAIMED</CaptionBold>
-            <XdcCounter amount="100" period={0}></XdcCounter>
+            <XdcCounter amount={getClaimed()} period={0}></XdcCounter>
           </VStack>
         </>
       ) : (

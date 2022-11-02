@@ -181,6 +181,7 @@ const NFTApp = () => {
                     wallet={wallet}
                     getUser={getUser}
                     user={user}
+                    xdc={xdcPrice}
                   />
                 )}
               ></Route>
