@@ -315,7 +315,7 @@ const Discover = (props) => {
           width="1200px"
           height="147px"
           spacing="36px"
-          padding="69px 0px 0px 0px"
+          padding="69px 12px 0px 12px"
         >
           <TitleBold27 textcolor={appStyle.colors.white}>Discover</TitleBold27>
 
@@ -546,7 +546,7 @@ const Discover = (props) => {
 export { Discover };
 
 const DiscoverSection = styled(motion.div)`
-  padding: 0px 0px 300px 0px;
+  padding: 0px 0px 60px 0px;
   width: 100%;
 `;
 

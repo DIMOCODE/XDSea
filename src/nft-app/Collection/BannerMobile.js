@@ -255,6 +255,7 @@ function BannerMobile(props) {
       <VStack
         padding="15px 60px"
         maxwidth="1200px"
+        width="100%"
         background={({ theme }) => theme.backElement}
         border="6px"
       >

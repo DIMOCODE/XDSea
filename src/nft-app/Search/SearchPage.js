@@ -254,7 +254,7 @@ function SearchPage(props) {
           width="1200px"
           height="147px"
           spacing="36px"
-          padding="69px 0px 0px 0px"
+          padding="69px 12px 0px 12px"
         >
           <TitleBold27 textcolor={appStyle.colors.white}>
             Search results for: "{searchTerm}"

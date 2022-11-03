@@ -37,7 +37,7 @@ function BubbleCopied(props) {
         onClick={() => setShowAlertLink(true)}
       >
         <VStack spacing="0px" alignment="flex-start">
-          <CaptionTiny textcolor={({ theme }) => theme.faded60} style={{"margin-bottom": "0px"}}>WALLET</CaptionTiny>
+          <CaptionTiny textcolor={textColor} style={{"margin-bottom": "0px"}}>WALLET</CaptionTiny>
           <Tooltip title={addressCreator}>
             {showAlertLink ? (
               <CaptionBoldShort style={{"white-space": "nowrap"}}>Address Copied</CaptionBoldShort>

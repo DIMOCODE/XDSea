@@ -18,10 +18,10 @@ function TabBar(props) {
       padding="3px"
       border="6px"
       height="49px"
-      width="366px"
+      width="100%"
       self="none"
       spacing="3px"
-      style={{zIndex: "100", alignSelf: alignment}}
+      style={{zIndex: "100", alignSelf: alignment, maxWidth: "366px"}}
     >
         <HStack width="100%" height="43px" onClick={() => toggleTab(true)} cursor="pointer">
           <HStack spacing="10px">
