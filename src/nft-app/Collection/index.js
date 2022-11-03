@@ -39,7 +39,12 @@ import {
   TelegramShareButton,
   WhatsappShareButton,
 } from "react-share";
-import { getCollection, getCollectionNFTs, getStakes, getStakingPool } from "../../API/Collection";
+import {
+  getCollection,
+  getCollectionNFTs,
+  getStakes,
+  getStakingPool,
+} from "../../API/Collection";
 import { truncateAddress, toXdc, isXdc } from "../../common/common";
 import { SearchCollection } from "../../styles/SearchCollection";
 import { FiltersButton } from "../../styles/FiltersButton";
@@ -51,6 +56,10 @@ import { BannerMobile } from "./BannerMobile";
 import { CollectionStats } from "./CollectionStats";
 import { CircleButton } from "../../styles/CircleButton";
 import { DynaMenu } from "../../styles/DynaMenu/DynaMenu";
+import { BlockTVL } from "./TVL/BlockTVL";
+import { TokenSelector } from "./TokenSelector/TokenSelector";
+import { TopInventory } from "./Inventory/TopInventory";
+import { HolderSection } from "./HoldersSection";
 import { StakeSection } from "../Staking/StakeSection";
 
 const CollectionPage = (props) => {
@@ -139,13 +148,13 @@ const CollectionPage = (props) => {
       ).data;
 
       var collectionStakingPool = {};
-      if(collectionData.collection.isStakeable) {
+      if (collectionData.collection.isStakeable) {
         collectionStakingPool = await (
           await getStakingPool(collectionData.collection._id)
         ).data;
         setStakingPool(collectionStakingPool.stakingPools);
       }
-      
+
       setNftNumber(collectionNFTData.nftsAmount);
       setMaxPrice(collectionNFTData.higherPrice);
       setParams({
@@ -162,9 +171,7 @@ const CollectionPage = (props) => {
   };
 
   const getStakesData = async () => {
-    const stakesData = await(
-      await getStakes(collection._id)
-    ).data;
+    const stakesData = await (await getStakes(collection._id)).data;
     setStakes(stakesData);
   };
 
@@ -226,9 +233,8 @@ const CollectionPage = (props) => {
   };
 
   useEffect(() => {
-    if(isStake)
-      getStakesData();
-  }, [isStake])
+    if (isStake) getStakesData();
+  }, [isStake]);
 
   /**
    * React Hook to re-render when the search term state value is changed
@@ -600,7 +606,23 @@ const CollectionPage = (props) => {
       )}
 
       {/* Collection NFTs */}
+
+      {/* Staking Creator  */}
       <CollectionContent id="scrollableDiv">
+        <VStack>
+          {/* TVl & Token Selector */}
+          <HStack style={{ zIndex: 100 }}>
+            <BlockTVL tvl="14,003"></BlockTVL>
+            <TokenSelector rewardRate="0.1544"></TokenSelector>
+          </HStack>
+
+          {/* Top Inventory and HolerSection */}
+          <HStack alignment="flex-start">
+            <TopInventory></TopInventory>
+            <HolderSection></HolderSection>
+          </HStack>
+        </VStack>
+
         {/* Collection NFT Cards */}
         <InfiniteScroll
           dataLength={nfts.length}
