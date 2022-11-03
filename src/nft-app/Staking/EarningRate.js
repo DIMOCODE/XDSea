@@ -9,7 +9,7 @@ import { GemCounter } from "./GemCounter";
 import { MultiTab } from "../../styles/Buttons/MultiTab";
 
 function EarningRate(props) {
-  const { onlyOneToken } = props;
+  const { onlyOneToken, titleOff } = props;
 
   const [isOneToken, setIsOneToken] = useState(onlyOneToken);
 
@@ -23,7 +23,9 @@ function EarningRate(props) {
       >
         {isOneToken ? (
           <VStack width="100%">
-            <CaptionBold initial={{ opacity: 0.6 }}>EARNING RATE</CaptionBold>
+            {!titleOff && (
+              <CaptionBold initial={{ opacity: 0.6 }}>EARNING RATE</CaptionBold>
+            )}
             <HStack width="100%">
               <XdcCounter amount="100" period={1}></XdcCounter>
               <XdcCounter amount="100" period={2}></XdcCounter>

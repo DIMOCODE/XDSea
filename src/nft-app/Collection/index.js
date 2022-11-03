@@ -51,6 +51,10 @@ import { BannerMobile } from "./BannerMobile";
 import { CollectionStats } from "./CollectionStats";
 import { CircleButton } from "../../styles/CircleButton";
 import { DynaMenu } from "../../styles/DynaMenu/DynaMenu";
+import { BlockTVL } from "./TVL/BlockTVL";
+import { TokenSelector } from "./TokenSelector/TokenSelector";
+import { TopInventory } from "./Inventory/TopInventory";
+import { HolderSection } from "./HoldersSection";
 
 const CollectionPage = (props) => {
   const size = useWindowSize();
@@ -577,7 +581,23 @@ const CollectionPage = (props) => {
       )}
 
       {/* Collection NFTs */}
+
+      {/* Staking Creator  */}
       <CollectionContent id="scrollableDiv">
+        <VStack>
+          {/* TVl & Token Selector */}
+          <HStack style={{ zIndex: 100 }}>
+            <BlockTVL tvl="14,003"></BlockTVL>
+            <TokenSelector rewardRate="0.1544"></TokenSelector>
+          </HStack>
+
+          {/* Top Inventory and HolerSection */}
+          <HStack alignment="flex-start">
+            <TopInventory></TopInventory>
+            <HolderSection></HolderSection>
+          </HStack>
+        </VStack>
+
         {/* <StickySectionHeader top="68">
           <HStack
             background="rgb(0,0,0, 0.06)"

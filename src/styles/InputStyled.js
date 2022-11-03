@@ -37,6 +37,8 @@ function InputStyled(props) {
     disabled,
     textplace,
     border,
+    width,
+    weight,
   } = props;
 
   const [hasURL] = useState(false);
@@ -73,6 +75,8 @@ function InputStyled(props) {
         textcolor={textcolor}
         disabled={disabled}
         textplace={textplace}
+        width={width}
+        weight={weight}
       />
       <InputIcon iconRight={iconRight || "15px"} iconLeft={iconLeft}>
         <IconImg
@@ -116,12 +120,14 @@ const Input = styled.input.attrs((props) => ({
   fontsize: props.fontsize || "16px",
   texttransform: props.texttransform || "none",
   height: props.height || "39px",
+  width: props.width || "100%",
+  weight: props.weight || "normal",
   textcolor: props.textcolor || props.theme.text,
   textplace: props.textplace || "rgba(255,255,255, 0.8)",
   border: props.border || "6px",
 }))`
   background: ${(props) => props.background};
-  width: 100%;
+  width: ${(props) => props.width};
   height: ${(props) => props.height};
   border-radius: ${(props) => props.border};
   padding: ${(props) => props.padding};
@@ -132,7 +138,7 @@ const Input = styled.input.attrs((props) => ({
   -moz-box-sizing: border-box; 
   box-sizing: border-box;
   font-style: normal;
-  font-weight: normal;
+  font-weight: ${(props) => props.weight};
   font-size: ${(props) => props.fontsize};
   letter-spacing: -0.01em;
   text-transform: ${(props) => props.texttransform};
