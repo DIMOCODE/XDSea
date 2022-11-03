@@ -138,7 +138,8 @@ export const createNFT = (
   urlFile,
   fileType,
   preview,
-  properties
+  properties,
+  unlockableContent
 ) => {
   const body = {
     collectionId,
@@ -156,6 +157,7 @@ export const createNFT = (
     properties,
     blockchainOrigin: "XDC",
     isHidden: false,
+    unlockableContent,
   };
   return createSignedRequest(HTTP_METHODS.post, "nft", null, body);
 };

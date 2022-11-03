@@ -9,9 +9,16 @@ import { GemCounter } from "./GemCounter";
 import { MultiTab } from "../../styles/Buttons/MultiTab";
 
 function EarningRate(props) {
-  const { onlyOneToken, titleOff } = props;
+  const {
+    onlyOneToken,
+    titleOff,
+    rewardRate,
+    rewardFrequency,
+    backedValue,
+    tittleOff,
+  } = props;
 
-  const [isOneToken, setIsOneToken] = useState(onlyOneToken);
+  const [isOneToken] = useState(onlyOneToken);
 
   return (
     <HStack width="100%">
@@ -27,9 +34,37 @@ function EarningRate(props) {
               <CaptionBold initial={{ opacity: 0.6 }}>EARNING RATE</CaptionBold>
             )}
             <HStack width="100%">
-              <XdcCounter amount="100" period={1}></XdcCounter>
-              <XdcCounter amount="100" period={2}></XdcCounter>
-              <XdcCounter amount="100" period={3}></XdcCounter>
+              {rewardRate ? (
+                rewardRate[0]?.rewardTypeId?.type === "coin" ? (
+                  <>
+                    <XdcCounter
+                      amount={
+                        (backedValue * 24 * rewardRate[0]?.amount) /
+                        rewardFrequency
+                      }
+                      period={1}
+                    ></XdcCounter>
+                    <XdcCounter
+                      amount={
+                        (backedValue * 730 * rewardRate[0]?.amount) /
+                        rewardFrequency
+                      }
+                      period={2}
+                    ></XdcCounter>
+                    <XdcCounter
+                      amount={
+                        (backedValue * 8760 * rewardRate[0]?.amount) /
+                        rewardFrequency
+                      }
+                      period={3}
+                    ></XdcCounter>
+                  </>
+                ) : (
+                  <></>
+                )
+              ) : (
+                <></>
+              )}
             </HStack>
           </VStack>
         ) : (

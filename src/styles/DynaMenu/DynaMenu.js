@@ -81,7 +81,6 @@ function DynaMenu(props) {
     setIsSearch(false);
     setIsFilter(false);
     setIsSort(false);
-    setIsStake(false);
   });
 
   useEffect(() => {
