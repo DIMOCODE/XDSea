@@ -21,7 +21,7 @@ import { TokenInfo } from "./TokenInfo";
 import { TokenCreator } from "./TokenCreator";
 
 function TokenSelector(props) {
-  const { rewardRate } = props;
+  const { rewardRate, hideButtons } = props;
 
   const [newToken, setNewToken] = useState(false);
   return (
@@ -29,6 +29,7 @@ function TokenSelector(props) {
       background={({ theme }) => theme.backElement}
       padding="21px"
       border="6px"
+      width="100%"
     >
       {newToken ? (
         <TokenCreator onClickCancel={() => setNewToken(false)}></TokenCreator>
@@ -48,7 +49,11 @@ function TokenSelector(props) {
           </HStack>
           <Separator></Separator>
 
-          <TokenInfo logo={xdc} rewardRate={rewardRate}></TokenInfo>
+          <TokenInfo
+            hideButtons={hideButtons}
+            logo={xdc}
+            rewardRate={rewardRate}
+          ></TokenInfo>
         </>
       )}
     </VStack>

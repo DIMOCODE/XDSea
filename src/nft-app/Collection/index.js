@@ -61,6 +61,9 @@ import { TokenSelector } from "./TokenSelector/TokenSelector";
 import { TopInventory } from "./Inventory/TopInventory";
 import { HolderSection } from "./HoldersSection";
 import { StakeSection } from "../Staking/StakeSection";
+import { UploadBlock } from "./PoolCreation/UploadBlock";
+import { PreviewPool } from "./PoolCreation/PreviewPool";
+import { ButtonM } from "../../styles/Buttons/ButtonM";
 
 const CollectionPage = (props) => {
   const size = useWindowSize();
@@ -607,8 +610,25 @@ const CollectionPage = (props) => {
 
       {/* Collection NFTs */}
 
-      {/* Staking Creator  */}
       <CollectionContent id="scrollableDiv">
+        {/* Pool   */}
+        <VStack padding="21px 0">
+          <HStack style={{ zIndex: 1 }}>
+            <UploadBlock></UploadBlock>
+            <VStack width="100%">
+              <TokenSelector hideButtons={true}></TokenSelector>
+              <ButtonM
+                title="Deploy"
+                textcolor="white"
+                background={({ theme }) => theme.blue}
+              ></ButtonM>
+            </VStack>
+          </HStack>
+
+          <PreviewPool></PreviewPool>
+        </VStack>
+
+        {/* Staking Creator  */}
         <VStack>
           {/* TVl & Token Selector */}
           <HStack style={{ zIndex: 100 }}>
