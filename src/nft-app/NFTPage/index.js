@@ -1821,7 +1821,6 @@ const NFTDetails = (props) => {
                         withdrawStatus={withdrawOfferButtonStatus[i]}
                         onClickWithdraw={() => withdrawOffer(i, item._id)}
                         acceptStatus={acceptOfferButtonStatus[i]}
-                        onClickAccept={() => acceptOffer(i, item._id)}
                         xdc={props.xdc}
                         redirect={props.redirect}
                       ></TableOffersNft>
