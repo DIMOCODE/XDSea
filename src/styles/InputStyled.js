@@ -84,7 +84,7 @@ function InputStyled(props) {
           width={iconWidth || "18px"}
           height={iconHeight || "18px"}
           cursor={iconClickable ? "pointer" : "default"}
-          onClick={handleClick}
+          onClick={onClickIcon ? handleClick : () => {}}
         ></IconImg>
       </InputIcon>
       {hasURL ? (

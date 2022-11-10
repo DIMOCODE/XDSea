@@ -61,9 +61,9 @@ import { TokenSelector } from "./TokenSelector/TokenSelector";
 import { TopInventory } from "./Inventory/TopInventory";
 import { HolderSection } from "./HoldersSection";
 import { StakeSection } from "../Staking/StakeSection";
-import { UploadBlock } from "./PoolCreation/UploadBlock";
-import { PreviewPool } from "./PoolCreation/PreviewPool";
-import { ButtonM } from "../../styles/Buttons/ButtonM";
+import { StakingModal } from "../Staking/StakingModal";
+import { AddRemoveModal } from "../Staking/AddRemoveModal";
+import { BackedValueModal } from "../Staking/BackedValueModal";
 
 const CollectionPage = (props) => {
   const size = useWindowSize();
@@ -97,6 +97,8 @@ const CollectionPage = (props) => {
   const [minPrice, setMinPrice] = useState(0);
   const [stakingPool, setStakingPool] = useState({});
   const [stakes, setStakes] = useState([]);
+  const [addRemoveModal, setAddRemoveModal] = useState(false);
+  const [backedValueModal, setBackedValueModal] = useState(false);
 
   const webLink = `https://www.xdsea.com/collection/${collectionNickName}`;
 
@@ -141,6 +143,7 @@ const CollectionPage = (props) => {
         nftsCount: collectionData.metrics.nftsCount,
         owners: collectionData.metrics.owners,
         isStakeable: collectionData.collection.isStakeable,
+        nftContract: collectionData.collection.address,
       };
       const collectionNFTData = await (
         await getCollectionNFTs({
@@ -611,39 +614,21 @@ const CollectionPage = (props) => {
       {/* Collection NFTs */}
 
       <CollectionContent id="scrollableDiv">
-        {/* Pool   */}
-        <VStack padding="21px 0">
-          <HStack style={{ zIndex: 1 }}>
-            <UploadBlock></UploadBlock>
-            <VStack width="100%">
-              <TokenSelector hideButtons={true}></TokenSelector>
-              <ButtonM
-                title="Deploy"
-                textcolor="white"
-                background={({ theme }) => theme.blue}
-              ></ButtonM>
-            </VStack>
-          </HStack>
-
-          <PreviewPool></PreviewPool>
-        </VStack>
-
-        {/* Staking Creator  */}
-        <VStack>
-          {/* TVl & Token Selector */}
-          <HStack style={{ zIndex: 100 }}>
-            <BlockTVL tvl="14,003"></BlockTVL>
-            <TokenSelector rewardRate="0.1544"></TokenSelector>
-          </HStack>
-
-          {/* Top Inventory and HolerSection */}
-          <HStack alignment="flex-start">
-            <TopInventory></TopInventory>
-            <HolderSection></HolderSection>
-          </HStack>
-        </VStack>
-
         {/* Collection NFT Cards */}
+        {isStake ? (
+            <StakeSection
+              nfts={nfts}
+              usdPrice={props.xdc}
+              stakingPool={stakingPool ? stakingPool[0] : []}
+              stakes={stakes}
+              onClickAR={() => {
+                setAddRemoveModal(true);
+              }}
+              onClickBV={() => {
+                setBackedValueModal(true);
+              }}
+            ></StakeSection>
+          ) : (
         <InfiniteScroll
           dataLength={nfts.length}
           next={fetchMoreNFTs}
@@ -660,14 +645,6 @@ const CollectionPage = (props) => {
           scrollableTarget="#scrollableDiv"
           style={{ overflow: "hidden" }}
         >
-          {isStake ? (
-            <StakeSection
-              nfts={nfts}
-              usdPrice={props.xdc}
-              stakingPool={stakingPool ? stakingPool[0] : []}
-              stakes={stakes}
-            ></StakeSection>
-          ) : (
             <HStack
               flexwrap="wrap"
               padding="30px 6px"
@@ -752,8 +729,8 @@ const CollectionPage = (props) => {
                 ))
               )}
             </HStack>
-          )}
         </InfiniteScroll>
+          )}
       </CollectionContent>
 
       <BottomStick>
@@ -770,6 +747,12 @@ const CollectionPage = (props) => {
           isStakingEnabled={collection?.isStakeable}
         ></DynaMenu>
       </BottomStick>
+      {addRemoveModal && (
+        <AddRemoveModal setAddRemoveModal={setAddRemoveModal} nftContract={collection?.nftContract} collectionId={collection?._id}></AddRemoveModal>
+      )}
+      {backedValueModal && (
+        <BackedValueModal setBackedValueModal={setBackedValueModal} nftContract={collection?.nftContract} collectionId={collection?._id}></BackedValueModal>
+      )}
     </CollectionSection>
   );
 };
