@@ -20,7 +20,7 @@ import { InputStyled } from "../../../styles/InputStyled";
 import { ButtonM } from "../../../styles/Buttons/ButtonM";
 
 function TokenInfo(props) {
-  const { logo, rewardRate } = props;
+  const { logo, rewardRate, hideButtons } = props;
 
   const [isEditing, setIsEditing] = useState(false);
   const [isDeposit, setIsDeposit] = useState(false);
@@ -68,45 +68,48 @@ function TokenInfo(props) {
       </HStack>
 
       {/* Action Buttons */}
-      <HStack>
-        <ButtonM
-          background="#CCD8F8"
-          textcolor={({ theme }) => theme.blue}
-          title="Withdraw"
-          height="52px"
-        ></ButtonM>
-        <HStack
-          background={({ theme }) => theme.blue}
-          height="52px"
-          width="100%"
-          border="6px"
-          cursor="pointer"
-          padding="3px 0 0 0 "
-        >
-          <VStack spacing="1px" cursor="pointer" width="100%">
-            <HStack padding="0 12px 0 0">
-              <CaptionTiny textcolor="white" cursor="pointer">
-                DEPOSIT
-              </CaptionTiny>
-            </HStack>
 
-            <InputStyled
-              fontsize="18px"
-              type="number"
-              background="transparent"
-              width="100%"
-              height="21px"
-              iconWidth="1px"
-              padding="0 12px"
-              weight="bold"
-              textcolor="white"
-              placeholder="00000"
-              textalign="center"
-              textplace="rgba(255, 255, 255, 0.3)"
-            ></InputStyled>
-          </VStack>
+      {hideButtons ? null : (
+        <HStack>
+          <ButtonM
+            background="#CCD8F8"
+            textcolor={({ theme }) => theme.blue}
+            title="Withdraw"
+            height="52px"
+          ></ButtonM>
+          <HStack
+            background={({ theme }) => theme.blue}
+            height="52px"
+            width="100%"
+            border="6px"
+            cursor="pointer"
+            padding="3px 0 0 0 "
+          >
+            <VStack spacing="1px" cursor="pointer" width="100%">
+              <HStack padding="0 12px 0 0">
+                <CaptionTiny textcolor="white" cursor="pointer">
+                  DEPOSIT
+                </CaptionTiny>
+              </HStack>
+
+              <InputStyled
+                fontsize="18px"
+                type="number"
+                background="transparent"
+                width="100%"
+                height="21px"
+                iconWidth="1px"
+                padding="0 12px"
+                weight="bold"
+                textcolor="white"
+                placeholder="00000"
+                textalign="center"
+                textplace="rgba(255, 255, 255, 0.3)"
+              ></InputStyled>
+            </VStack>
+          </HStack>
         </HStack>
-      </HStack>
+      )}
     </VStack>
   );
 }
