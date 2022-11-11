@@ -11,7 +11,7 @@ import {
 } from "framer-motion/dist/framer-motion";
 
 function LoopLogo(props) {
-  const { loading } = props;
+  const { loading, width, height } = props;
   return (
     <LayoutGroup id="loopLogo">
       <AnimatePresence>

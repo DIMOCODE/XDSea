@@ -1,20 +1,28 @@
 import React from "react";
 
 import crossW from "../../images/crossWhite.png";
-import { IconImg } from "../Stacks";
+import { HStack, IconImg } from "../Stacks";
 
 function CloseIconBtn(props) {
   const { onClick } = props;
 
   return (
-    <IconImg
-      url={crossW}
-      width="30px"
-      height="30px"
-      cursor="pointer"
-      whileTap={{ scale: 0.96 }}
+    <HStack
       onClick={onClick}
-    ></IconImg>
+      background="rgba(255,255,255,0.1)"
+      width="36px"
+      height="36px"
+      border="30px"
+      whileTap={{ scale: 0.96 }}
+    >
+      <IconImg
+        url={crossW}
+        width="18px"
+        height="18px"
+        cursor="pointer"
+        whileTap={{ scale: 0.96 }}
+      ></IconImg>
+    </HStack>
   );
 }
 

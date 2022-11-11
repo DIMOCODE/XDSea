@@ -9,7 +9,10 @@ export const lightTheme = {
   body: "#FFF",
   text: "#363537",
   toggleBorder: "#FFF",
-  blue: "#3256FF",
+  blueText: "#5080FB",
+  blue: "linear-gradient(180deg, #5080FB 0%, #2862F7 31.77%, #0B3EC4 100%)",
+  fadedBlue:
+    "linear-gradient(180deg, rgba(80, 128, 251, 0.32) 0%, rgba(40, 98, 247, 0.3) 31.77%, rgba(11, 62, 196, 0.38) 100%) ",
   logo: XDSeaLightLogo,
   background: "rgba(0, 0, 0, 0.0)",
   backElement: "#FFF",
@@ -26,12 +29,18 @@ export const lightTheme = {
   menu: "#5C6976",
   fadedlocked: "rgba(30, 32, 42, 0.9)",
   searchInput: "rgba(0,0,0,0.3)",
+  blackLinear:
+    " linear-gradient(180deg, #3E3E42 0%, #27272F 28.65%, #0B0B0E 68.75%)",
+  error: "rgba(251, 80, 80, 0.3)",
 };
 
 export const darkTheme = {
   body: "#363537",
   text: "#FAFAFA",
-  blue: "#2E81FD",
+  blueText: "#5080FB",
+  blue: "linear-gradient(180deg, #5080FB 0%, #2862F7 31.77%, #0B3EC4 100%)",
+  fadedBlue:
+    "linear-gradient(180deg, rgba(80, 128, 251, 0.32) 0%, rgba(40, 98, 247, 0.3) 31.77%, rgba(11, 62, 196, 0.38) 100%) ",
   logo: XDSeaDarklogo,
   toggleBorder: "#6B8096",
   background: "#20222D",
@@ -48,4 +57,7 @@ export const darkTheme = {
   menu: "white",
   fadedlocked: "rgba(41, 45, 65, 0.9)",
   searchInput: "rgba(0,0,0,0.8)",
+  blackLinear:
+    " linear-gradient(180deg, #3E3E42 0%, #27272F 28.65%, #0B0B0E 68.75%)",
+  error: "rgba(251, 80, 80, 0.3)",
 };

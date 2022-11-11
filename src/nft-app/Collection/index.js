@@ -252,6 +252,20 @@ const CollectionPage = (props) => {
 
   return (
     <CollectionSection>
+      {addRemoveModal && (
+        <AddRemoveModal
+          setAddRemoveModal={setAddRemoveModal}
+          nftContract={collection?.nftContract}
+          collectionId={collection?._id}
+        ></AddRemoveModal>
+      )}
+      {backedValueModal && (
+        <BackedValueModal
+          setBackedValueModal={setBackedValueModal}
+          nftContract={collection?.nftContract}
+          collectionId={collection?._id}
+        ></BackedValueModal>
+      )}
       {/* Banner */}
       <BannerAbsolute>
         <IconImg
@@ -616,35 +630,35 @@ const CollectionPage = (props) => {
       <CollectionContent id="scrollableDiv">
         {/* Collection NFT Cards */}
         {isStake ? (
-            <StakeSection
-              nfts={nfts}
-              usdPrice={props.xdc}
-              stakingPool={stakingPool ? stakingPool[0] : []}
-              stakes={stakes}
-              onClickAR={() => {
-                setAddRemoveModal(true);
-              }}
-              onClickBV={() => {
-                setBackedValueModal(true);
-              }}
-            ></StakeSection>
-          ) : (
-        <InfiniteScroll
-          dataLength={nfts.length}
-          next={fetchMoreNFTs}
-          hasMore={nfts.length < nftNumber}
-          loader={
-            <HStack
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              height="190px"
-            >
-              <LoopLogo></LoopLogo>
-            </HStack>
-          }
-          scrollableTarget="#scrollableDiv"
-          style={{ overflow: "hidden" }}
-        >
+          <StakeSection
+            nfts={nfts}
+            usdPrice={props.xdc}
+            stakingPool={stakingPool ? stakingPool[0] : []}
+            stakes={stakes}
+            onClickAR={() => {
+              setAddRemoveModal(true);
+            }}
+            onClickBV={() => {
+              setBackedValueModal(true);
+            }}
+          ></StakeSection>
+        ) : (
+          <InfiniteScroll
+            dataLength={nfts.length}
+            next={fetchMoreNFTs}
+            hasMore={nfts.length < nftNumber}
+            loader={
+              <HStack
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                height="190px"
+              >
+                <LoopLogo></LoopLogo>
+              </HStack>
+            }
+            scrollableTarget="#scrollableDiv"
+            style={{ overflow: "hidden" }}
+          >
             <HStack
               flexwrap="wrap"
               padding="30px 6px"
@@ -729,8 +743,8 @@ const CollectionPage = (props) => {
                 ))
               )}
             </HStack>
-        </InfiniteScroll>
-          )}
+          </InfiniteScroll>
+        )}
       </CollectionContent>
 
       <BottomStick>
@@ -747,12 +761,6 @@ const CollectionPage = (props) => {
           isStakingEnabled={collection?.isStakeable}
         ></DynaMenu>
       </BottomStick>
-      {addRemoveModal && (
-        <AddRemoveModal setAddRemoveModal={setAddRemoveModal} nftContract={collection?.nftContract} collectionId={collection?._id}></AddRemoveModal>
-      )}
-      {backedValueModal && (
-        <BackedValueModal setBackedValueModal={setBackedValueModal} nftContract={collection?.nftContract} collectionId={collection?._id}></BackedValueModal>
-      )}
     </CollectionSection>
   );
 };

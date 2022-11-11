@@ -96,6 +96,7 @@ function SaleType(props) {
         <ButtonM
           textcolor={"white"}
           title="Remove"
+          background={"rgba(255, 255, 255, 0.06)"}
           onClick={() => {
             onChange({
               ...params,
@@ -112,7 +113,7 @@ function SaleType(props) {
           }}
         ></ButtonM>
         <ButtonM
-          background={"blue"}
+          background={({ theme }) => theme.blue}
           textcolor="white"
           title="Apply"
           onClick={() => {

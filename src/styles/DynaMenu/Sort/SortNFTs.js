@@ -38,7 +38,9 @@ function SortNFTs(props) {
           {/* Option1  */}
           <HStack
             background={
-              isSelected === 2 ? "blue" : "transparent"
+              isSelected === 2
+                ? ({ theme }) => theme.blue
+                : "rgba(255, 255, 255, 0.06)"
             }
             width="100%"
             border="6px"
@@ -53,10 +55,7 @@ function SortNFTs(props) {
               });
             }}
           >
-            <BodyRegular
-              cursor="pointer"
-              textcolor={"white"}
-            >
+            <BodyRegular cursor="pointer" textcolor={"white"}>
               Most Relevance
             </BodyRegular>
           </HStack>
@@ -66,7 +65,7 @@ function SortNFTs(props) {
       {/* Publication */}
       <HStack
         height="49px"
-        background={({ theme }) => theme.faded}
+        background="rgba(255, 255, 255, 0.06)"
         border="6px"
         spacing="6px"
         onClick={() => {
@@ -77,11 +76,7 @@ function SortNFTs(props) {
         {/* Option1  */}
         <HStack
           background={
-            isSelected === 0
-              ? isOld
-                ? "blue"
-                : "transparent"
-              : null
+            isSelected === 0 ? (isOld ? ({ theme }) => theme.blue : null) : null
           }
           width="100%"
           border="6px"
@@ -96,12 +91,7 @@ function SortNFTs(props) {
             });
           }}
         >
-          <BodyRegular
-            cursor="pointer"
-            textcolor={
-              "white"
-            }
-          >
+          <BodyRegular cursor="pointer" textcolor={"white"}>
             Oldest
           </BodyRegular>
         </HStack>
@@ -112,11 +102,7 @@ function SortNFTs(props) {
           width="100%"
           border="6px"
           background={
-            isSelected === 0
-              ? isOld
-                ? "transparent"
-                : "blue"
-              : null
+            isSelected === 0 ? (isOld ? null : ({ theme }) => theme.blue) : null
           }
           onClick={() => {
             setIsOld(false);
@@ -128,12 +114,7 @@ function SortNFTs(props) {
             });
           }}
         >
-          <BodyRegular
-            cursor="pointer"
-            textcolor={
-              "white"
-            }
-          >
+          <BodyRegular cursor="pointer" textcolor={"white"}>
             Newest
           </BodyRegular>
         </HStack>
@@ -142,7 +123,7 @@ function SortNFTs(props) {
       {/* Price */}
       <HStack
         height="49px"
-        background={({ theme }) => theme.faded}
+        background="rgba(255, 255, 255, 0.06)"
         border="6px"
         spacing="6px"
         onClick={() => {
@@ -155,8 +136,8 @@ function SortNFTs(props) {
           background={
             isSelected === 1
               ? isTopPrice
-                ? "blue"
-                : "transparent"
+                ? ({ theme }) => theme.blue
+                : null
               : null
           }
           width="100%"
@@ -172,12 +153,7 @@ function SortNFTs(props) {
             });
           }}
         >
-          <BodyRegular
-            cursor="pointer"
-            textcolor={
-              "white"
-            }
-          >
+          <BodyRegular cursor="pointer" textcolor={"white"}>
             Highest Price
           </BodyRegular>
         </HStack>
@@ -190,8 +166,8 @@ function SortNFTs(props) {
           background={
             isSelected === 1
               ? isTopPrice
-                ? "transparent"
-                : "blue"
+                ? null
+                : ({ theme }) => theme.blue
               : null
           }
           onClick={() => {
@@ -204,12 +180,7 @@ function SortNFTs(props) {
             });
           }}
         >
-          <BodyRegular
-            cursor="pointer"
-            textcolor={
-              "white"
-            }
-          >
+          <BodyRegular cursor="pointer" textcolor={"white"}>
             Lowest Price
           </BodyRegular>
         </HStack>
@@ -218,7 +189,7 @@ function SortNFTs(props) {
       {/*  NFT Quantity  */}
       <VStack
         minheight="98px"
-        background={({ theme }) => theme.faded}
+        background="rgba(255, 255, 255, 0.06)"
         border="6px"
         spacing="6px"
         onClick={() => {
@@ -232,8 +203,8 @@ function SortNFTs(props) {
           background={
             isSelected === 3
               ? isTopOffer
-                ? "blue"
-                : "transparent"
+                ? ({ theme }) => theme.blue
+                : null
               : null
           }
           width="100%"
@@ -250,12 +221,7 @@ function SortNFTs(props) {
             });
           }}
         >
-          <BodyRegular
-            cursor="pointer"
-            textcolor={
-              "white"
-            }
-          >
+          <BodyRegular cursor="pointer" textcolor={"white"}>
             Most Offers
           </BodyRegular>
         </HStack>
@@ -268,8 +234,8 @@ function SortNFTs(props) {
           background={
             isSelected === 3
               ? isTopOffer
-                ? "transparent"
-                : "blue"
+                ? null
+                : ({ theme }) => theme.blue
               : null
           }
           onClick={() => {
@@ -283,12 +249,7 @@ function SortNFTs(props) {
           }}
           height="43px"
         >
-          <BodyRegular
-            cursor="pointer"
-            textcolor={
-              "white"
-            }
-          >
+          <BodyRegular cursor="pointer" textcolor={"white"}>
             Least Offers
           </BodyRegular>
         </HStack>
@@ -297,7 +258,7 @@ function SortNFTs(props) {
       {/* Alphabetical */}
       <HStack
         height="49px"
-        background={({ theme }) => theme.faded}
+        background="rgba(255, 255, 255, 0.06)"
         border="6px"
         spacing="6px"
         onClick={() => {
@@ -310,8 +271,8 @@ function SortNFTs(props) {
           background={
             isSelected === 4
               ? isAtoZ
-                ? "blue"
-                : "transparent"
+                ? ({ theme }) => theme.blue
+                : null
               : null
           }
           width="100%"
@@ -327,12 +288,7 @@ function SortNFTs(props) {
             });
           }}
         >
-          <BodyRegular
-            cursor="pointer"
-            textcolor={
-              "white"
-            }
-          >
+          <BodyRegular cursor="pointer" textcolor={"white"}>
             A to Z
           </BodyRegular>
         </HStack>
@@ -345,8 +301,8 @@ function SortNFTs(props) {
           background={
             isSelected === 4
               ? isAtoZ
-                ? "transparent"
-                : "blue"
+                ? null
+                : ({ theme }) => theme.blue
               : null
           }
           onClick={() => {
@@ -359,12 +315,7 @@ function SortNFTs(props) {
             });
           }}
         >
-          <BodyRegular
-            cursor="pointer"
-            textcolor={
-              "white"
-            }
-          >
+          <BodyRegular cursor="pointer" textcolor={"white"}>
             Z to A
           </BodyRegular>
         </HStack>

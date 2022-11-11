@@ -119,7 +119,7 @@ function TokenCreator(props) {
 
       <HStack>
         <ButtonM
-          background="#CCD8F8"
+          background={({ theme }) => theme.fadedBlue}
           textcolor={({ theme }) => theme.blue}
           title="Cancel"
           height="52px"

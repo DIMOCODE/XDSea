@@ -72,10 +72,10 @@ function StakeSection(props) {
   };
 
   return (
-    <VStack>
-      <VStack>
+    <VStack padding="12px">
+      <VStack width="100%">
         {/* TVl & Token Selector */}
-        <HStack style={{ zIndex: 100 }}>
+        <HStack responsive={true} style={{ zIndex: 100 }}>
           <BlockTVL
             tvl={stakingPool?.totalValueLocked}
             usdPrice={usdPrice}
@@ -87,7 +87,7 @@ function StakeSection(props) {
         </HStack>
 
         {/* Top Inventory and HolerSection */}
-        <HStack alignment="flex-start">
+        <HStack responsive={true} width="100%" alignment="flex-start">
           <TopInventory></TopInventory>
           <HolderSection></HolderSection>
         </HStack>

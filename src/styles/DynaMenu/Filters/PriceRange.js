@@ -23,9 +23,9 @@ function PriceRange(props) {
   const grayBar = "#C3C2C2";
 
   const CustomSlider = styled(Slider)(({ theme }) => ({
-    color: "blue", //color of the slider between thumbs
+    color: blue, //color of the slider between thumbs
     "& .MuiSlider-thumb": {
-      backgroundColor: "blue", //color of thumbs
+      backgroundColor: blue, //color of thumbs
     },
     "& .MuiSlider-rail": {
       color: grayBar, ////color of the slider outside  teh area between thumbs
@@ -80,6 +80,7 @@ function PriceRange(props) {
         <ButtonM
           textcolor={"white"}
           title="Remove"
+          background={"rgba(255, 255, 255, 0.06)"}
           onClick={() => {
             onChange({
               ...params,
@@ -93,7 +94,7 @@ function PriceRange(props) {
           }}
         ></ButtonM>
         <ButtonM
-          background={"blue"}
+          background={({ theme }) => theme.blue}
           textcolor="white"
           title="Apply"
           onClick={() => {

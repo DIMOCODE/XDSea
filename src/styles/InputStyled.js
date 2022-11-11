@@ -34,6 +34,7 @@ function InputStyled(props) {
     textcolor,
     iconRight,
     iconLeft,
+    iconTop,
     disabled,
     textplace,
     border,
@@ -78,7 +79,11 @@ function InputStyled(props) {
         width={width}
         weight={weight}
       />
-      <InputIcon iconRight={iconRight || "15px"} iconLeft={iconLeft}>
+      <InputIcon
+        iconRight={iconRight || "15px"}
+        iconTop={iconTop || null}
+        iconLeft={iconLeft}
+      >
         <IconImg
           url={icon || empty}
           width={iconWidth || "18px"}
@@ -105,6 +110,7 @@ const InputIcon = styled.div`
   width: 18px;
   right: ${(props) => props.iconRight};
   left: ${(props) => props.iconLeft};
+  top: ${(props) => props.iconTop};
 `;
 
 const InputURL = styled.div`

@@ -133,7 +133,7 @@ function DynaMenu(props) {
       <HStack
         layout
         height="52px"
-        background={isStake ? "blue" : "black"}
+        background={isStake ? ({ theme }) => theme.blue : "black"}
         border="60px"
         spacing="0px"
         overflowx="hidden"
@@ -142,12 +142,17 @@ function DynaMenu(props) {
         {isSearch ? (
           <motion.div layout>
             <SearchOption
-              placeholder={searchTerm !== undefined ? searchTerm : isCollections ? collectionSearchTerm : nftSearchTerm}
+              placeholder={
+                searchTerm !== undefined
+                  ? searchTerm
+                  : isCollections
+                  ? collectionSearchTerm
+                  : nftSearchTerm
+              }
               onChange={(e) => {
-                if(searchTerm !== undefined) {
+                if (searchTerm !== undefined) {
                   setSearchTerm(e.target.value);
-                }
-                else {
+                } else {
                   if (isCollections) {
                     setCollectionSearchTerm(e.target.value);
                   } else {
@@ -157,10 +162,9 @@ function DynaMenu(props) {
               }}
               onClickBack={() => setIsSearch(false)}
               onClickCancel={() => {
-                if(searchTerm !== undefined) {
+                if (searchTerm !== undefined) {
                   setSearchTerm("");
-                }
-                else {
+                } else {
                   if (isCollections) {
                     setCollectionSearchTerm("");
                   } else {
@@ -231,7 +235,7 @@ function DynaMenu(props) {
                 icon={stakeStar}
                 iconw="24px"
                 iconh="24px"
-                background="blue"
+                background={({ theme }) => theme.blue}
                 border="0 30px 30px 0"
                 onClick={() => {
                   setIsStake(true);
@@ -279,7 +283,7 @@ function DynaMenu(props) {
           >
             <VStack
               background="black"
-              width="376px"
+              width="389px"
               height="auto"
               border="29px"
               padding="39px 39px"
@@ -351,10 +355,10 @@ function DynaMenu(props) {
           >
             <VStack
               background="black"
-              width="376px"
+              width="389px"
               height="auto"
               border="29px"
-              padding="39px 39px"
+              padding="46px 39px"
               spacing="36px"
             >
               {isCollections ? (
@@ -415,6 +419,6 @@ const AbsoluteWindow = styled(motion.div)`
 
 const CloseBtn = styled(motion.div)`
   position: absolute;
-  top: 12px;
-  right: 12px;
+  top: 9px;
+  right: 9px;
 `;

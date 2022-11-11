@@ -21,6 +21,7 @@ import { ButtonM } from "../../../styles/Buttons/ButtonM";
 import crossIcon from "../../../images/crossIcon.png";
 import doneIcon from "../../../images/doneIcon.png";
 import Dropdown from "react-dropdown";
+import { ButtonIcon } from "../../../styles/Buttons/ButtonIcon";
 
 function TokenInfo(props) {
   const { logo, rewardRate, rewardFrequency } = props;
@@ -29,25 +30,23 @@ function TokenInfo(props) {
   const [isDeposit, setIsDeposit] = useState(false);
 
   const [isEditingRewardRate, setIsEditingRewardRate] = useState(false);
-  const [isEditingRewardFrequency, setIsEditingRewardFrequency] = useState(false);
+  const [isEditingRewardFrequency, setIsEditingRewardFrequency] =
+    useState(false);
   const [newRewardRate, setNewRewardRate] = useState(0);
   const [newRewardFrequency, setNewRewardFrequency] = useState(false);
-  const options = ["hours", "days", "months", "years"];
+  const options = ["hrs", "d", "mo", "yr"];
   const defaultOption = options[0];
 
   return (
     <VStack width="100%">
       {/* Reward Rate & Earning Rate */}
-      <HStack>
-        <VStack alignment="flex-start" spacing="6px">
+      <HStack responsive={true} style={{ zIndex: 1 }}>
+        <VStack alignment="flex-start" spacing="6px" width="100%">
           <TitleBold15> Reward Rate</TitleBold15>
-          <HStack
-            height="62px"
-            border="6px"
-          >
+          <HStack height="62px" border="6px">
             {isEditingRewardRate ? (
               <>
-                <InputStyled 
+                <InputStyled
                   propertyKey={"edit-reward-rate"}
                   type="number"
                   input={newRewardRate}
@@ -58,32 +57,32 @@ function TokenInfo(props) {
                   padding={"0 12px 0 12px"}
                   height="62px"
                   background={({ theme }) => theme.faded}
-                >
-                </InputStyled>
-                <HStack background={({ theme }) => theme.faded}
-                  width="50%"
-                  border="50px"
-                  cursor="pointer"
-                  onClick={() => {
-                    //Call smart contract
-                    setIsEditingRewardRate(false);
-                  }}>
-                  <IconImg url={doneIcon} width="15px" height="15px" cursor="pointer"></IconImg>
-                </HStack>
-                <HStack background={({ theme }) => theme.faded}
-                  width="50%"
-                  border="50px"
-                  cursor="pointer"
-                  onClick={() => {
-                    setIsEditingRewardRate(false);
-                  }}>
-                  <IconImg url={crossIcon} width="15px" height="15px" cursor="pointer"></IconImg>
+                ></InputStyled>
+
+                <HStack spacing="3px">
+                  <ButtonIcon
+                    background={({ theme }) => theme.faded}
+                    icon={doneIcon}
+                    onClick={() => {
+                      //Call smart contract
+                      setIsEditingRewardRate(false);
+                    }}
+                  ></ButtonIcon>
+
+                  <ButtonIcon
+                    background={({ theme }) => theme.faded}
+                    icon={crossIcon}
+                    onClick={() => {
+                      //Call smart contract
+                      setIsEditingRewardRate(false);
+                    }}
+                  ></ButtonIcon>
                 </HStack>
               </>
             ) : (
-              <>
+              <HStack width="100%">
                 <HStack
-                  width="75%"
+                  width="80%"
                   background={({ theme }) => theme.faded}
                   border="6px"
                   padding="9px 60px 9px 60px"
@@ -91,25 +90,21 @@ function TokenInfo(props) {
                   height="62px"
                 >
                   <IconImg url={logo} width="18px" height="18px"></IconImg>
-                  <TitleBold18>
-                    {rewardRate}
-                  </TitleBold18>
+                  <TitleBold18>{rewardRate}</TitleBold18>
                 </HStack>
-                <HStack
-                  width="25%"
-                  height="62px"
-                  background={({ theme }) => theme.faded}
-                  border="52px"
-                  cursor="pointer"
-                  onClick={() => {
-                    setIsEditingRewardRate(true);
-                  }}
-                >
-                  <IconImg url={edit} width="15px" height="15px" cursor="pointer"></IconImg>
+
+                <HStack width="20%">
+                  <ButtonIcon
+                    background={({ theme }) => theme.faded}
+                    icon={edit}
+                    onClick={() => {
+                      //Call smart contract
+                      setIsEditingRewardRate(true);
+                    }}
+                  ></ButtonIcon>
                 </HStack>
-              </>
+              </HStack>
             )}
-                
 
             {/* <InputStyled
               fontsize="18px"
@@ -127,16 +122,12 @@ function TokenInfo(props) {
           </HStack>
         </VStack>
 
-        <VStack alignment="flex-start" spacing="6px">
+        <VStack alignment="flex-start" spacing="6px" width="100%">
           <TitleBold15>Reward Frequency</TitleBold15>
-          <HStack
-            height="62px"
-            border="6px"
-            spacing="6px"
-          >
+          <HStack height="62px" border="6px" spacing="6px">
             {isEditingRewardFrequency ? (
               <>
-                <InputStyled 
+                <InputStyled
                   propertyKey={"edit-reward-frequency"}
                   type="number"
                   input={newRewardFrequency}
@@ -148,66 +139,63 @@ function TokenInfo(props) {
                   height="62px"
                   background={({ theme }) => theme.faded}
                   width="100%"
-                >
-                </InputStyled>
+                ></InputStyled>
                 <Dropdown
                   options={options}
                   className="dropdown"
                   controlClassName="control"
+                  arrowClassName="customArrows"
                   menuClassName="dropmenu"
                   value={defaultOption}
                   placeholder="Select an option"
                 />
-                <HStack background={({ theme }) => theme.faded}
-                  width="50%"
-                  border="20px"
-                  cursor="pointer"
-                  onClick={() => {
-                    //Call smart contract
-                    setIsEditingRewardFrequency(false);
-                  }}>
-                  <IconImg url={doneIcon} width="15px" height="15px" cursor="pointer"></IconImg>
-                </HStack>
-                <HStack background={({ theme }) => theme.faded}
-                  width="50%"
-                  border="20px"
-                  cursor="pointer"
-                  onClick={() => {
-                    setIsEditingRewardFrequency(false);
-                  }}>
-                  <IconImg url={crossIcon} width="15px" height="15px" cursor="pointer"></IconImg>
+
+                <HStack spacing="3px">
+                  <ButtonIcon
+                    background={({ theme }) => theme.faded}
+                    icon={doneIcon}
+                    onClick={() => {
+                      //Call smart contract
+                      setIsEditingRewardFrequency(false);
+                    }}
+                  ></ButtonIcon>
+
+                  <ButtonIcon
+                    background={({ theme }) => theme.faded}
+                    icon={crossIcon}
+                    onClick={() => {
+                      //Call smart contract
+                      setIsEditingRewardFrequency(false);
+                    }}
+                  ></ButtonIcon>
                 </HStack>
               </>
             ) : (
-              <>
+              <HStack width="100%">
                 <HStack
-                  width="75%"
+                  width="80%"
                   background={({ theme }) => theme.faded}
                   border="6px"
-                  padding="9px 60px 9px 60px"
+                  padding="0"
                   spacing="6px"
                   height="62px"
                 >
-                  <TitleBold18 style={{"white-space": "nowrap"}}>
+                  <TitleBold18 style={{ "white-space": "nowrap" }}>
                     {rewardFrequency}
                   </TitleBold18>
                 </HStack>
-                <HStack
-                  width="25%"
-                  height="62px"
-                  background={({ theme }) => theme.faded}
-                  border="52px"
-                  cursor="pointer"
-                  onClick={() => {
-                    setIsEditingRewardFrequency(true);
-                  }}
-                >
-                  <IconImg url={edit} width="15px" height="15px" cursor="pointer"></IconImg>
+                <HStack width="20%">
+                  <ButtonIcon
+                    background={({ theme }) => theme.faded}
+                    icon={edit}
+                    onClick={() => {
+                      //Call smart contract
+                      setIsEditingRewardFrequency(true);
+                    }}
+                  ></ButtonIcon>
                 </HStack>
-              </>
+              </HStack>
             )}
-            
-                
 
             {/* <InputStyled
               fontsize="18px"
@@ -230,7 +218,7 @@ function TokenInfo(props) {
       {/* Action Buttons */}
       <HStack>
         <ButtonM
-          background="#CCD8F8"
+          background={({ theme }) => theme.fadedBlue}
           textcolor={({ theme }) => theme.blue}
           title="Withdraw"
           height="52px"

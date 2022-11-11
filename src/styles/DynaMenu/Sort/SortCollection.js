@@ -30,7 +30,7 @@ function SortCollection(props) {
       {isSearchPage ? (
         <VStack
           minheight="49px"
-          background={({ theme }) => theme.faded}
+          background="rgba(255, 255, 255, 0.06)"
           border="6px"
           spacing="6px"
           onClick={() => {
@@ -41,7 +41,9 @@ function SortCollection(props) {
         >
           {/* Option1  */}
           <HStack
-            background={isSelected === 6 ? "blue" : "transparent"}
+            background={
+              isSelected === 6 ? ({ theme }) => theme.blue : "transparent"
+            }
             width="100%"
             border="6px"
             cursor="pointer"
@@ -65,7 +67,7 @@ function SortCollection(props) {
       {/* Publication */}
       <HStack
         height="49px"
-        background={({ theme }) => theme.faded}
+        background="rgba(255, 255, 255, 0.06)"
         border="6px"
         spacing="6px"
         onClick={() => {
@@ -76,7 +78,11 @@ function SortCollection(props) {
         {/* Option1  */}
         <HStack
           background={
-            isSelected === 0 ? (isOld ? "blue" : "transparent") : null
+            isSelected === 0
+              ? isOld
+                ? ({ theme }) => theme.blue
+                : "transparent"
+              : null
           }
           width="100%"
           border="6px"
@@ -102,7 +108,11 @@ function SortCollection(props) {
           width="100%"
           border="6px"
           background={
-            isSelected === 0 ? (isOld ? "transparent" : "blue") : null
+            isSelected === 0
+              ? isOld
+                ? "transparent"
+                : ({ theme }) => theme.blue
+              : null
           }
           onClick={() => {
             setIsOld(false);
@@ -123,7 +133,7 @@ function SortCollection(props) {
       {/* Volume */}
       <HStack
         height="49px"
-        background={({ theme }) => theme.faded}
+        background="rgba(255, 255, 255, 0.06)"
         border="6px"
         spacing="6px"
         onClick={() => {
@@ -134,7 +144,11 @@ function SortCollection(props) {
         {/* Option1  */}
         <HStack
           background={
-            isSelected === 1 ? (isVolumeTop ? "blue" : "transparent") : null
+            isSelected === 1
+              ? isVolumeTop
+                ? ({ theme }) => theme.blue
+                : "transparent"
+              : null
           }
           width="100%"
           border="6px"
@@ -160,7 +174,11 @@ function SortCollection(props) {
           width="100%"
           border="6px"
           background={
-            isSelected === 1 ? (isVolumeTop ? "transparent" : "blue") : null
+            isSelected === 1
+              ? isVolumeTop
+                ? "transparent"
+                : ({ theme }) => theme.blue
+              : null
           }
           onClick={() => {
             setIsVolumeTop(false);
@@ -181,7 +199,7 @@ function SortCollection(props) {
       {/* Owners */}
       <HStack
         height="49px"
-        background={({ theme }) => theme.faded}
+        background="rgba(255, 255, 255, 0.06)"
         border="6px"
         spacing="6px"
         onClick={() => {
@@ -192,7 +210,11 @@ function SortCollection(props) {
         {/* Option1  */}
         <HStack
           background={
-            isSelected === 2 ? (isTopOwners ? "blue" : "transparent") : null
+            isSelected === 2
+              ? isTopOwners
+                ? ({ theme }) => theme.blue
+                : "transparent"
+              : null
           }
           width="100%"
           border="6px"
@@ -218,7 +240,11 @@ function SortCollection(props) {
           width="100%"
           border="6px"
           background={
-            isSelected === 2 ? (isTopOwners ? "transparent" : "blue") : null
+            isSelected === 2
+              ? isTopOwners
+                ? "transparent"
+                : ({ theme }) => theme.blue
+              : null
           }
           onClick={() => {
             setIsTopOwners(false);
@@ -239,7 +265,7 @@ function SortCollection(props) {
       {/*  Floor Price  */}
       <VStack
         minheight="98px"
-        background={({ theme }) => theme.faded}
+        background="rgba(255, 255, 255, 0.06)"
         border="6px"
         spacing="6px"
         onClick={() => {
@@ -251,7 +277,11 @@ function SortCollection(props) {
         {/* Option1  */}
         <HStack
           background={
-            isSelected === 3 ? (isTopFloor ? "blue" : "transparent") : null
+            isSelected === 3
+              ? isTopFloor
+                ? ({ theme }) => theme.blue
+                : "transparent"
+              : null
           }
           width="100%"
           border="6px"
@@ -278,7 +308,11 @@ function SortCollection(props) {
           width="100%"
           border="6px"
           background={
-            isSelected === 3 ? (isTopFloor ? "transparent" : "blue") : null
+            isSelected === 3
+              ? isTopFloor
+                ? "transparent"
+                : ({ theme }) => theme.blue
+              : null
           }
           onClick={() => {
             setIsTopFloor(false);
@@ -300,7 +334,7 @@ function SortCollection(props) {
       {/* NFT Quantity */}
       <HStack
         height="49px"
-        background={({ theme }) => theme.faded}
+        background="rgba(255, 255, 255, 0.06)"
         border="6px"
         spacing="6px"
         onClick={() => {
@@ -311,7 +345,11 @@ function SortCollection(props) {
         {/* Option1  */}
         <HStack
           background={
-            isSelected === 4 ? (isTopQuantity ? "blue" : "transparent") : null
+            isSelected === 4
+              ? isTopQuantity
+                ? ({ theme }) => theme.blue
+                : "transparent"
+              : null
           }
           width="100%"
           border="6px"
@@ -337,7 +375,11 @@ function SortCollection(props) {
           width="100%"
           border="6px"
           background={
-            isSelected === 4 ? (isTopQuantity ? "transparent" : "blue") : null
+            isSelected === 4
+              ? isTopQuantity
+                ? "transparent"
+                : ({ theme }) => theme.blue
+              : null
           }
           onClick={() => {
             setIsTopQuantity(false);
@@ -358,7 +400,7 @@ function SortCollection(props) {
       {/* Alphabetical */}
       <HStack
         height="49px"
-        background={({ theme }) => theme.faded}
+        background="rgba(255, 255, 255, 0.06)"
         border="6px"
         spacing="6px"
         onClick={() => {
@@ -369,7 +411,11 @@ function SortCollection(props) {
         {/* Option1  */}
         <HStack
           background={
-            isSelected === 5 ? (isAtoZ ? "blue" : "transparent") : null
+            isSelected === 5
+              ? isAtoZ
+                ? ({ theme }) => theme.blue
+                : "transparent"
+              : null
           }
           width="100%"
           border="6px"
@@ -395,7 +441,11 @@ function SortCollection(props) {
           width="100%"
           border="6px"
           background={
-            isSelected === 5 ? (isAtoZ ? "transparent" : "blue") : null
+            isSelected === 5
+              ? isAtoZ
+                ? "transparent"
+                : ({ theme }) => theme.blue
+              : null
           }
           onClick={() => {
             setIsAtoZ(false);
