@@ -36,10 +36,10 @@ import {
 } from "../../styles/TextStyles";
 import { motion } from "framer-motion/dist/framer-motion";
 import useWindowSize from "../../styles/useWindowSize";
-import goldshape1 from "../../images/goldshape1.png";
-import goldshape2 from "../../images/goldshape2.png";
-import goldshape3 from "../../images/goldshape3.png";
-import goldshape4 from "../../images/goldshape4.png";
+import goldshape1 from "../../images/goldshape1.webp";
+import goldshape2 from "../../images/goldshape2.webp";
+import goldshape3 from "../../images/goldshape3.webp";
+import goldshape4 from "../../images/goldshape4.webp";
 import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
 
 import Swipper from "../Home/Swiper.css";
@@ -50,13 +50,13 @@ import Masonry, { ResponsiveMasonry } from "react-responsive-masonry";
 
 import { Grid, FreeMode, Navigation, Thumbs, Pagination } from "swiper";
 
-import goldSphere from "../../images/GoldSphere.png";
-import rocket3D from "../../images/Rocket3D.png";
+import goldSphere from "../../images/GoldSphere.webp";
+import rocket3D from "../../images/Rocket3D.webp";
 import Star3D from "../../images/Star3D.png";
-import firstPlaces from "../../images/firstplaces.png";
+import firstPlaces from "../../images/firstplaces.webp";
 import nftIdea from "../../images/nftIdea.jpg";
 import outlinesXDSEA from "../../images/logoShield.png";
-import newBlue from "../../images/newBlue.png";
+import newBlue from "../../images/newBlue.webp";
 import CristalHeart from "../../images/CristalHeart.png";
 import logoXuppi from "../../images/LogoXuppi.png";
 import bannerXuppi from "../../images/bannerXuppi.png";

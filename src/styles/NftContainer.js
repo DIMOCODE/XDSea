@@ -6,8 +6,8 @@ import notforsale from "../images/notforsale.png";
 import verifiedShape from "../images/verifiedShape.png";
 import verifiedBlue from "../images/verifiedBlue.png";
 import verifiedMask from "../images/verifiedMask.png";
-import sale from "../images/sale.png";
-import relist from "../images/relist.png";
+import sale from "../images/sale.webp";
+import relist from "../images/relist.webp";
 import sold from "../images/sold.png";
 import {
   CaptionBoldShort,
