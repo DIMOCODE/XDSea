@@ -1,4 +1,5 @@
 import SecureLS from "secure-ls";
+import domainjs from "xdcdomainjs";
 
 export const HTTP_PROVIDER = {
   50: "https://xdsearpc.blocksscan.io",
@@ -19,9 +20,11 @@ export const HEADER = {
   ],
 };
 
+{/* HTTP Provider for connecting to the blockchain */}
 export const DEFAULT_PROVIDER = HTTP_PROVIDER[50];
 export const NETWORK_NAME = NETWORK_DICT[50];
 
+{/* Local Storage Encrypted Cookie Storage */}
 export const LS = new SecureLS({
   encodingType: "rabbit",
   isCompression: true,
@@ -34,3 +37,28 @@ export const HTTP_METHODS = {
   put: "PUT",
   delete: "DELETE",
 };
+
+const xdcDomainConfig = {
+  testnet: {
+    rpcUrl: "",
+    contractAddress: ""
+  },
+  mainnet: {
+    rpcUrl: "https://xdsearpc.blocksscan.io/",
+    contractAddress: "xdc295a7ab79368187a6cd03c464cfaab04d799784e"
+  },
+  defaultNetwork: "mainnnet"
+};
+
+const xdcSdk = domainjs.SDK(xdcDomainConfig);
+
+export const getXdcDomain = async (address) => {
+  const xdcDomain = await xdcSdk.getDomain(address);
+  console.log(xdcDomain)
+  return xdcDomain;
+};
+
+export const getXdcOwner = async (domain) => {
+  const xdcAddress = await xdcSdk.getOwner(domain, false);
+  return xdcAddress;
+}

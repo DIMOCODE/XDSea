@@ -34,6 +34,7 @@ export const getNFTs = ({
   saleType4,
   priceRangeStart,
   priceRangeEnd,
+  collectionId,
 }) => {
   var params =
     `?${searchBy !== undefined ? `searchBy=${searchBy}&` : ""}` +
@@ -54,14 +55,11 @@ export const getNFTs = ({
     }` +
     `${saleType3 !== undefined ? `saleType=${saleType3}&` : ""}${
       saleType4 !== undefined ? `saleType=${saleType4}&` : ""
-    }`;
+    }` +
+    `${collectionId !== undefined ? `collectionId=${collectionId}&` : ""
+  }`;
   params = params.substring(0, params.length - 1);
-  return createSignedRequest(
-    HTTP_METHODS.get,
-    `nft/${page}${params}`,
-    null,
-    null
-  );
+  return createSignedRequest(HTTP_METHODS.get, `nft/${page}${params}`, null, null);
 };
 
 /**
@@ -70,10 +68,10 @@ export const getNFTs = ({
  * @param {string} tokenId token Id of the NFT (soon to be replaced by NFT Contract and tokenId)
  * @returns HTTP GET request response with the requested NFT
  */
-export const getNFT = (collectionAddress, tokenId) => {
+export const getNFT = (nftContract, tokenId) => {
   return createSignedRequest(
     HTTP_METHODS.get,
-    `nft/byToken/${collectionAddress}/${tokenId}`,
+    `nft/byToken/${nftContract}/${tokenId}`,
     null,
     null
   );
@@ -125,6 +123,7 @@ export const createNFT = (
   collectionId,
   tokenId,
   addressCreator,
+  marketAddress,
   price,
   royalty,
   name,
@@ -138,7 +137,7 @@ export const createNFT = (
     collectionId,
     tokenId,
     addressCreator,
-    marketAddress: nftmarketlayeraddress,
+    marketAddress,
     price,
     isListed: false,
     royalty,

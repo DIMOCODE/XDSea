@@ -7,6 +7,7 @@ import xdclogo from "../images/miniXdcLogo.png";
 import Tooltip from "@mui/material/Tooltip";
 import styled from "styled-components";
 import { motion } from "framer-motion/dist/framer-motion";
+import { truncateAddress } from "../common/common";
 
 function TableActivityNft(props) {
   const widthRow = "264px";
@@ -46,20 +47,14 @@ function TableActivityNft(props) {
     return Math.floor(seconds) + " seconds ago";
   }
 
-  const truncateAddress = (address) => {
-    return address
-      ? address.substring(0, 7) + "..." + address.substring(38)
-      : "undefined";
-  };
-
   return (
     <VStack width="100%" height="100%" spacing="3px">
       {props?.loading
         ? loadingEvents.map((item) => (
             <>
-              <Divider></Divider>
-              <VStack width="100%" spacing="0px">
-                <HStack key={item.id} width="100%" height={heightRow}>
+              <Divider key={"loadingDivider_" + item.id}></Divider>
+              <VStack key={"loading_" + item.id} width="100%" spacing="0px">
+                <HStack width="100%" height={heightRow}>
                   <HStack width={widthRow} background={debugColor}>
                     <TitleLoading
                       key="Offerer"
@@ -152,9 +147,9 @@ function TableActivityNft(props) {
           ))
         : props?.activity.map((item) => (
             <>
-              <Divider></Divider>
-              <VStack width="100%" spacing="0">
-                <HStack key={item.id} width="100%" height={heightRow}>
+              <Divider key={"activityDivider_" + item.id}></Divider>
+              <VStack key={"activity_" + item.id} width="100%" spacing="0">
+                <HStack width="100%" height={heightRow}>
                   <HStack
                     spacing="6px"
                     width={widthRow}
@@ -241,8 +236,8 @@ function TableActivityNft(props) {
                       height="18px"
                       border="30px"
                     ></IconImg>
-                    <Tooltip title={item.from}>
-                      <BodyRegular>{truncateAddress(item.from)}</BodyRegular>
+                    <Tooltip title={item.fromAddress}>
+                      <BodyRegular>{item.from === "" ? truncateAddress(item.fromAddress) : item.from}</BodyRegular>
                     </Tooltip>
                   </HStack>
                   <Spacer></Spacer>
@@ -257,8 +252,8 @@ function TableActivityNft(props) {
                       height="18px"
                       border="30px"
                     ></IconImg>
-                    <Tooltip title={item.to}>
-                      <BodyRegular>{truncateAddress(item.to)}</BodyRegular>
+                    <Tooltip title={item.toAddress}>
+                      <BodyRegular>{item.to === "" ? truncateAddress(item.toAddress) : item.to}</BodyRegular>
                     </Tooltip>
                   </HStack>
                   <Spacer></Spacer>

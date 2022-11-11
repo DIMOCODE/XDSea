@@ -21,6 +21,7 @@ function SearchCollection(props) {
         height="50px"
         iconHeight="30px"
         iconWidth="18px"
+        textplace={"rgba(0,0,0,0.6)"}
       ></InputStyled>
     </HStack>
   );

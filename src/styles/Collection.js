@@ -15,7 +15,7 @@ import {
   CaptionRegular,
 } from "./TextStyles";
 import { motion, AnimatePresence } from "framer-motion/dist/framer-motion";
-import { fromXdc, isXdc } from "../common/common";
+import { fromXdc, isXdc, truncateAddress } from "../common/common";
 import styled from "styled-components";
 
 function Collection(props) {
@@ -82,12 +82,6 @@ function Collection(props) {
     },
   };
   const [isVisible, setIsVisible] = useState(false);
-
-  const truncateAddress = (address) => {
-    return address
-      ? address.substring(0, 6) + "..." + address.substring(38)
-      : "undefined";
-  };
 
   return (
     <VStack
@@ -175,9 +169,6 @@ function Collection(props) {
                                 whileTap={onClickCreator}
                                 backsize="cover"
                                 cursor={"pointer"}
-                                style={{
-                                  boxShadow: "0px 4px 2px rgba(0, 0, 0, 0.15)",
-                                }}
                               ></IconImg>
                               <AbsoluteVerified>
                                 <IconImg
@@ -212,9 +203,7 @@ function Collection(props) {
                       cursor={"pointer"}
                       textcolor={appStyle.colors.white}
                     >
-                      {truncateAddress(
-                        isXdc(creatorName) ? fromXdc(creatorName) : creatorName
-                      )}
+                      {creatorName}
                     </CaptionBoldShort>
                     <TitleBold21
                       overflow={"hidden"}
@@ -425,16 +414,6 @@ function Collection(props) {
                             </VStack>
                           )}
                         </HStack>
-
-                        {/* <ButtonApp
-                          height="39px"
-                          background={appStyle.colors.blue}
-                          text="Visit Collection"
-                          textcolor={appStyle.colors.white}
-                          onClick={onClickCollection}
-                          cursor={"pointer"}
-                          btnStatus={0}
-                        ></ButtonApp> */}
                       </VStack>
                     </VStack>
                   </VStack>

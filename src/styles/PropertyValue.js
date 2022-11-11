@@ -32,6 +32,7 @@ function PropertyValue(props) {
         fontsize="12px"
         texttransform="uppercase"
         height="26px"
+        textplace={"rgba(0,0,0,0.6)"}
       ></InputStyled>
       <InputStyled
         propertyKey={propertyKey}
@@ -42,6 +43,7 @@ function PropertyValue(props) {
         textalign="center"
         padding="0px"
         height="26px"
+        textplace={"rgba(0,0,0,0.6)"}
       ></InputStyled>
     </VStack>
   );

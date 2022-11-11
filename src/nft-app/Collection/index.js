@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useContext } from "react";
-import { useHistory, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { nftaddress } from "../../config";
 import ButtonApp from "../../styles/Buttons";
 import { HStack, IconImg, Spacer, VStack } from "../../styles/Stacks";
@@ -9,7 +9,6 @@ import {
   CaptionBoldShort,
   CaptionBold,
   TitleBold21,
-  TitleBold18,
 } from "../../styles/TextStyles";
 import instagram from "../../images/instagramMini.png";
 import twitter from "../../images/twitter.png";
@@ -25,9 +24,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { LoopBars } from "../../styles/LoopBars";
 import { LoopLogo } from "../../styles/LoopLogo";
 import { Tooltip } from "@mui/material";
-import banner1 from "../../images/Banner1.jpg";
 import verified from "../../images/verified.png";
-import menuContext from "../../context/menuContext";
 import linkSocial from "../../images/linkSocial.png";
 import whatsSocial from "../../images/whatsSocial.png";
 import telegramSocial from "../../images/telegramSocial.png";
@@ -41,19 +38,20 @@ import {
   WhatsappShareButton,
 } from "react-share";
 import { getCollection, getCollectionNFTs } from "../../API/Collection";
-import { isSafari } from "../../common/common";
+import { truncateAddress, toXdc, isXdc } from "../../common/common";
 import { SearchCollection } from "../../styles/SearchCollection";
 import { FiltersButton } from "../../styles/FiltersButton";
 import { SortButtonNFTS } from "../../styles/SortButtonNFTS";
 import noResult from "../../images/noResult.png";
 import { StickySectionHeader } from "../../CustomModules/sticky/StickySectionHeader.js";
+import { getXdcDomain } from "../../constant";
 
-const CollectionDetails = (props) => {
-  const history = useHistory();
+const CollectionPage = (props) => {
+  const size = useWindowSize();
+  const { collectionNickName } = useParams();
+
   const [nfts, setNfts] = useState([]);
   const [loadingState, setLoadingState] = useState("not-loaded");
-  const [page, setPage] = useState(1);
-  const size = useWindowSize();
   const [collection, setCollection] = useState({});
   const [loadingNFTs] = useState([
     { id: 1, name: "NFT 1" },
@@ -69,43 +67,54 @@ const CollectionDetails = (props) => {
     { id: 11, name: "NFT 11" },
     { id: 12, name: "NFT 12" },
   ]);
-
-  const { collectionNickName } = useParams();
-  const [, setShowMenu] = useContext(menuContext);
   const [maxPrice, setMaxPrice] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
   const [params, setParams] = useState({
     page: 1,
     searchBy: searchTerm,
   });
+  const [copied, setCopied] = useState(false);
+  const [nftNumber, setNftNumber] = useState(0);
+  const [nftPlaying, setNftPlaying] = useState([]);
+
+  const webLink = `https://www.xdsea.com/collection/${collectionNickName}`;
+
+  /**
+   * Copy the current location URL to the clipboard
+   */
+  const copy = async () => {
+    await navigator.clipboard.writeText(webLink);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
+  };
 
   /**
    * Get collection NFT data for the first page
+   *
+   * @param {string} searchBy search word to filter NFT results
    */
   const getData = async (searchBy) => {
     try {
       const collectionData = await (
         await getCollection(collectionNickName)
       ).data;
-      setParams({
-        ...params,
-        collectionId: collectionData.collection._id,
-        searchBy: searchBy,
-      });
       let collection = {
         _id: collectionData.collection._id,
         banner: collectionData.collection.banner.v0,
-        creator: collectionData.collection.addressCreator,
-        creatorId: collectionData.collection.creator._id,
+        creator: await getXdcDomain(toXdc(collectionData.collection.addressCreator)),
+        addressCreator: isXdc(collectionData.collection.addressCreator)
+          ? collectionData.collection.addressCreator.toLowerCase()
+          : toXdc(collectionData.collection.addressCreator.toLowerCase()),
+        creatorId: collectionData.collection.creator.nickName,
         isVerified: collectionData.collection.creator.isVerified,
         description: collectionData.collection.description,
         discordUrl: collectionData.collection.discordUrl,
-        floorPrice: collectionData.collection.floorPrice,
+        floorPrice: collectionData.metrics.floorPrice,
         instagramUrl: collectionData.collection.instagramUrl,
         logo: collectionData.collection.logo.v0,
         name: collectionData.collection.name,
         twitterUrl: collectionData.collection.twitterUrl,
-        volumeTrade: collectionData.collection.volumeTrade,
+        volumeTrade: collectionData.metrics.volumeTraded,
         websiteUrl: collectionData.collection.websiteUrl,
         nftsCount: collectionData.metrics.nftsCount,
         owners: collectionData.metrics.owners,
@@ -118,35 +127,16 @@ const CollectionDetails = (props) => {
           searchBy: searchBy,
         })
       ).data;
-      const collectionNFTList = await Promise.all(
-        collectionNFTData.nfts.map(async (nft) => {
-          let collectionNFT = {
-            collectionName: nft.collectionId.name,
-            creatorLogo: nft.owner.urlProfile,
-            image: nft.urlFile,
-            name: nft.name,
-            hasOpenOffer: nft.hasOpenOffer,
-            price: nft.price,
-            fileType: nft.fileType,
-            preview: nft.preview.v0,
-            owner: nft.owner.userName,
-            nftContract: nft.nftContract,
-            ownerId: nft.owner._id,
-            tokenId: nft.tokenId,
-            saleType: nft.saleType.toLowerCase(),
-            isVerified: nft.owner.isVerified,
-            collectionVerified: nft.creator.isVerified,
-          };
-          return collectionNFT;
-        })
-      );
+
+      setNftNumber(collectionNFTData.nftsAmount);
       setMaxPrice(collectionNFTData.higherPrice);
       setParams({
         collectionId: collectionData.collection._id,
         searchBy: searchBy,
         page: params.page + 1,
       });
-      setNfts(collectionNFTList);
+      setNfts(collectionNFTData.nfts);
+      setNftPlaying(new Array(collectionNFTData.nftsAmount).fill(false));
       setCollection(collection);
       setLoadingState("loaded");
     } catch (error) {
@@ -154,97 +144,71 @@ const CollectionDetails = (props) => {
     }
   };
 
-  const truncateAddress = (address) => {
-    return address
-      ? address.substring(0, 6) + "..." + address.substring(38)
-      : "undefined";
-  };
-
+  /**
+   * Get the next page of collection NFTs
+   */
   const fetchMoreNFTs = async () => {
     const collectionNFTData = await (await getCollectionNFTs(params)).data.nfts;
-    const collectionNFTList = await Promise.all(
-      collectionNFTData.map(async (nft) => {
-        let collectionNFT = {
-          collectionName: nft.collectionId.name,
-          creatorLogo: nft.owner.urlProfile,
-          image: nft.urlFile,
-          name: nft.name,
-          hasOpenOffer: nft.hasOpenOffer,
-          price: nft.price,
-          fileType: nft.fileType,
-          preview: nft.preview.v0,
-          owner: nft.owner.userName,
-          nftContract: nft.nftContract,
-          ownerId: nft.owner._id,
-          tokenId: nft.tokenId,
-          saleType: nft.saleType.toLowerCase(),
-          isVerified: nft.owner.isVerified,
-          collectionVerified: nft.creator.isVerified,
-        };
-        return collectionNFT;
-      })
-    );
 
-    setParams({ ...params, page: params.page + 1 });
-    setNfts((prevState) => [...prevState, ...collectionNFTList]);
+    setParams({
+      ...params,
+      page: params.page + 1,
+    });
+    setNfts([...nfts, ...collectionNFTData]);
   };
 
-  function NavigateTo(route) {
-    setShowMenu(false);
-    history.push(`/${route}`);
-  }
-
+  /**
+   * Update NFT list based on the filters chosen by the user
+   *
+   * @param {*} params parameters used to filter query results
+   */
   const handleChangeFilterNFT = (params) => {
     setLoadingState("not-loaded");
     setParams(params);
     updateNFTs(params);
   };
 
+  /**
+   * Get the filtered list of collection NFTs
+   *
+   * @param {*} params parameters used to filter query results
+   */
   const updateNFTs = async (params) => {
     const collectionNFTData = await (await getCollectionNFTs(params)).data;
-    const collectionNFTList = await Promise.all(
-      collectionNFTData.nfts.map(async (nft) => {
-        let collectionNFT = {
-          collectionName: nft.collectionId.name,
-          creatorLogo: nft.owner.urlProfile,
-          image: nft.urlFile,
-          name: nft.name,
-          hasOpenOffer: nft.hasOpenOffer,
-          price: nft.price,
-          fileType: nft.fileType,
-          preview: nft.preview.v0,
-          owner: nft.owner.userName,
-          nftContract: nft.nftContract,
-          ownerId: nft.owner._id,
-          tokenId: nft.tokenId,
-          saleType: nft.saleType.toLowerCase(),
-          isVerified: nft.owner.isVerified,
-          collectionVerified: nft.creator.isVerified,
-        };
-        return collectionNFT;
-      })
-    );
+
+    setNftNumber(collectionNFTData.nftsAmount);
     setMaxPrice(collectionNFTData.higherPrice);
-    setParams({ ...params, page: params.page + 1 });
-    setNfts(collectionNFTList);
+    setParams({
+      ...params,
+      page: params.page + 1,
+    });
+    setNfts(collectionNFTData.nfts);
+    setNftPlaying(new Array(collectionNFTData.nftsAmount).fill(false));
     setCollection(collection);
     setLoadingState("loaded");
   };
 
+  const handleNFTLongPress = (i, isNew) => {
+    if(!isNew) {
+      setNftPlaying((prevState) => {
+        prevState[i] = !prevState[i];
+        return [...prevState];
+      });
+    }
+    else{
+      const newNftPlaying = new Array(nftPlaying.length).fill(false);
+      newNftPlaying[i] = !newNftPlaying[i];
+      setNftPlaying([...newNftPlaying]);
+    }
+  }
+
+  /**
+   * React Hook to re-render when the search term state value is changed
+   */
   useEffect(() => {
     window.scrollTo(0, 0);
     getData(searchTerm);
   }, [searchTerm]);
-
-  const webLink = `https://www.xdsea.com/collection/${collectionNickName}`;
-
-  const [copied, setCopied] = useState(false);
-
-  const copy = async () => {
-    await navigator.clipboard.writeText(webLink);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
-  };
 
   return (
     <CollectionSection>
@@ -253,7 +217,7 @@ const CollectionDetails = (props) => {
         <IconImg
           url={collection.banner}
           width="100%"
-          height="355px"
+          height="424px"
           backsize="cover"
           key="imageBanner"
           initial={{ opacity: 0 }}
@@ -263,9 +227,7 @@ const CollectionDetails = (props) => {
       </BannerAbsolute>
       <HStack style={{ zIndex: 1 }}>
         <VStack
-          padding={
-            size.width < 768 ? "260px 30px 30px 30px" : "260px 30px 30px 30px"
-          }
+          padding="330px 0 0 0"
           spacing="15px"
           maxwidth="1200px"
           cursor={"pointer"}
@@ -274,7 +236,7 @@ const CollectionDetails = (props) => {
           {/* Creator Tag */}
           <CreatorAbsolute>
             <HStack
-              onClick={() => NavigateTo(`UserProfile/${collection.creatorId}`)}
+              onClick={() => props.redirect(`user/${collection.creatorId}`)}
               border="30px"
               padding="6px 15px"
               style={{
@@ -295,10 +257,10 @@ const CollectionDetails = (props) => {
                 <CaptionBold textcolor={({ theme }) => theme.text}>
                   CREATOR
                 </CaptionBold>
-                {collection.creator ? (
-                  <Tooltip title={nfts[0]?.collectionCreator}>
+                {collection.addressCreator ? (
+                  <Tooltip title={collection.addressCreator}>
                     <CaptionBold textcolor={({ theme }) => theme.text}>
-                      {truncateAddress(collection.creator)}
+                      {collection.creator !== "" ? collection.creator : truncateAddress(collection.addressCreator)}
                     </CaptionBold>
                   </Tooltip>
                 ) : (
@@ -674,14 +636,14 @@ const CollectionDetails = (props) => {
 
       {/* Collection NFTs */}
       <CollectionContent id="scrollableDiv">
-        <StickySectionHeader top="90">
+        <StickySectionHeader top="68">
           {/* Filters Search and Sort */}
           <HStack
-            responsive="true"
-            spacing="6px"
-            padding=" 6px"
+            background="rgb(0,0,0, 0.06)"
+            padding="6px"
+            border="9px"
+            width="100%"
             blur="30px"
-            border="6px"
           >
             <SearchCollection
               inputId={"collectionNFT"}
@@ -703,7 +665,6 @@ const CollectionDetails = (props) => {
                 maxPrice={maxPrice}
                 isCollectionPage={true}
               ></FiltersButton>
-              <Spacer></Spacer>
               <SortButtonNFTS
                 onChange={handleChangeFilterNFT}
                 params={params}
@@ -713,10 +674,11 @@ const CollectionDetails = (props) => {
           </HStack>
         </StickySectionHeader>
 
+        {/* Collection NFT Cards */}
         <InfiniteScroll
           dataLength={nfts.length}
           next={fetchMoreNFTs}
-          hasMore={nfts.length < collection.nftsCount}
+          hasMore={nfts.length < nftNumber}
           loader={
             <HStack
               initial={{ opacity: 0 }}
@@ -741,33 +703,37 @@ const CollectionDetails = (props) => {
                   <VStack
                     minwidth={size.width < 768 ? "100%" : "300px"}
                     width={"240px"}
-                    // maxwidth={size.width < 768 ? "330px" : "220px"}
                     height="450px"
-                    key={i}
+                    key={"collectionStack_" + item._id}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                   >
                     <NftContainer
-                      key={i}
-                      isVerified={item.isVerified}
-                      iconStatus={item.saleType}
+                      elementKey={"collection_" + item._id}
+                      isVerified={item.owner.isVerified}
+                      iconStatus={item.saleType.toLowerCase()}
                       hasOffers={item.hasOpenOffer}
-                      creatorImage={item.creatorLogo}
-                      itemImage={item.image}
+                      creatorImage={item.owner.urlProfile}
+                      itemImage={item.urlFile.v0}
+                      itemPreview={item.preview.v0}
                       price={item.price}
-                      collectionName={item.collectionName}
+                      collectionName={item.collectionId.name}
                       itemNumber={item.name}
                       fileType={item.fileType}
                       background={({ theme }) => theme.backElement}
                       onClick={() =>
-                        NavigateTo(`nft/${item.nftContract}/${item.tokenId}`)
+                        props.redirect(`nft/${isXdc(item.nftContract) ? item.nftContract.toLowerCase() : toXdc(item.nftContract.toLowerCase())}/${item.tokenId}`)
                       }
                       onClickCreator={() =>
-                        NavigateTo(`UserProfile/${item.ownerId}`)
+                        props.redirect(`user/${item.owner.nickName}`)
                       }
                       owner={true}
                       usdPrice={props.xdc}
-                      collectionVerified={item.collectionVerified}
+                      collectionVerified={item.owner.isVerified}
+                      setIsPlaying={handleNFTLongPress}
+                      isPlaying={nftPlaying[i]}
+                      nftIndex={i}
+                      border={"6px"}
                     ></NftContainer>
                   </VStack>
                 ))
@@ -792,8 +758,6 @@ const CollectionDetails = (props) => {
                   minwidth={size.width < 768 ? "100%" : "300px"}
                   width={"240px"}
                   height="450px"
-                  // minwidth={size.width < 768 ? "230px" : "280px"}
-                  // height="450px"
                   key={item.id}
                 >
                   <LoadingNftContainer></LoadingNftContainer>
@@ -807,7 +771,7 @@ const CollectionDetails = (props) => {
   );
 };
 
-export default CollectionDetails;
+export default CollectionPage;
 
 const CollectionContent = styled(motion.div)`
   padding: 30px 0;
@@ -816,9 +780,9 @@ const CollectionContent = styled(motion.div)`
 `;
 
 const CollectionSection = styled(motion.div)`
-  padding: 90px 0;
+  padding: 0px 0;
   width: 100%;
-  background: rgba(0, 0, 0, 0.04);
+
   position: relative;
 `;
 
@@ -829,12 +793,12 @@ const BannerAbsolute = styled(motion.div)`
 
 const CreatorAbsolute = styled(motion.div)`
   position: absolute;
-  top: 15px;
+  top: 85px;
   left: 15px;
 `;
 
 const SocialAbsolute = styled(motion.div)`
   position: absolute;
-  top: 15px;
+  top: 85px;
   right: 15px;
 `;

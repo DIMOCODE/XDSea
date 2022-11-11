@@ -158,6 +158,7 @@ function TxModal(props) {
                 input={offerPrice}
                 height="51px"
                 min={"0.0001"}
+                textplace={"rgba(0,0,0,0.6)"}
                 onChange={onChangeOffer}
                 background={appStyle.colors.darkgrey10}
               ></InputStyled>
@@ -215,6 +216,7 @@ function TxModal(props) {
                 fontsize="30px"
                 input={editPrice}
                 height="51px"
+                textplace={"rgba(0,0,0,0.6)"}
                 min={"0.0001"}
                 onChange={onChangeEdit}
                 background={appStyle.colors.darkgrey10}
@@ -270,6 +272,7 @@ function TxModal(props) {
                 input={listPrice}
                 height="51px"
                 min={"0.0001"}
+                textplace={"rgba(0,0,0,0.6)"}
                 onChange={onChangeList}
                 background={appStyle.colors.darkgrey10}
               ></InputStyled>
@@ -306,48 +309,7 @@ function TxModal(props) {
               </HStack>
             </>
           )}
-          {/* {isList && (
-            <>
-              <VStack flex="0" spacing="0px">
-                <IconImg url={listIcon} width="54px" height="54px"></IconImg>
-                <TitleBold21 textcolor={({ theme }) => theme.text}>
-                  List Confirmed{" "}
-                </TitleBold21>
-              </VStack>
-              <HStack padding="0 30px">
-                <BodyRegular
-                  textcolor={({ theme }) => theme.text}
-                  align="center"
-                >
-                  You listed <b>{ListedNftName}</b>, everyone can buy it now
-                </BodyRegular>
-              </HStack>
-              <IconImg
-                url={ListedImage}
-                backsize="cover"
-                border="9px"
-                width="100%"
-                height="260px"
-              ></IconImg>
-              <HStack>
-                <ButtonApp
-                  text="Cancel"
-                  textcolor={({ theme }) => theme.text}
-                  background={appStyle.colors.darkgrey10}
-                  width="100%"
-                  onClick={cancelBtnList}
-                  btnStatus={0}
-                ></ButtonApp>
-                <ButtonApp
-                  text="View NFT"
-                  width="100%"
-                  textcolor={appStyle.colors.white}
-                  onClick={confirmBtnList}
-                  btnStatus={0}
-                ></ButtonApp>
-              </HStack>
-            </>
-          )} */}
+
           {isTransfer && (
             <>
               <VStack flex="0" spacing="0px">
@@ -366,6 +328,7 @@ function TxModal(props) {
                 fontsize="30px"
                 input={transferAddress}
                 height="51px"
+                textplace={"rgba(0,0,0,0.6)"}
                 onChange={onChangeTransfer}
                 background={appStyle.colors.darkgrey10}
               ></InputStyled>
@@ -376,8 +339,8 @@ function TxModal(props) {
                   border="6px"
                 >
                   <CaptionRegular textcolor={appStyle.colors.darkRed}>
-                    The address does not seem right. Please use the wallet
-                    address with a "0x..." prefix and not the "xdc..." prefix.
+                    The address does not seem right. Please check the address 
+                    and try again.
                   </CaptionRegular>
                 </HStack>
               ) : null}
