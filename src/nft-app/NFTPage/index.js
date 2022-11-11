@@ -836,7 +836,7 @@ const NFTDetails = (props) => {
         <TxModal
           isPurchaised={true}
           PurchaisedNftName={nft.name}
-          ListedImage={nft.urlFile.v0}
+          ListedImage={nft.urlFile.thumbnail}
           confirmBtnPurchaise={() =>
             props.redirect(`user/${LS.get(LS_ROOT_KEY).user.nickName}`)
           }
@@ -1935,7 +1935,8 @@ const NFTDetails = (props) => {
                       fileType={item.fileType}
                       creatorImage={item.owner.urlProfile}
                       itemImage={item.urlFile.v0}
-                      itemPreview={item.preview.v0}
+                      itemThumbnail={item.urlFile.thumbnail}
+                      itemPreview={item.preview.thumbnail}
                       price={item.price}
                       collectionName={item.collectionId.name}
                       itemNumber={item.name}

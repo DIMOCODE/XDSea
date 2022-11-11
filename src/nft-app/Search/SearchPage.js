@@ -434,8 +434,8 @@ function SearchPage(props) {
                               isVerified={item.creator.isVerified}
                               keyContent={item.name}
                               keyID={item.creator._id}
-                              collectionImage={item.banner.v0}
-                              creatorLogo={item.logo.v0}
+                              collectionImage={item.banner.thumbnail}
+                              creatorLogo={item.logo.thumbnail}
                               collectionName={item.name}
                               collectionDescription={item.description}
                               creatorName={item.addressCreator}
@@ -520,7 +520,8 @@ function SearchPage(props) {
                             hasOffers={item.hasOpenOffer}
                             creatorImage={item.owner.urlProfile}
                             itemImage={item.urlFile.v0}
-                            itemPreview={item.preview.v0}
+                            itemThumbnail={item.urlFile.thumbnail}
+                            itemPreview={item.preview.thumbnail}
                             price={item.price}
                             collectionName={item.collectionId.name}
                             itemNumber={item.name}

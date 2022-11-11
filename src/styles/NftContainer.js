@@ -30,6 +30,7 @@ function NftContainer(props) {
     itemNumber,
     creatorImage,
     itemImage,
+    itemThumbnail,
     onClick,
     onClickCreator,
     fileType,
@@ -117,7 +118,7 @@ function NftContainer(props) {
         <ZItem>
           {fileType.match("image.*") ? (
             <IconImg
-              url={itemImage}
+              url={itemThumbnail}
               width="100%"
               height="100%"
               backsize="cover"

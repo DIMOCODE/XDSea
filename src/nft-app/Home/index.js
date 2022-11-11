@@ -253,7 +253,7 @@ const Home = (props) => {
                     >
                       {isImage(item.fileType) ? (
                         <IconImg
-                          url={item.urlFile.v0}
+                          url={item.urlFile.thumbnail}
                           backsize="cover"
                           width="100%"
                           height="100%"
@@ -431,7 +431,7 @@ const Home = (props) => {
                 <PricePosition
                   position={1}
                   creator={topCollections[0]?.name}
-                  image={topCollections[0]?.logo.v0}
+                  image={topCollections[0]?.logo.thumbnail}
                   amount={
                     Number(topCollections[0]?.volumeTrade) > 100000
                       ? Intl.NumberFormat("en-US", {
@@ -477,7 +477,7 @@ const Home = (props) => {
                 <PricePosition
                   position={2}
                   creator={topCollections[1]?.name}
-                  image={topCollections[1]?.logo.v0}
+                  image={topCollections[1]?.logo.thumbnail}
                   amount={
                     Number(topCollections[1]?.volumeTrade) > 100000
                       ? Intl.NumberFormat("en-US", {
@@ -523,7 +523,7 @@ const Home = (props) => {
                 <PricePosition
                   position={3}
                   creator={topCollections[2]?.name}
-                  image={topCollections[2]?.logo.v0}
+                  image={topCollections[2]?.logo.thumbnail}
                   amount={
                     Number(topCollections[2]?.volumeTrade) > 100000
                       ? Intl.NumberFormat("en-US", {
@@ -564,7 +564,7 @@ const Home = (props) => {
                     <CollectionPosition
                       key={item._id}
                       rank={i + 4}
-                      creator={item.logo.v0}
+                      creator={item.logo.thumbnail}
                       name={item.name}
                       amount={
                         Number(item.volumeTrade) > 100000
@@ -641,7 +641,8 @@ const Home = (props) => {
                     <NftContainer
                       key={"trending_" + item._id}
                       itemImage={item.urlFile.v0}
-                      itemPreview={item.preview.v0}
+                      itemThumbnail={item.urlFile.thumbnail}
+                      itemPreview={item.preview.thumbnail}
                       fileType={item.fileType}
                       background={({ theme }) => theme.backElement}
                       onClick={() =>
@@ -737,7 +738,8 @@ const Home = (props) => {
                       key={"new_" + item._id}
                       iconStatus={item.saleType.toLowerCase()}
                       itemImage={item.urlFile.v0}
-                      itemPreview={item.preview.v0}
+                      itemThumbnail={item.urlFile.thumbnail}
+                      itemPreview={item.preview.thumbnail}
                       price={item.price}
                       collectionName={item.collectionId.name}
                       itemNumber={item.name}

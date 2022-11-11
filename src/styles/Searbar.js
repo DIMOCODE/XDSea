@@ -208,7 +208,7 @@ function Searchbar({
                             key={nft._id}
                           >
                             <IconImg
-                              url={nft.urlFile.v0}
+                              url={nft.urlFile.thumbnail}
                               width="54px"
                               height="54px"
                               border="9px"
@@ -277,7 +277,7 @@ function Searchbar({
                           key={collection._id}
                         >
                           <IconImg
-                            url={collection.banner.v0}
+                            url={collection.banner.thumbnail}
                             width="100%"
                             height="60px"
                             border="6px"
@@ -286,7 +286,7 @@ function Searchbar({
                           ></IconImg>
                           <HStack>
                             <IconImg
-                              url={collection.logo.v0}
+                              url={collection.logo.thumbnail}
                               width="32px"
                               height="32px"
                               border="15px"
@@ -362,7 +362,7 @@ function Searchbar({
                             width="260px"
                           >
                             <IconImg
-                              url={nft.urlFile.v0}
+                              url={nft.urlFile.thumbnail}
                               width="54px"
                               height="54px"
                               border="9px"
@@ -431,7 +431,7 @@ function Searchbar({
                           key={collection._id}
                         >
                           <IconImg
-                            url={collection.banner.v0}
+                            url={collection.banner.thumbnail}
                             width="100%"
                             height="60px"
                             border="6px"
@@ -440,7 +440,7 @@ function Searchbar({
                           ></IconImg>
                           <HStack>
                             <IconImg
-                              url={collection.logo.v0}
+                              url={collection.logo.thumbnail}
                               width="32px"
                               height="32px"
                               border="15px"
@@ -552,7 +552,7 @@ function Searchbar({
                             width="100%"
                           >
                             <IconImg
-                              url={nft.urlFile.v0}
+                              url={nft.urlFile.thumbnail}
                               width="54px"
                               height="54px"
                               border="9px"
@@ -617,7 +617,7 @@ function Searchbar({
                         key={collection._id}
                       >
                         <IconImg
-                          url={collection.banner.v0}
+                          url={collection.banner.thumbnail}
                           width="100%"
                           height="60px"
                           border="6px"
@@ -626,7 +626,7 @@ function Searchbar({
                         ></IconImg>
                         <HStack>
                           <IconImg
-                            url={collection.logo.v0}
+                            url={collection.logo.thumbnail}
                             width="32px"
                             height="32px"
                             border="15px"

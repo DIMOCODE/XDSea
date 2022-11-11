@@ -2429,7 +2429,7 @@ const MyNFT = (props) => {
                                     }}
                                   >
                                     <CollectionTab
-                                      image={collection.logo.v0}
+                                      image={collection.logo.thumbnail}
                                       name={collection.name}
                                       onClick={handleChangeFilterNFT}
                                       params={nftParams}
@@ -2545,7 +2545,7 @@ const MyNFT = (props) => {
                                       <ZItem>
                                         {isImage(item.fileType) ? (
                                           <IconImg
-                                            url={item.urlFile.v0}
+                                            url={item.urlFile.thumbnail}
                                             width="100%"
                                             height="100%"
                                             backsize="cover"
@@ -2572,7 +2572,7 @@ const MyNFT = (props) => {
                                           </VStack>
                                         ) : isAudio(item.fileType) ? (
                                           <IconImg
-                                            url={item.preview.v0}
+                                            url={item.preview.thumbnail}
                                             width="100%"
                                             height="100%"
                                             backsize="cover"
@@ -2664,7 +2664,7 @@ const MyNFT = (props) => {
                               >
                                 <ZItem>
                                   <IconImg
-                                    url={item.banner.v0}
+                                    url={item.banner.thumbnail}
                                     width="100%"
                                     height="100%"
                                     backsize="cover"
@@ -2682,7 +2682,7 @@ const MyNFT = (props) => {
                                     <Spacer></Spacer>
 
                                     <IconImg
-                                      url={item.logo.v0}
+                                      url={item.logo.thumbnail}
                                       width="90px"
                                       height="90px"
                                       backsize="cover"
@@ -3009,7 +3009,7 @@ const MyNFT = (props) => {
                     >
                       <ZItem>
                         <IconImg
-                          url={item.banner.v0}
+                          url={item.banner.thumbnail}
                           width="100%"
                           height="100%"
                           backsize="cover"
@@ -3026,7 +3026,7 @@ const MyNFT = (props) => {
                         >
                           <Spacer></Spacer>
                           <IconImg
-                            url={item.logo.v0}
+                            url={item.logo.thumbnail}
                             width="90px"
                             height="90px"
                             backsize="cover"
@@ -3187,7 +3187,7 @@ const MyNFT = (props) => {
                           <ZItem>
                             {isImage(item.fileType) ? (
                               <IconImg
-                                url={item.urlFile.v0}
+                                url={item.urlFile.thumbnail}
                                 width="100%"
                                 height="100%"
                                 backsize="cover"
@@ -3214,7 +3214,7 @@ const MyNFT = (props) => {
                               </VStack>
                             ) : isAudio(item.fileType) ? (
                               <IconImg
-                                url={item.preview.v0}
+                                url={item.preview.thumbnail}
                                 width="100%"
                                 height="100%"
                                 backsize="cover"

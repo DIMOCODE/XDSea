@@ -715,7 +715,8 @@ const CollectionPage = (props) => {
                       hasOffers={item.hasOpenOffer}
                       creatorImage={item.owner.urlProfile}
                       itemImage={item.urlFile.v0}
-                      itemPreview={item.preview.v0}
+                      itemThumbnail={item.urlFile.thumbnail}
+                      itemPreview={item.preview.thumbnail}
                       price={item.price}
                       collectionName={item.collectionId.name}
                       itemNumber={item.name}
