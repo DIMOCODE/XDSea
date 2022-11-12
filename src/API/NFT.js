@@ -35,7 +35,7 @@ export const getNFTs = ({
   priceRangeStart,
   priceRangeEnd,
   collectionId,
-  staking,
+  stakeable,
 }) => {
   var params =
     `?${searchBy !== undefined ? `searchBy=${searchBy}&` : ""}` +
@@ -58,7 +58,7 @@ export const getNFTs = ({
       saleType4 !== undefined ? `saleType=${saleType4}&` : ""
     }` +
     `${collectionId !== undefined ? `collectionId=${collectionId}&` : ""}${
-      staking !== undefined ? `staking=${staking}&` : ""
+      stakeable !== undefined ? `stakeable=${stakeable}&` : ""
     }`;
   params = params.substring(0, params.length - 1);
   return createSignedRequest(

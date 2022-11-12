@@ -64,6 +64,7 @@ import { StakeSection } from "../Staking/StakeSection";
 import { StakingModal } from "../Staking/StakingModal";
 import { AddRemoveModal } from "../Staking/AddRemoveModal";
 import { BackedValueModal } from "../Staking/BackedValueModal";
+import { getStakingPoolsByCollection } from "../../API/stake";
 
 const CollectionPage = (props) => {
   const size = useWindowSize();
@@ -156,9 +157,9 @@ const CollectionPage = (props) => {
       var collectionStakingPool = {};
       if (collectionData.collection.isStakeable) {
         collectionStakingPool = await (
-          await getStakingPool(collectionData.collection._id)
+          await getStakingPoolsByCollection(collectionData.collection._id)
         ).data;
-        setStakingPool(collectionStakingPool.stakingPools);
+        setStakingPool(collectionStakingPool.stakingPools[0]);
       }
 
       setNftNumber(collectionNFTData.nftsAmount);
@@ -619,7 +620,7 @@ const CollectionPage = (props) => {
             <StakeSection
               nfts={nfts}
               usdPrice={props.xdc}
-              stakingPool={stakingPool ? stakingPool[0] : []}
+              stakingPool={stakingPool}
               stakes={stakes}
               onClickAR={() => {
                 setAddRemoveModal(true);
@@ -627,6 +628,7 @@ const CollectionPage = (props) => {
               onClickBV={() => {
                 setBackedValueModal(true);
               }}
+              setStakingPool={setStakingPool}
             ></StakeSection>
           ) : (
         <InfiniteScroll

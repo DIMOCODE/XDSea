@@ -17,17 +17,18 @@ import editPencil from "../../../images/editPencil.png";
 import crossIcon from "../../../images/crossIcon.png";
 import doneIcon from "../../../images/doneIcon.png";
 import { useState } from "react";
+import { updateStakingPool } from "../../../API/stake";
 
 function BlockTVL(props) {
   const options = ["hours", "days", "months", "years"];
   const defaultOption = options[0];
 
-  const { tvl, onClickAR, onClickBV, usdPrice, lockPeriod } = props;
+  const { tvl, onClickAR, onClickBV, usdPrice, lockPeriod, poolId, setStakingPool } = props;
   const [newLockInPeriod, setNewLockInPeriod] = useState(0);
   const [period, setPeriod] = useState("hours");
   const [isEditingLockIn, setIsEditingLockIn] = useState(false);
 
-  const updateLockInPeriod = () => {
+  const updateLockInPeriod = async () => {
     var updatedLockInPeriod = 0;
     if(period === "hours") {
       updatedLockInPeriod = newLockInPeriod;
@@ -41,7 +42,8 @@ function BlockTVL(props) {
     else if(period === "years"){
       updatedLockInPeriod = newLockInPeriod * 8760;
     }
-    console.log(updatedLockInPeriod);
+    const updatedStakingPool = await(await updateStakingPool(poolId, updatedLockInPeriod)).data.stakingPool;
+    setStakingPool(updatedStakingPool);
   }
 
   return (

@@ -36,25 +36,25 @@ import { HolderSection } from "../Collection/HoldersSection";
 import { TopInventory } from "../Collection/Inventory/TopInventory";
 
 function StakeSection(props) {
-  const { nfts, usdPrice, stakingPool, stakes, onClickAR, onClickBV } = props;
+  const { nfts, usdPrice, stakingPool, stakes, onClickAR, onClickBV, setStakingPool } = props;
 
   const parseLockPeriod = (hours) => {
     if (hours === 1) {
       return "1 hour";
     } else if (hours < 24) {
-      return hours + "hours";
+      return hours + " hours";
     } else if (hours === 24) {
       return "1 day";
     } else if (hours / 24 < 30) {
-      return hours / 24 + "days";
+      return hours / 24 + " days";
     } else if (hours / 730 === 1) {
       return "1 month";
     } else if (hours / 730 < 12) {
-      return hours / 730 + "months";
+      return hours / 730 + " months";
     } else if (hours / 8760 === 1) {
       return "1 year";
     } else {
-      return hours / 8760 + "years";
+      return hours / 8760 + " years";
     }
   };
 
@@ -77,11 +77,13 @@ function StakeSection(props) {
         {/* TVl & Token Selector */}
         <HStack style={{ zIndex: 100 }}>
           <BlockTVL
-            tvl={stakingPool?.totalValueLocked}
+            tvl={stakingPool?.totalValueLocked || 0}
             usdPrice={usdPrice}
             lockPeriod={parseLockPeriod(stakingPool?.lockPeriod)}
             onClickAR={onClickAR}
             onClickBV={onClickBV}
+            poolId={stakingPool?._id}
+            setStakingPool={setStakingPool}
           ></BlockTVL>
           <TokenSelector rewardRates={stakingPool?.rewardRates}></TokenSelector>
         </HStack>
