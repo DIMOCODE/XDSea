@@ -31,6 +31,7 @@ import instagram from "../../images/instagramColor.png";
 import twitter from "../../images/twitterColor.png";
 import link from "../../images/webColor.png";
 import discord from "../../images/discordColor.png";
+import { ShareModal } from "../../styles/ShareModal";
 
 function BannerMobile(props) {
   const {
@@ -67,280 +68,203 @@ function BannerMobile(props) {
   };
 
   return (
-    <VStack padding="90px 12px 0 12px" alignment="flex-start">
-      <HStack>
-        <IconImg
-          url={collectionImage}
-          width="69px"
-          height="69px"
-          border="9px"
-          bordersize="3px"
-          bordercolor="white"
-          backsize="cover"
-          style={{
-            boxShadow: "0px 3px 9px 0px rgba(0, 0, 0, 0.3)",
-          }}
-        ></IconImg>
-
-        <CreatorAbsolute>
-          <HStack
-            onClick={onClickCreator}
-            border="0 6px 6px 0"
-            padding="6px 9px"
-            height="42px"
+    <>
+      {isShare && <ShareModal onClick={() => setIsShare(false)}></ShareModal>}
+      <VStack padding="90px 12px 0 12px" alignment="flex-start">
+        <HStack>
+          <IconImg
+            url={collectionImage}
+            width="69px"
+            height="69px"
+            border="9px"
+            bordersize="3px"
+            bordercolor="white"
+            backsize="cover"
             style={{
-              boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
+              boxShadow: "0px 3px 9px 0px rgba(0, 0, 0, 0.3)",
+            }}
+          ></IconImg>
+
+          <CreatorAbsolute>
+            <HStack
+              onClick={onClickCreator}
+              border="0 6px 6px 0"
+              padding="6px 9px"
+              height="42px"
+              style={{
+                boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
+              }}
+              cursor={"pointer"}
+              background={({ theme }) => theme.backElement}
+            >
+              <VStack spacing="0px" alignment="flex-start" cursor={"pointer"}>
+                <CaptionBold textcolor={({ theme }) => theme.text}>
+                  CREATOR
+                </CaptionBold>
+                <HStack spacing="6px">
+                  <Tooltip title={tooltip}>
+                    <CaptionBold textcolor={({ theme }) => theme.text}>
+                      {addressCreator}
+                    </CaptionBold>
+                  </Tooltip>
+
+                  {isVerified ? (
+                    <IconImg
+                      cursor={"pointer"}
+                      url={verified}
+                      width="15px"
+                      height="15px"
+                    ></IconImg>
+                  ) : null}
+                </HStack>
+              </VStack>
+            </HStack>
+          </CreatorAbsolute>
+
+          <Spacer></Spacer>
+          <HStack
+            justify="flex-start"
+            border="30px"
+            padding="0 25px"
+            spacing="15px"
+            height="42px"
+            self="none"
+            whileTap={{ scale: 0.96 }}
+            background={({ theme }) => theme.backElement}
+            style={{
+              marginBottom: "3px",
+              zIndex: "1",
+            }}
+            onClick={() => {
+              setIsShare(true);
             }}
             cursor={"pointer"}
-            background={({ theme }) => theme.backElement}
           >
-            <VStack spacing="0px" alignment="flex-start" cursor={"pointer"}>
-              <CaptionBold textcolor={({ theme }) => theme.text}>
-                CREATOR
-              </CaptionBold>
-              <HStack spacing="6px">
-                <Tooltip title={tooltip}>
-                  <CaptionBold textcolor={({ theme }) => theme.text}>
-                    {addressCreator}
-                  </CaptionBold>
-                </Tooltip>
-
-                {isVerified ? (
-                  <IconImg
-                    cursor={"pointer"}
-                    url={verified}
-                    width="15px"
-                    height="15px"
-                  ></IconImg>
-                ) : null}
-              </HStack>
-            </VStack>
+            <CaptionBoldShort cursor={"pointer"}>SHARE</CaptionBoldShort>
           </HStack>
-        </CreatorAbsolute>
+        </HStack>
 
-        <Spacer></Spacer>
-        <HStack
-          justify="flex-start"
-          border="30px"
-          padding="0 25px"
-          spacing="15px"
-          height="42px"
-          self="none"
-          background={({ theme }) => theme.backElement}
+        {/* Collection Name */}
+        <VStack
+          background={({ theme }) => theme.walletButton}
+          padding="6px 15px"
+          border="9px"
+          spacing="3px"
           style={{
-            marginBottom: "3px",
-            zIndex: "1"
+            boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
           }}
+          alignment="flex-start"
         >
-          <motion.div>
-            {isShare ? (
-              <HStack>
-                <IconImg
-                  url={chevronRight}
-                  width="30px"
-                  height="30px"
-                  onClick={() => {
-                    setIsShare(false);
-                  }}
-                ></IconImg>
-                <FacebookShareButton
-                  url={webLink}
-                  quote={"Check out this NFT Collection!"}
-                  hashtag={["#XDSea"]}
-                  description={"XDSea"}
-                  className="Demo__some-network__share-button"
-                >
-                  <a>
-                    <IconImg
-                      url={facebookSocial}
-                      width="30px"
-                      height="30px"
-                    ></IconImg>
-                  </a>
-                </FacebookShareButton>
-                <TwitterShareButton
-                  title={"Check out this NFT Collection!"}
-                  url={webLink}
-                  hashtags={["XDSea", "BuildItOnXDC"]}
-                >
-                  <a>
-                    <IconImg
-                      url={twitterSocial}
-                      width="30px"
-                      height="30px"
-                    ></IconImg>
-                  </a>
-                </TwitterShareButton>
-                <TelegramShareButton
-                  title={"Check out this NFT Collection!"}
-                  url={webLink}
-                >
-                  <a>
-                    <IconImg
-                      url={telegramSocial}
-                      width="30px"
-                      height="30px"
-                    ></IconImg>
-                  </a>
-                </TelegramShareButton>
-                <WhatsappShareButton
-                  title={"Check out this NFT Collection!"}
-                  url={webLink}
-                >
-                  <a>
-                    <IconImg
-                      url={whatsSocial}
-                      width="30px"
-                      height="30px"
-                    ></IconImg>
-                  </a>
-                </WhatsappShareButton>
+          <CaptionBold initial={{ opacity: 0.6 }} textcolor="white">
+            COLLECTION
+          </CaptionBold>
 
-                {copied ? (
-                  <IconImg
-                    url={copiedLink}
-                    width="28px"
-                    height="28px"
-                  ></IconImg>
-                ) : (
-                  <a>
-                    <IconImg
-                      onClick={copy}
-                      url={linkSocial}
-                      width="30px"
-                      height="30px"
-                    ></IconImg>
-                  </a>
-                )}
-              </HStack>
-            ) : (
-              <CaptionBoldShort 
-                onClick={() => {
-                  setIsShare(true);
-                }}
-              >SHARE</CaptionBoldShort>
-            )}
-          </motion.div>
-        </HStack>
-      </HStack>
-
-      {/* Collection Name */}
-      <VStack
-        background={({ theme }) => theme.walletButton}
-        padding="6px 15px"
-        border="9px"
-        spacing="3px"
-        style={{
-          boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
-        }}
-        alignment="flex-start"
-      >
-        <CaptionBold initial={{ opacity: 0.6 }} textcolor="white">
-          COLLECTION
-        </CaptionBold>
-
-        <TitleBold18 align="center" textcolor={({ theme }) => theme.walletText}>
-          {collectionName}
-        </TitleBold18>
-      </VStack>
-      <CollectionStats
-        owners={owners}
-        nftsCount={nftCount}
-        floorPrice={floorPrice}
-        volumeTrade={volumeTrade}
-        width="100%"
-      ></CollectionStats>
-
-      {/* Collection Description */}
-      <VStack
-        padding="15px 60px"
-        maxwidth="1200px"
-        width="100%"
-        background={({ theme }) => theme.backElement}
-        border="6px"
-      >
-        {collectionDescription !== undefined ? (
-          <BodyRegular
-            textcolor={({ theme }) => theme.text}
-            align="flex-start"
+          <TitleBold18
+            align="center"
+            textcolor={({ theme }) => theme.walletText}
           >
-            {collectionDescription}
-          </BodyRegular>
-        ) : (
-          <VStack maxwidth="1200px">
-            <LoopBars width="340px"></LoopBars>
-            <LoopBars width="300px"></LoopBars>
-          </VStack>
-        )}
-        {/* Collection Social Links */}
-        <HStack>
-          {twitterUrl ? (
-            <a
-              href={twitterUrl}
-              style={{
-                boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
-                borderRadius: 9,
-              }}
+            {collectionName}
+          </TitleBold18>
+        </VStack>
+        <CollectionStats
+          owners={owners}
+          nftsCount={nftCount}
+          floorPrice={floorPrice}
+          volumeTrade={volumeTrade}
+          width="100%"
+        ></CollectionStats>
+
+        {/* Collection Description */}
+        <VStack
+          padding="15px 60px"
+          maxwidth="1200px"
+          width="100%"
+          background={({ theme }) => theme.backElement}
+          border="6px"
+        >
+          {collectionDescription !== undefined ? (
+            <BodyRegular
+              textcolor={({ theme }) => theme.text}
+              align="flex-start"
             >
-              <CircleButton
-                image={twitter}
-                background={"#FFFFFF"}
-              ></CircleButton>
-            </a>
+              {collectionDescription}
+            </BodyRegular>
           ) : (
-            <></>
+            <VStack maxwidth="1200px">
+              <LoopBars width="340px"></LoopBars>
+              <LoopBars width="300px"></LoopBars>
+            </VStack>
           )}
-          {instagramUrl ? (
-            <a
-              href={instagramUrl}
-              style={{
-                boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
-                borderRadius: 9,
-              }}
-            >
-              <CircleButton
-                image={instagram}
-                background={"#FFFFFF"}
-              ></CircleButton>
-            </a>
-          ) : (
-            <></>
-          )}
-          {discordUrl ? (
-            <a
-              href={discordUrl}
-              style={{
-                boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
-                borderRadius: 9,
-              }}
-            >
-              <CircleButton
-                image={discord}
-                background={"#FFFFFF"}
-              ></CircleButton>
-            </a>
-          ) : (
-            <></>
-          )}
-          {websiteUrl ? (
-            <a
-              href={websiteUrl}
-              style={{
-                boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
-                borderRadius: 9,
-              }}
-            >
-              <CircleButton
-                image={link}
-                background={"#FFFFFF"}
-              ></CircleButton>
-            </a>
-          ) : (
-            <></>
-          )}
-        </HStack>
+          {/* Collection Social Links */}
+          {/* <HStack>
+            {twitterUrl ? (
+              <a
+                href={twitterUrl}
+                style={{
+                  boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
+                  borderRadius: 9,
+                }}
+              >
+                <CircleButton
+                  image={twitter}
+                  background={"#FFFFFF"}
+                ></CircleButton>
+              </a>
+            ) : (
+              <></>
+            )}
+            {instagramUrl ? (
+              <a
+                href={instagramUrl}
+                style={{
+                  boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
+                  borderRadius: 9,
+                }}
+              >
+                <CircleButton
+                  image={instagram}
+                  background={"#FFFFFF"}
+                ></CircleButton>
+              </a>
+            ) : (
+              <></>
+            )}
+            {discordUrl ? (
+              <a
+                href={discordUrl}
+                style={{
+                  boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
+                  borderRadius: 9,
+                }}
+              >
+                <CircleButton
+                  image={discord}
+                  background={"#FFFFFF"}
+                ></CircleButton>
+              </a>
+            ) : (
+              <></>
+            )}
+            {websiteUrl ? (
+              <a
+                href={websiteUrl}
+                style={{
+                  boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
+                  borderRadius: 9,
+                }}
+              >
+                <CircleButton
+                  image={link}
+                  background={"#FFFFFF"}
+                ></CircleButton>
+              </a>
+            ) : (
+              <></>
+            )}
+          </HStack> */}
+        </VStack>
       </VStack>
-    </VStack>
+    </>
   );
 }
 

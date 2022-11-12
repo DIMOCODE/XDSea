@@ -99,11 +99,12 @@ import { TopNFT } from "./TopNFT";
 import { TransferBtn } from "./TransferBtn";
 import { StakeBtn } from "./StakeBtn";
 import { ListBtn } from "./ListBtn";
+import { StakeModal } from "./StakeModal";
 
 const NFTDetails = (props) => {
   const size = useWindowSize();
   const { id, nftaddress } = useParams();
-
+  const [isStakeModal, setStakeModal] = useState(false);
   const [wallet, setWallet] = useState(null);
   const [nft, setNFT] = useState(null);
   const [offers, setOffers] = useState([]);
@@ -757,6 +758,9 @@ const NFTDetails = (props) => {
 
   return (
     <NFTPage>
+      {/* Stake Modal goes here */}
+      {isStakeModal && <StakeModal></StakeModal>}
+
       {processingOffer ? (
         <TxModal
           isProcessing={true}

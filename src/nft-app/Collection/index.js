@@ -585,6 +585,7 @@ const CollectionPage = (props) => {
         </HStack>
       ) : (
         <BannerMobile
+          style={{ zIndex: 2000 }}
           collectionImage={collection.logo}
           collectionName={collection.name}
           addressCreator={
