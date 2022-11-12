@@ -673,11 +673,10 @@ const NFTDetails = (props) => {
       );
 
       setNFT(nftData.nft);
-      if(nftData.nft.properties.length === 0) {
-        if(nftData.nft.description === "") {
+      if (nftData.nft.properties.length === 0) {
+        if (nftData.nft.description === "") {
           setIsActive(2);
-        }
-        else {
+        } else {
           setIsActive(3);
         }
       }
@@ -891,6 +890,7 @@ const NFTDetails = (props) => {
         collectionName={nft?.collectionId?.name}
         collectionLogo={nft?.collectionId?.logo?.v0}
         collectionBanner={nft?.collectionId?.banner?.v0}
+        // nftimage={nft.urlFile.v0}
       ></TopNFT>
       <ContentNftPage>
         <VStack height="auto" padding="30px 0 0 0 ">
@@ -911,13 +911,17 @@ const NFTDetails = (props) => {
 
               <ZStack
                 height={
-                  size.width > 1024
+                  size.width > 1200
                     ? "690px"
                     : size.width > 769
-                    ? "590px"
+                    ? "540px"
                     : size.width > 425
-                    ? "590px"
-                    : "390px"
+                    ? "690px"
+                    : size.width > 375
+                    ? "390px"
+                    : size.width > 300
+                    ? "345px"
+                    : "290px"
                 }
               >
                 <ZItem>
@@ -1162,7 +1166,7 @@ const NFTDetails = (props) => {
                     padding=" 0 0 0"
                   >
                     <TitleBold27>{nft.name}</TitleBold27>
-                    <CaptionBoldShort textcolor={({ theme }) => theme.blue}>
+                    <CaptionBoldShort textcolor={({ theme }) => theme.blueText}>
                       {nft?.royalty ? parseInt(nft.royalty) : "0"}% Royalty
                     </CaptionBoldShort>
                   </VStack>
@@ -1217,20 +1221,38 @@ const NFTDetails = (props) => {
                     spacing="6px"
                     cursor={"pointer"}
                     width="auto"
-                    onClick={() => props.redirect(`user/${nft.creator.nickName}`)}
+                    onClick={() =>
+                      props.redirect(`user/${nft.creator.nickName}`)
+                    }
                   >
                     <IconImg
                       url={nft.creator.urlProfile}
-                      width="36px"
-                      height="36px"
+                      width="33px"
+                      height="33px"
                       border="36px"
                       cursor={"pointer"}
                       backsize="cover"
                     ></IconImg>
 
-                    <VStack cursor={"pointer"} spacing="0px">
-                      <CaptionBoldShort cursor={"pointer"} align="left" textcolor={({theme}) => theme.faded60}>CREATOR</CaptionBoldShort>
-                      <Tooltip title={isXdc(nft.addressCreator) ? nft.addressCreator.toLowerCase() : toXdc(nft.addressCreator.toLowerCase())}>
+                    <VStack
+                      cursor={"pointer"}
+                      spacing="0px"
+                      alignment="flex-start"
+                    >
+                      <CaptionBoldShort
+                        cursor={"pointer"}
+                        align="left"
+                        textcolor={({ theme }) => theme.faded60}
+                      >
+                        CREATOR
+                      </CaptionBoldShort>
+                      <Tooltip
+                        title={
+                          isXdc(nft.addressCreator)
+                            ? nft.addressCreator.toLowerCase()
+                            : toXdc(nft.addressCreator.toLowerCase())
+                        }
+                      >
                         <BodyBold cursor={"pointer"}>
                           {nft.creator.userName}
                         </BodyBold>
@@ -1265,16 +1287,32 @@ const NFTDetails = (props) => {
                   >
                     <IconImg
                       url={nft.owner.urlProfile}
-                      width="36px"
-                      height="36px"
+                      width="33px"
+                      height="33px"
                       border="36px"
                       cursor={"pointer"}
                       backsize="cover"
                     ></IconImg>
 
-                    <VStack cursor={"pointer"} spacing="0px">
-                      <CaptionBoldShort cursor={"pointer"} align="left" textcolor={({theme}) => theme.faded60}>OWNER</CaptionBoldShort>
-                      <Tooltip title={isXdc(nft.addressOwner) ? nft.addressOwner.toLowerCase() : toXdc(nft.addressOwner.toLowerCase())}>
+                    <VStack
+                      cursor={"pointer"}
+                      spacing="0px"
+                      alignment="flex-start"
+                    >
+                      <CaptionBoldShort
+                        cursor={"pointer"}
+                        align="left"
+                        textcolor={({ theme }) => theme.faded60}
+                      >
+                        OWNER
+                      </CaptionBoldShort>
+                      <Tooltip
+                        title={
+                          isXdc(nft.addressOwner)
+                            ? nft.addressOwner.toLowerCase()
+                            : toXdc(nft.addressOwner.toLowerCase())
+                        }
+                      >
                         <BodyBold cursor={"pointer"}>
                           {nft.owner.userName}
                         </BodyBold>
@@ -1299,7 +1337,6 @@ const NFTDetails = (props) => {
                     width="auto"
                   ></HStack>
                 )}
-
               </HStack>
 
               {/* NFT Description Tabs */}
@@ -1352,8 +1389,8 @@ const NFTDetails = (props) => {
                   <ZStack>
                     {isActive === 1 && (
                       <ZItem>
-                        <VStack height="auto">
-                          <motion.div>
+                        <VStack height="auto" width="100%">
+                          <motion.div style={{ width: "100%" }}>
                             <HStack
                               variants={appear}
                               key={1}
@@ -1709,13 +1746,10 @@ const NFTDetails = (props) => {
               overflowx={size.width < 768 ? "scroll" : "visible"}
               overflowy={size.width < 768 ? "hidden" : "visible"}
               justify="flex-start"
+              background={({ theme }) => theme.backElement}
+              border="9px"
             >
-              <VStack
-                width={size.width < 768 ? "690px" : "100%"}
-                spacing="0px"
-                background={({ theme }) => theme.backElement}
-                border="9px"
-              >
+              <VStack width={size.width < 768 ? "690px" : "100%"} spacing="0px">
                 {/* Table Head*/}
                 <HStack width="100%" spacing="6px" height="51px">
                   <HStack width="100%" justify="flex-start">
@@ -1850,21 +1884,20 @@ const NFTDetails = (props) => {
               </VStack>
             </HStack>
           </VStack>
+
           <VStack width="100%" padding="15px 12px">
             {/* Activity Table */}
             <TitleBold27>Activity</TitleBold27>
 
-            <VStack
-              maxwidth={size.width < 768 ? "360px" : "100%"}
-              overflowy="scroll"
-              alignment="flex-start"
+            <HStack
+              width="100%"
+              overflowx={size.width < 768 ? "scroll" : "visible"}
+              overflowy={size.width < 768 ? "hidden" : "visible"}
+              justify="flex-start"
+              background={({ theme }) => theme.backElement}
+              border="9px"
             >
-              <VStack
-                background={({ theme }) => theme.backElement}
-                width={size.width < 768 ? "790px" : "100%"}
-                spacing="0px"
-                border="9px"
-              >
+              <VStack width={size.width < 768 ? "790px" : "100%"} spacing="0px">
                 {/* Table Header */}
                 <HStack height={"50px"}>
                   <Spacer></Spacer>
@@ -1905,7 +1938,7 @@ const NFTDetails = (props) => {
                   ></TableActivityNft>
                 </VStack>
               </VStack>
-            </VStack>
+            </HStack>
           </VStack>
 
           {/* More from this collection sections */}

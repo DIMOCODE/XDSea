@@ -253,6 +253,20 @@ const CollectionPage = (props) => {
 
   return (
     <CollectionSection>
+      {addRemoveModal && (
+        <AddRemoveModal
+          setAddRemoveModal={setAddRemoveModal}
+          nftContract={collection?.nftContract}
+          collectionId={collection?._id}
+        ></AddRemoveModal>
+      )}
+      {backedValueModal && (
+        <BackedValueModal
+          setBackedValueModal={setBackedValueModal}
+          nftContract={collection?.nftContract}
+          collectionId={collection?._id}
+        ></BackedValueModal>
+      )}
       {/* Banner */}
       <BannerAbsolute>
         <IconImg
@@ -731,8 +745,8 @@ const CollectionPage = (props) => {
                 ))
               )}
             </HStack>
-        </InfiniteScroll>
-          )}
+          </InfiniteScroll>
+        )}
       </CollectionContent>
 
       <BottomStick>
@@ -749,12 +763,6 @@ const CollectionPage = (props) => {
           isStakingEnabled={collection?.isStakeable}
         ></DynaMenu>
       </BottomStick>
-      {addRemoveModal && (
-        <AddRemoveModal setAddRemoveModal={setAddRemoveModal} nftContract={collection?.nftContract} collectionId={collection?._id}></AddRemoveModal>
-      )}
-      {backedValueModal && (
-        <BackedValueModal setBackedValueModal={setBackedValueModal} nftContract={collection?.nftContract} collectionId={collection?._id}></BackedValueModal>
-      )}
     </CollectionSection>
   );
 };

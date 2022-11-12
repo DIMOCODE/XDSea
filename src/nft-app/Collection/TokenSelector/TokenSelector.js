@@ -46,9 +46,18 @@ function TokenSelector(props) {
   };
 
   const [newToken, setNewToken] = useState(false);
-  const [currentTokenIcon, setCurrentTokenIcon] = useState(rewardRates !== undefined ? rewardRates[0]?.rewardTypeId?.url || xdc : "");
-  const [currentTokenReward, setCurrentTokenReward] = useState(rewardRates !== undefined ? rewardRates[0]?.amount : 0);
-  const [currentTokenRewardFrequency, setCurrentTokenRewardFrequency] = useState(rewardRates !== undefined ? parseRewardFrequency(rewardRates[0]?.rewardFrequency) : 0);
+  const [currentTokenIcon, setCurrentTokenIcon] = useState(
+    rewardRates !== undefined ? rewardRates[0]?.rewardTypeId?.url || xdc : ""
+  );
+  const [currentTokenReward, setCurrentTokenReward] = useState(
+    rewardRates !== undefined ? rewardRates[0]?.amount : 0
+  );
+  const [currentTokenRewardFrequency, setCurrentTokenRewardFrequency] =
+    useState(
+      rewardRates !== undefined
+        ? parseRewardFrequency(rewardRates[0]?.rewardFrequency)
+        : 0
+    );
 
   return (
     <VStack
@@ -83,14 +92,21 @@ function TokenSelector(props) {
                       background: "transparent",
                     }}
                   >
-                    <TabToken image={reward.rewardTypeId?.addressContract ===
-                      "0x0000000000000000000000000000000000000000" ? xdc : reward.rewardTypeId?.url} name={reward.rewardTypeId?.name}></TabToken>
+                    <TabToken
+                      image={
+                        reward.rewardTypeId?.addressContract ===
+                        "0x0000000000000000000000000000000000000000"
+                          ? xdc
+                          : reward.rewardTypeId?.url
+                      }
+                      name={reward.rewardTypeId?.name}
+                    ></TabToken>
                   </SwiperSlide>
                 ))}
             </Swiper>
             <ButtonM
               title="Add Token"
-              background="black"
+              background={({ theme }) => theme.blackLinear}
               textcolor="white"
               width="90px"
               border="90px"
@@ -99,7 +115,11 @@ function TokenSelector(props) {
           </HStack>
           <Separator></Separator>
 
-          <TokenInfo logo={currentTokenIcon} rewardRate={currentTokenReward} rewardFrequency={currentTokenRewardFrequency}></TokenInfo>
+          <TokenInfo
+            logo={currentTokenIcon}
+            rewardRate={currentTokenReward}
+            rewardFrequency={currentTokenRewardFrequency}
+          ></TokenInfo>
         </>
       )}
     </VStack>

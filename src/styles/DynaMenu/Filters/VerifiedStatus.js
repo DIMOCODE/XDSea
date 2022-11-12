@@ -8,16 +8,17 @@ import verifiedBlue from "../../../images/verifiedBlue.png";
 
 function VerifiedStatus(props) {
   const { onChange, params, isVerified, setVerified } = props;
-  
+
   return (
     <VStack width="100%" alignment="flex-start" spacing="9px">
-      <CaptionBoldShort textcolor="white">
-        Status
-      </CaptionBoldShort>
-      <HStack>
-        <BodyBold textcolor="white">
-          Verified Only
-        </BodyBold>
+      <CaptionBoldShort textcolor="white">Status</CaptionBoldShort>
+      <HStack
+        background={"rgba(255, 255, 255, 0.06)"}
+        height="49px"
+        border="6px"
+        padding="0 15px"
+      >
+        <BodyBold textcolor="white">Verified Only</BodyBold>
         <Spacer></Spacer>
         <IconImg
           cursor="pointer"

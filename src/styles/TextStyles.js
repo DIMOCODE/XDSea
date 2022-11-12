@@ -363,6 +363,7 @@ export const CaptionBoldShort = styled(motion.p).attrs((props) => ({
   padding: props.padding || "0px",
   cursor: props.cursor || "default",
   marginBottom: props.marginBottom || "0px",
+  texttransform: props.texttransform || null,
 }))`
   text-align: ${(props) => props.align};
   font-weight: 800;
@@ -378,6 +379,7 @@ export const CaptionBoldShort = styled(motion.p).attrs((props) => ({
   -moz-user-select: -moz-none;
   -o-user-select: none;
   user-select: none;
+  text-transform: ${(props) => props.texttransform};
 `;
 
 export const CaptionSmallRegular = styled(motion.p).attrs((props) => ({
@@ -468,6 +470,7 @@ export const CaptionMedium = styled(motion.p).attrs((props) => ({
   -moz-user-select: -moz-none;
   -o-user-select: none;
   user-select: none;
+  text-transform: uppercase;
 `;
 
 export const CaptionCrypto = styled.p.attrs((props) => ({

@@ -23,6 +23,7 @@ function Property(props) {
       minwidth={width}
       height="120px"
       spacing="6px"
+      padding="0 6px"
     >
       <RarityIcon>
         <IconImg
@@ -39,10 +40,12 @@ function Property(props) {
           height="18px"
         ></IconImg>
       </RarityIcon>
-      <CaptionMedium align="center" textcolor={({ theme }) => theme.blue}>
+      <CaptionMedium align="center" textcolor={({ theme }) => theme.blueText}>
         {Title || "Title"}
       </CaptionMedium>
-      <CaptionMedium align="center">{Property || "Property"}</CaptionMedium>
+      <CaptionBoldShort texttransform="uppercase" align="center">
+        {Property || "Property"}
+      </CaptionBoldShort>
       <CaptionRegular align="center">
         {Rarity || "Rarity"}% have this trait.
       </CaptionRegular>
