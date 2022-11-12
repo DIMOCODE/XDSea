@@ -512,8 +512,16 @@ const NFTDetails = (props) => {
                 let offerItem = {
                   _id: offer._id,
                   userProfile: offer.userId.urlProfile,
-                  from: truncate(await getXdcDomainAddress(offer.fromAddress), 13),
-                  fromAddress: truncateAddress(isXdc(offer.fromAddress) ? offer.fromAddress.toLowerCase() : toXdc(offer.fromAddress.toLowerCase())),
+                  from: truncate(
+                    await getXdcDomainAddress(offer.fromAddress),
+                    13
+                  ),
+                  fromAddress: truncateAddress(
+                    isXdc(offer.fromAddress)
+                      ? offer.fromAddress.toLowerCase()
+                      : toXdc(offer.fromAddress.toLowerCase())
+                  ),
+                  fullFromAddress: offer.fromAddress,
                   isAccepted: offer.isAccepted,
                   isWithdrawn: offer.isWithdraw,
                   price: offer.price,
@@ -1827,6 +1835,7 @@ const NFTDetails = (props) => {
                         acceptStatus={acceptOfferButtonStatus[i]}
                         xdc={props.xdc}
                         redirect={props.redirect}
+                        fullFromAddress={item.fullFromAddress}
                       ></TableOffersNft>
                       {i !== offers.length - 1 ? <Divider></Divider> : null}
                     </>
