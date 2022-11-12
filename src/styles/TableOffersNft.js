@@ -5,7 +5,7 @@ import xdclogo from "../images/miniXdcLogo.png";
 import ButtonApp from "./Buttons";
 import { appStyle } from "./AppStyles";
 import { useHistory } from "react-router-dom";
-import { isXdc, fromXdc, truncateAddress } from "../common/common";
+import { isXdc, fromXdc, truncateAddress, toXdc } from "../common/common";
 
 function TableOffersNft(props) {
   const {
@@ -20,7 +20,8 @@ function TableOffersNft(props) {
     withdrawStatus,
     acceptStatus,
     offerUser,
-    xdc
+    xdc,
+    fullFromAddress
   } = props;
 
   const widthRow = "100%";
@@ -110,7 +111,7 @@ function TableOffersNft(props) {
               background={({ theme }) => theme.faded}
               btnStatus={-1}
             ></ButtonApp>
-          ) : (isXdc(wallet?.address) ? fromXdc(wallet?.address?.toLowerCase()) : wallet?.address?.toLowerCase()) !== owner?.toLowerCase() && (isXdc(wallet?.address) ? fromXdc(wallet?.address?.toLowerCase()) : wallet?.address?.toLowerCase()) === offerBy?.toLowerCase() ? (
+          ) : (isXdc(wallet?.address) ? fromXdc(wallet?.address?.toLowerCase()) : wallet?.address?.toLowerCase()) !== owner?.toLowerCase() && (isXdc(wallet?.address) ? fromXdc(wallet?.address?.toLowerCase()) : wallet?.address?.toLowerCase()) === fullFromAddress?.toLowerCase() ? (
             <ButtonApp
               text="Withdraw Offer"
               height="48px"

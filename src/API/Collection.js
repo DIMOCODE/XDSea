@@ -21,7 +21,7 @@ export const getCollections = ({
   sortBy,
   sortDirection,
   verified,
-  staking,
+  stakeable,
 }) => {
   const params = {
     searchBy,
@@ -31,7 +31,7 @@ export const getCollections = ({
     sortBy,
     sortDirection,
     verified,
-    staking,
+    stakeable,
   };
   return createSignedRequest(HTTP_METHODS.get, `collection/`, params, null);
 };

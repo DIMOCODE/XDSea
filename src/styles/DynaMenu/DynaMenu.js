@@ -184,13 +184,13 @@ function DynaMenu(props) {
                   handleFilterCollections({
                     ...collectionParams,
                     page: 1,
-                    staking: "",
+                    stakeable: "",
                   });
                 } else {
                   handleFilterNFTs({
                     ...nftParams,
                     page: 1,
-                    staking: "",
+                    stakeable: "",
                   });
                 }
               }}
@@ -245,13 +245,13 @@ function DynaMenu(props) {
                     handleFilterCollections({
                       ...collectionParams,
                       page: 1,
-                      staking: true,
+                      stakeable: true,
                     });
                   } else {
                     handleFilterNFTs({
                       ...nftParams,
                       page: 1,
-                      staking: true,
+                      stakeable: true,
                     });
                   }
                 }}

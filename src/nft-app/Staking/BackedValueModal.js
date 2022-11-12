@@ -30,11 +30,12 @@ import { getNFT } from "../../API/NFT";
 import { useClickAway } from "react-use";
 import { useRef } from "react";
 import xdc from "../../images/miniXdcLogo.png";
+import { updateBackedValueByNFT } from "../../API/stake";
 
 function BackedValueModal(props) {
   const size = useWindowSize();
 
-  const { setBackedValueModal, nftContract, collectionId } = props;
+  const { setBackedValueModal, nftContract, collectionId, stakingPool } = props;
 
   const [tokenId, setTokenId] = useState(0);
   const [showNFTInfo, setNFTInfo] = useState(false);
@@ -42,6 +43,11 @@ function BackedValueModal(props) {
   const [showNFTError, setNFTError] = useState(false);
   const [newBackedValue, setNewBackedValue] = useState(0);
   const ref = useRef(null);
+
+  const updateBackedValue = async () => {
+    const updatedBackedValue = await(await updateBackedValueByNFT(nft?._id, stakingPool?._id, newBackedValue)).data;
+    setNft(updatedBackedValue?.nft);
+  }
 
   useClickAway(ref, () => setBackedValueModal(false));
 
@@ -176,7 +182,7 @@ function BackedValueModal(props) {
                   textcolor="white"
                   background={({ theme }) => theme.blue}
                   onClick={() => {
-                    //Update Backed Value
+                    updateBackedValue();
                   }}
                 ></ButtonM>
               </HStack>

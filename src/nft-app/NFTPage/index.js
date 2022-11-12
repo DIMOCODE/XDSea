@@ -542,6 +542,7 @@ const NFTDetails = (props) => {
                       ? offer.fromAddress.toLowerCase()
                       : toXdc(offer.fromAddress.toLowerCase())
                   ),
+                  fullFromAddress: offer.fromAddress,
                   isAccepted: offer.isAccepted,
                   isWithdrawn: offer.isWithdraw,
                   price: offer.price,
@@ -1861,6 +1862,7 @@ const NFTDetails = (props) => {
                         acceptStatus={acceptOfferButtonStatus[i]}
                         xdc={props.xdc}
                         redirect={props.redirect}
+                        fullFromAddress={item.fullFromAddress}
                       ></TableOffersNft>
                       {i !== offers.length - 1 ? <Divider></Divider> : null}
                     </>
