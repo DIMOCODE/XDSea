@@ -258,6 +258,7 @@ const CollectionPage = (props) => {
           setAddRemoveModal={setAddRemoveModal}
           nftContract={collection?.nftContract}
           collectionId={collection?._id}
+          stakingPool={stakingPool}
         ></AddRemoveModal>
       )}
       {backedValueModal && (
@@ -265,6 +266,7 @@ const CollectionPage = (props) => {
           setBackedValueModal={setBackedValueModal}
           nftContract={collection?.nftContract}
           collectionId={collection?._id}
+          stakingPool={stakingPool}
         ></BackedValueModal>
       )}
       {/* Banner */}

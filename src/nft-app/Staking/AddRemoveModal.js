@@ -29,12 +29,14 @@ import { LoopLogo } from "../../styles/LoopLogo";
 function AddRemoveModal(props) {
   const size = useWindowSize();
 
-  const { oneToken, setAddRemoveModal, nftContract, collectionId } = props;
+  const { oneToken, setAddRemoveModal, nftContract, collectionId, stakingPool } = props;
 
   const [tokenId, setTokenId] = useState(0);
   const [showNFTInfo, setNFTInfo] = useState(false);
   const [nft, setNft] = useState({});
   const [showNFTError, setNFTError] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [stake, setStake] = useState({});
   const ref = useRef(null);
 
   useClickAway(ref, () => setAddRemoveModal(false));
@@ -44,15 +46,20 @@ function AddRemoveModal(props) {
     setNFTError(false);
     const delayDebounceFn = setTimeout(async () => {
       if (tokenId !== 0) {
+        setLoading(true);
         try {
           const nftData = await (await getNFT(nftContract, tokenId)).data;
           if (nftData?.nft?.collectionId?._id === collectionId) {
             setNft(nftData.nft);
+            setStake(nftData.stake);
+            setLoading(false);
             setNFTInfo(true);
           } else {
+            setLoading(false);
             setNFTError(true);
           }
         } catch (e) {
+          setLoading(false);
           setNFTError(true);
         }
       }
@@ -89,7 +96,7 @@ function AddRemoveModal(props) {
             background={({ theme }) => theme.faded}
             width="100%"
           ></InputStyled>
-          {showNFTInfo ? (
+          {showNFTInfo && (
             <>
               <HStack responsive={true}>
                 <VStack justify="flex-end" width="100%">
@@ -103,8 +110,8 @@ function AddRemoveModal(props) {
 
                 <VStack width="100%" spacing="6px">
                   <TitleBold18 textcolor="black">{nft?.name}</TitleBold18>
-                  <EarningRate onlyOneToken={oneToken}></EarningRate>
-                  <PendingClaimed onlyOneToken={oneToken}></PendingClaimed>
+                  <EarningRate onlyOneToken={stakingPool?.rewardRates?.length === 1 ? true : false} rewardRate={stakingPool?.rewardRates} backedValue={nft?.backedValue}></EarningRate>
+                  <PendingClaimed onlyOneToken={stakingPool?.rewardRates?.length === 1 ? true : false} stakeData={stake} rewardRate={stakingPool?.rewardRates} backedValue={nft?.backedValue}></PendingClaimed>
                 </VStack>
               </HStack>
 
@@ -126,10 +133,6 @@ function AddRemoveModal(props) {
                 ></ButtonM>
               </HStack>
             </>
-          ) : (
-            <HStack initial={{ scale: 0.9 }} padding="30px 0 0 0">
-              <LoopLogo></LoopLogo>
-            </HStack>
           )}
           {showNFTError && (
             <HStack
@@ -145,6 +148,11 @@ function AddRemoveModal(props) {
                 The token ID you entered is not a part of this collection and
                 hence, cannot be added to the staking pool.
               </BodyRegular>
+            </HStack>
+          )}
+          {loading && (
+            <HStack initial={{ scale: 0.9 }} padding="30px 0 0 0">
+              <LoopLogo></LoopLogo>
             </HStack>
           )}
         </VStack>

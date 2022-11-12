@@ -140,7 +140,14 @@ function BlockTVL(props) {
                   spacing="6px"
                   height="52px"
                 >
-                  <TitleBold18>{lockPeriod}</TitleBold18>
+                  <TitleBold18>{Number(lockPeriod?.split(" ")[0]) > 100000
+                    ? Intl.NumberFormat("en-US", {
+                        notation: "compact",
+                        maximumFractionDigits: 1,
+                      }).format(Number(lockPeriod?.split(" ")[0]))
+                    : Number(lockPeriod?.split(" ")[0]).toLocaleString(undefined, {
+                        maximumFractionDigits: 1,
+                      }) || "0"}{" " + lockPeriod?.split(" ")[1]}</TitleBold18>
                 </HStack>
 
                 <HStack>
