@@ -35,7 +35,7 @@ function BubbleCopied(props) {
         border="30px"
         spacing="6px"
         padding="6px 15px"
-        height="42px"
+        height="39px"
         whileTap={{ scale: 0.97 }}
         cursor="pointer"
         onClick={() => setShowAlertLink(true)}

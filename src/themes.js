@@ -9,7 +9,7 @@ export const lightTheme = {
   body: "#FFF",
   text: "#363537",
   toggleBorder: "#FFF",
-  blueText: "#5080FB",
+  blueText: "#294CF0",
   blue: "linear-gradient(180deg, #5080FB 0%, #2862F7 31.77%, #0B3EC4 100%)",
   fadedBlue:
     "linear-gradient(180deg, rgba(80, 128, 251, 0.32) 0%, rgba(40, 98, 247, 0.3) 31.77%, rgba(11, 62, 196, 0.38) 100%) ",
@@ -37,7 +37,7 @@ export const lightTheme = {
 export const darkTheme = {
   body: "#363537",
   text: "#FAFAFA",
-  blueText: "#5080FB",
+  blueText: "#294CF0",
   blue: "linear-gradient(180deg, #5080FB 0%, #2862F7 31.77%, #0B3EC4 100%)",
   fadedBlue:
     "linear-gradient(180deg, rgba(80, 128, 251, 0.32) 0%, rgba(40, 98, 247, 0.3) 31.77%, rgba(11, 62, 196, 0.38) 100%) ",
