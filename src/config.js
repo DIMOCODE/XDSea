@@ -7,3 +7,4 @@
   export const nftmarketaddress = "0x5F22351A7434D07E491467a7d540E02aaEE51428"
   export const nftaddress = "0xf7808A8253A7e893d0851723E3d6CF59D6Cc2519"
   export const nftmarketlayeraddress = "0xb6643077a735A669bf57d58672D922f690ad505e"
+  export const stakingaddress = "0x32622387655d2F2E19591B3218971b8C95d709A4"
