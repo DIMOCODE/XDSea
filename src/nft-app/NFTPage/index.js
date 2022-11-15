@@ -9,7 +9,7 @@ import {
   getXdcDomain,
   getXdcOwner,
 } from "../../constant";
-import { nftmarketlayeraddress } from "../../config";
+import { nftmarketlayeraddress, stakingaddress } from "../../config";
 import NFT from "../../abis/NFT.json";
 import { Divider } from "../../styles/Stacks";
 import {
@@ -23,6 +23,7 @@ import {
   Offer,
   WithdrawOffer,
   AcceptOffer,
+  StakeNFT,
 } from "../../common";
 import { fromXdc, isXdc, toXdc, truncateAddress } from "../../common/common";
 import Tooltip from "@mui/material/Tooltip";
@@ -99,6 +100,7 @@ import { TopNFT } from "./TopNFT";
 import { TransferBtn } from "./TransferBtn";
 import { StakeBtn } from "./StakeBtn";
 import { ListBtn } from "./ListBtn";
+import { createStake } from "../../API/stake";
 import { StakeModal } from "./StakeModal";
 
 const NFTDetails = (props) => {
@@ -125,6 +127,8 @@ const NFTDetails = (props) => {
   const [listingNFT, setListingNFT] = useState(false);
   const [listButtonStatus, setListButtonStatus] = useState(0);
   const [listPrice, setListPrice] = useState(0.0);
+  const [stakeButtonStatus, setStakeButtonStatus] = useState(false);
+  const [staked, setStaked] = useState(false);
   const [transferring, setTransferring] = useState(false);
   const [transferButtonStatus, setTransferButtonStatus] = useState(0);
   const [transferAddress, setTransferAddress] = useState(null);
@@ -140,6 +144,7 @@ const NFTDetails = (props) => {
   const [processingWithdrawing, setIsProcessingWithdrawing] = useState(false);
   const [processingEditing, setIsProcessingEditing] = useState(false);
   const [processingListing, setIsProcessingListing] = useState(false);
+  const [processingStaking, setIsProcessingStaking] = useState(false);
   const [processingTransferring, setIsProcessingTransferring] = useState(false);
   const [processingWithdrawingOffer, setIsProcessingWithdrawingOffer] =
     useState(false);
@@ -211,6 +216,24 @@ const NFTDetails = (props) => {
     setActions(actions + 1);
     setTimeout(() => {
       setBuyButtonStatus(0);
+    }, 3500);
+  };
+
+  const stakeNFT = async () => {
+    setIsProcessingStaking(true);
+    setStakeButtonStatus(1);
+    var success = await StakeNFT(stakingaddress, id, wallet?.address);
+    if(success) {
+      setStakeButtonStatus(3);
+      //Send stake request
+      setStaked(true);
+    } else {
+      setStakeButtonStatus(4);
+    }
+    setIsProcessingStaking(true);
+    setActions(actions + 1);
+    setTimeout(() => {
+      setStakeButtonStatus(0);
     }, 3500);
   };
 
@@ -1708,7 +1731,7 @@ const NFTDetails = (props) => {
                           startTransfer();
                         }}
                       ></TransferBtn>
-                      {nft?.isStakeable && <StakeBtn></StakeBtn>}
+                      {nft?.isStakeable && <StakeBtn onClick={stakeNFT}></StakeBtn>}
                       <ButtonApp
                         icon={tagWhite}
                         btnStatus={listButtonStatus}
