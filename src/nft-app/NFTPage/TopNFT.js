@@ -28,6 +28,7 @@ import {
 } from "react-share";
 import { motion } from "framer-motion/dist/framer-motion";
 import styled from "styled-components";
+import { ShareModal } from "../../styles/ShareModal";
 
 const webLink = `https://www.xdsea.com/`;
 
@@ -130,133 +131,7 @@ function TopNFT(props) {
           <CaptionBoldShort cursor="pointer">SHARE</CaptionBoldShort>
         </HStack>
       </HStack>
-      {isShare && (
-        <Modal>
-          <HStack height="100%">
-            <VStack
-              border="6px"
-              height="auto"
-              maxwidth="360px"
-              padding="30px"
-              background={({ theme }) => theme.backElement}
-            >
-              <IconImg
-                url={nftimage || emptyState}
-                width="90px"
-                height="90px"
-                border="6px"
-                backsize="cover"
-              ></IconImg>
-              <TitleBold18>Share This NFT</TitleBold18>
-              <HStack>
-                <FacebookShareButton
-                  url={"https://www.xdsea.com" + webLocation.pathname}
-                  quote={"Check out this NFT!"}
-                  hashtag={["#XDSea"]}
-                  description={"XDSea NFT Marketplace"}
-                  className="Demo__some-network__share-button"
-                >
-                  <a>
-                    <IconImg
-                      url={facebookSocial}
-                      width="52px"
-                      height="52px"
-                      cursor="pointer"
-                    ></IconImg>
-                  </a>
-                </FacebookShareButton>
-                <TwitterShareButton
-                  title={"Check out this NFT!"}
-                  url={"https://www.xdsea.com" + webLocation.pathname}
-                  hashtags={["XDSea", "BuildItOnXDC"]}
-                >
-                  <a>
-                    <IconImg
-                      url={twitterSocial}
-                      width="52px"
-                      height="52px"
-                      cursor="pointer"
-                    ></IconImg>
-                  </a>
-                </TwitterShareButton>
-                <TelegramShareButton
-                  title={"Check out this NFT!"}
-                  url={"https://www.xdsea.com" + webLocation.pathname}
-                >
-                  <a>
-                    <IconImg
-                      url={telegramSocial}
-                      width="52px"
-                      height="52px"
-                      cursor="pointer"
-                    ></IconImg>
-                  </a>
-                </TelegramShareButton>
-              </HStack>
-              <HStack spacing="18px">
-                <WhatsappShareButton
-                  title={"Check out this NFT!"}
-                  url={"https://www.xdsea.com" + webLocation.pathname}
-                >
-                  <a>
-                    <IconImg
-                      url={whatsSocial}
-                      width="52px"
-                      height="52px"
-                      cursor="pointer"
-                    ></IconImg>
-                  </a>
-                </WhatsappShareButton>
-
-                {copied ? (
-                  <>
-                    <IconImg
-                      url={check}
-                      width="49px"
-                      height="49px"
-                      backsize="cover"
-                    ></IconImg>
-                  </>
-                ) : (
-                  <a>
-                    <HStack
-                      width="49px"
-                      height="49px"
-                      border="52px"
-                      background={({ theme }) => theme.faded30}
-                      onClick={copy}
-                    >
-                      <IconImg
-                        url={linkSocial}
-                        width="24px"
-                        height="24px"
-                        cursor="pointer"
-                      ></IconImg>
-                    </HStack>
-                  </a>
-                )}
-
-                <HStack
-                  width="49px"
-                  height="49px"
-                  border="52px"
-                  background={({ theme }) => theme.faded30}
-                >
-                  <IconImg
-                    url={close}
-                    width="26px"
-                    height="26px"
-                    onClick={() => {
-                      setIsShare(false);
-                    }}
-                    cursor="pointer"
-                  ></IconImg>
-                </HStack>
-              </HStack>
-            </VStack>
-          </HStack>
-        </Modal>
-      )}
+      {isShare && <ShareModal onClick={() => setIsShare(false)}></ShareModal>}
     </>
   );
 }

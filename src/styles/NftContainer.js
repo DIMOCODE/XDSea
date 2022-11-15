@@ -392,7 +392,7 @@ function NftContainer(props) {
 
               {hasStaking && (
                 <HStack
-                  background={({ theme }) => theme.blue}
+                  background={({ theme }) => theme.blueText}
                   height="24px"
                   border="0 0 6px 6px"
                   spacing="6px"

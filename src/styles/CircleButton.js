@@ -7,9 +7,9 @@ function CircleButton(props) {
 
   return (
     <VStack
-      maxwidth="32px"
-      minwidth="32px"
-      height="32px"
+      maxwidth="39px"
+      minwidth="39px"
+      height="39px"
       border="48px"
       background={background}
       cursor="pointer"

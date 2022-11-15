@@ -189,7 +189,7 @@ const Discover = (props) => {
    * @param {*} params - Collection Search Params
    */
   const updateCollections = async (params) => {
-    console.log(params)
+    console.log(params);
     const collectionData = await (await getCollections(params)).data;
 
     setCollections(collectionData.collections);
@@ -310,7 +310,11 @@ const Discover = (props) => {
   return (
     <DiscoverSection id="scrollableDiv" style={{ zIndex: 10 }}>
       {/* Discover top Section with tab bar*/}
-      <HStack backgroundimage={seamless} padding="60px 0 0 0" style={{zIndex: "1"}}>
+      <HStack
+        backgroundimage={seamless}
+        padding="60px 0 0 0"
+        style={{ zIndex: "1" }}
+      >
         <VStack
           width="1200px"
           height="147px"
@@ -320,10 +324,13 @@ const Discover = (props) => {
           <TitleBold27 textcolor={appStyle.colors.white}>Discover</TitleBold27>
 
           {/* TabBar */}
-          <TabBar
-            onClick={tabDidChange}
-            initialTab={mode === "collections" ? true : false}
-          ></TabBar>
+          <HStack>
+            <TabBar
+              width="360px"
+              onClick={tabDidChange}
+              initialTab={mode === "collections" ? true : false}
+            ></TabBar>
+          </HStack>
         </VStack>
       </HStack>
 
@@ -352,11 +359,7 @@ const Discover = (props) => {
               <HStack spacing="12px" flexwrap="wrap" justify="flex-start">
                 {loading ? (
                   loadingCollections.map((item, i) => (
-                    <VStack
-                      key={i}
-                      minwidth="290px"
-                      height="380px"
-                    >
+                    <VStack key={i} minwidth="290px" height="380px">
                       <LoadingNftContainer></LoadingNftContainer>
                     </VStack>
                   ))
