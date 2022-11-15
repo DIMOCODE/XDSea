@@ -49,7 +49,6 @@ function UploadMultimedia(props) {
             whileTap={{ scale: 0.96 }}
             spacing="0px"
             cursor="pointer"
-            overflow="hidden"
           >
             <IconImg
               url={multimediaIcon}

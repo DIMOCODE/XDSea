@@ -634,36 +634,36 @@ const CollectionPage = (props) => {
       <CollectionContent id="scrollableDiv">
         {/* Collection NFT Cards */}
         {isStake ? (
-            <StakeSection
-              nfts={nfts}
-              usdPrice={props.xdc}
-              stakingPool={stakingPool}
-              stakes={stakes}
-              onClickAR={() => {
-                setAddRemoveModal(true);
-              }}
-              onClickBV={() => {
-                setBackedValueModal(true);
-              }}
-              setStakingPool={setStakingPool}
-            ></StakeSection>
-          ) : (
-        <InfiniteScroll
-          dataLength={nfts.length}
-          next={fetchMoreNFTs}
-          hasMore={nfts.length < nftNumber}
-          loader={
-            <HStack
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              height="190px"
-            >
-              <LoopLogo></LoopLogo>
-            </HStack>
-          }
-          scrollableTarget="#scrollableDiv"
-          style={{ overflow: "hidden" }}
-        >
+          <StakeSection
+            nfts={nfts}
+            usdPrice={props.xdc}
+            stakingPool={stakingPool}
+            stakes={stakes}
+            onClickAR={() => {
+              setAddRemoveModal(true);
+            }}
+            onClickBV={() => {
+              setBackedValueModal(true);
+            }}
+            setStakingPool={setStakingPool}
+          ></StakeSection>
+        ) : (
+          <InfiniteScroll
+            dataLength={nfts.length}
+            next={fetchMoreNFTs}
+            hasMore={nfts.length < nftNumber}
+            loader={
+              <HStack
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                height="190px"
+              >
+                <LoopLogo></LoopLogo>
+              </HStack>
+            }
+            scrollableTarget="#scrollableDiv"
+            style={{ overflow: "hidden" }}
+          >
             <HStack
               flexwrap="wrap"
               padding="30px 6px"
@@ -674,9 +674,11 @@ const CollectionPage = (props) => {
                 nfts.length !== 0 ? (
                   nfts.map((item, i) => (
                     <VStack
-                      minwidth={size.width < 768 ? "100%" : "300px"}
-                      width={"240px"}
-                      height="450px"
+                      // minwidth={size.width > 425 ? "300px" : "300px"}
+                      // width={"240px"}
+                      minwidth={size.width > 425 ? "290px" : "100%"}
+                      maxwidth="290px"
+                      height={size.width > 425 ? "290px" : "380px"}
                       key={"collectionStack_" + item._id}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}

@@ -661,7 +661,9 @@ function CreateNft(props) {
           await createNFT(
             collectionCreation._id,
             tokenId,
-            isXdc(wallet?.address) ? fromXdc(wallet?.address.toLowerCase()) : wallet?.address.toLowerCase(),
+            isXdc(wallet?.address)
+              ? fromXdc(wallet?.address.toLowerCase())
+              : wallet?.address.toLowerCase(),
             nftmarketlayeraddress.toLowerCase(),
             price,
             royalty,
@@ -682,7 +684,9 @@ function CreateNft(props) {
           await createNFT(
             collectionId,
             tokenId,
-            isXdc(wallet?.address) ? fromXdc(wallet?.address.toLowerCase()) : wallet?.address.toLowerCase(),
+            isXdc(wallet?.address)
+              ? fromXdc(wallet?.address.toLowerCase())
+              : wallet?.address.toLowerCase(),
             nftmarketlayeraddress.toLowerCase(),
             price,
             royalty,
@@ -859,7 +863,13 @@ function CreateNft(props) {
               mintName={name}
               mintedNFT={assetURL}
               confirmActionModal={() => {
-                props.redirect(`nft/${isXdc(nftaddress) ? nftaddress.toLowerCase() : toXdc(nftaddress.toLowerCase())}/${parseInt(tokenId, 16)}`);
+                props.redirect(
+                  `nft/${
+                    isXdc(nftaddress)
+                      ? nftaddress.toLowerCase()
+                      : toXdc(nftaddress.toLowerCase())
+                  }/${parseInt(tokenId, 16)}`
+                );
               }}
             ></TxModal>
           </VStack>
@@ -1337,7 +1347,7 @@ function CreateNft(props) {
                         width={size.width < 768 ? "390px" : "540px"}
                         height="210px"
                         backsize="cover"
-                        border="9px"
+                        border="6px"
                         file={collectionBanner}
                         button={"upload-button-collection"}
                         description="Collection Banner"
@@ -1352,10 +1362,12 @@ function CreateNft(props) {
                       {collectionBanner.raw !== "" && (
                         <ButtonsBanner>
                           <HStack
-                            width="540px"
+                            width="510px"
                             padding="15px"
                             height="213px"
                             alignment="flex-end"
+                            border="9px"
+                            overflow="hidden"
                           >
                             <ButtonApp
                               text="Clear"

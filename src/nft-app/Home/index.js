@@ -95,6 +95,23 @@ const Home = (props) => {
     { id: 5, name: "NFT 5" },
     { id: 6, name: "NFT 6" },
   ]);
+
+  const [loadingFeatured] = useState([
+    { id: 1, name: "NFT 1" },
+    { id: 2, name: "NFT 2" },
+    { id: 3, name: "NFT 3" },
+    { id: 4, name: "NFT 4" },
+    { id: 5, name: "NFT 5" },
+    { id: 6, name: "NFT 6" },
+  ]);
+
+  const [loadingTrending] = useState([
+    { id: 1, name: "NFT 1" },
+    { id: 2, name: "NFT 2" },
+    { id: 3, name: "NFT 3" },
+    { id: 4, name: "NFT 4" },
+  ]);
+
   const size = useWindowSize();
   const [scrollTop, setScrollTop] = useState();
   const [scrolling, setScrolling] = useState();
@@ -218,14 +235,30 @@ const Home = (props) => {
               size.width > 768 ? "15px" : size.width > 428 ? "8px" : "2px",
           }}
         >
-          {featuredNFTs.length !== 0
+          {!loading
+            ? loadingFeatured.map((item, i) => (
+                <VStack
+                  key={i}
+                  minwidth={size.width > 428 ? "290px" : "100px"}
+                  minheight={size.width > 428 ? "380px" : "150px"}
+                >
+                  <LoadingNftContainer
+                    scale={size.width > 428 ? "1" : "0.72"}
+                  ></LoadingNftContainer>
+                </VStack>
+              ))
+            : featuredNFTs.length !== 0
             ? featuredNFTs?.map((item, i) => (
                 <ZStack
                   minheight={size.width > 428 ? item.height + "px" : "150px"}
                   cursor="pointer"
                   onClick={() =>
                     props.redirect(
-                      `nft/${isXdc(item.collectionId.address) ? item.collectionId.address.toLowerCase() : toXdc(item.collectionId.address.toLowerCase())}/${item.tokenId}`
+                      `nft/${
+                        isXdc(item.collectionId.address)
+                          ? item.collectionId.address.toLowerCase()
+                          : toXdc(item.collectionId.address.toLowerCase())
+                      }/${item.tokenId}`
                     )
                   }
                   onHoverStart={() => {
@@ -351,6 +384,7 @@ const Home = (props) => {
               ))
             : null}
         </Masonry>
+        {console.log(featuredNFTs)}
       </VStack>
 
       <ContentCentered>
@@ -431,7 +465,9 @@ const Home = (props) => {
                   creator={topCollections[0]?.name}
                   image={topCollections[0]?.logo.v0}
                   amount={
-                    Number(topCollections[0]?.volumeTrade) > 100000
+                    topCollections[0]?.volumeTrade === undefined
+                      ? "loading"
+                      : Number(topCollections[0]?.volumeTrade) > 100000
                       ? Intl.NumberFormat("en-US", {
                           notation: "compact",
                           maximumFractionDigits: 2,
@@ -477,7 +513,9 @@ const Home = (props) => {
                   creator={topCollections[1]?.name}
                   image={topCollections[1]?.logo.v0}
                   amount={
-                    Number(topCollections[1]?.volumeTrade) > 100000
+                    topCollections[1]?.volumeTrade === undefined
+                      ? "loading"
+                      : Number(topCollections[1]?.volumeTrade) > 100000
                       ? Intl.NumberFormat("en-US", {
                           notation: "compact",
                           maximumFractionDigits: 2,
@@ -523,7 +561,9 @@ const Home = (props) => {
                   creator={topCollections[2]?.name}
                   image={topCollections[2]?.logo.v0}
                   amount={
-                    Number(topCollections[2]?.volumeTrade) > 100000
+                    topCollections[2]?.volumeTrade === undefined
+                      ? "loading"
+                      : Number(topCollections[2]?.volumeTrade) > 100000
                       ? Intl.NumberFormat("en-US", {
                           notation: "compact",
                           maximumFractionDigits: 2,
@@ -557,7 +597,13 @@ const Home = (props) => {
             }
           >
             <VStack maxwidth="600px">
-              {topCollections.length !== 0
+              {!loading
+                ? loadingCollections.map((item, i) => (
+                    <VStack key={i} width="100%" minheight="136px">
+                      <LoadingNftContainer scale="0.72"></LoadingNftContainer>
+                    </VStack>
+                  ))
+                : topCollections.length !== 0
                 ? topCollections.slice(3).map((item, i) => (
                     <CollectionPosition
                       key={item._id}
@@ -632,7 +678,20 @@ const Home = (props) => {
             height="auto"
             spacing={size.width > 428 ? "15px" : "2px"}
           >
-            {trendingNFTs.length !== 0
+            {!loading
+              ? loadingTrending.map((item, i) => (
+                  <VStack
+                    key={i}
+                    minwidth="46%"
+                    height={size.width < 429 ? "190px" : "390px"}
+                    minheight={size.width < 429 ? "190px" : "390px"}
+                  >
+                    <LoadingNftContainer
+                      scale={size.width < 429 ? "0.72" : 1}
+                    ></LoadingNftContainer>
+                  </VStack>
+                ))
+              : trendingNFTs.length !== 0
               ? trendingNFTs
                   .slice(0, 4)
                   .map((item, i) => (
@@ -644,7 +703,11 @@ const Home = (props) => {
                       background={({ theme }) => theme.backElement}
                       onClick={() =>
                         props.redirect(
-                          `nft/${isXdc(item.collectionId.address) ? item.collectionId.address.toLowerCase() : toXdc(item.collectionId.address.toLowerCase())}/${item.tokenId}`
+                          `nft/${
+                            isXdc(item.collectionId.address)
+                              ? item.collectionId.address.toLowerCase()
+                              : toXdc(item.collectionId.address.toLowerCase())
+                          }/${item.tokenId}`
                         )
                       }
                       minwidth="46%"
@@ -727,7 +790,11 @@ const Home = (props) => {
                     style={{ cursor: "pointer" }}
                     onClick={() =>
                       props.redirect(
-                        `nft/${isXdc(item.collectionId.address) ? item.collectionId.address.toLowerCase() : toXdc(item.collectionId.address.toLowerCase())}/${item.tokenId}`
+                        `nft/${
+                          isXdc(item.collectionId.address)
+                            ? item.collectionId.address.toLowerCase()
+                            : toXdc(item.collectionId.address.toLowerCase())
+                        }/${item.tokenId}`
                       )
                     }
                   >
@@ -743,7 +810,11 @@ const Home = (props) => {
                       background={({ theme }) => theme.backElement}
                       onClick={() =>
                         props.redirect(
-                          `nft/${isXdc(item.collectionId.address) ? item.collectionId.address.toLowerCase() : toXdc(item.collectionId.address.toLowerCase())}/${item.tokenId}`
+                          `nft/${
+                            isXdc(item.collectionId.address)
+                              ? item.collectionId.address.toLowerCase()
+                              : toXdc(item.collectionId.address.toLowerCase())
+                          }/${item.tokenId}`
                         )
                       }
                       usdPrice={props.xdc}
