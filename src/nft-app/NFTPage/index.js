@@ -223,7 +223,7 @@ const NFTDetails = (props) => {
     setIsProcessingStaking(true);
     setStakeButtonStatus(1);
     var success = await StakeNFT(stakingaddress, id, wallet?.address);
-    if(success) {
+    if (success) {
       setStakeButtonStatus(3);
       //Send stake request
       setStaked(true);
@@ -1728,7 +1728,13 @@ const NFTDetails = (props) => {
                           startTransfer();
                         }}
                       ></TransferBtn>
-                      {nft?.isStakeable && <StakeBtn onClick={stakeNFT}></StakeBtn>}
+                      {nft?.isStakeable &&
+                        nft?.addressCreator.toLowerCase() !==
+                          (isXdc(wallet?.address)
+                            ? fromXdc(wallet?.address.toLowerCase())
+                            : wallet?.address.toLowerCase()) && (
+                          <StakeBtn onClick={stakeNFT}></StakeBtn>
+                        )}
                       <ButtonApp
                         icon={tagWhite}
                         btnStatus={listButtonStatus}

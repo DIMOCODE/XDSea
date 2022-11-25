@@ -26,16 +26,19 @@ import useWindowSize from "../../styles/useWindowSize";
 import { InputStyled } from "../../styles/InputStyled";
 import { useState } from "react";
 import { useEffect } from "react";
-import { getNFT } from "../../API/NFT";
+import { getNFT, getNFTs } from "../../API/NFT";
 import { useClickAway } from "react-use";
 import { useRef } from "react";
 import xdc from "../../images/miniXdcLogo.png";
 import { updateBackedValueByNFT } from "../../API/stake";
+import { UpdateBackedValues } from "../../common";
+import { stakingaddress } from "../../config";
+import { fromXdc, isXdc } from "../../common/common";
 
 function BackedValueModal(props) {
   const size = useWindowSize();
 
-  const { setBackedValueModal, nftContract, collectionId, stakingPool } = props;
+  const { setBackedValueModal, nftContract, collectionId, stakingPool, setNfts, setNftsCount, stakingParams, setStakingParams } = props;
 
   const [tokenId, setTokenId] = useState(0);
   const [showNFTInfo, setNFTInfo] = useState(false);
@@ -45,8 +48,25 @@ function BackedValueModal(props) {
   const ref = useRef(null);
 
   const updateBackedValue = async () => {
-    const updatedBackedValue = await(await updateBackedValueByNFT(nft?._id, stakingPool?._id, newBackedValue)).data;
-    setNft(updatedBackedValue?.nft);
+    try{
+      const success = await UpdateBackedValues(stakingaddress, isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address, tokenId, newBackedValue);
+      if(success) {
+        const updatedBackedValue = await updateBackedValueByNFT(nft?._id, stakingPool?._id, newBackedValue);
+        const stakingNFTsData = await(await getNFTs({
+          ...stakingParams,
+          page: 1,
+        })).data;
+        setNfts(stakingNFTsData.nfts);
+        setNftsCount(stakingNFTsData.nftsAmount);
+        setStakingParams({
+          ...stakingParams,
+          page: 2,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+    setBackedValueModal(false);
   }
 
   useClickAway(ref, () => setBackedValueModal(false));

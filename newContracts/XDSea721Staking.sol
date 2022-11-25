@@ -45,9 +45,15 @@ contract XDSea721Staking is ReentrancyGuard, IERC721Receiver, IERC1155Receiver {
     // this pool
     mapping(uint256 => StakedNFT) public stakedNFTs;
 
+    uint256[] public eligibleNFTs;
+
+    mapping(uint256 => mapping(address => uint256)) public timeOfLastClaims;
+
+    mapping(uint256 => mapping(address => uint256)) public pendingRewards;
+
     // Store a record of all the reward types that are awarded to stakers in
     // this pool
-    Reward[] public rewards;
+    mapping(address => Reward) public rewards;
 
     // Store the time from which the creator wishes to have rewards enabled.
     uint256 public timeOfPoolInitialization;
@@ -58,7 +64,6 @@ contract XDSea721Staking is ReentrancyGuard, IERC721Receiver, IERC1155Receiver {
         uint256 backedValue;
         address stakerAddress;
         uint256 timeOfStake;
-        uint256 timeOfLastClaim;
     }
 
     // Reward object that stores all the information about the rewards offered
@@ -68,6 +73,7 @@ contract XDSea721Staking is ReentrancyGuard, IERC721Receiver, IERC1155Receiver {
         uint256 rewardRate;
         uint256 rewardFrequency;
         RewardType rewardType;
+        uint256 startTime;
     }
 
     // Enumeration of all the reward types offered by the staking pool
@@ -129,246 +135,145 @@ contract XDSea721Staking is ReentrancyGuard, IERC721Receiver, IERC1155Receiver {
         timeOfPoolInitialization = _timeOfPoolInitialization;
     }
 
-    // Allow the owner of the staking pool to send funds to the contract.
-    receive() external payable {
-        if(msg.sender != poolOwner) {
-            revert NotPoolOwner(poolOwner, msg.sender);
+    // Allow only the pool owner to set rewards for the staking pool.
+    function setRewards(
+        address[] memory _tokenAddresses,
+        uint256[] memory _rewardRates,
+        uint256[] memory _rewardFrequencies,
+        uint256[] memory _rewardTypes,
+        uint256[] memory _startTimes
+    ) external {
+        if(msg.sender == poolOwner) {
+            if(_tokenAddresses.length == _rewardRates.length && _tokenAddresses.length == _rewardFrequencies.length && 
+            _rewardRates.length == _rewardFrequencies.length && _tokenAddresses.length == _rewardTypes.length && 
+            _rewardRates.length == _rewardTypes.length && _rewardFrequencies.length == _rewardTypes.length &&
+            _tokenAddresses.length == _startTimes.length && _rewardRates.length == _startTimes.length &&
+            _rewardFrequencies.length == _startTimes.length && _rewardTypes.length == _startTimes.length) {
+                for(uint i = 0; i < _tokenAddresses.length; i++) {
+                    RewardType rewardType = RewardType.Coin;
+                    if(_rewardTypes[i] == 0) {
+                        if(_tokenAddresses[i] != address(0)) {
+                            revert NotTheCorrectContractAddress(_tokenAddresses[i]);
+                        }
+                        rewardType = RewardType.Coin;
+                    }
+                    else {
+                        IERC20 token = IERC20(_tokenAddresses[i]);
+                        token.totalSupply();
+                        rewardType = RewardType.Token;                   
+                    }
+                    Reward memory reward = Reward(_tokenAddresses[i], _rewardRates[i], _rewardFrequencies[i], rewardType, _startTimes[i]);
+                    rewards[_tokenAddresses[i]] = reward;
+                }
+            }
         }
-        emit FundsReceived(msg.sender, address(0), msg.value);
     }
 
-    // Stake the NFT in the staking pool.
-    function stake(
-        uint256 _tokenId
-    ) external nonReentrant {
+    // Save the rewards accumulated by all the eligible token IDs up to this point
+    function saveAllRewards(
+        uint256 _startTime,
+        address _tokenContract
+    ) external {
+        for(uint i = 0; i < eligibleNFTs.length; i++) {
 
-        // Only the owners of the token ID can stake their NFTs
-        if(IERC721(nftCollection).ownerOf(_tokenId) != msg.sender) {
-            revert NotOwner(IERC721(nftCollection).ownerOf(_tokenId), msg.sender);
-        }
+            uint256 lastClaim = timeOfLastClaims[eligibleNFTs[i]][_tokenContract];
 
-        // Check if the token ID is eligible for staking in this pool
-        if(!stakedNFTs[_tokenId].isEligible) {
-            revert NotEligibleForStaking(_tokenId);
-        }
-        
-        // Transfer the NFT from the wallet address to the staking pool
-        IERC721(nftCollection).safeTransferFrom(msg.sender, address(this), _tokenId);
+            if(lastClaim == 0) {
+                timeOfLastClaims[eligibleNFTs[i]][_tokenContract] = _startTime;
+                lastClaim = _startTime;
+            }
+                
+            // Get the duration for which the NFT has been staked
+            uint256 stakeDuration = block.timestamp - lastClaim;
 
-        // Add the staker address to the records
-        stakedNFTs[_tokenId].stakerAddress = msg.sender;
-
-        // Update the time of stake and time of last claim for the staked NFT
-        stakedNFTs[_tokenId].timeOfStake = block.timestamp;
-        if(stakedNFTs[_tokenId].timeOfLastClaim == 0) {
-            stakedNFTs[_tokenId].timeOfLastClaim = timeOfPoolInitialization;
-        }   
-    }
-
-    // Withdraw the staked NFT and send it back to the staker.
-    function withdraw(
-        uint256 _tokenId
-    ) external nonReentrant {
-
-        // Only allow the staker to withdraw their NFT
-        if(stakedNFTs[_tokenId].stakerAddress != msg.sender) {
-            revert NotOwner(stakedNFTs[_tokenId].stakerAddress, msg.sender);
-        }
-        
-        // Only allow the staker to withdraw their NFT after lock-in period ends
-        if((stakedNFTs[_tokenId].timeOfStake + lockInPeriod) > block.timestamp) {
-            revert StillLockedIn(stakedNFTs[_tokenId].timeOfStake + lockInPeriod, block.timestamp);
-        }
-        
-        // Get the duration for which the NFT has been staked since the last claim
-        uint256 claimDuration = block.timestamp - stakedNFTs[_tokenId].timeOfLastClaim;
-
-        // Get the number of reward cycles completed by the staked NFT
-        uint256 claimCycles = claimDuration / rewards[0].rewardFrequency;
-
-        // For all the different reward types in the staking pool
-        for(uint i = 0; i < rewards.length; i++) {
+            // Get the number of reward cycles completed by the staked NFT
+            uint256 stakeCycles = stakeDuration / rewards[_tokenContract].rewardFrequency;
 
             // If backed value-based distribution of rewards is enabled
             if(isBackedValue) {
-                uint256 rewardValue = SafeMath.div(claimCycles * (rewards[i].rewardRate * (stakedNFTs[_tokenId].backedValue / 1 ether)), 10000);
-                if(rewards[i].rewardType == RewardType.Coin) {
-                    if(address(this).balance < SafeMath.div(SafeMath.mul(rewardValue, 10100), 10000)) {
-                        revert NotEnoughBalance(address(this).balance, SafeMath.div(SafeMath.mul(rewardValue, 10100), 10000));
-                    }
-                    payable(marketplaceAddress).transfer(SafeMath.div(SafeMath.mul(rewardValue, 100), 10000));
-                    payable(msg.sender).transfer(rewardValue);
-                }
-                else {
-                    if(IERC20(rewards[i].tokenContract).balanceOf(address(this)) < SafeMath.div(SafeMath.mul(rewardValue, 10100), 10000)) {
-                        revert NotEnoughBalance(IERC20(rewards[i].tokenContract).balanceOf(address(this)), SafeMath.div(SafeMath.mul(rewardValue, 10100), 10000));
-                    }
-                    IERC20(rewards[i].tokenContract).safeTransfer(marketplaceAddress, SafeMath.div(SafeMath.mul(rewardValue, 100), 10000));
-                    IERC20(rewards[i].tokenContract).safeTransfer(msg.sender, rewardValue);
-                }
+                pendingRewards[eligibleNFTs[i]][_tokenContract] += SafeMath.div(stakeCycles * (rewards[_tokenContract].rewardRate * stakedNFTs[eligibleNFTs[i]].backedValue), 10000);
             }
             else {
-                uint256 rewardValue = SafeMath.div(claimCycles * rewards[i].rewardRate, 10000);
-                if(rewards[i].rewardType == RewardType.Coin) {
-                    if(address(this).balance < SafeMath.div(SafeMath.mul(rewardValue, 10100), 10000)) {
-                        revert NotEnoughBalance(address(this).balance, SafeMath.div(SafeMath.mul(rewardValue, 10100), 10000));
-                    }
-                    payable(marketplaceAddress).transfer(SafeMath.div(SafeMath.mul(rewardValue, 100), 10000));
-                    payable(msg.sender).transfer(rewardValue);
-                }
-                else {
-                    if(IERC20(rewards[i].tokenContract).balanceOf(address(this)) < SafeMath.div(SafeMath.mul(rewardValue, 10100), 10000)) {
-                        revert NotEnoughBalance(IERC20(rewards[i].tokenContract).balanceOf(address(this)), SafeMath.div(SafeMath.mul(rewardValue, 10100), 10000));
-                    }
-                    IERC20(rewards[i].tokenContract).safeTransfer(marketplaceAddress, SafeMath.div(SafeMath.mul(rewardValue, 100), 10000));
-                    IERC20(rewards[i].tokenContract).safeTransfer(msg.sender, rewardValue);
-                }
+                pendingRewards[eligibleNFTs[i]][_tokenContract] += SafeMath.div(stakeCycles * rewards[_tokenContract].rewardRate, 10000);
             }
+
+            // Update the time of the last claim for the staked NFT
+            timeOfLastClaims[eligibleNFTs[i]][_tokenContract] += SafeMath.mul(stakeCycles, rewards[_tokenContract].rewardFrequency);
+        }
+    }
+
+    // Save the rewards accumulated by the given token ID up to this point
+    function saveRewardsForTokenID(
+        uint256 _startTime,
+        address _tokenContract,
+        uint256 _tokenId
+    ) external {
+
+        uint256 lastClaim = timeOfLastClaims[_tokenId][_tokenContract];
+
+        if(lastClaim == 0) {
+            timeOfLastClaims[_tokenId][_tokenContract] = _startTime;
+            lastClaim = _startTime;
+        }
+            
+        // Get the duration for which the NFT has been staked
+        uint256 stakeDuration = block.timestamp - lastClaim;
+
+        // Get the number of reward cycles completed by the staked NFT
+        uint256 stakeCycles = stakeDuration / rewards[_tokenContract].rewardFrequency;
+
+        // If backed value-based distribution of rewards is enabled
+        if(isBackedValue) {
+            pendingRewards[_tokenId][_tokenContract] += SafeMath.div(stakeCycles * (rewards[_tokenContract].rewardRate * stakedNFTs[_tokenId].backedValue), 10000);
+        }
+        else {
+            pendingRewards[_tokenId][_tokenContract] += SafeMath.div(stakeCycles * rewards[_tokenContract].rewardRate, 10000);
         }
 
         // Update the time of the last claim for the staked NFT
-        stakedNFTs[_tokenId].timeOfLastClaim = stakedNFTs[_tokenId].timeOfLastClaim + SafeMath.mul(claimCycles, rewards[0].rewardFrequency);
-
-        // Transfer the NFT from the staking pool back to the staker
-        IERC721(nftCollection).safeTransferFrom(address(this), msg.sender, _tokenId);
-
-        // Reset the staker address to the null address
-        stakedNFTs[_tokenId].stakerAddress = address(0);
-
-        // Reset the time of stake to 0
-        stakedNFTs[_tokenId].timeOfStake = 0;
+        timeOfLastClaims[_tokenId][_tokenContract] += SafeMath.mul(stakeCycles, rewards[_tokenContract].rewardFrequency);
     }
 
     // Calculate the rewards for each of the reward types.
     function calculateRewards(
-        uint256 _tokenId
+        uint256 _tokenId,
+        address[] memory _rewards
     ) external view returns(uint256[] memory) {
 
-        // Only calculate rewards for staked NFTs
-        if(stakedNFTs[_tokenId].timeOfLastClaim == 0) {
-            revert NFTNotStaked(_tokenId);
-        }
-
-        // Get the duration for which the NFT has been staked
-        uint256 stakeDuration = block.timestamp - stakedNFTs[_tokenId].timeOfLastClaim;
-
-        uint256[] memory rewardReturns = new uint256[](rewards.length);
+        uint256[] memory rewardReturns = new uint256[](_rewards.length);
 
         // For all the different reward types in the staking pool
-        for(uint i = 0; i < rewards.length; i++) {
+        for(uint i = 0; i < _rewards.length; i++) {
 
-            // Get the number of reward cycles completed by the staked NFT
-            uint256 stakeCycles = stakeDuration / rewards[i].rewardFrequency;
+            if(stakedNFTs[_tokenId].isEligible) {
+                // Get the duration for which the NFT has been staked
+                uint256 stakeDuration = block.timestamp - timeOfLastClaims[_tokenId][_rewards[i]];
 
-            // If backed value-based distribution of rewards is enabled
-            if(isBackedValue) {
-                rewardReturns[i] = SafeMath.div(stakeCycles * (rewards[i].rewardRate * (stakedNFTs[_tokenId].backedValue / 1 ether)), 10000);
+                // Get the number of reward cycles completed by the staked NFT
+                uint256 stakeCycles = stakeDuration / rewards[_rewards[i]].rewardFrequency;
+
+                // If backed value-based distribution of rewards is enabled
+                if(isBackedValue) {
+                    rewardReturns[i] = SafeMath.div(stakeCycles * (rewards[_rewards[i]].rewardRate * stakedNFTs[_tokenId].backedValue), 10000);
+                }
+                else {
+                    rewardReturns[i] = SafeMath.div(stakeCycles * rewards[_rewards[i]].rewardRate, 10000);
+                }
             }
-            else {
-                rewardReturns[i] = SafeMath.div(stakeCycles * rewards[i].rewardRate, 10000);
-            }
+
+            rewardReturns[i] += pendingRewards[_tokenId][_rewards[i]];
         }
 
         // Return an array of rewards for each of the reward types
         return rewardReturns;
     }
 
-    // Let the stakers claim staking rewards for their staked NFT.
-    function claimRewards(
-        uint256 _tokenId
-    ) external nonReentrant {
-
-        // Only allow rewards to be claimed for staked NFTs
-        if(stakedNFTs[_tokenId].timeOfLastClaim == 0) {
-            revert NFTNotStaked(_tokenId);
+    // Allow the owner of the staking pool to send funds to the contract.
+    receive() external payable {
+        if(msg.sender != poolOwner) {
+            revert NotPoolOwner(poolOwner, msg.sender);
         }
-
-        // Only allow the owner of the staked NFT to claim rewards
-        if(msg.sender != stakedNFTs[_tokenId].stakerAddress) {
-            revert NotOwner(stakedNFTs[_tokenId].stakerAddress, msg.sender);
-        }
-
-        // Get the duration for which the NFT has been staked since the last claim
-        uint256 claimDuration = block.timestamp - stakedNFTs[_tokenId].timeOfLastClaim;
-
-        // Get the number of reward cycles completed by the staked NFT
-        uint256 claimCycles = claimDuration / rewards[0].rewardFrequency;
-
-        // For all the different reward types in the staking pool
-        for(uint i = 0; i < rewards.length; i++) {
-
-            // If backed value-based distribution of rewards is enabled
-            if(isBackedValue) {
-                uint256 rewardValue = SafeMath.div(claimCycles * (rewards[i].rewardRate * (stakedNFTs[_tokenId].backedValue / 1 ether)), 10000);
-                if(rewards[i].rewardType == RewardType.Coin) {
-                    if(address(this).balance < SafeMath.div(SafeMath.mul(rewardValue, 10100), 10000)) {
-                        revert NotEnoughBalance(address(this).balance, SafeMath.div(SafeMath.mul(rewardValue, 10100), 10000));
-                    }
-                    payable(marketplaceAddress).transfer(SafeMath.div(SafeMath.mul(rewardValue, 100), 10000));
-                    payable(msg.sender).transfer(rewardValue);
-                }
-                else {
-                    if(IERC20(rewards[i].tokenContract).balanceOf(address(this)) < SafeMath.div(SafeMath.mul(rewardValue, 10100), 10000)) {
-                        revert NotEnoughBalance(IERC20(rewards[i].tokenContract).balanceOf(address(this)), SafeMath.div(SafeMath.mul(rewardValue, 10100), 10000));
-                    }
-                    IERC20(rewards[i].tokenContract).safeTransfer(marketplaceAddress, SafeMath.div(SafeMath.mul(rewardValue, 100), 10000));
-                    IERC20(rewards[i].tokenContract).safeTransfer(msg.sender, rewardValue);
-                }
-            }
-            else {
-                uint256 rewardValue = SafeMath.div(claimCycles * rewards[i].rewardRate, 10000);
-                if(rewards[i].rewardType == RewardType.Coin) {
-                    if(address(this).balance < SafeMath.div(SafeMath.mul(rewardValue, 10100), 10000)) {
-                        revert NotEnoughBalance(address(this).balance, SafeMath.div(SafeMath.mul(rewardValue, 10100), 10000));
-                    }
-                    payable(marketplaceAddress).transfer(SafeMath.div(SafeMath.mul(rewardValue, 100), 10000));
-                    payable(msg.sender).transfer(rewardValue);
-                }
-                else {
-                    if(IERC20(rewards[i].tokenContract).balanceOf(address(this)) < SafeMath.div(SafeMath.mul(rewardValue, 10100), 10000)) {
-                        revert NotEnoughBalance(IERC20(rewards[i].tokenContract).balanceOf(address(this)), SafeMath.div(SafeMath.mul(rewardValue, 10100), 10000));
-                    }
-                    IERC20(rewards[i].tokenContract).safeTransfer(marketplaceAddress, SafeMath.div(SafeMath.mul(rewardValue, 100), 10000));
-                    IERC20(rewards[i].tokenContract).safeTransfer(msg.sender, rewardValue);
-                }
-            }
-        }
-
-        // Update the time of the last claim for the staked NFT
-        stakedNFTs[_tokenId].timeOfLastClaim = stakedNFTs[_tokenId].timeOfLastClaim + SafeMath.mul(claimCycles, rewards[0].rewardFrequency);
-    }
-
-    // Check the eligibility of the token to be staked in this pool.
-    function checkEligibility(
-        uint256 _tokenId
-    ) external view returns(bool) {
-        return stakedNFTs[_tokenId].isEligible;
-    }
-
-    // Check the backed value of the token in this pool.
-    function checkBackedValue(
-        uint256 _tokenId
-    ) external view returns(uint256) {
-        return stakedNFTs[_tokenId].backedValue;
-    }
-
-    // Check the staker address of the token in this pool.
-    function checkStakerAddress(
-        uint256 _tokenId
-    ) external view returns(address) {
-        return stakedNFTs[_tokenId].stakerAddress;
-    }
-
-    // Check the time when the token was staked in this pool.
-    function checkTimeOfStake(
-        uint256 _tokenId
-    ) external view returns(uint256) {
-        return stakedNFTs[_tokenId].timeOfStake;
-    }
-
-    // Check the rewards awarded by the staking pool.
-    function checkRewards() external view returns(Reward[] memory) {
-        return rewards;
+        emit FundsReceived(msg.sender, address(0), msg.value);
     }
 
     // Return the balance of XDC of the smart contract.
@@ -404,14 +309,21 @@ contract XDSea721Staking is ReentrancyGuard, IERC721Receiver, IERC1155Receiver {
         }
     }
 
-    // Allow only the pool owner to update the pool owner address.
-    function updatePoolOwner(
-        address _poolOwner
-    ) external {
+    // Allow only the pool owner to withdraw coins and tokens from the contract.
+    function withdrawFunds(
+        uint256 amount,
+        address erc20address
+    ) external payable {
         if(msg.sender != poolOwner) {
             revert NotPoolOwner(poolOwner, msg.sender);
         }
-        poolOwner = _poolOwner;
+
+        if(erc20address == address(0)) {
+            payable(poolOwner).transfer(amount);
+        }
+        else{
+            IERC20(erc20address).safeTransfer(poolOwner, amount);
+        }
     }
 
     // Allow only the pool owner to update the lock-in period.
@@ -424,17 +336,6 @@ contract XDSea721Staking is ReentrancyGuard, IERC721Receiver, IERC1155Receiver {
         lockInPeriod = _lockInPeriod;
     }
 
-    // Allow only the pool owner to update the time of pool initialization i.e.,
-    // time from which the rewards are initially distributed.
-    function updateTimeOfPoolInitialization(
-        uint256 _timeOfPoolInitialization
-    ) external {
-        if(msg.sender != poolOwner) {
-            revert NotPoolOwner(poolOwner, msg.sender);
-        }
-        timeOfPoolInitialization = _timeOfPoolInitialization;
-    }
-
     // Allow only the pool owner to update the eligibility of the NFTs in the
     // staking pool.
     function updateEligibility(
@@ -445,27 +346,23 @@ contract XDSea721Staking is ReentrancyGuard, IERC721Receiver, IERC1155Receiver {
             revert NotPoolOwner(poolOwner, msg.sender);
         }
         for(uint i = 0; i < _tokenIds.length; i++) {
+            if(!_eligibility[i]) {
+                _removeFromList(_tokenIds[i]);
+            }
+            else {
+                eligibleNFTs.push(_tokenIds[i]);
+            }
             stakedNFTs[_tokenIds[i]].isEligible = _eligibility[i];
         }
     }
 
-    // Allow only the pool owner to add the backed values of the NFTs in the
-    // staking pool.
-    function addBackedValues(
-        uint256[] memory _tokenIds,
-        uint256[] memory _backedValues
-    ) external {
-        if(msg.sender != poolOwner) {
-            revert NotPoolOwner(poolOwner, msg.sender);
-        }
-        if(isBackedValue) {
-            revert BackedValueAlreadySet();
-        }
-        if(_tokenIds.length != _backedValues.length) {
-            revert LengthMismatch(_tokenIds.length, _backedValues.length);
-        }
-        for(uint i = 0; i < _tokenIds.length; i++) {
-            stakedNFTs[_tokenIds[i]].backedValue = _backedValues[i];
+    // Remove the token ID from the list of eligible NFTs
+    function _removeFromList(uint256 _tokenId) internal {
+        for(uint i = 0; i < eligibleNFTs.length; i++) {
+            if(eligibleNFTs[i] == _tokenId) {
+                eligibleNFTs[i] = eligibleNFTs[eligibleNFTs.length - 1];
+                eligibleNFTs.pop();
+            }
         }
     }
 
@@ -478,9 +375,6 @@ contract XDSea721Staking is ReentrancyGuard, IERC721Receiver, IERC1155Receiver {
         if(msg.sender != poolOwner) {
             revert NotPoolOwner(poolOwner, msg.sender);
         }
-        if(!isBackedValue) {
-            revert BackedValueNotSet();
-        }
         if(_tokenIds.length != _backedValues.length) {
             revert LengthMismatch(_tokenIds.length, _backedValues.length);
         }
@@ -489,69 +383,164 @@ contract XDSea721Staking is ReentrancyGuard, IERC721Receiver, IERC1155Receiver {
         }
     }
 
-    // Allow only the pool owner to remove the backed values of the NFTs in the
-    // staking pool.
-    function removeBackedValues(
-        uint256[] memory _tokenIds
+    // Allow only the pool owner to update the time the rewards for a given token
+    // were claimed.
+    function updateTimeOfLastClaim(
+        uint256 _tokenId,
+        address _tokenContract,
+        uint256 _newTime
     ) external {
         if(msg.sender != poolOwner) {
             revert NotPoolOwner(poolOwner, msg.sender);
         }
-        if(!isBackedValue) {
-            revert BackedValueNotSet();
-        }
-        isBackedValue = false;
-        for(uint i = 0; i < _tokenIds.length; i++) {
-            stakedNFTs[_tokenIds[i]].backedValue = 0;
+        timeOfLastClaims[_tokenId][_tokenContract] = _newTime;
+    }
+
+    // Allow only the pool owner to remove the backed values of the NFTs in the
+    // staking pool.
+    function removeBackedValues() external {
+        if(msg.sender == poolOwner) {
+            if(isBackedValue) {
+                isBackedValue = false;
+            }
         }
     }
 
-    // Allow only the pool owner to set rewards for the staking pool.
-    function setRewards(
-        address[] memory _tokenAddresses,
-        uint256[] memory _rewardRates,
-        uint256[] memory _rewardFrequencies,
-        uint256[] memory _rewardTypes
+    // Allow only the pool owner to update the pool owner address.
+    function updatePoolOwner(
+        address _poolOwner
     ) external {
         if(msg.sender != poolOwner) {
             revert NotPoolOwner(poolOwner, msg.sender);
         }
-        if(_tokenAddresses.length != _rewardRates.length) {
-            revert LengthMismatch(_tokenAddresses.length, _rewardRates.length);
+        poolOwner = _poolOwner;
+    }
+
+    // Stake the NFT in the staking pool.
+    function stake(
+        uint256 _tokenId
+    ) external nonReentrant {
+
+        // Only the owners of the token ID can stake their NFTs
+        if(IERC721(nftCollection).ownerOf(_tokenId) != msg.sender) {
+            revert NotOwner(IERC721(nftCollection).ownerOf(_tokenId), msg.sender);
         }
-        else if(_tokenAddresses.length != _rewardFrequencies.length) {
-            revert LengthMismatch(_tokenAddresses.length, _rewardFrequencies.length);
+
+        // Check if the token ID is eligible for staking in this pool
+        if(!stakedNFTs[_tokenId].isEligible) {
+            revert NotEligibleForStaking(_tokenId);
         }
-        else if(_rewardRates.length != _rewardFrequencies.length) {
-            revert LengthMismatch(_rewardRates.length, _rewardFrequencies.length);
+
+        // Add the staker address to the records
+        stakedNFTs[_tokenId].stakerAddress = msg.sender;
+
+        // Update the time of stake and time of last claim for the staked NFT
+        stakedNFTs[_tokenId].timeOfStake = block.timestamp;
+        
+        // Transfer the NFT from the wallet address to the staking pool
+        IERC721(nftCollection).safeTransferFrom(msg.sender, address(this), _tokenId);
+    }
+
+    // Withdraw the staked NFT and send it back to the staker.
+    function withdraw(
+        uint256 _tokenId
+    ) external nonReentrant {
+
+        // Only allow the staker to withdraw their NFT
+        if(stakedNFTs[_tokenId].stakerAddress != msg.sender) {
+            revert NotOwner(stakedNFTs[_tokenId].stakerAddress, msg.sender);
         }
-        else if(_tokenAddresses.length != _rewardTypes.length) {
-            revert LengthMismatch(_tokenAddresses.length, _rewardTypes.length);
+        
+        // Only allow the staker to withdraw their NFT after lock-in period ends
+        if((stakedNFTs[_tokenId].timeOfStake + lockInPeriod) > block.timestamp) {
+            revert StillLockedIn(stakedNFTs[_tokenId].timeOfStake + lockInPeriod, block.timestamp);
         }
-        else if(_rewardRates.length != _rewardTypes.length) {
-            revert LengthMismatch(_rewardRates.length, _rewardTypes.length);
+
+        // Transfer the NFT from the staking pool back to the staker
+        IERC721(nftCollection).safeTransferFrom(address(this), msg.sender, _tokenId);
+
+        // Reset the staker address to the null address
+        stakedNFTs[_tokenId].stakerAddress = address(0);
+
+        // Reset the time of stake to 0
+        stakedNFTs[_tokenId].timeOfStake = 0;
+    }
+
+    // Let the stakers claim staking rewards for their staked NFT.
+    function claimRewards(
+        uint256 _tokenId,
+        address _tokenContract
+    ) external nonReentrant {
+
+        // Only allow rewards to be claimed for staked NFTs
+        if(stakedNFTs[_tokenId].timeOfStake == 0) {
+            revert NFTNotStaked(_tokenId);
         }
-        else if(_rewardFrequencies.length != _rewardTypes.length) {
-            revert LengthMismatch(_rewardFrequencies.length, _rewardTypes.length);
+
+        // Only allow the owner of the staked NFT to claim rewards
+        if(msg.sender != stakedNFTs[_tokenId].stakerAddress) {
+            revert NotOwner(stakedNFTs[_tokenId].stakerAddress, msg.sender);
         }
-        else {
-            for(uint i = 0; i < _tokenAddresses.length; i++) {
-                RewardType rewardType = RewardType.Coin;
-                if(_rewardTypes[i] == 0) {
-                    if(_tokenAddresses[i] != address(0)) {
-                        revert NotTheCorrectContractAddress(_tokenAddresses[i]);
-                    }
-                    rewardType = RewardType.Coin;
+
+        // Get the duration for which the NFT has been staked since the last claim
+        uint256 claimDuration = block.timestamp - timeOfLastClaims[_tokenId][_tokenContract];
+
+        // Get the number of reward cycles completed by the staked NFT
+        uint256 claimCycles = claimDuration / rewards[_tokenContract].rewardFrequency;
+        
+        // If backed value-based distribution of rewards is enabled
+        if(isBackedValue) {
+            uint256 rewardValue = SafeMath.div(claimCycles * (rewards[_tokenContract].rewardRate * stakedNFTs[_tokenId].backedValue), 10000);
+            if(stakedNFTs[_tokenId].isEligible) {
+                rewardValue += pendingRewards[_tokenId][_tokenContract];
+            }
+            else {
+                rewardValue = pendingRewards[_tokenId][_tokenContract];
+            }
+            if(rewards[_tokenContract].rewardType == RewardType.Coin) {
+                rewardValue *= (10**18);
+                if(address(this).balance < SafeMath.div(SafeMath.mul(rewardValue, 10100), 10000)) {
+                    revert NotEnoughBalance(address(this).balance, SafeMath.div(SafeMath.mul(rewardValue, 10100), 10000));
                 }
-                else {
-                    IERC20 token = IERC20(_tokenAddresses[i]);
-                    token.totalSupply();
-                    rewardType = RewardType.Token;                   
+                payable(marketplaceAddress).transfer(SafeMath.div(SafeMath.mul(rewardValue, 100), 10000));
+                payable(msg.sender).transfer(rewardValue);
+            }
+            else {
+                if(IERC20(_tokenContract).balanceOf(address(this)) < SafeMath.div(SafeMath.mul(rewardValue, 10100), 10000)) {
+                    revert NotEnoughBalance(IERC20(_tokenContract).balanceOf(address(this)), SafeMath.div(SafeMath.mul(rewardValue, 10100), 10000));
                 }
-                Reward memory reward = Reward(_tokenAddresses[i], _rewardRates[i], _rewardFrequencies[i], rewardType);
-                rewards.push(reward);
+                IERC20(_tokenContract).safeTransfer(marketplaceAddress, SafeMath.div(SafeMath.mul(rewardValue, 100), 10000));
+                IERC20(_tokenContract).safeTransfer(msg.sender, rewardValue);
             }
         }
+        else {
+            uint256 rewardValue = SafeMath.div(claimCycles * rewards[_tokenContract].rewardRate, 10000);
+            if(stakedNFTs[_tokenId].isEligible) {
+                rewardValue += pendingRewards[_tokenId][_tokenContract];
+            }
+            else {
+                rewardValue = pendingRewards[_tokenId][_tokenContract];
+            }
+            if(rewards[_tokenContract].rewardType == RewardType.Coin) {
+                rewardValue *= (10**18);
+                if(address(this).balance < SafeMath.div(SafeMath.mul(rewardValue, 10100), 10000)) {
+                    revert NotEnoughBalance(address(this).balance, SafeMath.div(SafeMath.mul(rewardValue, 10100), 10000));
+                }
+                payable(marketplaceAddress).transfer(SafeMath.div(SafeMath.mul(rewardValue, 100), 10000));
+                payable(msg.sender).transfer(rewardValue);
+            }
+            else {
+                if(IERC20(_tokenContract).balanceOf(address(this)) < SafeMath.div(SafeMath.mul(rewardValue, 10100), 10000)) {
+                    revert NotEnoughBalance(IERC20(_tokenContract).balanceOf(address(this)), SafeMath.div(SafeMath.mul(rewardValue, 10100), 10000));
+                }
+                IERC20(_tokenContract).safeTransfer(marketplaceAddress, SafeMath.div(SafeMath.mul(rewardValue, 100), 10000));
+                IERC20(_tokenContract).safeTransfer(msg.sender, rewardValue);
+            }
+        }
+
+        // Update the time of the last claim for the staked NFT and reset the pending rewards
+        timeOfLastClaims[_tokenId][_tokenContract] += SafeMath.mul(claimCycles, rewards[_tokenContract].rewardFrequency);
+        pendingRewards[_tokenId][_tokenContract] = 0;
     }
 
     // Update the eligible NFTs record for the staking pool with a user-provided list of
@@ -561,6 +550,7 @@ contract XDSea721Staking is ReentrancyGuard, IERC721Receiver, IERC1155Receiver {
     ) internal {
         for(uint i = 0; i < _tokenIds.length; i++) {
             stakedNFTs[_tokenIds[i]].isEligible = true;
+            eligibleNFTs.push(_tokenIds[i]);
         }
     }
 

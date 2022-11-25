@@ -92,21 +92,21 @@ function Collection(props) {
             cursor={"pointer"}
             border="9px"
             background={
-              isStake
-                ? "linear-gradient(357.4deg, #000000 42.29%, rgba(0, 0, 0, 0) 82%)"
-                : "linear-gradient(0.6deg, #000000 7.19%, rgba(0, 0, 0, 0) 30.73%)"
+              // isStake
+              //   ? "linear-gradient(357.4deg, #000000 42.29%, rgba(0, 0, 0, 0) 82%)"
+              "linear-gradient(0.6deg, #000000 7.19%, rgba(0, 0, 0, 0) 30.73%)"
             }
           >
             <Spacer></Spacer>
 
-            {isStake ? (
+            {/* {isStake ? (
               <StakeOptions
                 collection={collectionName || "Collection Name"}
                 advance={60}
                 stakers="334"
                 tvl="39"
               ></StakeOptions>
-            ) : (
+            ) : ( */}
               <HStack width="100%" spacing="0px">
                 <VStack
                   spacing="6px"
@@ -208,7 +208,7 @@ function Collection(props) {
                   </VStack>
                 )}
               </HStack>
-            )}
+            {/* )} */}
           </VStack>
         </ZItem>
       </ZStack>
@@ -228,10 +228,10 @@ function Collection(props) {
               <IconImg url={star} width="12px" height="12px"></IconImg>
             </HStack>
 
-            <BodyBold textcolor="white">56%</BodyBold>
+            {/* <BodyBold textcolor="white">56%</BodyBold>
             <CaptionBoldShort textcolor="white" initial={{ opacity: 0.6 }}>
               APR
-            </CaptionBoldShort>
+            </CaptionBoldShort> */}
           </VStack>
         </StakeBtn>
       )}

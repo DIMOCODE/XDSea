@@ -244,11 +244,11 @@ function TopBar(props) {
     });
     setWallet({
       connected: false,
-      address: res[0],
+      address: "",
     });
     onWalletChange({
       connected: false,
-      address: res[0],
+      address: "",
     });
     logout();
     setShowMenu(!showMenu);
@@ -261,11 +261,11 @@ function TopBar(props) {
   const disconnectXdcPay = async () => {
     setWallet({
       connected: false,
-      address: wallet.address,
+      address: "",
     });
     onWalletChange({
       connected: false,
-      address: wallet.address,
+      address: "",
     });
     logout();
     setShowMenu(!showMenu);
@@ -281,11 +281,11 @@ function TopBar(props) {
     });
     setWallet({
       connected: false,
-      address: res[0],
+      address: "",
     });
     onWalletChange({
       connected: false,
-      address: res[0],
+      address: "",
     });
     logout();
     setShowMenu(!showMenu);

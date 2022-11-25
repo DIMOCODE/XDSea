@@ -27,10 +27,10 @@ function StakeOptions(props) {
       </VStack>
 
       {/* Advance bar */}
-      <StakeBar advance={advance}></StakeBar>
-      <HStack>
+      {/* <StakeBar advance={advance}></StakeBar> */}
+      {/* <HStack> */}
         {/* Stakers */}
-        <VStack
+        {/* <VStack
           background="rgba(255, 255, 255, 0.12)"
           height="52px"
           width="100%"
@@ -40,10 +40,10 @@ function StakeOptions(props) {
           <CaptionMedium textcolor="white">Stakers</CaptionMedium>
 
           <TitleBold18 textcolor="white">{stakers}</TitleBold18>
-        </VStack>
+        </VStack> */}
 
         {/* Value Stakers */}
-        <VStack
+        {/* <VStack
           background="rgba(255, 255, 255, 0.12)"
           height="52px"
           width="100%"
@@ -68,7 +68,7 @@ function StakeOptions(props) {
             </CaptionMedium>
           </HStack>
         </VStack>
-      </HStack>
+      </HStack> */}
 
       <ButtonM
         title="Visit Pool"

@@ -78,10 +78,11 @@ export const createStakingPool = (
 
  * @returns HTTP GET request response 
  */
-export const updateStakingPool = (stakingPoolId, lockPeriod, rewardRates) => {
+export const updateStakingPool = ({stakingPoolId, lockPeriod, rewardRates, nftsStakeables}) => {
   const body = {
     lockPeriod,
     rewardRates,
+    nftsStakeables,
   };
   return createSignedRequest(
     HTTP_METHODS.put,

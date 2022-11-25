@@ -13,7 +13,6 @@ function EarningRate(props) {
     onlyOneToken,
     titleOff,
     rewardRate,
-    rewardFrequency,
     backedValue,
     tittleOff,
   } = props;
@@ -35,33 +34,29 @@ function EarningRate(props) {
             )}
             <HStack width="100%">
               {rewardRate ? (
-                rewardRate[0]?.rewardTypeId?.type === "coin" ? (
-                  <>
-                    <XdcCounter
-                      amount={
-                        (backedValue * 24 * rewardRate[0]?.amount) /
-                        rewardFrequency
-                      }
-                      period={1}
-                    ></XdcCounter>
-                    <XdcCounter
-                      amount={
-                        (backedValue * 730 * rewardRate[0]?.amount) /
-                        rewardFrequency
-                      }
-                      period={2}
-                    ></XdcCounter>
-                    <XdcCounter
-                      amount={
-                        (backedValue * 8760 * rewardRate[0]?.amount) /
-                        rewardFrequency
-                      }
-                      period={3}
-                    ></XdcCounter>
-                  </>
-                ) : (
-                  <></>
-                )
+                <>
+                  <XdcCounter
+                    amount={
+                      (backedValue * 24 * rewardRate[0]?.amount) /
+                      rewardRate[0]?.rewardFrecuency
+                    }
+                    period={1}
+                  ></XdcCounter>
+                  <XdcCounter
+                    amount={
+                      (backedValue * 730 * rewardRate[0]?.amount) /
+                      rewardRate[0]?.rewardFrecuency
+                    }
+                    period={2}
+                  ></XdcCounter>
+                  <XdcCounter
+                    amount={
+                      (backedValue * 8760 * rewardRate[0]?.amount) /
+                      rewardRate[0]?.rewardFrecuency
+                    }
+                    period={3}
+                  ></XdcCounter>
+                </>
               ) : (
                 <></>
               )}

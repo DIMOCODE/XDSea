@@ -36,25 +36,25 @@ import { HolderSection } from "../Collection/HoldersSection";
 import { TopInventory } from "../Collection/Inventory/TopInventory";
 
 function StakeSection(props) {
-  const { nfts, usdPrice, stakingPool, stakes, onClickAR, onClickBV, setStakingPool } = props;
+  const { nfts, usdPrice, stakingPool, stakes, onClickAR, onClickBV, setStakingPool, wallet, isCreator, nftsCount } = props;
 
   const parseLockPeriod = (hours) => {
     if (hours === 1) {
-      return "1 hour";
+      return "1 hrs";
     } else if (hours < 24) {
-      return hours + " hours";
+      return hours + " hrs";
     } else if (hours === 24) {
-      return "1 day";
+      return "1 d";
     } else if (hours / 24 < 30) {
-      return hours / 24 + " days";
+      return hours / 24 + " d";
     } else if (hours / 730 === 1) {
-      return "1 month";
+      return "1 mo";
     } else if (hours / 730 < 12) {
-      return hours / 730 + " months";
+      return hours / 730 + " mo";
     } else if (hours / 8760 === 1) {
-      return "1 year";
+      return "1 yr";
     } else {
-      return hours / 8760 + " years";
+      return hours / 8760 + " yr";
     }
   };
 
@@ -84,15 +84,17 @@ function StakeSection(props) {
             onClickBV={onClickBV}
             poolId={stakingPool?._id}
             setStakingPool={setStakingPool}
+            wallet={wallet}
+            isCreator={isCreator}
           ></BlockTVL>
-          <TokenSelector rewardRates={stakingPool?.rewardRates}></TokenSelector>
+          <TokenSelector rewardRates={stakingPool?.rewardRates} isCreator={isCreator} wallet={wallet} stakingPool={stakingPool} setStakingPool={setStakingPool}></TokenSelector>
         </HStack>
 
         {/* Top Inventory and HolerSection */}
-        <HStack responsive={true} width="100%" alignment="flex-start">
+        {/* <HStack responsive={true} width="100%" alignment="flex-start">
           <TopInventory></TopInventory>
           <HolderSection></HolderSection>
-        </HStack>
+        </HStack> */}
       </VStack>
       <VStack
         background={({ theme }) => theme.backElement}
@@ -105,9 +107,8 @@ function StakeSection(props) {
         {/* <TopBarStake collection={collection}></TopBarStake> */}
 
         {/* NFTS with Staking Option */}
-        {nfts.map((nft, i) => (
+        {nfts?.map((nft, i) => (
           <>
-            {console.log(getStake(nft._id))}
             <StakeRow
               image={nft.urlFile.v0}
               title={nft.name}

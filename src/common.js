@@ -707,7 +707,7 @@ export const WithdrawStake = async(stakingContract, tokenId, wallet) => {
   }
 };
 
-export const ClaimRewards = async(stakingContract, tokenId, wallet) => {
+export const ClaimRewards = async(stakingContract, tokenId, rewardContract, wallet) => {
   try{
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
@@ -718,7 +718,7 @@ export const ClaimRewards = async(stakingContract, tokenId, wallet) => {
     );
 
     let data = contract2.methods
-      .claimRewards(tokenId)
+      .claimRewards(tokenId, rewardContract)
       .encodeABI();
 
     const tx2 = {
@@ -772,6 +772,105 @@ export const DepositFunds = async(stakingContract, wallet, amount, erc20address)
     return false;
   }
 };
+
+export const WithdrawFunds = async(stakingContract, wallet, amount, erc20address) => {
+  try{
+    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
+
+    const contract2 = new xdc3.eth.Contract(
+      XDSea721Staking.abi,
+      stakingContract,
+      wallet
+    );
+
+    let data = contract2.methods
+      .withdrawFunds(amount, erc20address)
+      .encodeABI();
+
+    const tx2 = {
+      from: wallet,
+      to: stakingContract,
+      data,
+    };
+
+    var gasLimit2 = await xdc3.eth.estimateGas(tx2);
+
+    tx2["gas"] = gasLimit2;
+
+    await SendTransaction(tx2);
+
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+};
+
+export const SaveAllRewards = async(stakingContract, wallet, poolTime, rewardContract) => {
+  try{
+    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
+
+    const contract2 = new xdc3.eth.Contract(
+      XDSea721Staking.abi,
+      stakingContract,
+      wallet
+    );
+
+    let data = contract2.methods
+      .saveAllRewards(poolTime, rewardContract)
+      .encodeABI();
+
+    const tx2 = {
+      from: wallet,
+      to: stakingContract,
+      data,
+    };
+
+    var gasLimit2 = await xdc3.eth.estimateGas(tx2);
+
+    tx2["gas"] = gasLimit2;
+
+    await SendTransaction(tx2);
+
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}
+
+export const SaveRewardsForTokenID = async(stakingContract, wallet, poolTime, rewardContract, tokenId) => {
+  try{
+    const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
+
+    const contract2 = new xdc3.eth.Contract(
+      XDSea721Staking.abi,
+      stakingContract,
+      wallet
+    );
+
+    let data = contract2.methods
+      .saveRewardsForTokenID(poolTime, rewardContract, tokenId)
+      .encodeABI();
+
+    const tx2 = {
+      from: wallet,
+      to: stakingContract,
+      data,
+    };
+
+    var gasLimit2 = await xdc3.eth.estimateGas(tx2);
+
+    tx2["gas"] = gasLimit2;
+
+    await SendTransaction(tx2);
+
+    return true;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
+}
 
 export const UpdateLockInPeriod = async(stakingContract, wallet, lockInPeriod) => {
   try{
@@ -872,7 +971,7 @@ export const UpdateBackedValues = async(stakingContract, wallet, tokenId, backed
   }
 };
 
-export const UpdateRewards = async(stakingContract, wallet, erc20address, rewardRate, rewardFrequency, rewardType) => {
+export const UpdateRewards = async(stakingContract, wallet, erc20address, rewardRate, rewardFrequency, rewardType, startTime) => {
   try{
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
@@ -882,8 +981,10 @@ export const UpdateRewards = async(stakingContract, wallet, erc20address, reward
       wallet
     );
 
+    console.log([erc20address], [rewardRate], [rewardFrequency], [rewardType], [startTime])
+
     let data = contract2.methods
-      .setRewards([erc20address], [rewardRate], [rewardFrequency], [rewardType])
+      .setRewards([erc20address], [rewardRate], [rewardFrequency], [rewardType], [startTime])
       .encodeABI();
 
     const tx2 = {

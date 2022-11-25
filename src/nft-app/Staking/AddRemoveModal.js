@@ -20,16 +20,20 @@ import useWindowSize from "../../styles/useWindowSize";
 import { InputStyled } from "../../styles/InputStyled";
 import { useState } from "react";
 import { useEffect } from "react";
-import { getNFT } from "../../API/NFT";
+import { getNFT, getNFTs } from "../../API/NFT";
 import { useClickAway } from "react-use";
 import { useRef } from "react";
 import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
 import { LoopLogo } from "../../styles/LoopLogo";
+import { updateStakingPool } from "../../API/stake";
+import { UpdateEligibility } from "../../common";
+import { stakingaddress } from "../../config";
+import { isXdc, fromXdc } from "../../common/common";
 
 function AddRemoveModal(props) {
   const size = useWindowSize();
 
-  const { oneToken, setAddRemoveModal, nftContract, collectionId, stakingPool } = props;
+  const { oneToken, setAddRemoveModal, nftContract, collectionId, stakingPool, setNfts, setNftsCount, stakingParams, setStakingParams } = props;
 
   const [tokenId, setTokenId] = useState(0);
   const [showNFTInfo, setNFTInfo] = useState(false);
@@ -38,6 +42,28 @@ function AddRemoveModal(props) {
   const [loading, setLoading] = useState(false);
   const [stake, setStake] = useState({});
   const ref = useRef(null);
+
+  const updateEligibility = async () => {
+    try{
+      const success = await UpdateEligibility(stakingaddress, isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address, tokenId, !nft?.isStakeable);
+      if(success) {
+        const updatedPool = await updateStakingPool({stakingPoolId: stakingPool?._id, nftsStakeables: [nft?._id]});
+        const stakingNFTsData = await(await getNFTs({
+          ...stakingParams,
+          page: 1,
+        })).data;
+        setNfts(stakingNFTsData.nfts);
+        setNftsCount(stakingNFTsData.nftsAmount);
+        setStakingParams({
+          ...stakingParams,
+          page: 2,
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+    setAddRemoveModal(false);
+  }
 
   useClickAway(ref, () => setAddRemoveModal(false));
 
@@ -128,7 +154,7 @@ function AddRemoveModal(props) {
                   textcolor="white"
                   background={({ theme }) => theme.blue}
                   onClick={() => {
-                    //Update eligibility of the token
+                    updateEligibility();
                   }}
                 ></ButtonM>
               </HStack>

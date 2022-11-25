@@ -203,6 +203,7 @@ const NFTApp = () => {
                   <Collection
                     xdc={xdcPrice}
                     redirect={NavigateTo}
+                    wallet={wallet}
                     showMenu={showMenu}
                   />
                 )}

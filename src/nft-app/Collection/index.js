@@ -42,10 +42,8 @@ import {
 import {
   getCollection,
   getCollectionNFTs,
-  getStakes,
-  getStakingPool,
 } from "../../API/Collection";
-import { truncateAddress, toXdc, isXdc } from "../../common/common";
+import { truncateAddress, toXdc, isXdc, fromXdc } from "../../common/common";
 import { SearchCollection } from "../../styles/SearchCollection";
 import { FiltersButton } from "../../styles/FiltersButton";
 import { SortButtonNFTS } from "../../styles/SortButtonNFTS";
@@ -65,6 +63,7 @@ import { StakingModal } from "../Staking/StakingModal";
 import { AddRemoveModal } from "../Staking/AddRemoveModal";
 import { BackedValueModal } from "../Staking/BackedValueModal";
 import { getStakingPoolsByCollection } from "../../API/stake";
+import { getNFTs } from "../../API/NFT";
 
 const CollectionPage = (props) => {
   const size = useWindowSize();
@@ -91,6 +90,9 @@ const CollectionPage = (props) => {
   const [params, setParams] = useState({
     page: 1,
   });
+  const [stakingParams, setStakingParams] = useState({
+    page: 1,
+  });
   const [copied, setCopied] = useState(false);
   const [nftNumber, setNftNumber] = useState(0);
   const [nftPlaying, setNftPlaying] = useState([]);
@@ -100,6 +102,8 @@ const CollectionPage = (props) => {
   const [stakes, setStakes] = useState([]);
   const [addRemoveModal, setAddRemoveModal] = useState(false);
   const [backedValueModal, setBackedValueModal] = useState(false);
+  const [stakingNFTs, setStakingNFTs] = useState([]);
+  const [stakingNFTsNumber, setStakingNFTsNumber] = useState(0);
 
   const webLink = `https://www.xdsea.com/collection/${collectionNickName}`;
 
@@ -155,11 +159,31 @@ const CollectionPage = (props) => {
       ).data;
 
       var collectionStakingPool = {};
+      var stakingNFTsData = [];
       if (collectionData.collection.isStakeable) {
-        collectionStakingPool = await (
-          await getStakingPoolsByCollection(collectionData.collection._id)
-        ).data;
-        setStakingPool(collectionStakingPool.stakingPools[0]);
+        await Promise.all([1, 2].map(async (i) => {
+          if(i === 1) {
+            collectionStakingPool = await (
+              await getStakingPoolsByCollection(collectionData.collection._id)
+            ).data;
+            setStakingPool(collectionStakingPool.stakingPools[0]);
+          }
+          else {
+            stakingNFTsData = await(await getNFTs({...stakingParams,
+              page: 1,
+              collectionId: collectionData.collection._id,
+              stakeable: true,
+            })).data;
+            setStakingNFTs(stakingNFTsData.nfts);
+            setStakingNFTsNumber(stakingNFTsData.nftsAmount);
+            setStakingParams({
+              ...stakingParams,
+              collectionId: collectionData.collection._id,
+              stakeable: true,
+              page: stakingParams.page + 1,
+            });
+          }
+        }));
       }
 
       setNftNumber(collectionNFTData.nftsAmount);
@@ -178,8 +202,8 @@ const CollectionPage = (props) => {
   };
 
   const getStakesData = async () => {
-    const stakesData = await (await getStakes(collection._id)).data;
-    setStakes(stakesData);
+    // const stakesData = await (await getStakes(collection._id)).data;
+    // setStakes(stakesData);
   };
 
   /**
@@ -259,6 +283,11 @@ const CollectionPage = (props) => {
           nftContract={collection?.nftContract}
           collectionId={collection?._id}
           stakingPool={stakingPool}
+          setNfts={setStakingNFTs}
+          setNftsCount={setStakingNFTsNumber}
+          setStakingParams={setStakingParams}
+          stakingParams={stakingParams}
+          wallet={props?.wallet}
         ></AddRemoveModal>
       )}
       {backedValueModal && (
@@ -267,6 +296,11 @@ const CollectionPage = (props) => {
           nftContract={collection?.nftContract}
           collectionId={collection?._id}
           stakingPool={stakingPool}
+          setNfts={setStakingNFTs}
+          setNftsCount={setStakingNFTsNumber}
+          setStakingParams={setStakingParams}
+          stakingParams={stakingParams}
+          wallet={props?.wallet}
         ></BackedValueModal>
       )}
       {/* Banner */}
@@ -635,7 +669,8 @@ const CollectionPage = (props) => {
         {/* Collection NFT Cards */}
         {isStake ? (
             <StakeSection
-              nfts={nfts}
+              nfts={stakingNFTs}
+              setNfts={setStakingNFTs}
               usdPrice={props.xdc}
               stakingPool={stakingPool}
               stakes={stakes}
@@ -646,6 +681,10 @@ const CollectionPage = (props) => {
                 setBackedValueModal(true);
               }}
               setStakingPool={setStakingPool}
+              wallet={props?.wallet}
+              isCreator={collection?.addressCreator?.toLowerCase() === isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address}
+              nftsCount={stakingNFTsNumber}
+              setNftsCount={setStakingNFTsNumber}
             ></StakeSection>
           ) : (
         <InfiniteScroll

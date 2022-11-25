@@ -174,21 +174,3 @@ export const updateCollection = (collectionId, body) => {
     body
   );
 };
-
-export const getStakingPool = (collectionId) => {
-  return createRequest(
-    HTTP_METHODS.get,
-    `stake/pool/${collectionId}`,
-    null,
-    null
-  );
-};
-
-export const getStakes = (collectionId) => {
-  return createRequest(
-    HTTP_METHODS.get,
-    `stake`,
-    {collectionId},
-    null
-  );
-};
