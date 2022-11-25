@@ -1010,7 +1010,7 @@ const NFTDetails = (props) => {
                           backsize="cover"
                         ></IconImg>
 
-                        {nft?.name ? (
+                        {nft?.name === "" ? (
                           <LockedContent>
                             <VStack
                               variants={flipping}
@@ -1037,6 +1037,8 @@ const NFTDetails = (props) => {
                             </VStack>
                           </LockedContent>
                         ) : null}
+
+                        {console.log(nft?.name)}
                       </VStack>
                     </>
                   ) : isVideo(nft?.fileType) ? (
@@ -1663,6 +1665,7 @@ const NFTDetails = (props) => {
                           textcolor={appStyle.colors.white}
                           width="100%"
                           cursor={"pointer"}
+                          background={({ theme }) => theme.blue}
                         ></ButtonApp>
                         {nft.inBlacklist ? null : (
                           <ButtonApp
@@ -1677,7 +1680,7 @@ const NFTDetails = (props) => {
                             }}
                             textcolor={({ theme }) => theme.walletText}
                             width="100%"
-                            background={({ theme }) => theme.walletButton}
+                            background={({ theme }) => theme.blackLinear}
                             cursor={"pointer"}
                           ></ButtonApp>
                         )}
@@ -1698,7 +1701,7 @@ const NFTDetails = (props) => {
                             cursor={"pointer"}
                             textcolor={({ theme }) => theme.walletText}
                             width="100%"
-                            background={({ theme }) => theme.walletButton}
+                            background={({ theme }) => theme.blackLinear}
                           ></ButtonApp>
                         )}
                         <ButtonApp
@@ -1748,6 +1751,7 @@ const NFTDetails = (props) => {
                         cursor="pointer"
                         textcolor={appStyle.colors.white}
                         width="100%"
+                        background={({ theme }) => theme.blue}
                       ></ButtonApp>
                     </>
                   ) : (
@@ -1764,7 +1768,7 @@ const NFTDetails = (props) => {
                       cursor="pointer"
                       textcolor={({ theme }) => theme.walletText}
                       width="100%"
-                      background={({ theme }) => theme.walletButton}
+                      background={({ theme }) => theme.blackLinear}
                     ></ButtonApp>
                   )
                 ) : null}

@@ -359,7 +359,7 @@ const Discover = (props) => {
               <HStack spacing="12px" flexwrap="wrap" justify="flex-start">
                 {loading ? (
                   loadingCollections.map((item, i) => (
-                    <VStack key={i} minwidth="290px" height="380px">
+                    <VStack key={i} minwidth="380px" height="380px">
                       <LoadingNftContainer></LoadingNftContainer>
                     </VStack>
                   ))
@@ -367,7 +367,7 @@ const Discover = (props) => {
                   collections.map((item, i) => (
                     <LayoutGroup id="collection" key={i + item._id}>
                       <VStack
-                        minwidth="290px"
+                        minwidth="380px"
                         height="380px"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -462,7 +462,12 @@ const Discover = (props) => {
                       ))
                     ) : nfts.length !== 0 ? (
                       nfts.map((item, i) => (
-                        <VStack key={item._id} minwidth="290px" height="290px">
+                        <VStack
+                          key={item._id}
+                          minwidth={size.width > 425 ? "290px" : "100%"}
+                          maxwidth="290px"
+                          height={size.width > 425 ? "290px" : "380px"}
+                        >
                           <NftContainer
                             hasStaking={item.isStakeable}
                             isVerified={item.owner.isVerified}
