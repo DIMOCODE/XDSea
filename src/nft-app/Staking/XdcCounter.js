@@ -11,17 +11,16 @@ function XdcCounter(props) {
   return (
     <VStack spacing="3px">
       <HStack spacing="3px">
-        <BodyBold>{(amount > 100000
-                      ? Intl.NumberFormat("en-US", {
-                          notation: "compact",
-                          maximumFractionDigits: 2,
-                        }).format(amount)
-                      : (amount).toLocaleString(
-                          undefined,
-                          {
-                            maximumFractionDigits: 2,
-                          }
-                        ) || "0")}</BodyBold>
+        <BodyBold>
+          {amount > 100000
+            ? Intl.NumberFormat("en-US", {
+                notation: "compact",
+                maximumFractionDigits: 2,
+              }).format(amount)
+            : (amount ?? "--").toLocaleString(undefined, {
+                maximumFractionDigits: 2,
+              }) || "0"}
+        </BodyBold>
         <IconImg url={xdc} width="15px" height="15px"></IconImg>
       </HStack>
 

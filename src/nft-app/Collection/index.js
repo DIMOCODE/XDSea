@@ -39,10 +39,7 @@ import {
   TelegramShareButton,
   WhatsappShareButton,
 } from "react-share";
-import {
-  getCollection,
-  getCollectionNFTs,
-} from "../../API/Collection";
+import { getCollection, getCollectionNFTs } from "../../API/Collection";
 import { truncateAddress, toXdc, isXdc, fromXdc } from "../../common/common";
 import { SearchCollection } from "../../styles/SearchCollection";
 import { FiltersButton } from "../../styles/FiltersButton";
@@ -62,7 +59,7 @@ import { StakeSection } from "../Staking/StakeSection";
 import { StakingModal } from "../Staking/StakingModal";
 import { AddRemoveModal } from "../Staking/AddRemoveModal";
 import { BackedValueModal } from "../Staking/BackedValueModal";
-import { getStakingPoolsByCollection } from "../../API/stake";
+import { getStakingPoolsByCollection, getStakes } from "../../API/stake";
 import { getNFTs } from "../../API/NFT";
 import { TxModal } from "../../styles/TxModal";
 import { WithdrawFunds } from "../../common";
@@ -169,29 +166,33 @@ const CollectionPage = (props) => {
       var collectionStakingPool = {};
       var stakingNFTsData = [];
       if (collectionData.collection.isStakeable) {
-        await Promise.all([1, 2].map(async (i) => {
-          if(i === 1) {
-            collectionStakingPool = await (
-              await getStakingPoolsByCollection(collectionData.collection._id)
-            ).data;
-            setStakingPool(collectionStakingPool.stakingPools[0]);
-          }
-          else {
-            stakingNFTsData = await(await getNFTs({...stakingParams,
-              page: 1,
-              collectionId: collectionData.collection._id,
-              stakeable: true,
-            })).data;
-            setStakingNFTs(stakingNFTsData.nfts);
-            setStakingNFTsNumber(stakingNFTsData.nftsAmount);
-            setStakingParams({
-              ...stakingParams,
-              collectionId: collectionData.collection._id,
-              stakeable: true,
-              page: stakingParams.page + 1,
-            });
-          }
-        }));
+        await Promise.all(
+          [1, 2].map(async (i) => {
+            if (i === 1) {
+              collectionStakingPool = await (
+                await getStakingPoolsByCollection(collectionData.collection._id)
+              ).data;
+              setStakingPool(collectionStakingPool.stakingPools[0]);
+            } else {
+              stakingNFTsData = await (
+                await getNFTs({
+                  ...stakingParams,
+                  page: 1,
+                  collectionId: collectionData.collection._id,
+                  stakeable: true,
+                })
+              ).data;
+              setStakingNFTs(stakingNFTsData.nfts);
+              setStakingNFTsNumber(stakingNFTsData.nftsAmount);
+              setStakingParams({
+                ...stakingParams,
+                collectionId: collectionData.collection._id,
+                stakeable: true,
+                page: stakingParams.page + 1,
+              });
+            }
+          })
+        );
       }
 
       setNftNumber(collectionNFTData.nftsAmount);
@@ -210,8 +211,12 @@ const CollectionPage = (props) => {
   };
 
   const getStakesData = async () => {
-    // const stakesData = await (await getStakes(collection._id)).data;
-    // setStakes(stakesData);
+    try {
+      const stakesData = await getStakes(1, collection._id);
+      setStakes(stakesData.data.stakes);
+    } catch (error) {
+      console.log("Failed on load stakes!!", error);
+    }
   };
 
   /**
@@ -272,10 +277,14 @@ const CollectionPage = (props) => {
   };
 
   const withdrawFunds = async () => {
-    try{
-      const success = await WithdrawFunds(stakingaddress, props?.wallet?.address, withdrawFundPrice, "0x0000000000000000000000000000000000000000");
-    }
-    catch (err) {
+    try {
+      const success = await WithdrawFunds(
+        stakingaddress,
+        props?.wallet?.address,
+        withdrawFundPrice,
+        "0x0000000000000000000000000000000000000000"
+      );
+    } catch (err) {
       console.log(err);
     }
     setWithdrawing(false);
@@ -701,42 +710,47 @@ const CollectionPage = (props) => {
       <CollectionContent id="scrollableDiv">
         {/* Collection NFT Cards */}
         {isStake ? (
-            <StakeSection
-              nfts={stakingNFTs}
-              setNfts={setStakingNFTs}
-              usdPrice={props.xdc}
-              stakingPool={stakingPool}
-              stakes={stakes}
-              onClickAR={() => {
-                setAddRemoveModal(true);
-              }}
-              onClickBV={() => {
-                setBackedValueModal(true);
-              }}
-              setStakingPool={setStakingPool}
-              wallet={props?.wallet}
-              isCreator={collection?.addressCreator?.toLowerCase() === isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address}
-              nftsCount={stakingNFTsNumber}
-              setNftsCount={setStakingNFTsNumber}
-              setWithdrawModal={setWithdrawing}
-            ></StakeSection>
-          ) : (
-        <InfiniteScroll
-          dataLength={nfts.length}
-          next={fetchMoreNFTs}
-          hasMore={nfts.length < nftNumber}
-          loader={
-            <HStack
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              height="190px"
-            >
-              <LoopLogo></LoopLogo>
-            </HStack>
-          }
-          scrollableTarget="#scrollableDiv"
-          style={{ overflow: "hidden" }}
-        >
+          <StakeSection
+            nfts={stakingNFTs}
+            setNfts={setStakingNFTs}
+            usdPrice={props.xdc}
+            stakingPool={stakingPool}
+            stakes={stakes}
+            onClickAR={() => {
+              setAddRemoveModal(true);
+            }}
+            onClickBV={() => {
+              setBackedValueModal(true);
+            }}
+            setStakingPool={setStakingPool}
+            wallet={props?.wallet}
+            isCreator={
+              collection?.addressCreator?.toLowerCase() ===
+              isXdc(props?.wallet?.address)
+                ? fromXdc(props?.wallet?.address)
+                : props?.wallet?.address
+            }
+            nftsCount={stakingNFTsNumber}
+            setNftsCount={setStakingNFTsNumber}
+            setWithdrawModal={setWithdrawing}
+          ></StakeSection>
+        ) : (
+          <InfiniteScroll
+            dataLength={nfts.length}
+            next={fetchMoreNFTs}
+            hasMore={nfts.length < nftNumber}
+            loader={
+              <HStack
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                height="190px"
+              >
+                <LoopLogo></LoopLogo>
+              </HStack>
+            }
+            scrollableTarget="#scrollableDiv"
+            style={{ overflow: "hidden" }}
+          >
             <HStack
               flexwrap="wrap"
               padding="30px 6px"

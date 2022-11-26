@@ -36,7 +36,19 @@ import { HolderSection } from "../Collection/HoldersSection";
 import { TopInventory } from "../Collection/Inventory/TopInventory";
 
 function StakeSection(props) {
-  const { nfts, usdPrice, stakingPool, stakes, onClickAR, onClickBV, setStakingPool, wallet, isCreator, nftsCount, setWithdrawModal } = props;
+  const {
+    nfts,
+    usdPrice,
+    stakingPool,
+    stakes,
+    onClickAR,
+    onClickBV,
+    setStakingPool,
+    wallet,
+    isCreator,
+    nftsCount,
+    setWithdrawModal,
+  } = props;
 
   const parseLockPeriod = (hours) => {
     if (hours === 1) {
@@ -61,8 +73,8 @@ function StakeSection(props) {
   const getStake = (id) => {
     var stake = {};
     console.log(stakes);
-    if (stakes?.stakes?.length !== 0) {
-      stakes?.stakes?.map((stakeData) => {
+    if (stakes?.length !== 0) {
+      stakes?.map((stakeData) => {
         if (stakeData.nftId._id === id) {
           stake = stakeData;
         }
@@ -77,7 +89,7 @@ function StakeSection(props) {
         {/* TVl & Token Selector */}
         <HStack responsive={true} style={{ zIndex: 100 }}>
           <BlockTVL
-            tvl={stakingPool?.totalValueLocked || 0}
+            tvl={stakingPool?.backedValuesAmount || 0}
             usdPrice={usdPrice}
             lockPeriod={parseLockPeriod(stakingPool?.lockPeriod)}
             onClickAR={onClickAR}
@@ -87,7 +99,14 @@ function StakeSection(props) {
             wallet={wallet}
             isCreator={isCreator}
           ></BlockTVL>
-          <TokenSelector rewardRates={stakingPool?.rewardRates} isCreator={isCreator} wallet={wallet} stakingPool={stakingPool} setStakingPool={setStakingPool} setWithdrawModal={setWithdrawModal}></TokenSelector>
+          <TokenSelector
+            rewardRates={stakingPool?.rewardRates}
+            isCreator={isCreator}
+            wallet={wallet}
+            stakingPool={stakingPool}
+            setStakingPool={setStakingPool}
+            setWithdrawModal={setWithdrawModal}
+          ></TokenSelector>
         </HStack>
 
         {/* Top Inventory and HolerSection */}
