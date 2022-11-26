@@ -223,6 +223,13 @@ export const Divider = styled.div`
   background: rgba(153, 162, 175, 0.3);
 `;
 
+// Vdivider
+export const Vdivider = styled.div`
+  height: 100%;
+  width: 2px;
+  background: rgba(153, 162, 175, 1);
+`;
+
 // Separator
 export const Separator = styled(HStack)`
   height: 2px;

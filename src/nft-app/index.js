@@ -24,9 +24,9 @@ import ReactGA from "react-ga";
 import { SearchPage } from "./Search/SearchPage";
 import { createRequest } from "../API";
 import { HTTP_METHODS, LS, LS_ROOT_KEY } from "../constant";
+import { Blog } from "./Blog/Blog";
 const TRACKING_ID = "UA-105859386-2"; // OUR_TRACKING_ID
 ReactGA.initialize(TRACKING_ID);
-
 
 const NFTApp = () => {
   const history = useHistory();
@@ -171,6 +171,8 @@ const NFTApp = () => {
                   />
                 )}
               ></Route>
+
+              <Route exact path="/Blog" render={() => <Blog></Blog>}></Route>
               <Route
                 exact
                 path="/user/:userId"
