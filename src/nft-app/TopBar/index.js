@@ -343,7 +343,7 @@ function TopBar(props) {
               ></IconImg>
               <VStack spacing="1px" alignment="flex-start">
                 <BodyRegular textcolor="#FCD868">BETA</BodyRegular>
-                <BodyBold textcolor="#FFFFFF">Basilisk</BodyBold>
+                <BodyBold textcolor="#FFFFFF">Witch</BodyBold>
               </VStack>
             </HStack>
 

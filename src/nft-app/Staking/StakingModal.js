@@ -16,7 +16,7 @@ import useWindowSize from "../../styles/useWindowSize";
 function StakingModal(props) {
   const size = useWindowSize();
 
-  const { oneToken } = props;
+  const { oneToken, nft, rewardRate, setStakeModal, stakeNFT, claimReward } = props;
 
   return (
     <Modal>
@@ -32,7 +32,7 @@ function StakingModal(props) {
         >
           <VStack justify="flex-end">
             <IconImg
-              url={jojo}
+              url={nft?.urlFile?.thumbnail}
               width={size.width > 423 ? "390px" : "260px"}
               height={size.width > 423 ? "390px" : "260px"}
               border="9px"
@@ -40,18 +40,20 @@ function StakingModal(props) {
           </VStack>
 
           <VStack width="370px" spacing="21px">
-            <TitleBold21 textcolor="black">SeriousJojo 003</TitleBold21>
-            <EarningRate onlyOneToken={oneToken}></EarningRate>
+            <TitleBold21 textcolor="black">{nft?.name}</TitleBold21>
+            <EarningRate onlyOneToken={oneToken} rewardRate={rewardRate} backedValue={nft?.backedValue}></EarningRate>
             <PendingClaimed onlyOneToken={oneToken}></PendingClaimed>
             <HStack>
               <ButtonM
                 background={({ theme }) => theme.faded30}
                 title="Cancel"
+                onClick={() => setStakeModal(false)}
               ></ButtonM>
               <ButtonM
-                title="Claim"
+                title={nft?.isStake ? "Claim" : "Stake"}
                 textcolor="white"
                 background={({ theme }) => theme.blue}
+                onClick={nft?.isStake ? claimReward : stakeNFT}
               ></ButtonM>
             </HStack>
           </VStack>

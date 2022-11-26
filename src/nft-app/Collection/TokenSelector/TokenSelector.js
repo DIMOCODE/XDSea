@@ -23,7 +23,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Mousewheel } from "swiper";
 
 function TokenSelector(props) {
-  const { rewardRates, isCreator, wallet, setStakingPool, stakingPool } = props;
+  const { rewardRates, isCreator, wallet, setStakingPool, stakingPool, setWithdrawModal } = props;
 
   const parseRewardFrequency = (hours) => {
     if (hours === 1) {
@@ -130,6 +130,7 @@ function TokenSelector(props) {
             tokenContract={currentTokenContract}
             stakingPool={stakingPool}
             setStakingPool={setStakingPool}
+            setWithdrawModal={setWithdrawModal}
           ></TokenInfo>
         </>
       )}

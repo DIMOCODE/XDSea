@@ -783,8 +783,10 @@ export const WithdrawFunds = async(stakingContract, wallet, amount, erc20address
       wallet
     );
 
+    var price = xdc3.utils.toWei(amount);
+
     let data = contract2.methods
-      .withdrawFunds(amount, erc20address)
+      .withdrawFunds(price, erc20address)
       .encodeABI();
 
     const tx2 = {

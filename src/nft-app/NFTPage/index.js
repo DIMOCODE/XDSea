@@ -24,6 +24,8 @@ import {
   WithdrawOffer,
   AcceptOffer,
   StakeNFT,
+  WithdrawStake,
+  ClaimRewards,
 } from "../../common";
 import { fromXdc, isXdc, toXdc, truncateAddress } from "../../common/common";
 import Tooltip from "@mui/material/Tooltip";
@@ -100,8 +102,8 @@ import { TopNFT } from "./TopNFT";
 import { TransferBtn } from "./TransferBtn";
 import { StakeBtn } from "./StakeBtn";
 import { ListBtn } from "./ListBtn";
-import { createStake } from "../../API/stake";
-import { StakeModal } from "./StakeModal";
+import { claimStakeReward, createStake, withdrawStake } from "../../API/stake";
+import { StakingModal } from "../Staking/StakingModal";
 
 const NFTDetails = (props) => {
   const size = useWindowSize();
@@ -127,8 +129,8 @@ const NFTDetails = (props) => {
   const [listingNFT, setListingNFT] = useState(false);
   const [listButtonStatus, setListButtonStatus] = useState(0);
   const [listPrice, setListPrice] = useState(0.0);
-  const [stakeButtonStatus, setStakeButtonStatus] = useState(false);
-  const [staked, setStaked] = useState(false);
+  const [withdrawStakeStatus, setWithdrawStakeStatus] = useState(0);
+  const [stakeWithdrawn, setStakeWithdrawn] = useState(false);
   const [transferring, setTransferring] = useState(false);
   const [transferButtonStatus, setTransferButtonStatus] = useState(0);
   const [transferAddress, setTransferAddress] = useState(null);
@@ -153,6 +155,8 @@ const NFTDetails = (props) => {
   const [loadingOffers, setLoadingOffers] = useState(false);
   const [loadingEvents, setLoadingEvents] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
+  const [stakingPool, setStakingPool] = useState({});
+  const [stake, setStake] = useState({});
   const [loadingOffersArray] = useState([
     { id: 1, name: "Offer 1" },
     { id: 2, name: "Offer 2" },
@@ -220,22 +224,46 @@ const NFTDetails = (props) => {
   };
 
   const stakeNFT = async () => {
-    setIsProcessingStaking(true);
-    setStakeButtonStatus(1);
     var success = await StakeNFT(stakingaddress, id, wallet?.address);
     if (success) {
-      setStakeButtonStatus(3);
-      //Send stake request
-      setStaked(true);
+      var stakeData = await(await createStake(nft?._id, stakingPool?._id)).data;
+      setStake(stakeData?.stake);
     } else {
-      setStakeButtonStatus(4);
+      console.log("Stake failed");
     }
-    setIsProcessingStaking(true);
     setActions(actions + 1);
     setTimeout(() => {
-      setStakeButtonStatus(0);
+      setStakeModal(false);
     }, 3500);
   };
+
+  const withdrawStakeNFT = async () => {
+    setWithdrawStakeStatus(1);
+    var success = await WithdrawStake(stakingaddress, id, wallet?.address);
+    if(success) {
+      setWithdrawStakeStatus(3);
+      await withdrawStake(stake?._id);
+    } else {
+      setWithdrawStakeStatus(4);
+    }
+    setActions(actions + 1);
+    setTimeout(() => {
+      setWithdrawStakeStatus(0);
+    }, 3500);
+  };
+
+  const claimReward = async () => {
+    var success = await ClaimRewards(stakingaddress, id, "0x0000000000000000000000000000000000000000", wallet?.address);
+    if (success) {
+      await claimStakeReward(stake?._id, stakingPool?.rewardRates[0]?.rewardTypeId?._id);
+    } else {
+      console.log("Claim failed");
+    }
+    setActions(actions + 1);
+    setTimeout(() => {
+      setStakeModal(false);
+    }, 3500);
+  }
 
   /**
    * Start the placing offer process
@@ -546,6 +574,9 @@ const NFTDetails = (props) => {
         )
       ).data;
 
+      setStakingPool(nftData.stakingPool);
+      setStake(nftData?.stake);
+
       await Promise.all(
         [1, 2].map(async (i) => {
           if (i === 1) {
@@ -663,7 +694,7 @@ const NFTDetails = (props) => {
                         ></IconImg>
                         <CaptionBoldShort>Offer Withdrawn</CaptionBoldShort>
                       </HStack>
-                    ) : (
+                    ) : item.eventTypeId.eventCode === "OFFER_ACCEPTED" ? (
                       <HStack key={"event_" + i}>
                         <IconImg
                           url={offerAcceptedIcon}
@@ -672,7 +703,43 @@ const NFTDetails = (props) => {
                         ></IconImg>
                         <CaptionBoldShort>Offer Accepted</CaptionBoldShort>
                       </HStack>
-                    ),
+                    ) : item.eventTypeId.eventCode === "STAKE_NFT" ? (
+                      <HStack key={"event_" + i}>
+                        <IconImg
+                          url={list}
+                          width="26px"
+                          height="26px"
+                        ></IconImg>
+                        <CaptionBoldShort>NFT Staked</CaptionBoldShort>
+                      </HStack>
+                    ) : item.eventTypeId.eventCode === "UNSTAKE_NFT" ? (
+                      <HStack key={"event_" + i}>
+                        <IconImg
+                          url={withdrawList}
+                          width="26px"
+                          height="26px"
+                        ></IconImg>
+                        <CaptionBoldShort>Stake Withdrawn</CaptionBoldShort>
+                      </HStack>
+                    ) : item.eventTypeId.eventCode === "CLAIM_REWARD" ? (
+                      <HStack key={"event_" + i}>
+                        <IconImg
+                          url={offerAcceptedIcon}
+                          width="26px"
+                          height="26px"
+                        ></IconImg>
+                        <CaptionBoldShort>Rewards Claimed</CaptionBoldShort>
+                      </HStack>
+                    ) : item.eventTypeId.eventCode === "STOP_STAKE" ? (
+                      <HStack key={"event_" + i}>
+                        <IconImg
+                          url={withdrawList}
+                          width="26px"
+                          height="26px"
+                        ></IconImg>
+                        <CaptionBoldShort>Removed from Pool</CaptionBoldShort>
+                      </HStack>
+                    ) : <></>,
                   price: item.price,
                   from: truncate(
                     await getXdcDomainAddress(item.fromAddress),
@@ -783,7 +850,7 @@ const NFTDetails = (props) => {
   return (
     <NFTPage>
       {/* Stake Modal goes here */}
-      {isStakeModal && <StakeModal></StakeModal>}
+      {isStakeModal && <StakingModal nft={nft} oneToken={true} rewardRate={stakingPool?.rewardRates} rewardFrequency={stakingPool?.rewardRates[0]?.rewardFrecuency} setStakeModal={setStakeModal} stakeNFT={stakeNFT} claimReward={claimReward}></StakingModal>}
 
       {processingOffer ? (
         <TxModal
@@ -1721,57 +1788,80 @@ const NFTDetails = (props) => {
                       </>
                     )
                   ) : nft?.inBlacklist ? null : nft?.addressOwner.toLowerCase() ===
-                    (isXdc(wallet?.address)
-                      ? fromXdc(wallet?.address.toLowerCase())
-                      : wallet?.address.toLowerCase()) ? (
-                    <>
-                      <TransferBtn
-                        status={transferButtonStatus}
-                        onClick={() => {
-                          startTransfer();
-                        }}
-                      ></TransferBtn>
-                      {nft?.isStakeable &&
-                        nft?.addressCreator.toLowerCase() !==
-                          (isXdc(wallet?.address)
-                            ? fromXdc(wallet?.address.toLowerCase())
-                            : wallet?.address.toLowerCase()) && (
-                          <StakeBtn onClick={stakeNFT}></StakeBtn>
-                        )}
+                      (isXdc(wallet?.address)
+                        ? fromXdc(wallet?.address.toLowerCase())
+                        : wallet?.address.toLowerCase()) ? 
+                          nft?.isStake ? (
+                      <>
+                        <StakeBtn claimButton={true} onClick={() => setStakeModal(true)}></StakeBtn>
+                        <ButtonApp
+                          btnStatus={withdrawStakeStatus}
+                          func={"WithdrawStake"}
+                          icon={tagWhite}
+                          iconWidth="21px"
+                          iconHeight="21px"
+                          text={
+                            "Withdraw Stake"
+                          }
+                          onClick={() => {
+                            withdrawStakeNFT();
+                          }}
+                          textcolor={appStyle.colors.white}
+                          width="100%"
+                          cursor={"pointer"}
+                          background={({ theme }) => theme.blue}
+                        ></ButtonApp>
+                      </>
+                          ) :
+                        (
+                      <>
+                        <TransferBtn
+                          status={transferButtonStatus}
+                          onClick={() => {
+                            startTransfer();
+                          }}
+                        ></TransferBtn>
+                        {nft?.isStakeable && !nft?.isStake &&
+                          nft?.addressCreator.toLowerCase() !==
+                            (isXdc(wallet?.address)
+                              ? fromXdc(wallet?.address.toLowerCase())
+                              : wallet?.address.toLowerCase()) && (
+                            <StakeBtn onClick={() => setStakeModal(true)}></StakeBtn>
+                          )}
+                        <ButtonApp
+                          icon={tagWhite}
+                          btnStatus={listButtonStatus}
+                          func={"List"}
+                          iconWidth="21px"
+                          iconHeight="21px"
+                          text="List NFT"
+                          onClick={() => {
+                            startSale();
+                          }}
+                          cursor="pointer"
+                          textcolor={appStyle.colors.white}
+                          width="100%"
+                          background={({ theme }) => theme.blue}
+                        ></ButtonApp>
+                      </>
+                    ) : (
                       <ButtonApp
-                        icon={tagWhite}
-                        btnStatus={listButtonStatus}
-                        func={"List"}
+                        btnStatus={offerButtonStatus}
+                        func={"Offer"}
+                        icon={star}
                         iconWidth="21px"
                         iconHeight="21px"
-                        text="List NFT"
+                        text="Place Offer"
                         onClick={() => {
-                          startSale();
+                          placeOffer();
                         }}
                         cursor="pointer"
-                        textcolor={appStyle.colors.white}
+                        textcolor={({ theme }) => theme.walletText}
                         width="100%"
-                        background={({ theme }) => theme.blue}
+                        background={({ theme }) => theme.blackLinear}
                       ></ButtonApp>
-                    </>
-                  ) : (
-                    <ButtonApp
-                      btnStatus={offerButtonStatus}
-                      func={"Offer"}
-                      icon={star}
-                      iconWidth="21px"
-                      iconHeight="21px"
-                      text="Place Offer"
-                      onClick={() => {
-                        placeOffer();
-                      }}
-                      cursor="pointer"
-                      textcolor={({ theme }) => theme.walletText}
-                      width="100%"
-                      background={({ theme }) => theme.blackLinear}
-                    ></ButtonApp>
-                  )
-                ) : null}
+                    )
+                  ) : null}
               </HStack>
             </VStack>
           </HStack>

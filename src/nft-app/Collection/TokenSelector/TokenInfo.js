@@ -28,7 +28,7 @@ import { fromXdc, toXdc, isXdc } from "../../../common/common";
 import { updateStakingPool } from "../../../API/stake";
 
 function TokenInfo(props) {
-  const { logo, rewardRate, rewardFrequency, unparsedRewardFrequency, rewardStartTime, isCreator, wallet, tokenContract, stakingPool, setStakingPool } = props;
+  const { logo, rewardRate, rewardFrequency, unparsedRewardFrequency, rewardStartTime, isCreator, wallet, tokenContract, stakingPool, setStakingPool, setWithdrawModal } = props;
 
   const [isEditing, setIsEditing] = useState(false);
   const [isDeposit, setIsDeposit] = useState(false);
@@ -277,6 +277,7 @@ function TokenInfo(props) {
             textcolor={({ theme }) => theme.blue}
             title="Withdraw"
             height="52px"
+            onClick={() => setWithdrawModal(true)}
           ></ButtonM>
           <ButtonM
             background={({ theme }) => theme.blue}

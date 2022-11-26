@@ -139,6 +139,17 @@ export default function ButtonApp(props) {
               loading={true}
             />
           </HStack>
+        ) : func === "WithdrawStake" ? (
+          <HStack spacing="6px">
+            <BodyRegular textcolor={appStyle.colors.white}>
+              Withdrawing Stake
+            </BodyRegular>
+            <RingSpinner
+              size={21}
+              color={appStyle.colors.white}
+              loading={true}
+            />
+          </HStack>
         ) : null
       ) : btnStatus === 2 ? (
         <HStack spacing="6px">
@@ -207,6 +218,13 @@ export default function ButtonApp(props) {
             </BodyRegular>
             <IconImg url={successIcon} width="21px" height="21px"></IconImg>
           </HStack>
+        ) : func === "WithdrawStake" ? (
+          <HStack spacing="6px">
+            <BodyRegular textcolor={appStyle.colors.white}>
+              Stake Withdrawn
+            </BodyRegular>
+            <IconImg url={successIcon} width="21px" height="21px"></IconImg>
+          </HStack>
         ) : null
       ) : btnStatus === 4 ? (
         func === "Mint" ? (
@@ -269,6 +287,13 @@ export default function ButtonApp(props) {
           <HStack spacing="6px">
             <BodyRegular textcolor={appStyle.colors.white}>
               Acceptance Failed
+            </BodyRegular>
+            <IconImg url={failIcon} width="21px" height="21px"></IconImg>
+          </HStack>
+        ) : func === "WithdrawStake" ? (
+          <HStack spacing="6px">
+            <BodyRegular textcolor={appStyle.colors.white}>
+              Withdrawal Failed
             </BodyRegular>
             <IconImg url={failIcon} width="21px" height="21px"></IconImg>
           </HStack>

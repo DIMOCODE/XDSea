@@ -1712,6 +1712,8 @@ const MyNFT = (props) => {
                                   }
                                   sortVolume={true}
                                   xdc={props.xdc}
+                                  isStake={isStake}
+                                  stakeEnabled={item.isStakeable}
                                 ></Collection>
                               </VStack>
                             </LayoutGroup>

@@ -36,7 +36,7 @@ import { HolderSection } from "../Collection/HoldersSection";
 import { TopInventory } from "../Collection/Inventory/TopInventory";
 
 function StakeSection(props) {
-  const { nfts, usdPrice, stakingPool, stakes, onClickAR, onClickBV, setStakingPool, wallet, isCreator, nftsCount } = props;
+  const { nfts, usdPrice, stakingPool, stakes, onClickAR, onClickBV, setStakingPool, wallet, isCreator, nftsCount, setWithdrawModal } = props;
 
   const parseLockPeriod = (hours) => {
     if (hours === 1) {
@@ -87,7 +87,7 @@ function StakeSection(props) {
             wallet={wallet}
             isCreator={isCreator}
           ></BlockTVL>
-          <TokenSelector rewardRates={stakingPool?.rewardRates} isCreator={isCreator} wallet={wallet} stakingPool={stakingPool} setStakingPool={setStakingPool}></TokenSelector>
+          <TokenSelector rewardRates={stakingPool?.rewardRates} isCreator={isCreator} wallet={wallet} stakingPool={stakingPool} setStakingPool={setStakingPool} setWithdrawModal={setWithdrawModal}></TokenSelector>
         </HStack>
 
         {/* Top Inventory and HolerSection */}

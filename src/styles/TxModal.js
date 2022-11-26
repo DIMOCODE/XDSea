@@ -56,6 +56,11 @@ function TxModal(props) {
     transferNFT,
     mintName,
     mintedNFT,
+    isWithdrawFund,
+    withdrawFundPrice,
+    onChangeWithdrawFunds,
+    cancelWithdrawFund,
+    withdrawFunds
   } = props;
 
   return (
@@ -303,6 +308,62 @@ function TxModal(props) {
                   width="100%"
                   textcolor={appStyle.colors.white}
                   onClick={listNFT}
+                  cursor={"pointer"}
+                  btnStatus={0}
+                ></ButtonApp>
+              </HStack>
+            </>
+          )}
+
+          {isWithdrawFund && (
+            <>
+              <VStack flex="0" spacing="0px">
+                <IconImg url={list} width="59px" height="59px"></IconImg>
+                <TitleBold21 textcolor={({ theme }) => theme.text}>
+                  Withdraw funds from pool
+                </TitleBold21>
+              </VStack>
+              <InputStyled
+                type="number"
+                placeholder="0.00"
+                propertyKey={"withdraw-fund"}
+                textalign="center"
+                padding="0"
+                fontsize="30px"
+                input={withdrawFundPrice}
+                height="51px"
+                min={"0.0001"}
+                textplace={"rgba(0,0,0,0.6)"}
+                onChange={onChangeWithdrawFunds}
+                background={appStyle.colors.darkgrey10}
+              ></InputStyled>
+              {priceInvalid ? (
+                <HStack
+                  background={appStyle.colors.softRed}
+                  padding="6px 15px"
+                  border="6px"
+                >
+                  <CaptionRegular textcolor={appStyle.colors.darkRed}>
+                    The input in the price field is not a number. Please use
+                    numeric characters with a maximum of one decimal point only.
+                  </CaptionRegular>
+                </HStack>
+              ) : null}
+              <HStack>
+                <ButtonApp
+                  text="Cancel"
+                  textcolor={({ theme }) => theme.text}
+                  background={appStyle.colors.darkgrey10}
+                  width="100%"
+                  onClick={cancelWithdrawFund}
+                  cursor={"pointer"}
+                  btnStatus={0}
+                ></ButtonApp>
+                <ButtonApp
+                  text="Confirm"
+                  width="100%"
+                  textcolor={appStyle.colors.white}
+                  onClick={withdrawFunds}
                   cursor={"pointer"}
                   btnStatus={0}
                 ></ButtonApp>

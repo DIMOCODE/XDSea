@@ -261,10 +261,14 @@ function SearchPage(props) {
           </TitleBold27>
 
           {/* TabBar */}
-          <TabBar
-            onClick={tabDidChange}
-            initialTab={isSelected ? true : false}
-          ></TabBar>
+          <HStack>
+            <TabBar
+              width="360px"
+              onClick={tabDidChange}
+              initialTab={isSelected ? true : false}
+            ></TabBar>
+          </HStack>
+          
         </VStack>
       </HStack>
 
@@ -329,6 +333,8 @@ function SearchPage(props) {
                             props.redirect(`user/${item.creator.nickName}`)
                           }
                           xdc={props.xdc}
+                          isStake={isStake}
+                          stakeEnabled={item.isStakeable}
                         ></Collection>
                       </VStack>
                     </LayoutGroup>
@@ -386,6 +392,7 @@ function SearchPage(props) {
                       {nftData.map((item, i) => (
                         <VStack minwidth="240px" height="390px" key={i}>
                           <NftContainer
+                            hasStaking={item.isStakeable}
                             isVerified={item.owner.isVerified}
                             iconStatus={item.saleType.toLowerCase()}
                             hasOffers={item.hasOpenOffer}

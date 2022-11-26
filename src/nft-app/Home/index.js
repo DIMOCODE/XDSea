@@ -235,7 +235,7 @@ const Home = (props) => {
               size.width > 768 ? "15px" : size.width > 428 ? "8px" : "2px",
           }}
         >
-          {!loading
+          {loading
             ? loadingFeatured.map((item, i) => (
                 <VStack
                   key={i}
@@ -597,7 +597,7 @@ const Home = (props) => {
             }
           >
             <VStack maxwidth="600px">
-              {!loading
+              {loading
                 ? loadingCollections.map((item, i) => (
                     <VStack key={i} width="100%" minheight="136px">
                       <LoadingNftContainer scale="0.72"></LoadingNftContainer>
@@ -678,7 +678,7 @@ const Home = (props) => {
             height="auto"
             spacing={size.width > 428 ? "15px" : "2px"}
           >
-            {!loading
+            {loading
               ? loadingTrending.map((item, i) => (
                   <VStack
                     key={i}

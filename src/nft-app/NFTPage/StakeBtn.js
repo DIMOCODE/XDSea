@@ -4,7 +4,7 @@ import { BodyMedium, CaptionBoldShort } from "../../styles/TextStyles";
 import star from "../../images/stakeStar.png";
 
 function StakeBtn(props) {
-  const { onClick } = props;
+  const { onClick, claimButton } = props;
 
   return (
     <HStack
@@ -19,7 +19,7 @@ function StakeBtn(props) {
       onClick={onClick}
     >
       <BodyMedium cursor="pointer" textcolor="white">
-        Stake
+        {claimButton ? "Claim" : "Stake"}
       </BodyMedium>
       <IconImg cursor="pointer" url={star} width="18px" height="18px"></IconImg>
     </HStack>

@@ -545,8 +545,6 @@ const Discover = (props) => {
           isStakingEnabled={true}
         ></DynaMenu>
       </BottomStick>
-      {/* 
-      <StakingModal oneToken={true}></StakingModal> */}
     </DiscoverSection>
   );
 };

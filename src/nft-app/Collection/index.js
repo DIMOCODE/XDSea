@@ -64,6 +64,9 @@ import { AddRemoveModal } from "../Staking/AddRemoveModal";
 import { BackedValueModal } from "../Staking/BackedValueModal";
 import { getStakingPoolsByCollection } from "../../API/stake";
 import { getNFTs } from "../../API/NFT";
+import { TxModal } from "../../styles/TxModal";
+import { WithdrawFunds } from "../../common";
+import { stakingaddress } from "../../config";
 
 const CollectionPage = (props) => {
   const size = useWindowSize();
@@ -104,6 +107,11 @@ const CollectionPage = (props) => {
   const [backedValueModal, setBackedValueModal] = useState(false);
   const [stakingNFTs, setStakingNFTs] = useState([]);
   const [stakingNFTsNumber, setStakingNFTsNumber] = useState(0);
+  const [withdrawing, setWithdrawing] = useState(false);
+  const [depositing, setDepositing] = useState(false);
+  const [withdrawFundPrice, setWithdrawFundPrice] = useState(0);
+  const [depositFundPrice, setDepositFundPrice] = useState(0);
+  const [priceIsInvalid, setPriceIsInvalid] = useState(false);
 
   const webLink = `https://www.xdsea.com/collection/${collectionNickName}`;
 
@@ -263,6 +271,16 @@ const CollectionPage = (props) => {
     }
   };
 
+  const withdrawFunds = async () => {
+    try{
+      const success = await WithdrawFunds(stakingaddress, props?.wallet?.address, withdrawFundPrice, "0x0000000000000000000000000000000000000000");
+    }
+    catch (err) {
+      console.log(err);
+    }
+    setWithdrawing(false);
+  };
+
   useEffect(() => {
     if (isStake) getStakesData();
   }, [isStake]);
@@ -302,6 +320,21 @@ const CollectionPage = (props) => {
           stakingParams={stakingParams}
           wallet={props?.wallet}
         ></BackedValueModal>
+      )}
+      {withdrawing && (
+        <TxModal
+          isWithdrawFund={true}
+          cancelWithdrawFund={() => {
+            setWithdrawing(false);
+          }}
+          withdrawFunds={() => withdrawFunds()}
+          onChangeWithdrawFunds={(event) => {
+            setPriceIsInvalid(false);
+            setWithdrawFundPrice(event.target.value);
+          }}
+          priceInvalid={priceIsInvalid}
+          withdrawFundPrice={withdrawFundPrice}
+        ></TxModal>
       )}
       {/* Banner */}
       <BannerAbsolute>
@@ -685,6 +718,7 @@ const CollectionPage = (props) => {
               isCreator={collection?.addressCreator?.toLowerCase() === isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address}
               nftsCount={stakingNFTsNumber}
               setNftsCount={setStakingNFTsNumber}
+              setWithdrawModal={setWithdrawing}
             ></StakeSection>
           ) : (
         <InfiniteScroll
@@ -723,6 +757,7 @@ const CollectionPage = (props) => {
                       animate={{ opacity: 1 }}
                     >
                       <NftContainer
+                        hasStaking={item.isStakeable}
                         elementKey={"collection_" + item._id}
                         isVerified={item.owner.isVerified}
                         iconStatus={item.saleType.toLowerCase()}
