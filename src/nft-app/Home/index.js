@@ -41,6 +41,7 @@ import goldshape2 from "../../images/goldshape2.png";
 import goldshape3 from "../../images/goldshape3.png";
 import goldshape4 from "../../images/goldshape4.png";
 import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
+import monkeyBanner from "../../images/monkeyBanner.png";
 
 import Swipper from "../Home/Swiper.css";
 
@@ -226,165 +227,211 @@ const Home = (props) => {
           text={"Has now become simpler and faster"}
         ></SubtitleBubble>
 
-        <Masonry
-          columnsCount={size.width > 428 ? 3 : 2}
-          gutter={size.width > 768 ? "15px" : size.width > 428 ? "8px" : "2px"}
+        <Swiper
+          slidesPerView={"1"}
+          spaceBetween={9}
+          centeredSlides={false}
+          loop={true}
+          autoHeight={true}
           style={{
-            width: size.width > 1200 ? "1200px" : size.width,
-            padding:
-              size.width > 768 ? "15px" : size.width > 428 ? "8px" : "2px",
+            "--swiper-navigation-color": "#fff",
+            "--swiper-pagination-color": "#fff",
+            // height: size.width > 440 ? "780px" : "500px",
           }}
+          navigation={true}
+          modules={[Grid, FreeMode, Navigation, Thumbs]}
+          onSwiper={(swiper) => {}}
+          onSlideChange={() => {}}
+          // className="mySwiper2"
         >
-          {!loading
-            ? loadingFeatured.map((item, i) => (
-                <VStack
-                  key={i}
-                  minwidth={size.width > 428 ? "290px" : "100px"}
-                  minheight={size.width > 428 ? "380px" : "150px"}
-                >
-                  <LoadingNftContainer
-                    scale={size.width > 428 ? "1" : "0.72"}
-                  ></LoadingNftContainer>
-                </VStack>
-              ))
-            : featuredNFTs.length !== 0
-            ? featuredNFTs?.map((item, i) => (
-                <ZStack
-                  minheight={size.width > 428 ? item.height + "px" : "150px"}
-                  cursor="pointer"
-                  onClick={() =>
-                    props.redirect(
-                      `nft/${
-                        isXdc(item.collectionId.address)
-                          ? item.collectionId.address.toLowerCase()
-                          : toXdc(item.collectionId.address.toLowerCase())
-                      }/${item.tokenId}`
-                    )
-                  }
-                  onHoverStart={() => {
-                    setFeaturedNFTPlaying((prevState) => {
-                      prevState[i] = true;
-                      return [...prevState];
-                    });
-                  }}
-                  onHoverEnd={() => {
-                    setFeaturedNFTPlaying((prevState) => {
-                      prevState[i] = false;
-                      return [...prevState];
-                    });
-                  }}
-                >
-                  <ZItem cursor="pointer">
+          <SwiperSlide
+            key="monkey"
+            style={{ cursor: "pointer", background: "transparent" }}
+          >
+            <IconImg
+              url={monkeyBanner}
+              width="100%"
+              height={size.width > 440 ? "460px" : "150px"}
+              backsize="cover"
+              cursor="pointer"
+              onClick={() => props.redirect("discover/collections")}
+            ></IconImg>
+          </SwiperSlide>
+
+          <SwiperSlide
+            key="featured"
+            style={{ cursor: "pointer", background: "transparent" }}
+          >
+            <Masonry
+              columnsCount={size.width > 428 ? 3 : 2}
+              gutter={
+                size.width > 768 ? "15px" : size.width > 428 ? "8px" : "2px"
+              }
+              style={{
+                width: size.width > 1200 ? "1200px" : size.width,
+                padding:
+                  size.width > 768 ? "15px" : size.width > 428 ? "8px" : "2px",
+              }}
+            >
+              {!loading
+                ? loadingFeatured.map((item, i) => (
                     <VStack
-                      key={"featured_" + item._id}
-                      cursor="pointer"
-                      border={size.width > 428 ? "6px" : "0px"}
-                      overflowx="hidden"
-                      overflowy="hidden"
+                      key={i}
+                      minwidth={size.width > 428 ? "290px" : "100px"}
+                      minheight={size.width > 428 ? "380px" : "150px"}
                     >
-                      {isImage(item.fileType) ? (
-                        <IconImg
-                          url={item.urlFile.v0}
-                          backsize="cover"
-                          width="100%"
-                          height="100%"
-                          border={size.width > 428 ? "6px" : "0px"}
-                          cursor="pointer"
-                        ></IconImg>
-                      ) : (
+                      <LoadingNftContainer
+                        scale={size.width > 428 ? "1" : "0.72"}
+                      ></LoadingNftContainer>
+                    </VStack>
+                  ))
+                : featuredNFTs.length !== 0
+                ? featuredNFTs?.map((item, i) => (
+                    <ZStack
+                      minheight={
+                        size.width > 428 ? item.height + "px" : "150px"
+                      }
+                      cursor="pointer"
+                      onClick={() =>
+                        props.redirect(
+                          `nft/${
+                            isXdc(item.collectionId.address)
+                              ? item.collectionId.address.toLowerCase()
+                              : toXdc(item.collectionId.address.toLowerCase())
+                          }/${item.tokenId}`
+                        )
+                      }
+                      onHoverStart={() => {
+                        setFeaturedNFTPlaying((prevState) => {
+                          prevState[i] = true;
+                          return [...prevState];
+                        });
+                      }}
+                      onHoverEnd={() => {
+                        setFeaturedNFTPlaying((prevState) => {
+                          prevState[i] = false;
+                          return [...prevState];
+                        });
+                      }}
+                    >
+                      <ZItem cursor="pointer">
                         <VStack
-                          background="black"
+                          key={"featured_" + item._id}
+                          cursor="pointer"
                           border={size.width > 428 ? "6px" : "0px"}
                           overflowx="hidden"
-                          animate={{ scale: 2 }}
-                          cursor="pointer"
+                          overflowy="hidden"
                         >
-                          <ReactPlayer
-                            url={item.urlFile.v0}
-                            playing={featuredNFTPlaying[i]}
-                            volume={0}
-                            muted={true}
-                            loop={true}
-                            width="100%"
-                            height="100%"
-                          ></ReactPlayer>
-                        </VStack>
-                      )}
-                    </VStack>
-                  </ZItem>
-                  <ZItem
-                    cursor="pointer"
-                    {...longPress(() => {
-                      const newFeaturedNFTPlaying = new Array(
-                        featuredNFTPlaying.length
-                      ).fill(false);
-                      setFeaturedNFTPlaying((prevState) => {
-                        newFeaturedNFTPlaying[i] = !newFeaturedNFTPlaying[i];
-                        return [...newFeaturedNFTPlaying];
-                      });
-                    })}
-                  >
-                    <VStack
-                      background={
-                        size.width > 428
-                          ? "linear-gradient(190.5deg, rgba(0, 0, 0, 0) 75.64%, rgba(0, 0, 0, 0.90) 90.61%)"
-                          : null
-                      }
-                      border={size.width > 428 ? "6px" : "0px"}
-                      alignment="flex-start"
-                      cursor="pointer"
-                    >
-                      <Spacer></Spacer>
-                      <VStack
-                        spacing="0px"
-                        alignment="flex-start"
-                        padding={
-                          size.width > 768 ? "0 0 0px 15px" : "0 0 30px 15px"
-                        }
-                        maxheight="60px"
-                        width="100%"
-                        cursor="pointer"
-                      >
-                        {size.width > 428 ? (
-                          <HStack spacing="6px" cursor="pointer">
+                          {isImage(item.fileType) ? (
                             <IconImg
-                              url={item.creator.urlProfile}
-                              width="18px"
-                              height="18px"
+                              url={item.urlFile.v0}
                               backsize="cover"
-                              border="12px"
+                              width="100%"
+                              height="100%"
+                              border={size.width > 428 ? "6px" : "0px"}
                               cursor="pointer"
                             ></IconImg>
-                            <BodyMedium
-                              textcolor="rgba(255,255,255,0.6)"
+                          ) : (
+                            <VStack
+                              background="black"
+                              border={size.width > 428 ? "6px" : "0px"}
+                              overflowx="hidden"
+                              animate={{ scale: 2 }}
                               cursor="pointer"
                             >
-                              {item.creator.userName}
-                            </BodyMedium>
-                            <IconImg
-                              url={verifiedBlue}
-                              width="15px"
-                              height="15px"
-                              border="12px"
-                              cursor="pointer"
-                            ></IconImg>
-                            <Spacer></Spacer>
-                          </HStack>
-                        ) : null}
+                              <ReactPlayer
+                                url={item.urlFile.v0}
+                                playing={featuredNFTPlaying[i]}
+                                volume={0}
+                                muted={true}
+                                loop={true}
+                                width="100%"
+                                height="100%"
+                              ></ReactPlayer>
+                            </VStack>
+                          )}
+                        </VStack>
+                      </ZItem>
+                      <ZItem
+                        cursor="pointer"
+                        {...longPress(() => {
+                          const newFeaturedNFTPlaying = new Array(
+                            featuredNFTPlaying.length
+                          ).fill(false);
+                          setFeaturedNFTPlaying((prevState) => {
+                            newFeaturedNFTPlaying[i] =
+                              !newFeaturedNFTPlaying[i];
+                            return [...newFeaturedNFTPlaying];
+                          });
+                        })}
+                      >
+                        <VStack
+                          background={
+                            size.width > 428
+                              ? "linear-gradient(190.5deg, rgba(0, 0, 0, 0) 75.64%, rgba(0, 0, 0, 0.90) 90.61%)"
+                              : null
+                          }
+                          border={size.width > 428 ? "6px" : "0px"}
+                          alignment="flex-start"
+                          cursor="pointer"
+                        >
+                          <Spacer></Spacer>
+                          <VStack
+                            spacing="0px"
+                            alignment="flex-start"
+                            padding={
+                              size.width > 768
+                                ? "0 0 0px 15px"
+                                : "0 0 30px 15px"
+                            }
+                            maxheight="60px"
+                            width="100%"
+                            cursor="pointer"
+                          >
+                            {size.width > 428 ? (
+                              <HStack spacing="6px" cursor="pointer">
+                                <IconImg
+                                  url={item.creator.urlProfile}
+                                  width="18px"
+                                  height="18px"
+                                  backsize="cover"
+                                  border="12px"
+                                  cursor="pointer"
+                                ></IconImg>
+                                <BodyMedium
+                                  textcolor="rgba(255,255,255,0.6)"
+                                  cursor="pointer"
+                                >
+                                  {item.creator.userName}
+                                </BodyMedium>
+                                <IconImg
+                                  url={verifiedBlue}
+                                  width="15px"
+                                  height="15px"
+                                  border="12px"
+                                  cursor="pointer"
+                                ></IconImg>
+                                <Spacer></Spacer>
+                              </HStack>
+                            ) : null}
 
-                        {size.width > 428 ? (
-                          <TitleRegular18 textcolor="white" cursor="pointer">
-                            {item.collectionId.name}
-                          </TitleRegular18>
-                        ) : null}
-                      </VStack>
-                    </VStack>
-                  </ZItem>
-                </ZStack>
-              ))
-            : null}
-        </Masonry>
-        {console.log(featuredNFTs)}
+                            {size.width > 428 ? (
+                              <TitleRegular18
+                                textcolor="white"
+                                cursor="pointer"
+                              >
+                                {item.collectionId.name}
+                              </TitleRegular18>
+                            ) : null}
+                          </VStack>
+                        </VStack>
+                      </ZItem>
+                    </ZStack>
+                  ))
+                : null}
+            </Masonry>
+          </SwiperSlide>
+        </Swiper>
       </VStack>
 
       <ContentCentered>
