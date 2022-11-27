@@ -15,7 +15,7 @@ import { PendingClaimed } from "./PendingClaimed";
 
 function StakeRow(props) {
   const size = useWindowSize();
-  const { image, title, price, backedValue, rewardRate, startDate, rewardFrequency, oneToken, usdPrice, stakeData } = props;
+  const { image, title, price, backedValue, rewardRate, startDate, rewardFrequency, oneToken, usdPrice, stakeData, redirect, isCreator, isOwner, isStake } = props;
 
   return (
     <HStack responsive={true} spacing="21px">
@@ -26,6 +26,7 @@ function StakeRow(props) {
         title={title}
         price={price}
         usdPrice={usdPrice}
+        redirect={redirect}
       ></NftMiniDetails>
 
       {/* Earning Rate */}
@@ -35,7 +36,8 @@ function StakeRow(props) {
       <PendingClaimed onlyOneToken={oneToken} stakeData={stakeData} rewardRate={rewardRate} backedValue={backedValue}></PendingClaimed>
 
       {/* Actions */}
-      <ButtonActions width={size.width > 428 ? "42%" : "100%"}></ButtonActions>
+      {!isCreator && 
+      <ButtonActions isOwner={isOwner} isStake={isStake} width={size.width > 428 ? "42%" : "100%"} redirect={redirect}></ButtonActions>}
     </HStack>
   );
 }

@@ -48,6 +48,7 @@ function StakeSection(props) {
     isCreator,
     nftsCount,
     setWithdrawModal,
+    setDepositModal,
   } = props;
 
   const parseLockPeriod = (hours) => {
@@ -106,6 +107,7 @@ function StakeSection(props) {
             stakingPool={stakingPool}
             setStakingPool={setStakingPool}
             setWithdrawModal={setWithdrawModal}
+            setDepositModal={setDepositModal}
           ></TokenSelector>
         </HStack>
 
@@ -139,6 +141,10 @@ function StakeSection(props) {
               rewardFrequency={stakingPool?.rewardFrecuency}
               usdPrice={usdPrice}
               stakeData={getStake(nft._id)}
+              redirect={() => props?.redirect(`nft/${nft?.nftContract}/${nft?.tokenId}`)}
+              isOwner={!nft?.addressCreator === wallet?.address && nft?.addressOwner === wallet?.address}
+              isStake={nft?.isStake}
+              isCreator={nft?.addressCreator === wallet?.address}
             ></StakeRow>
 
             {i !== nfts.length - 1 && <Separator></Separator>}

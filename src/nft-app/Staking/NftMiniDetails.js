@@ -4,10 +4,10 @@ import { BodyBold, CaptionBoldShort } from "../../styles/TextStyles";
 import xdc from "../../images/miniXdcLogo.png";
 
 function NftMiniDetails(props) {
-  const { image, title, price, width, usdPrice } = props;
+  const { image, title, price, width, usdPrice, redirect } = props;
 
   return (
-    <HStack width={width || "100%"} self="none">
+    <HStack width={width || "100%"} self="none" onClick={redirect}>
       <IconImg
         url={image}
         width="60px"

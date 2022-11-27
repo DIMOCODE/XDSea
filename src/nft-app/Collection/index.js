@@ -62,7 +62,7 @@ import { BackedValueModal } from "../Staking/BackedValueModal";
 import { getStakingPoolsByCollection, getStakes } from "../../API/stake";
 import { getNFTs } from "../../API/NFT";
 import { TxModal } from "../../styles/TxModal";
-import { WithdrawFunds } from "../../common";
+import { DepositFunds, WithdrawFunds } from "../../common";
 import { stakingaddress } from "../../config";
 
 const CollectionPage = (props) => {
@@ -290,6 +290,20 @@ const CollectionPage = (props) => {
     setWithdrawing(false);
   };
 
+  const depositFunds = async () => {
+    try {
+      const success = await DepositFunds(
+        stakingaddress,
+        props?.wallet?.address,
+        depositFundPrice,
+        "0x0000000000000000000000000000000000000000"
+      );
+    } catch (err) {
+      console.log(err);
+    }
+    setDepositing(false);
+  };
+
   useEffect(() => {
     if (isStake) getStakesData();
   }, [isStake]);
@@ -343,6 +357,21 @@ const CollectionPage = (props) => {
           }}
           priceInvalid={priceIsInvalid}
           withdrawFundPrice={withdrawFundPrice}
+        ></TxModal>
+      )}
+      {depositing && (
+        <TxModal
+          isDepositFund={true}
+          cancelDepositFund={() => {
+            setDepositing(false);
+          }}
+          depositFunds={() => depositFunds()}
+          onChangeDepositFunds={(event) => {
+            setPriceIsInvalid(false);
+            setDepositFundPrice(event.target.value);
+          }}
+          priceInvalid={priceIsInvalid}
+          depositFundPrice={depositFundPrice}
         ></TxModal>
       )}
       {/* Banner */}
@@ -733,6 +762,8 @@ const CollectionPage = (props) => {
             nftsCount={stakingNFTsNumber}
             setNftsCount={setStakingNFTsNumber}
             setWithdrawModal={setWithdrawing}
+            setDepositModal={setDepositing}
+            redirect={props?.redirect}
           ></StakeSection>
         ) : (
           <InfiniteScroll

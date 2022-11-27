@@ -227,7 +227,7 @@ const NFTDetails = (props) => {
     var success = await StakeNFT(stakingaddress, id, wallet?.address);
     if (success) {
       var stakeData = await(await createStake(nft?._id, stakingPool?._id)).data;
-      setStake(stakeData?.stake);
+      // setStake(stakeData?.stake);
     } else {
       console.log("Stake failed");
     }

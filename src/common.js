@@ -721,6 +721,8 @@ export const ClaimRewards = async(stakingContract, tokenId, rewardContract, wall
       .claimRewards(tokenId, rewardContract)
       .encodeABI();
 
+    console.log(wallet)
+
     const tx2 = {
       from: wallet,
       to: stakingContract,
@@ -750,13 +752,18 @@ export const DepositFunds = async(stakingContract, wallet, amount, erc20address)
       wallet
     );
 
+    var price = xdc3.utils.toWei(amount);
+
+    console.log(price, erc20address)
+
     let data = contract2.methods
-      .depositFunds(amount, erc20address)
+      .depositFunds(price, erc20address)
       .encodeABI();
 
     const tx2 = {
       from: wallet,
       to: stakingContract,
+      value: price,
       data,
     };
 

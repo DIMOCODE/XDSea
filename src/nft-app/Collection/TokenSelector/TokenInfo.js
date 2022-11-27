@@ -40,6 +40,7 @@ function TokenInfo(props) {
     stakingPool,
     setStakingPool,
     setWithdrawModal,
+    setDepositModal,
   } = props;
 
   const [isEditing, setIsEditing] = useState(false);
@@ -334,6 +335,7 @@ function TokenInfo(props) {
             textcolor={({ theme }) => theme.backElement}
             title="Deposit"
             height="52px"
+            onClick={() => setDepositModal(true)}
           ></ButtonM>
         </HStack>
       )}
