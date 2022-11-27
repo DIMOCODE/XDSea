@@ -28,7 +28,19 @@ import { fromXdc, toXdc, isXdc } from "../../../common/common";
 import { updateStakingPool } from "../../../API/stake";
 
 function TokenInfo(props) {
-  const { logo, rewardRate, rewardFrequency, unparsedRewardFrequency, rewardStartTime, isCreator, wallet, tokenContract, stakingPool, setStakingPool, setWithdrawModal } = props;
+  const {
+    logo,
+    rewardRate,
+    rewardFrequency,
+    unparsedRewardFrequency,
+    rewardStartTime,
+    isCreator,
+    wallet,
+    tokenContract,
+    stakingPool,
+    setStakingPool,
+    setWithdrawModal,
+  } = props;
 
   const [isEditing, setIsEditing] = useState(false);
   const [isDeposit, setIsDeposit] = useState(false);
@@ -42,27 +54,47 @@ function TokenInfo(props) {
   const options = ["hrs", "d", "mo", "yr"];
   const defaultOption = options[0];
 
-  const updateRewardRate = async() => {
-    try{
-      console.log(stakingaddress, wallet?.address, newRewardRate, unparsedRewardFrequency, rewardStartTime)
-      const success = await UpdateRewards(stakingaddress, isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address, "0x0000000000000000000000000000000000000000", newRewardRate * 10000, unparsedRewardFrequency * 3600, 0, 1658102400);
-      if(success) {
-        const updatedPool = await(await updateStakingPool({stakingPoolId: stakingPool?._id, rewardRates: [{
-          amount: newRewardRate,
-          rewardFrecuency: unparsedRewardFrequency,
-          rewardTypeId: "638107a4ed9a6f026c81d6a9",
-          type: "coin"
-        }]})).data.stakingPool;
+  const updateRewardRate = async () => {
+    try {
+      console.log(
+        stakingaddress,
+        wallet?.address,
+        newRewardRate,
+        unparsedRewardFrequency,
+        rewardStartTime
+      );
+      const success = await UpdateRewards(
+        stakingaddress,
+        isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address,
+        "0x0000000000000000000000000000000000000000",
+        newRewardRate * 10000,
+        unparsedRewardFrequency * 3600,
+        0,
+        1658102400
+      );
+      if (success) {
+        const updatedPool = await (
+          await updateStakingPool({
+            stakingPoolId: stakingPool?._id,
+            rewardRates: [
+              {
+                amount: newRewardRate,
+                rewardFrecuency: unparsedRewardFrequency,
+                rewardTypeId: "638107a4ed9a6f026c81d6a9",
+                type: "coin",
+              },
+            ],
+          })
+        ).data.stakingPool;
         setStakingPool(updatedPool);
       }
-    }
-    catch (err) {
+    } catch (err) {
       console.log(err);
     }
     setIsEditingRewardRate(false);
-  }
+  };
 
-  const updateRewardFrequency = async() => {
+  const updateRewardFrequency = async () => {
     var updatedRewardFrequency = 0;
     if (rewardFrequencyPeriod === "hrs") {
       updatedRewardFrequency = newRewardFrequency;
@@ -73,26 +105,44 @@ function TokenInfo(props) {
     } else if (rewardFrequencyPeriod === "yr") {
       updatedRewardFrequency = newRewardFrequency * 8760;
     }
-    if(document.getElementsByClassName("edit-reward-frequency").value === "0") {
+    if (
+      document.getElementsByClassName("edit-reward-frequency").value === "0"
+    ) {
       updatedRewardFrequency = 0;
     }
-    try{
-      const success = await UpdateRewards(stakingaddress, isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address, "0x0000000000000000000000000000000000000000", rewardRate * 10000, newRewardFrequency === 0 ? rewardFrequency * 3600 : updatedRewardFrequency * 3600, 0, 1658102400);
-      if(success) {
-        const updatedPool = await(await updateStakingPool({stakingPoolId: stakingPool?._id, rewardRates: [{
-          amount: rewardRate,
-          rewardFrecuency: updatedRewardFrequency,
-          rewardTypeId: "638107a4ed9a6f026c81d6a9",
-          type: "coin"
-        }]})).data.stakingPool;
+    try {
+      const success = await UpdateRewards(
+        stakingaddress,
+        isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address,
+        "0x0000000000000000000000000000000000000000",
+        rewardRate * 10000,
+        newRewardFrequency === 0
+          ? rewardFrequency * 3600
+          : updatedRewardFrequency * 3600,
+        0,
+        1658102400
+      );
+      if (success) {
+        const updatedPool = await (
+          await updateStakingPool({
+            stakingPoolId: stakingPool?._id,
+            rewardRates: [
+              {
+                amount: rewardRate,
+                rewardFrecuency: updatedRewardFrequency,
+                rewardTypeId: "638107a4ed9a6f026c81d6a9",
+                type: "coin",
+              },
+            ],
+          })
+        ).data.stakingPool;
         setStakingPool(updatedPool);
       }
-    }
-    catch (err) {
+    } catch (err) {
       console.log(err);
     }
     setIsEditingRewardFrequency(false);
-  }
+  };
 
   return (
     <VStack width="100%">
