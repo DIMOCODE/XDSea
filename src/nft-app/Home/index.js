@@ -66,6 +66,7 @@ import { BigButton } from "../../styles/BigButton";
 import ReactPlayer from "react-player";
 import verifiedBlue from "../../images/verifiedBlue.png";
 import { useLongPress } from "react-use";
+import { Announcements } from "./Announcement/Announcements";
 
 const Home = (props) => {
   /** State Variables */
@@ -387,6 +388,8 @@ const Home = (props) => {
         {console.log(featuredNFTs)}
       </VStack>
 
+      <Announcements></Announcements>
+
       <ContentCentered>
         {/* TOP COLLECTION SECTION */}
         <VStack alignment="center">
@@ -589,10 +592,10 @@ const Home = (props) => {
                 ? {}
                 : size.width > 320
                 ? {
-                    "margin-top": "-60px",
+                    marginTop: "-60px",
                   }
                 : {
-                    "margin-top": "-80px",
+                    marginTop: "-80px",
                   }
             }
           >
