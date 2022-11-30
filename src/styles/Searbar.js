@@ -149,7 +149,7 @@ function Searchbar({
         height="42px"
       ></InputStyled>
       {showResults ? (
-        size.width > 428 ? (
+        size.width > 532 ? (
           <SearchResult top={top} left={left} ref={ref}>
             <VStack
               background={({ theme }) => theme.backElement}
@@ -183,7 +183,7 @@ function Searchbar({
 
               {/* Box Results */}
 
-              {size.width > 768 ? (
+              {size.width > 1024 ? (
                 <HStack
                   responsive={size.width > 428 ? false : true}
                   alignment="flex-start"

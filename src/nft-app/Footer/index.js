@@ -27,7 +27,7 @@ import { HTTP_METHODS } from "../../constant";
 
 function Footer(props) {
   const size = useWindowSize();
-  const [instagramFollowers, setInstagramFollowers] = useState(4237);
+  const [instagramFollowers, setInstagramFollowers] = useState(14000);
   const [twitterFollowers, setTwitterFollowers] = useState(0);
 
   const getTwitterData = async () => {

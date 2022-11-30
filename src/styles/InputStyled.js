@@ -34,8 +34,12 @@ function InputStyled(props) {
     textcolor,
     iconRight,
     iconLeft,
+    iconTop,
     disabled,
     textplace,
+    border,
+    width,
+    weight,
   } = props;
 
   const [hasURL] = useState(false);
@@ -62,6 +66,7 @@ function InputStyled(props) {
         textalign={textalign}
         padding={padding}
         fontsize={fontsize}
+        border={border}
         texttransform={texttransform}
         height={height}
         iconWidth={iconWidth}
@@ -71,14 +76,20 @@ function InputStyled(props) {
         textcolor={textcolor}
         disabled={disabled}
         textplace={textplace}
+        width={width}
+        weight={weight}
       />
-      <InputIcon iconRight={iconRight || "15px"} iconLeft={iconLeft}>
+      <InputIcon
+        iconRight={iconRight || "15px"}
+        iconTop={iconTop || null}
+        iconLeft={iconLeft}
+      >
         <IconImg
           url={icon || empty}
           width={iconWidth || "18px"}
           height={iconHeight || "18px"}
           cursor={iconClickable ? "pointer" : "default"}
-          onClick={handleClick}
+          onClick={onClickIcon ? handleClick : () => {}}
         ></IconImg>
       </InputIcon>
       {hasURL ? (
@@ -99,6 +110,7 @@ const InputIcon = styled.div`
   width: 18px;
   right: ${(props) => props.iconRight};
   left: ${(props) => props.iconLeft};
+  top: ${(props) => props.iconTop};
 `;
 
 const InputURL = styled.div`
@@ -114,13 +126,16 @@ const Input = styled.input.attrs((props) => ({
   fontsize: props.fontsize || "16px",
   texttransform: props.texttransform || "none",
   height: props.height || "39px",
+  width: props.width || "100%",
+  weight: props.weight || "normal",
   textcolor: props.textcolor || props.theme.text,
   textplace: props.textplace || "rgba(255,255,255, 0.8)",
+  border: props.border || "6px",
 }))`
   background: ${(props) => props.background};
-  width: 100%;
+  width: ${(props) => props.width};
   height: ${(props) => props.height};
-  border-radius: 6px;
+  border-radius: ${(props) => props.border};
   padding: ${(props) => props.padding};
   border-style: solid;
   border-color: rgba(255, 255, 255, 0);
@@ -129,7 +144,7 @@ const Input = styled.input.attrs((props) => ({
   -moz-box-sizing: border-box; 
   box-sizing: border-box;
   font-style: normal;
-  font-weight: normal;
+  font-weight: ${(props) => props.weight};
   font-size: ${(props) => props.fontsize};
   letter-spacing: -0.01em;
   text-transform: ${(props) => props.texttransform};

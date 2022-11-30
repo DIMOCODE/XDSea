@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { Collection } from "../../styles/Collection";
+import { Collection } from "../../styles/Collections/Collection";
 import DiscoverBar from "../../images/DiscoverBar.png";
 import {
   LayoutGroup,
@@ -44,6 +44,11 @@ import "./customstyles.css";
 import { positions } from "@mui/system";
 import zIndex from "@mui/material/styles/zIndex";
 import { useLocation, useParams } from "react-router-dom";
+import { TabBar } from "./TabBar";
+import { DynaMenu } from "../../styles/DynaMenu/DynaMenu";
+import { StakeSection } from "../Staking/StakeSection";
+import mountain from "../../images/mountain.jpg";
+import { StakingModal } from "../Staking/StakingModal";
 
 const Discover = (props) => {
   const { mode } = useParams();
@@ -54,9 +59,16 @@ const Discover = (props) => {
   const [collections, setCollections] = useState([]);
   const [nfts, setNfts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isStake, setIsStake] = useState(false);
   const [isSelected, setIsSelected] = useState(
     mode === "collections" ? true : false
   );
+
+  const tabDidChange = (status) => {
+    setIsSelected(status);
+  };
+  // This function bridge the active prop from child component active -> status
+
   const [loadingCollections] = useState([
     { id: 1, name: "Collection 1" },
     { id: 2, name: "Collection 2" },
@@ -100,6 +112,7 @@ const Discover = (props) => {
   });
   const [totalCollections, setTotalCollections] = useState(0);
   const [totalNFTs, setTotalNFTs] = useState(0);
+  const [minPrice, setMinPrice] = useState(0);
   const [maxPrice, setMaxPrice] = useState(0);
   const [nftPlaying, setNftPlaying] = useState([]);
 
@@ -231,27 +244,26 @@ const Discover = (props) => {
   };
 
   const handleNFTLongPress = (i, isNew) => {
-    if(!isNew) {
+    if (!isNew) {
       setNftPlaying((prevState) => {
         prevState[i] = !prevState[i];
         return [...prevState];
       });
-    }
-    else{
+    } else {
       const newNftPlaying = new Array(nftPlaying.length).fill(false);
       newNftPlaying[i] = !newNftPlaying[i];
       setNftPlaying([...newNftPlaying]);
     }
-  }
+  };
 
   const getXdcDomainAddress = async (address) => {
     const xdcDomainName = isXdc(address)
-      ? (await getXdcDomain(address))
-      : (await getXdcDomain(toXdc(address)))
-    return xdcDomainName === "" 
-      ? isXdc(address) 
-        ? address.toLowerCase() 
-        : toXdc(address.toLowerCase()) 
+      ? await getXdcDomain(address)
+      : await getXdcDomain(toXdc(address));
+    return xdcDomainName === ""
+      ? isXdc(address)
+        ? address.toLowerCase()
+        : toXdc(address.toLowerCase())
       : xdcDomainName;
   };
 
@@ -296,130 +308,34 @@ const Discover = (props) => {
 
   return (
     <DiscoverSection id="scrollableDiv" style={{ zIndex: 10 }}>
-      {/* Discover top Section with toggle*/}
-      <HStack backgroundimage={seamless} padding="60px 0 0 0">
-        <HStack width="1200px" height="157px" padding="0px 9px">
+      {/* Discover top Section with tab bar*/}
+      <HStack
+        backgroundimage={seamless}
+        padding="60px 0 0 0"
+        style={{ zIndex: "1" }}
+      >
+        <VStack
+          width="1200px"
+          height="147px"
+          spacing="36px"
+          padding="69px 12px 0px 12px"
+        >
           <TitleBold27 textcolor={appStyle.colors.white}>Discover</TitleBold27>
-          <Spacer></Spacer>
-          {/* Toggle */}
-          <HStack
-            background="rgb(0,0,0,0.3)"
-            padding="3px"
-            border="6px"
-            height="49px"
-            self="none"
-            spacing="3px"
-            blur="10px"
-          >
-            <ZStack>
-              <ZItem>
-                {/* Selector */}
-                <AnimatePresence initial="false">
-                  <HStack
-                    height="43px"
-                    self="none"
-                    spacing="3px"
-                    justify={isSelected ? "flex-start" : "flex-end"}
-                  >
-                    <HStack
-                      width="96px"
-                      background="white"
-                      border="6px"
-                      layout
-                    ></HStack>
-                  </HStack>
-                </AnimatePresence>
-              </ZItem>
-              <ZItem>
-                <HStack height="43px" self="none" spacing="3px">
-                  <HStack
-                    width="96px"
-                    onClick={() => setIsSelected(true)}
-                    cursor="pointer"
-                  >
-                    <CaptionBoldShort
-                      textcolor={isSelected ? "black" : "white"}
-                      cursor="pointer"
-                    >
-                      Collections
-                    </CaptionBoldShort>
-                  </HStack>
 
-                  <HStack
-                    width="96px"
-                    cursor="pointer"
-                    onClick={() => {
-                      setIsSelected(false);
-                    }}
-                  >
-                    <CaptionBoldShort
-                      textcolor={isSelected ? "white" : "black"}
-                      cursor="pointer"
-                    >
-                      NFTs
-                    </CaptionBoldShort>
-                  </HStack>
-                </HStack>
-              </ZItem>
-            </ZStack>
+          {/* TabBar */}
+          <HStack>
+            <TabBar
+              width="360px"
+              onClick={tabDidChange}
+              initialTab={mode === "collections" ? true : false}
+            ></TabBar>
           </HStack>
-        </HStack>
+        </VStack>
       </HStack>
-      {/*Sticky bar for collections or for NFTs  */}
-
-      <StickySectionHeader top="69">
-        {isSelected ? (
-          <HStack
-            background="rgb(0,0,0, 0.06)"
-            padding="6px"
-            border="9px"
-            width="100%"
-            blur="30px"
-          >
-            <HStack width="1200px">
-              <FiltersButton
-                onChange={handleChangeFilter}
-                params={collectionParams}
-                isNftFilter={false}
-                switched={isSelected}
-              ></FiltersButton>
-              <Spacer></Spacer>
-              <SortButtonCollections
-                onChange={handleChangeFilter}
-                params={collectionParams}
-              ></SortButtonCollections>
-            </HStack>
-          </HStack>
-        ) : (
-          <HStack
-            background="rgb(0,0,0, 0.06)"
-            padding="6px"
-            border="9px"
-            width="100%"
-            blur="30px"
-          >
-            <HStack width="1200px">
-              <FiltersButton
-                isNftFilter={true}
-                onChange={handleChangeFilterNFT}
-                params={nftParams}
-                switched={isSelected}
-                maxPrice={maxPrice}
-              ></FiltersButton>
-              <Spacer></Spacer>
-              <SortButtonNFTS
-                onChange={handleChangeFilterNFT}
-                params={nftParams}
-              ></SortButtonNFTS>
-            </HStack>
-          </HStack>
-        )}
-      </StickySectionHeader>
 
       {/* Content of discover filtering */}
       <ContentDiscover id="scrollableDiv" style={{ zIndex: "0" }}>
         {/* Show Collection or NFTS Content */}
-
         {isSelected ? (
           <VStack padding="30px 12px" style={{ zIndex: "0" }}>
             <InfiniteScroll
@@ -442,7 +358,7 @@ const Discover = (props) => {
               <HStack spacing="12px" flexwrap="wrap" justify="flex-start">
                 {loading ? (
                   loadingCollections.map((item, i) => (
-                    <VStack key={i} minwidth="326px" height="440px">
+                    <VStack key={i} minwidth="380px" height="380px">
                       <LoadingNftContainer></LoadingNftContainer>
                     </VStack>
                   ))
@@ -450,8 +366,8 @@ const Discover = (props) => {
                   collections.map((item, i) => (
                     <LayoutGroup id="collection" key={i + item._id}>
                       <VStack
-                        width="326px"
-                        height="440px"
+                        minwidth="380px"
+                        height="380px"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                       >
@@ -480,6 +396,8 @@ const Discover = (props) => {
                           sortNFTs={collectionParams.sortBy === "nfts"}
                           sortVolume={collectionParams.sortBy === "volumeTrade"}
                           xdc={props.xdc}
+                          isStake={isStake}
+                          stakeEnabled={item.isStakeable}
                         ></Collection>
                       </VStack>
                     </LayoutGroup>
@@ -506,106 +424,126 @@ const Discover = (props) => {
             </InfiniteScroll>
           </VStack>
         ) : (
-          <VStack>
-            <VStack background="transparent" width="100%" padding="30px 0">
-              <InfiniteScroll
-                dataLength={nfts.length}
-                next={fetchMoreNFTs}
-                hasMore={nfts.length < totalNFTs}
-                loader={
+          <VStack background="transparent" width="100%" padding="30px 0">
+            <InfiniteScroll
+              dataLength={nfts.length}
+              next={fetchMoreNFTs}
+              hasMore={nfts.length < totalNFTs}
+              loader={
+                <HStack
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  height="190px"
+                >
+                  <LoopLogo></LoopLogo>
+                </HStack>
+              }
+              scrollableTarget="#scrollableDiv"
+              style={{
+                overflow: "hidden",
+                position: "relative",
+              }}
+            >
+              <VStack>
+                <HStack>
                   <HStack
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    height="190px"
+                    spacing="12px"
+                    flexwrap="wrap"
+                    justify="flex-start"
+                    padding={size.width < 1200 ? "0 12px" : "0"}
+                    width="100%"
                   >
-                    <LoopLogo></LoopLogo>
-                  </HStack>
-                }
-                scrollableTarget="#scrollableDiv"
-                style={{
-                  overflow: "hidden",
-                  position: "relative",
-                }}
-              >
-                <VStack>
-                  <HStack>
-                    <HStack
-                      spacing="12px"
-                      flexwrap="wrap"
-                      justify="flex-start"
-                      padding={size.width < 1200 ? "0 12px" : "0"}
-                      width="100%"
-                    >
-                      {loading ? (
-                        loadingNFTs.map((item, i) => (
-                          <VStack minwidth="240px" height="390px" key={i}>
-                            <LoadingNftContainer></LoadingNftContainer>
-                          </VStack>
-                        ))
-                      ) : nfts.length !== 0 ? (
-                        nfts.map((item, i) => (
-                          <VStack
-                            key={item._id}
-                            minwidth="240px"
-                            height="390px"
-                          >
-                            <NftContainer
-                              isVerified={item.owner.isVerified}
-                              iconStatus={item.saleType.toLowerCase()}
-                              hasOffers={item.hasOpenOffer}
-                              creatorImage={item.owner.urlProfile}
-                              itemImage={item.urlFile.v0}
-                              itemPreview={item.preview.v0}
-                              price={item.price}
-                              collectionName={item.collectionId.name}
-                              itemNumber={item.name}
-                              fileType={item.fileType}
-                              background={({ theme }) => theme.backElement}
-                              onClick={() =>
-                                props.redirect(
-                                  `nft/${isXdc(item.nftContract) ? item.nftContract.toLowerCase() : toXdc(item.nftContract.toLowerCase())}/${item.tokenId}`
-                                )
-                              }
-                              onClickCreator={() =>
-                                props.redirect(`user/${item.owner.nickName}`)
-                              }
-                              owner={true}
-                              usdPrice={props.xdc}
-                              collectionVerified={item.creator.isVerified}
-                              setIsPlaying={handleNFTLongPress}
-                              isPlaying={nftPlaying[i]}
-                              nftIndex={i}
-                              border="6px"
-                            ></NftContainer>
-                          </VStack>
-                        ))
-                      ) : (
-                        <VStack
-                          width="360px"
-                          height="360px"
-                          style={{ zIndex: "-50" }}
-                          border="6px"
-                        >
-                          <IconImg
-                            url={noResult}
-                            width="90px"
-                            height="90px"
-                          ></IconImg>
-                          <BodyBold>Oops... nothing found</BodyBold>
-                          <BodyRegular animate={{ opacity: 0.6 }}>
-                            Try again
-                          </BodyRegular>
+                    {loading ? (
+                      loadingNFTs.map((item, i) => (
+                        <VStack minwidth="290px" height="290px" key={i}>
+                          <LoadingNftContainer></LoadingNftContainer>
                         </VStack>
-                      )}
-                    </HStack>
+                      ))
+                    ) : nfts.length !== 0 ? (
+                      nfts.map((item, i) => (
+                        <VStack
+                          key={item._id}
+                          minwidth={size.width > 425 ? "290px" : "100%"}
+                          maxwidth="290px"
+                          height={size.width > 425 ? "290px" : "380px"}
+                        >
+                          <NftContainer
+                            hasStaking={item.isStakeable}
+                            isVerified={item.owner.isVerified}
+                            iconStatus={item.saleType.toLowerCase()}
+                            hasOffers={item.hasOpenOffer}
+                            creatorImage={item.owner.urlProfile}
+                            itemImage={item.urlFile.v0}
+                            itemPreview={item.preview.v0}
+                            price={item.price}
+                            collectionName={item.collectionId.name}
+                            itemNumber={item.name}
+                            fileType={item.fileType}
+                            background={({ theme }) => theme.backElement}
+                            onClick={() =>
+                              props.redirect(
+                                `nft/${
+                                  isXdc(item.nftContract)
+                                    ? item.nftContract.toLowerCase()
+                                    : toXdc(item.nftContract.toLowerCase())
+                                }/${item.tokenId}`
+                              )
+                            }
+                            onClickCreator={() =>
+                              props.redirect(`user/${item.owner.nickName}`)
+                            }
+                            owner={true}
+                            usdPrice={props.xdc}
+                            collectionVerified={item.creator.isVerified}
+                            setIsPlaying={handleNFTLongPress}
+                            isPlaying={nftPlaying[i]}
+                            nftIndex={i}
+                            border="6px"
+                          ></NftContainer>
+                        </VStack>
+                      ))
+                    ) : (
+                      <VStack
+                        width="360px"
+                        height="360px"
+                        style={{ zIndex: "-50" }}
+                        border="6px"
+                      >
+                        <IconImg
+                          url={noResult}
+                          width="90px"
+                          height="90px"
+                        ></IconImg>
+                        <BodyBold>Oops... nothing found</BodyBold>
+                        <BodyRegular animate={{ opacity: 0.6 }}>
+                          Try again
+                        </BodyRegular>
+                      </VStack>
+                    )}
                   </HStack>
-                </VStack>
-              </InfiniteScroll>
-            </VStack>
-            <Spacer></Spacer>
+                </HStack>
+              </VStack>
+            </InfiniteScroll>
           </VStack>
         )}
       </ContentDiscover>
+
+      <BottomStick>
+        <DynaMenu
+          isCollections={isSelected}
+          handleFilterCollections={handleChangeFilter}
+          handleFilterNFTs={handleChangeFilterNFT}
+          collectionParams={collectionParams}
+          nftParams={nftParams}
+          isStake={isStake}
+          setIsStake={setIsStake}
+          maxPrice={maxPrice}
+          setMaxPrice={setMaxPrice}
+          minPrice={minPrice}
+          setMinPrice={setMinPrice}
+          isStakingEnabled={true}
+        ></DynaMenu>
+      </BottomStick>
     </DiscoverSection>
   );
 };
@@ -613,13 +551,13 @@ const Discover = (props) => {
 export { Discover };
 
 const DiscoverSection = styled(motion.div)`
-  padding: 0px 0;
+  padding: 0px 0px 60px 0px;
   width: 100%;
 `;
 
 const ContentDiscover = styled(motion.div)`
   position: relative;
-  padding: 30px 0;
+  padding: 30px 0px;
   max-width: 1200px;
   margin: 0 auto;
 `;
@@ -628,6 +566,13 @@ const StickyMenu = styled(motion.div)`
   width: 100%;
   position: -webkit-sticky;
   position: sticky;
-
   top: 0;
+`;
+
+const BottomStick = styled(motion.div)`
+  position: fixed;
+  bottom: 0%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
 `;

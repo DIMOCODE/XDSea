@@ -35,6 +35,7 @@ export const getNFTs = ({
   priceRangeStart,
   priceRangeEnd,
   collectionId,
+  stakeable,
 }) => {
   var params =
     `?${searchBy !== undefined ? `searchBy=${searchBy}&` : ""}` +
@@ -56,10 +57,16 @@ export const getNFTs = ({
     `${saleType3 !== undefined ? `saleType=${saleType3}&` : ""}${
       saleType4 !== undefined ? `saleType=${saleType4}&` : ""
     }` +
-    `${collectionId !== undefined ? `collectionId=${collectionId}&` : ""
-  }`;
+    `${collectionId !== undefined ? `collectionId=${collectionId}&` : ""}${
+      stakeable !== undefined ? `stakeable=${stakeable}&` : ""
+    }`;
   params = params.substring(0, params.length - 1);
-  return createSignedRequest(HTTP_METHODS.get, `nft/${page}${params}`, null, null);
+  return createSignedRequest(
+    HTTP_METHODS.get,
+    `nft/${page}${params}`,
+    null,
+    null
+  );
 };
 
 /**
@@ -131,7 +138,8 @@ export const createNFT = (
   urlFile,
   fileType,
   preview,
-  properties
+  properties,
+  unlockableContent
 ) => {
   const body = {
     collectionId,
@@ -149,6 +157,7 @@ export const createNFT = (
     properties,
     blockchainOrigin: "XDC",
     isHidden: false,
+    unlockableContent,
   };
   return createSignedRequest(HTTP_METHODS.post, "nft", null, body);
 };

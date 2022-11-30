@@ -9,11 +9,13 @@ import {
   CaptionBoldShort,
   CaptionBold,
   TitleBold21,
+  TitleBold18,
 } from "../../styles/TextStyles";
-import instagram from "../../images/instagramMini.png";
-import twitter from "../../images/twitter.png";
-import link from "../../images/link.png";
-import discord from "../../images/discordIcon.png";
+import instagram from "../../images/instagramColor.png";
+import twitter from "../../images/twitterColor.png";
+import link from "../../images/webColor.png";
+import discord from "../../images/discordColor.png";
+
 import miniXdcLogo from "../../images/miniXdcLogo.png";
 import useWindowSize from "../../styles/useWindowSize";
 import { motion } from "framer-motion/dist/framer-motion";
@@ -38,13 +40,30 @@ import {
   WhatsappShareButton,
 } from "react-share";
 import { getCollection, getCollectionNFTs } from "../../API/Collection";
-import { truncateAddress, toXdc, isXdc } from "../../common/common";
+import { truncateAddress, toXdc, isXdc, fromXdc } from "../../common/common";
 import { SearchCollection } from "../../styles/SearchCollection";
 import { FiltersButton } from "../../styles/FiltersButton";
 import { SortButtonNFTS } from "../../styles/SortButtonNFTS";
 import noResult from "../../images/noResult.png";
 import { StickySectionHeader } from "../../CustomModules/sticky/StickySectionHeader.js";
 import { getXdcDomain } from "../../constant";
+import { BannerMobile } from "./BannerMobile";
+import { CollectionStats } from "./CollectionStats";
+import { CircleButton } from "../../styles/CircleButton";
+import { DynaMenu } from "../../styles/DynaMenu/DynaMenu";
+import { BlockTVL } from "./TVL/BlockTVL";
+import { TokenSelector } from "./TokenSelector/TokenSelector";
+import { TopInventory } from "./Inventory/TopInventory";
+import { HolderSection } from "./HoldersSection";
+import { StakeSection } from "../Staking/StakeSection";
+import { StakingModal } from "../Staking/StakingModal";
+import { AddRemoveModal } from "../Staking/AddRemoveModal";
+import { BackedValueModal } from "../Staking/BackedValueModal";
+import { getStakingPoolsByCollection, getStakes } from "../../API/stake";
+import { getNFTs } from "../../API/NFT";
+import { TxModal } from "../../styles/TxModal";
+import { DepositFunds, WithdrawFunds } from "../../common";
+import { stakingaddress } from "../../config";
 
 const CollectionPage = (props) => {
   const size = useWindowSize();
@@ -68,14 +87,28 @@ const CollectionPage = (props) => {
     { id: 12, name: "NFT 12" },
   ]);
   const [maxPrice, setMaxPrice] = useState(0);
-  const [searchTerm, setSearchTerm] = useState("");
   const [params, setParams] = useState({
     page: 1,
-    searchBy: searchTerm,
+  });
+  const [stakingParams, setStakingParams] = useState({
+    page: 1,
   });
   const [copied, setCopied] = useState(false);
   const [nftNumber, setNftNumber] = useState(0);
   const [nftPlaying, setNftPlaying] = useState([]);
+  const [isStake, setIsStake] = useState(false);
+  const [minPrice, setMinPrice] = useState(0);
+  const [stakingPool, setStakingPool] = useState({});
+  const [stakes, setStakes] = useState([]);
+  const [addRemoveModal, setAddRemoveModal] = useState(false);
+  const [backedValueModal, setBackedValueModal] = useState(false);
+  const [stakingNFTs, setStakingNFTs] = useState([]);
+  const [stakingNFTsNumber, setStakingNFTsNumber] = useState(0);
+  const [withdrawing, setWithdrawing] = useState(false);
+  const [depositing, setDepositing] = useState(false);
+  const [withdrawFundPrice, setWithdrawFundPrice] = useState(0);
+  const [depositFundPrice, setDepositFundPrice] = useState(0);
+  const [priceIsInvalid, setPriceIsInvalid] = useState(false);
 
   const webLink = `https://www.xdsea.com/collection/${collectionNickName}`;
 
@@ -91,9 +124,8 @@ const CollectionPage = (props) => {
   /**
    * Get collection NFT data for the first page
    *
-   * @param {string} searchBy search word to filter NFT results
    */
-  const getData = async (searchBy) => {
+  const getData = async () => {
     try {
       const collectionData = await (
         await getCollection(collectionNickName)
@@ -101,7 +133,9 @@ const CollectionPage = (props) => {
       let collection = {
         _id: collectionData.collection._id,
         banner: collectionData.collection.banner.v0,
-        creator: await getXdcDomain(toXdc(collectionData.collection.addressCreator)),
+        creator: await getXdcDomain(
+          toXdc(collectionData.collection.addressCreator)
+        ),
         addressCreator: isXdc(collectionData.collection.addressCreator)
           ? collectionData.collection.addressCreator.toLowerCase()
           : toXdc(collectionData.collection.addressCreator.toLowerCase()),
@@ -118,21 +152,55 @@ const CollectionPage = (props) => {
         websiteUrl: collectionData.collection.websiteUrl,
         nftsCount: collectionData.metrics.nftsCount,
         owners: collectionData.metrics.owners,
+        isStakeable: collectionData.collection.isStakeable,
+        nftContract: collectionData.collection.address,
       };
       const collectionNFTData = await (
         await getCollectionNFTs({
           ...params,
           page: 1,
           collectionId: collectionData.collection._id,
-          searchBy: searchBy,
         })
       ).data;
+
+      var collectionStakingPool = {};
+      var stakingNFTsData = [];
+      if (collectionData.collection.isStakeable) {
+        await Promise.all(
+          [1, 2].map(async (i) => {
+            if (i === 1) {
+              collectionStakingPool = await (
+                await getStakingPoolsByCollection(collectionData.collection._id)
+              ).data;
+              setStakingPool(collectionStakingPool.stakingPools[0]);
+            } else {
+              stakingNFTsData = await (
+                await getNFTs({
+                  ...stakingParams,
+                  page: 1,
+                  collectionId: collectionData.collection._id,
+                  stakeable: true,
+                })
+              ).data;
+              setStakingNFTs(stakingNFTsData.nfts);
+              setStakingNFTsNumber(stakingNFTsData.nftsAmount);
+              setStakingParams({
+                ...stakingParams,
+                collectionId: collectionData.collection._id,
+                stakeable: true,
+                page: stakingParams.page + 1,
+              });
+              const stakesData = await getStakes(stakingParams.page, collection._id);
+              setStakes([...stakes, ...stakesData.data.stakes]);
+            }
+          })
+        );
+      }
 
       setNftNumber(collectionNFTData.nftsAmount);
       setMaxPrice(collectionNFTData.higherPrice);
       setParams({
         collectionId: collectionData.collection._id,
-        searchBy: searchBy,
         page: params.page + 1,
       });
       setNfts(collectionNFTData.nfts);
@@ -141,6 +209,15 @@ const CollectionPage = (props) => {
       setLoadingState("loaded");
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const getStakesData = async () => {
+    try {
+      const stakesData = await getStakes(1, collection._id);
+      setStakes(stakesData.data.stakes);
+    } catch (error) {
+      console.log("Failed on load stakes!!", error);
     }
   };
 
@@ -155,6 +232,18 @@ const CollectionPage = (props) => {
       page: params.page + 1,
     });
     setNfts([...nfts, ...collectionNFTData]);
+  };
+
+  const fetchMoreStakes = async () => {
+    const stakesNFTData = await(await getNFTs(stakingParams)).data.nfts;
+    const stakesData = await getStakes(stakingParams.page, collection._id);
+    setStakes([...stakes, ...stakesData.data.stakes]);
+
+    setStakingParams({
+      ...stakingParams,
+      page: stakingParams.page + 1,
+    });
+    setStakingNFTs([...stakingNFTs, ...stakesNFTData]);
   };
 
   /**
@@ -189,35 +278,118 @@ const CollectionPage = (props) => {
   };
 
   const handleNFTLongPress = (i, isNew) => {
-    if(!isNew) {
+    if (!isNew) {
       setNftPlaying((prevState) => {
         prevState[i] = !prevState[i];
         return [...prevState];
       });
-    }
-    else{
+    } else {
       const newNftPlaying = new Array(nftPlaying.length).fill(false);
       newNftPlaying[i] = !newNftPlaying[i];
       setNftPlaying([...newNftPlaying]);
     }
-  }
+  };
+
+  const withdrawFunds = async () => {
+    try {
+      const success = await WithdrawFunds(
+        stakingaddress,
+        props?.wallet?.address,
+        withdrawFundPrice,
+        "0x0000000000000000000000000000000000000000"
+      );
+    } catch (err) {
+      console.log(err);
+    }
+    setWithdrawing(false);
+  };
+
+  const depositFunds = async () => {
+    try {
+      const success = await DepositFunds(
+        stakingaddress,
+        props?.wallet?.address,
+        depositFundPrice,
+        "0x0000000000000000000000000000000000000000"
+      );
+    } catch (err) {
+      console.log(err);
+    }
+    setDepositing(false);
+  };
 
   /**
    * React Hook to re-render when the search term state value is changed
    */
   useEffect(() => {
     window.scrollTo(0, 0);
-    getData(searchTerm);
-  }, [searchTerm]);
+    getData();
+  }, []);
 
   return (
     <CollectionSection>
+      {addRemoveModal && (
+        <AddRemoveModal
+          setAddRemoveModal={setAddRemoveModal}
+          nftContract={collection?.nftContract}
+          collectionId={collection?._id}
+          stakingPool={stakingPool}
+          setNfts={setStakingNFTs}
+          setNftsCount={setStakingNFTsNumber}
+          setStakingParams={setStakingParams}
+          stakingParams={stakingParams}
+          wallet={props?.wallet}
+        ></AddRemoveModal>
+      )}
+      {backedValueModal && (
+        <BackedValueModal
+          setBackedValueModal={setBackedValueModal}
+          nftContract={collection?.nftContract}
+          collectionId={collection?._id}
+          stakingPool={stakingPool}
+          setNfts={setStakingNFTs}
+          setNftsCount={setStakingNFTsNumber}
+          setStakingParams={setStakingParams}
+          stakingParams={stakingParams}
+          wallet={props?.wallet}
+        ></BackedValueModal>
+      )}
+      {withdrawing && (
+        <TxModal
+          isWithdrawFund={true}
+          cancelWithdrawFund={() => {
+            setWithdrawing(false);
+          }}
+          withdrawFunds={() => withdrawFunds()}
+          onChangeWithdrawFunds={(event) => {
+            setPriceIsInvalid(false);
+            setWithdrawFundPrice(event.target.value);
+          }}
+          priceInvalid={priceIsInvalid}
+          withdrawFundPrice={withdrawFundPrice}
+        ></TxModal>
+      )}
+      {depositing && (
+        <TxModal
+          isDepositFund={true}
+          cancelDepositFund={() => {
+            setDepositing(false);
+          }}
+          depositFunds={() => depositFunds()}
+          onChangeDepositFunds={(event) => {
+            setPriceIsInvalid(false);
+            setDepositFundPrice(event.target.value);
+          }}
+          priceInvalid={priceIsInvalid}
+          depositFundPrice={depositFundPrice}
+        ></TxModal>
+      )}
       {/* Banner */}
       <BannerAbsolute>
         <IconImg
           url={collection.banner}
           width="100%"
-          height="424px"
+          height={size.width > 428 ? "369px" : "269px"}
           backsize="cover"
           key="imageBanner"
           initial={{ opacity: 0 }}
@@ -225,548 +397,507 @@ const CollectionPage = (props) => {
           exit={{ opacity: 0 }}
         ></IconImg>
       </BannerAbsolute>
-      <HStack style={{ zIndex: 1 }}>
-        <VStack
-          padding="330px 0 0 0"
-          spacing="15px"
-          maxwidth="1200px"
-          cursor={"pointer"}
-          style={{ zIndex: 1 }}
-        >
-          {/* Creator Tag */}
-          <CreatorAbsolute>
-            <HStack
-              onClick={() => props.redirect(`user/${collection.creatorId}`)}
-              border="30px"
-              padding="6px 15px"
-              style={{
-                boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
-              }}
-              cursor={"pointer"}
-              background={({ theme }) => theme.backElement}
-            >
-              {collection.isVerified ? (
-                <IconImg
-                  cursor={"pointer"}
-                  url={verified}
-                  width="21px"
-                  height="21px"
-                ></IconImg>
-              ) : null}
-              <VStack spacing="0px" alignment="flex-start" cursor={"pointer"}>
-                <CaptionBold textcolor={({ theme }) => theme.text}>
-                  CREATOR
-                </CaptionBold>
-                {collection.addressCreator ? (
-                  <Tooltip title={collection.addressCreator}>
-                    <CaptionBold textcolor={({ theme }) => theme.text}>
-                      {collection.creator !== "" ? collection.creator : truncateAddress(collection.addressCreator)}
-                    </CaptionBold>
-                  </Tooltip>
-                ) : (
-                  <LoopBars width="115px" heigth="90px"></LoopBars>
-                )}
-              </VStack>
-            </HStack>
-          </CreatorAbsolute>
 
-          {/* Share Collection to Socials Link */}
-          <SocialAbsolute>
-            <VStack
-              justify="flex-start"
-              border="9px"
-              padding="12px 6px"
-              spacing="15px"
-              background={({ theme }) => theme.backElement}
-            >
-              <CaptionBoldShort>SHARE</CaptionBoldShort>
-
-              <FacebookShareButton
-                url={webLink}
-                quote={"Check out this NFT Collection!"}
-                hashtag={["#XDSea"]}
-                description={"XDSea"}
-                className="Demo__some-network__share-button"
-              >
-                <a>
-                  <IconImg
-                    url={facebookSocial}
-                    width="30px"
-                    height="30px"
-                  ></IconImg>
-                </a>
-              </FacebookShareButton>
-              <TwitterShareButton
-                title={"Check out this NFT Collection!"}
-                url={webLink}
-                hashtags={["XDSea", "BuildItOnXDC"]}
-              >
-                <a>
-                  <IconImg
-                    url={twitterSocial}
-                    width="30px"
-                    height="30px"
-                  ></IconImg>
-                </a>
-              </TwitterShareButton>
-              <TelegramShareButton
-                title={"Check out this NFT Collection!"}
-                url={webLink}
-              >
-                <a>
-                  <IconImg
-                    url={telegramSocial}
-                    width="30px"
-                    height="30px"
-                  ></IconImg>
-                </a>
-              </TelegramShareButton>
-              <WhatsappShareButton
-                title={"Check out this NFT Collection!"}
-                url={webLink}
-              >
-                <a>
-                  <IconImg
-                    url={whatsSocial}
-                    width="30px"
-                    height="30px"
-                  ></IconImg>
-                </a>
-              </WhatsappShareButton>
-
-              {copied ? (
-                <IconImg url={copiedLink} width="28px" height="28px"></IconImg>
-              ) : (
-                <a>
-                  <IconImg
-                    onClick={copy}
-                    url={linkSocial}
-                    width="30px"
-                    height="30px"
-                  ></IconImg>
-                </a>
-              )}
-            </VStack>
-          </SocialAbsolute>
-
+      {size.width > 710 ? (
+        <HStack style={{ zIndex: 1 }} padding="0 9px">
           <VStack
-            width={size.width < 768 ? "100%" : "500px"}
-            height={size.width < 768 ? "90px" : "290px"}
+            padding="69px 0 0 0"
+            spacing="15px"
+            maxwidth="1200px"
+            cursor={"pointer"}
+            style={{ zIndex: 1 }}
           >
-            {/* Collection Logo */}
-            <IconImg
-              url={collection.logo}
-              width="150px"
-              height="150px"
-              border="150px"
-              bordersize="6px"
-              bordercolor="white"
-              backsize="cover"
-              style={{
-                boxShadow: "0px 3px 9px 0px rgba(0, 0, 0, 0.3)",
-              }}
-            ></IconImg>
-            <HStack>
-              <Spacer></Spacer>
+            <VStack
+              width={"100%"}
+              height={size.width < 768 ? "90px" : "290px"}
+              alignment="flex-start"
+              padding="30px 0"
+            >
+              {/* Share Collection to Socials Link */}
+              <SocialAbsolute>
+                <HStack
+                  justify="flex-start"
+                  border="30px"
+                  padding="0 15px"
+                  spacing="15px"
+                  height="42px"
+                  background={({ theme }) => theme.backElement}
+                >
+                  <CaptionBoldShort>SHARE</CaptionBoldShort>
+
+                  <FacebookShareButton
+                    url={webLink}
+                    quote={"Check out this NFT Collection!"}
+                    hashtag={["#XDSea"]}
+                    description={"XDSea"}
+                    className="Demo__some-network__share-button"
+                  >
+                    <a>
+                      <IconImg
+                        url={facebookSocial}
+                        width="30px"
+                        height="30px"
+                      ></IconImg>
+                    </a>
+                  </FacebookShareButton>
+                  <TwitterShareButton
+                    title={"Check out this NFT Collection!"}
+                    url={webLink}
+                    hashtags={["XDSea", "BuildItOnXDC"]}
+                  >
+                    <a>
+                      <IconImg
+                        url={twitterSocial}
+                        width="30px"
+                        height="30px"
+                      ></IconImg>
+                    </a>
+                  </TwitterShareButton>
+                  <TelegramShareButton
+                    title={"Check out this NFT Collection!"}
+                    url={webLink}
+                  >
+                    <a>
+                      <IconImg
+                        url={telegramSocial}
+                        width="30px"
+                        height="30px"
+                      ></IconImg>
+                    </a>
+                  </TelegramShareButton>
+                  <WhatsappShareButton
+                    title={"Check out this NFT Collection!"}
+                    url={webLink}
+                  >
+                    <a>
+                      <IconImg
+                        url={whatsSocial}
+                        width="30px"
+                        height="30px"
+                      ></IconImg>
+                    </a>
+                  </WhatsappShareButton>
+
+                  {copied ? (
+                    <IconImg
+                      url={copiedLink}
+                      width="28px"
+                      height="28px"
+                    ></IconImg>
+                  ) : (
+                    <a>
+                      <IconImg
+                        onClick={copy}
+                        url={linkSocial}
+                        width="30px"
+                        height="30px"
+                      ></IconImg>
+                    </a>
+                  )}
+                </HStack>
+              </SocialAbsolute>
+
+              {/* Creator Tag */}
+              <CreatorAbsolute>
+                <HStack
+                  onClick={() => props.redirect(`user/${collection.creatorId}`)}
+                  border="0 6px 6px 0"
+                  padding={"6px 9px"}
+                  height="42px"
+                  style={{
+                    boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
+                  }}
+                  cursor={"pointer"}
+                  background={({ theme }) => theme.backElement}
+                >
+                  <VStack
+                    spacing="0px"
+                    alignment="flex-start"
+                    cursor={"pointer"}
+                  >
+                    <CaptionBold textcolor={({ theme }) => theme.text}>
+                      CREATOR
+                    </CaptionBold>
+                    <HStack spacing="6px">
+                      {collection.addressCreator ? (
+                        <Tooltip title={collection.addressCreator}>
+                          <CaptionBold textcolor={({ theme }) => theme.text}>
+                            {collection.creator !== ""
+                              ? collection.creator
+                              : truncateAddress(collection.addressCreator)}
+                          </CaptionBold>
+                        </Tooltip>
+                      ) : (
+                        <LoopBars width="115px" heigth="90px"></LoopBars>
+                      )}
+
+                      {collection.isVerified ? (
+                        <IconImg
+                          cursor={"pointer"}
+                          url={verified}
+                          width="15px"
+                          height="15px"
+                        ></IconImg>
+                      ) : null}
+                    </HStack>
+                  </VStack>
+                </HStack>
+              </CreatorAbsolute>
+              {/* Collection Logo */}
+              <IconImg
+                url={collection.logo}
+                width="150px"
+                height="150px"
+                border="9px"
+                bordersize="6px"
+                bordercolor="white"
+                backsize="cover"
+                style={{
+                  boxShadow: "0px 3px 9px 0px rgba(0, 0, 0, 0.3)",
+                }}
+              ></IconImg>
 
               {/* Collection Name */}
-              <HStack
-                background={({ theme }) => theme.walletButton}
-                padding="6px 15px"
-                border="9px"
-                style={{
-                  boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
-                }}
-              >
-                <TitleBold21
-                  align="center"
-                  textcolor={({ theme }) => theme.walletText}
+              <HStack self="none">
+                <VStack
+                  background={({ theme }) => theme.walletButton}
+                  padding="6px 15px"
+                  border="9px"
+                  spacing="3px"
+                  style={{
+                    boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
+                  }}
+                  alignment="flex-start"
                 >
-                  {collection.name}
-                </TitleBold21>
-              </HStack>
+                  <CaptionBold initial={{ opacity: 0.6 }} textcolor="white">
+                    COLLECTION
+                  </CaptionBold>
 
-              <Spacer></Spacer>
-            </HStack>
-
-            {/* Collection Statistics */}
-            <HStack height={"auto"} spacing="12px" responsive={true}>
-              <HStack width="100%">
-                <VStack
-                  spacing="9px"
-                  border="9px"
-                  padding="18px 0"
-                  background={({ theme }) => theme.backElement}
-                  style={{
-                    boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
-                  }}
-                >
-                  <HStack spacing="6px">
-                    <IconImg
-                      url={miniXdcLogo}
-                      width="18px"
-                      height="18px"
-                    ></IconImg>
-                    {collection.floorPrice !== undefined ? (
-                      <BodyBold textcolor={({ theme }) => theme.text}>
-                        {collection.floorPrice > 100000
-                          ? Intl.NumberFormat("en-US", {
-                              notation: "compact",
-                              maximumFractionDigits: 2,
-                            }).format(collection.floorPrice)
-                          : collection.floorPrice.toLocaleString(undefined, {
-                              maximumFractionDigits: 2,
-                            }) || "0"}
-                      </BodyBold>
-                    ) : (
-                      <LoopBars width="54px"></LoopBars>
-                    )}
-                  </HStack>
-                  <CaptionBoldShort textcolor={({ theme }) => theme.text}>
-                    Floor Price
-                  </CaptionBoldShort>
-                </VStack>
-                <VStack
-                  border="9px"
-                  padding="18px 0"
-                  spacing="9px"
-                  background={({ theme }) => theme.backElement}
-                  style={{
-                    boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
-                  }}
-                >
-                  {collection.owners !== undefined ? (
-                    <BodyBold textcolor={({ theme }) => theme.text}>
-                      {collection.owners}
-                    </BodyBold>
-                  ) : (
-                    <LoopBars width="54px"></LoopBars>
-                  )}
-                  <CaptionBoldShort textcolor={({ theme }) => theme.text}>
-                    Owners
-                  </CaptionBoldShort>
-                </VStack>
-              </HStack>
-
-              <HStack width="100%">
-                <VStack
-                  border="9px"
-                  padding="18px 0"
-                  background={({ theme }) => theme.backElement}
-                  spacing="9px"
-                  style={{
-                    boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
-                  }}
-                >
-                  {collection.nftsCount ? (
-                    <BodyBold textcolor={({ theme }) => theme.text}>
-                      {collection.nftsCount}
-                    </BodyBold>
-                  ) : (
-                    <LoopBars width="54px"></LoopBars>
-                  )}
-                  <CaptionBoldShort textcolor={({ theme }) => theme.text}>
-                    NFTs
-                  </CaptionBoldShort>
-                </VStack>
-                <VStack
-                  border="9px"
-                  padding="18px 0"
-                  background={({ theme }) => theme.backElement}
-                  spacing="9px"
-                  style={{
-                    boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
-                  }}
-                >
-                  <HStack spacing="6px">
-                    <IconImg
-                      url={miniXdcLogo}
-                      width="18px"
-                      height="18px"
-                    ></IconImg>
-                    {collection.volumeTrade !== undefined ? (
-                      <BodyBold textcolor={({ theme }) => theme.text}>
-                        {collection.volumeTrade > 100000
-                          ? Intl.NumberFormat("en-US", {
-                              notation: "compact",
-                              maximumFractionDigits: 2,
-                            }).format(collection.volumeTrade)
-                          : collection.volumeTrade.toLocaleString(undefined, {
-                              maximumFractionDigits: 2,
-                            }) || "0"}
-                      </BodyBold>
-                    ) : (
-                      <LoopBars width="54px"></LoopBars>
-                    )}
-                  </HStack>
-                  <CaptionBoldShort
+                  <TitleBold18
                     align="center"
-                    textcolor={({ theme }) => theme.text}
+                    textcolor={({ theme }) => theme.walletText}
                   >
-                    Volume Traded
-                  </CaptionBoldShort>
+                    {collection.name}
+                  </TitleBold18>
                 </VStack>
+
+                {/* Collection Social Links */}
+                <HStack>
+                  {collection.twitterUrl ? (
+                    <a
+                      href={collection.twitterUrl}
+                      style={{
+                        boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
+                        borderRadius: 9,
+                      }}
+                    >
+                      <CircleButton
+                        image={twitter}
+                        background={"#151515"}
+                      ></CircleButton>
+                    </a>
+                  ) : (
+                    <></>
+                  )}
+                  {collection.instagramUrl ? (
+                    <a
+                      href={collection.instagramUrl}
+                      style={{
+                        boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
+                        borderRadius: 9,
+                      }}
+                    >
+                      <CircleButton
+                        image={instagram}
+                        background={"#151515"}
+                      ></CircleButton>
+                    </a>
+                  ) : (
+                    <></>
+                  )}
+                  {collection.discordUrl ? (
+                    <a
+                      href={collection.discordUrl}
+                      style={{
+                        boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
+                        borderRadius: 9,
+                      }}
+                    >
+                      <CircleButton
+                        image={discord}
+                        background={"#151515"}
+                      ></CircleButton>
+                    </a>
+                  ) : (
+                    <></>
+                  )}
+                  {collection.websiteUrl ? (
+                    <a
+                      href={collection.websiteUrl}
+                      style={{
+                        boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
+                        borderRadius: 9,
+                      }}
+                    >
+                      <CircleButton
+                        image={link}
+                        background={"#151515"}
+                      ></CircleButton>
+                    </a>
+                  ) : (
+                    <></>
+                  )}
+                </HStack>
               </HStack>
-            </HStack>
-          </VStack>
 
-          {/* Collection Description */}
-          <VStack width={size.width < 768 ? "100%" : "60%"} padding="15px">
-            {collection.description !== undefined ? (
-              <BodyRegular textcolor={({ theme }) => theme.text} align="center">
-                {collection.description}
-              </BodyRegular>
-            ) : (
-              <VStack>
-                <LoopBars width="340px"></LoopBars>
-                <LoopBars width="300px"></LoopBars>
-              </VStack>
-            )}
+              {/* Collection Statistics */}
+              <CollectionStats
+                owners={collection.owners}
+                nftsCount={collection.nftsCount}
+                floorPrice={
+                  collection.floorPrice > 100000
+                    ? Intl.NumberFormat("en-US", {
+                        notation: "compact",
+                        maximumFractionDigits: 2,
+                      }).format(collection.floorPrice)
+                    : collection.floorPrice?.toLocaleString(undefined, {
+                        maximumFractionDigits: 2,
+                      }) || "0"
+                }
+                volumeTrade={
+                  collection.volumeTrade > 100000
+                    ? Intl.NumberFormat("en-US", {
+                        notation: "compact",
+                        maximumFractionDigits: 2,
+                      }).format(collection.volumeTrade)
+                    : collection.volumeTrade?.toLocaleString(undefined, {
+                        maximumFractionDigits: 2,
+                      }) || "0"
+                }
+                width="390px"
+              ></CollectionStats>
+            </VStack>
 
-            {/* Collection Social Links */}
-            <HStack>
-              {collection.twitterUrl ? (
-                <a
-                  href={collection.twitterUrl}
-                  style={{
-                    boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
-                    borderRadius: 9,
-                  }}
+            {/* Collection Description */}
+            <VStack
+              padding="15px 60px"
+              maxwidth="1200px"
+              background={({ theme }) => theme.backElement}
+              border="6px"
+            >
+              {collection.description !== undefined ? (
+                <BodyRegular
+                  textcolor={({ theme }) => theme.text}
+                  align="flex-start"
                 >
-                  <ButtonApp
-                    width="39px"
-                    height="39px"
-                    icon={twitter}
-                    iconWidth="18px"
-                    iconHeight="18px"
-                    hasImage={true}
-                    background={({ theme }) => theme.backElement}
-                    style={{
-                      boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
-                    }}
-                    cursor={"pointer"}
-                    btnStatus={0}
-                  ></ButtonApp>
-                </a>
+                  {collection.description}
+                </BodyRegular>
               ) : (
-                <></>
+                <VStack maxwidth="1200px">
+                  <LoopBars width="340px"></LoopBars>
+                  <LoopBars width="300px"></LoopBars>
+                </VStack>
               )}
-              {collection.instagramUrl ? (
-                <a
-                  href={collection.instagramUrl}
-                  style={{
-                    boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
-                    borderRadius: 9,
-                  }}
-                >
-                  <ButtonApp
-                    width="39px"
-                    height="39px"
-                    icon={instagram}
-                    iconWidth="18px"
-                    iconHeight="18px"
-                    hasImage={true}
-                    background={({ theme }) => theme.backElement}
-                    style={{
-                      boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
-                    }}
-                    cursor={"pointer"}
-                    btnStatus={0}
-                  ></ButtonApp>
-                </a>
-              ) : (
-                <></>
-              )}
-              {collection.discordUrl ? (
-                <a
-                  href={collection.discordUrl}
-                  style={{
-                    boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
-                    borderRadius: 9,
-                  }}
-                >
-                  <ButtonApp
-                    width="39px"
-                    height="39px"
-                    icon={discord}
-                    iconWidth="18px"
-                    iconHeight="18px"
-                    hasImage={true}
-                    background={({ theme }) => theme.backElement}
-                    style={{
-                      boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
-                    }}
-                    cursor={"pointer"}
-                    btnStatus={0}
-                  ></ButtonApp>
-                </a>
-              ) : (
-                <></>
-              )}
-              {collection.websiteUrl ? (
-                <a
-                  href={collection.websiteUrl}
-                  style={{
-                    boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
-                    borderRadius: 9,
-                  }}
-                >
-                  <ButtonApp
-                    width="39px"
-                    height="39px"
-                    icon={link}
-                    iconWidth="18px"
-                    iconHeight="18px"
-                    hasImage={true}
-                    background={({ theme }) => theme.backElement}
-                    style={{
-                      boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.1)",
-                    }}
-                    cursor={"pointer"}
-                    btnStatus={0}
-                  ></ButtonApp>
-                </a>
-              ) : (
-                <></>
-              )}
-            </HStack>
+            </VStack>
           </VStack>
-        </VStack>
-      </HStack>
+        </HStack>
+      ) : (
+        <BannerMobile
+          style={{ zIndex: 2000 }}
+          collectionImage={collection.logo}
+          collectionName={collection.name}
+          addressCreator={
+            collection.creator !== ""
+              ? collection.creator
+              : truncateAddress(collection.addressCreator)
+          }
+          onClickCreator={() => props.redirect(`user/${collection.creatorId}`)}
+          owners={collection.owners}
+          isVerified={collection.isVerified}
+          nftCount={collection.nftsCount}
+          collectionNickName={collectionNickName}
+          floorPrice={
+            collection.floorPrice > 100000
+              ? Intl.NumberFormat("en-US", {
+                  notation: "compact",
+                  maximumFractionDigits: 2,
+                }).format(collection.floorPrice)
+              : collection.floorPrice?.toLocaleString(undefined, {
+                  maximumFractionDigits: 2,
+                }) || "0"
+          }
+          volumeTrade={
+            collection.volumeTrade > 100000
+              ? Intl.NumberFormat("en-US", {
+                  notation: "compact",
+                  maximumFractionDigits: 2,
+                }).format(collection.volumeTrade)
+              : collection.volumeTrade?.toLocaleString(undefined, {
+                  maximumFractionDigits: 2,
+                }) || "0"
+          }
+          collectionDescription={collection.description}
+          twitterUrl={collection.twitterUrl}
+          instagramUrl={collection.instagramUrl}
+          discordUrl={collection.discordUrl}
+          websiteUrl={collection.websiteUrl}
+        ></BannerMobile>
+      )}
 
       {/* Collection NFTs */}
-      <CollectionContent id="scrollableDiv">
-        <StickySectionHeader top="68">
-          {/* Filters Search and Sort */}
-          <HStack
-            background="rgb(0,0,0, 0.06)"
-            padding="6px"
-            border="9px"
-            width="100%"
-            blur="30px"
-          >
-            <SearchCollection
-              inputId={"collectionNFT"}
-              placeholder="Search inside the collection"
-              onClickIcon={(searchWord) => {
-                setSearchTerm(searchWord);
-              }}
-              onKeyPress={(e) => {
-                if (e.key === "Enter") {
-                  setSearchTerm(e.target.value);
-                }
-              }}
-            ></SearchCollection>
-            <HStack>
-              <FiltersButton
-                isNftFilter={true}
-                onChange={handleChangeFilterNFT}
-                params={params}
-                maxPrice={maxPrice}
-                isCollectionPage={true}
-              ></FiltersButton>
-              <SortButtonNFTS
-                onChange={handleChangeFilterNFT}
-                params={params}
-                isSearchPage={true}
-              ></SortButtonNFTS>
-            </HStack>
-          </HStack>
-        </StickySectionHeader>
 
+      <CollectionContent id="scrollableDiv">
         {/* Collection NFT Cards */}
-        <InfiniteScroll
-          dataLength={nfts.length}
-          next={fetchMoreNFTs}
-          hasMore={nfts.length < nftNumber}
-          loader={
-            <HStack
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              height="190px"
-            >
-              <LoopLogo></LoopLogo>
-            </HStack>
-          }
-          scrollableTarget="#scrollableDiv"
-          style={{ overflow: "hidden" }}
-        >
-          <HStack
-            flexwrap="wrap"
-            padding="30px 6px"
-            justify={size.width < 768 ? "center" : "flex-start"}
-            spacing="9px"
+        {isStake ? (
+          <StakeSection
+            nfts={stakingNFTs}
+            setNfts={setStakingNFTs}
+            usdPrice={props.xdc}
+            stakingPool={stakingPool}
+            stakes={stakes}
+            onClickAR={() => {
+              setAddRemoveModal(true);
+            }}
+            onClickBV={() => {
+              setBackedValueModal(true);
+            }}
+            setStakingPool={setStakingPool}
+            wallet={props?.wallet}
+            isCreator={
+              collection?.addressCreator?.toLowerCase() ===
+              isXdc(props?.wallet?.address)
+                ? fromXdc(props?.wallet?.address)
+                : props?.wallet?.address
+            }
+            nftsCount={stakingNFTsNumber}
+            fetchMoreStakes={fetchMoreStakes}
+            setNftsCount={setStakingNFTsNumber}
+            setWithdrawModal={setWithdrawing}
+            setDepositModal={setDepositing}
+            redirect={props?.redirect}
+          ></StakeSection>
+        ) : (
+          <InfiniteScroll
+            dataLength={nfts.length}
+            next={fetchMoreNFTs}
+            hasMore={nfts.length < nftNumber}
+            loader={
+              <HStack
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                height="190px"
+              >
+                <LoopLogo></LoopLogo>
+              </HStack>
+            }
+            scrollableTarget="#scrollableDiv"
+            style={{ overflow: "hidden" }}
           >
-            {loadingState === "loaded" ? (
-              nfts.length !== 0 ? (
-                nfts.map((item, i) => (
+            <HStack
+              flexwrap="wrap"
+              padding="30px 6px"
+              justify={size.width < 768 ? "center" : "flex-start"}
+              spacing="9px"
+            >
+              {loadingState === "loaded" ? (
+                nfts.length !== 0 ? (
+                  nfts.map((item, i) => (
+                    <VStack
+                      // minwidth={size.width > 425 ? "300px" : "300px"}
+                      // width={"240px"}
+                      minwidth={size.width > 425 ? "290px" : "100%"}
+                      maxwidth="290px"
+                      height={size.width > 425 ? "290px" : "380px"}
+                      key={"collectionStack_" + item._id}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                    >
+                      <NftContainer
+                        hasStaking={item.isStakeable}
+                        elementKey={"collection_" + item._id}
+                        isVerified={item.owner.isVerified}
+                        iconStatus={item.saleType.toLowerCase()}
+                        hasOffers={item.hasOpenOffer}
+                        creatorImage={item.owner.urlProfile}
+                        itemImage={item.urlFile.v0}
+                        itemPreview={item.preview.v0}
+                        price={item.price}
+                        collectionName={item.collectionId.name}
+                        itemNumber={item.name}
+                        fileType={item.fileType}
+                        background={({ theme }) => theme.backElement}
+                        onClick={() =>
+                          props.redirect(
+                            `nft/${
+                              isXdc(item.nftContract)
+                                ? item.nftContract.toLowerCase()
+                                : toXdc(item.nftContract.toLowerCase())
+                            }/${item.tokenId}`
+                          )
+                        }
+                        onClickCreator={() =>
+                          props.redirect(`user/${item.owner.nickName}`)
+                        }
+                        owner={true}
+                        usdPrice={props.xdc}
+                        collectionVerified={item.owner.isVerified}
+                        setIsPlaying={handleNFTLongPress}
+                        isPlaying={nftPlaying[i]}
+                        nftIndex={i}
+                        border={"6px"}
+                      ></NftContainer>
+                    </VStack>
+                  ))
+                ) : (
+                  <VStack
+                    padding="90px"
+                    width="100%"
+                    background={({ theme }) => theme.faded}
+                    style={{ zIndex: "-50" }}
+                    border="6px"
+                  >
+                    <IconImg
+                      url={noResult}
+                      width="90px"
+                      height="90px"
+                    ></IconImg>
+                    <BodyBold>Oops... nothing found</BodyBold>
+                    <BodyRegular animate={{ opacity: 0.6 }}>
+                      Try again
+                    </BodyRegular>
+                  </VStack>
+                )
+              ) : (
+                loadingNFTs.map((item) => (
                   <VStack
                     minwidth={size.width < 768 ? "100%" : "300px"}
                     width={"240px"}
                     height="450px"
-                    key={"collectionStack_" + item._id}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
+                    key={item.id}
                   >
-                    <NftContainer
-                      elementKey={"collection_" + item._id}
-                      isVerified={item.owner.isVerified}
-                      iconStatus={item.saleType.toLowerCase()}
-                      hasOffers={item.hasOpenOffer}
-                      creatorImage={item.owner.urlProfile}
-                      itemImage={item.urlFile.v0}
-                      itemPreview={item.preview.v0}
-                      price={item.price}
-                      collectionName={item.collectionId.name}
-                      itemNumber={item.name}
-                      fileType={item.fileType}
-                      background={({ theme }) => theme.backElement}
-                      onClick={() =>
-                        props.redirect(`nft/${isXdc(item.nftContract) ? item.nftContract.toLowerCase() : toXdc(item.nftContract.toLowerCase())}/${item.tokenId}`)
-                      }
-                      onClickCreator={() =>
-                        props.redirect(`user/${item.owner.nickName}`)
-                      }
-                      owner={true}
-                      usdPrice={props.xdc}
-                      collectionVerified={item.owner.isVerified}
-                      setIsPlaying={handleNFTLongPress}
-                      isPlaying={nftPlaying[i]}
-                      nftIndex={i}
-                      border={"6px"}
-                    ></NftContainer>
+                    <LoadingNftContainer></LoadingNftContainer>
                   </VStack>
                 ))
-              ) : (
-                <VStack
-                  padding="90px"
-                  width="100%"
-                  background={({ theme }) => theme.faded}
-                  style={{ zIndex: "-50" }}
-                  border="6px"
-                >
-                  <IconImg url={noResult} width="90px" height="90px"></IconImg>
-                  <BodyBold>Oops... nothing found</BodyBold>
-                  <BodyRegular animate={{ opacity: 0.6 }}>
-                    Try again
-                  </BodyRegular>
-                </VStack>
-              )
-            ) : (
-              loadingNFTs.map((item) => (
-                <VStack
-                  minwidth={size.width < 768 ? "100%" : "300px"}
-                  width={"240px"}
-                  height="450px"
-                  key={item.id}
-                >
-                  <LoadingNftContainer></LoadingNftContainer>
-                </VStack>
-              ))
-            )}
-          </HStack>
-        </InfiniteScroll>
+              )}
+            </HStack>
+          </InfiniteScroll>
+        )}
       </CollectionContent>
+
+      <BottomStick>
+        <DynaMenu
+          isCollections={false}
+          handleFilterNFTs={handleChangeFilterNFT}
+          nftParams={params}
+          isStake={isStake}
+          setIsStake={setIsStake}
+          maxPrice={maxPrice}
+          setMaxPrice={setMaxPrice}
+          minPrice={minPrice}
+          setMinPrice={setMinPrice}
+          isStakingEnabled={collection?.isStakeable}
+        ></DynaMenu>
+      </BottomStick>
     </CollectionSection>
   );
 };
@@ -793,12 +924,20 @@ const BannerAbsolute = styled(motion.div)`
 
 const CreatorAbsolute = styled(motion.div)`
   position: absolute;
-  top: 85px;
-  left: 15px;
+  top: 75px;
+  left: 145px;
 `;
 
 const SocialAbsolute = styled(motion.div)`
   position: absolute;
-  top: 85px;
-  right: 15px;
+  bottom: 45px;
+  right: 0px;
+`;
+
+const BottomStick = styled(motion.div)`
+  position: fixed;
+  bottom: 0%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
 `;

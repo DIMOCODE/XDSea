@@ -6,6 +6,7 @@ import notforsale from "../images/notforsale.png";
 import verifiedShape from "../images/verifiedShape.png";
 import verifiedBlue from "../images/verifiedBlue.png";
 import verifiedMask from "../images/verifiedMask.png";
+import star from "../images/stakeStar.png";
 import sale from "../images/sale.png";
 import relist from "../images/relist.png";
 import sold from "../images/sold.png";
@@ -48,6 +49,7 @@ function NftContainer(props) {
     setIsPlaying,
     isPlaying,
     nftIndex,
+    hasStaking,
   } = props;
 
   const scaleImage = {
@@ -75,19 +77,21 @@ function NftContainer(props) {
     return str?.length > n ? str.substr(0, n - 1) + "..." : str;
   };
 
-  function longPress(callback, ms=250) {
+  function longPress(callback, ms = 250) {
     let timeout = null;
 
-    const start = () => timeout = setTimeout(callback, ms);
+    const start = () => (timeout = setTimeout(callback, ms));
     const stop = () => timeout && window.clearTimeout(timeout);
-    return callback ? {
-      onMouseDown: start,
-      onMouseUp: stop,
-      onMouseLeave: stop,
-      onTouchStart: start,
-      onTouchMove: stop,
-      onTouchEnd: stop,
-    } : {};
+    return callback
+      ? {
+          onMouseDown: start,
+          onMouseUp: stop,
+          onMouseLeave: stop,
+          onTouchStart: start,
+          onTouchMove: stop,
+          onTouchEnd: stop,
+        }
+      : {};
   }
 
   return (
@@ -100,7 +104,7 @@ function NftContainer(props) {
       spacing="0"
       minwidth={minwidth || "auto"}
       width={width || "100%"}
-      height={height || "390px"}
+      height={height || "100%"}
       minheight={minheight || "auto"}
       bordersize="0px"
       bordercolor={appStyle.colors.darkgrey10}
@@ -113,7 +117,7 @@ function NftContainer(props) {
         setIsPlaying(nftIndex, false);
       }}
     >
-      <ZStack overflow="hidden" border={border}>
+      <ZStack overflowy="hidden" border={border}>
         <ZItem>
           {fileType.match("image.*") ? (
             <IconImg
@@ -163,13 +167,14 @@ function NftContainer(props) {
         >
           <VStack
             spacing="0"
-            background="linear-gradient(180.3deg, rgba(0, 0, 0, 0) 64.14%, rgba(0, 0, 0, 0.3) 78.31%, #000000 96.66%)"
+            background=" linear-gradient(1.11deg, rgba(0, 0, 0, 0.89) 8.6%, rgba(0, 0, 0, 0.18) 28.93%, rgba(0, 0, 0, 0) 36.1%)"
             cursor={"pointer"}
             onClick={onClick}
             height="100%"
+            border="0 0 6px 6px"
           >
             <HStack padding="15px" cursor={"pointer"}>
-              {creatorImage ? (
+              {/* {creatorImage ? (
                 isVerified ? (
                   <>
                     <ZStack>
@@ -231,16 +236,17 @@ function NftContainer(props) {
                 )
               ) : (
                 <Spacer></Spacer>
-              )}
+              )} */}
 
+              <Spacer></Spacer>
               {(() => {
                 switch (nftStatus) {
                   case "relist":
                     return (
                       <IconImg
                         url={relist}
-                        width="42px"
-                        height="42px"
+                        width="36px"
+                        height="36px"
                         border="120px"
                         backsize="cover"
                         cursor={"pointer"}
@@ -250,8 +256,8 @@ function NftContainer(props) {
                     return (
                       <IconImg
                         url={sale}
-                        width="42px"
-                        height="42px"
+                        width="36px"
+                        height="36px"
                         border="120px"
                         backsize="cover"
                         cursor={"pointer"}
@@ -261,8 +267,8 @@ function NftContainer(props) {
                     return (
                       <IconImg
                         url={sold}
-                        width="42px"
-                        height="42px"
+                        width="30px"
+                        height="30px"
                         border="120px"
                         backsize="cover"
                         cursor={"pointer"}
@@ -272,15 +278,15 @@ function NftContainer(props) {
                     return (
                       <IconImg
                         url={notforsale}
-                        width="42px"
-                        height="42px"
+                        width="36px"
+                        height="36px"
                         border="120px"
                         backsize="cover"
                         cursor={"pointer"}
                       ></IconImg>
                     );
                   default:
-                    return(<></>)
+                    return <></>;
                 }
               })()}
             </HStack>
@@ -288,16 +294,16 @@ function NftContainer(props) {
             <VStack
               width="100%"
               alignment="flex-start"
-              spacing="0px"
+              spacing="3px"
               animate={isVisible ? "hover" : "initial"}
               initial={false}
               height="auto"
-              padding="0 21px 21px 21px "
+              padding="0"
               cursor={"pointer"}
             >
               <Spacer></Spacer>
 
-              <HStack spacing="6px">
+              {/* <HStack spacing="6px">
                 <CaptionBoldShort
                   variants={fadeText}
                   animate={isVisible ? "hover" : "initial"}
@@ -315,13 +321,13 @@ function NftContainer(props) {
                   ></IconImg>
                 ) : null}
                 <Spacer></Spacer>
-              </HStack>
+              </HStack> */}
 
               <HStack
-                padding="6px 0"
                 height="auto"
                 justify="flex-start"
                 cursor={"pointer"}
+                padding="0 15px"
               >
                 <BodyMedium
                   display={"-webkit-box"}
@@ -333,9 +339,18 @@ function NftContainer(props) {
                   {truncate(itemNumber, 33)}
                 </BodyMedium>
               </HStack>
-              {price
-                ? <HStack spacing="3px" alignment="center" cursor={"pointer"}>
-                  <IconImg url={miniXdcLogo} width="18px" height="18px"></IconImg>
+              {price ? (
+                <HStack
+                  spacing="3px"
+                  alignment="center"
+                  padding="0 15px 12px 15px"
+                  cursor={"pointer"}
+                >
+                  <IconImg
+                    url={miniXdcLogo}
+                    width="18px"
+                    height="18px"
+                  ></IconImg>
                   <BodyMedium textcolor={appStyle.colors.white}>
                     {Number(price) > 100000
                       ? Intl.NumberFormat("en-US", {
@@ -367,16 +382,25 @@ function NftContainer(props) {
                     <HStack
                       background="linear-gradient(180deg, #FF5A5A 0%, rgba(255, 90, 90, 0.88) 100%)"
                       border="30px"
-                      padding="3px 6px"
+                      padding="6px 11px"
                     >
-                      <CaptionBoldShort textcolor="white">
-                        HAS OFFERS
-                      </CaptionBoldShort>
+                      <CaptionBoldShort textcolor="white">!</CaptionBoldShort>
                     </HStack>
                   )}
                 </HStack>
-                : null
-              }
+              ) : null}
+
+              {hasStaking && (
+                <HStack
+                  background={({ theme }) => theme.blueText}
+                  height="24px"
+                  border="0 0 6px 6px"
+                  spacing="6px"
+                >
+                  <CaptionBoldShort textcolor="white">STAKING</CaptionBoldShort>
+                  <IconImg url={star} width="15px" height="15px"></IconImg>
+                </HStack>
+              )}
             </VStack>
           </VStack>
         </ZItem>

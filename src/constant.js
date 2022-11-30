@@ -3,7 +3,7 @@ import domainjs from "xdcdomainjs";
 
 export const HTTP_PROVIDER = {
   50: "https://xdsearpc.blocksscan.io",
-  51: "https://rpc.apothem.network",
+  51: "https://apothem.xdcrpc.com",
 };
 
 const NETWORK_DICT = {
@@ -21,8 +21,8 @@ export const HEADER = {
 };
 
 {/* HTTP Provider for connecting to the blockchain */}
-export const DEFAULT_PROVIDER = HTTP_PROVIDER[50];
-export const NETWORK_NAME = NETWORK_DICT[50];
+export const DEFAULT_PROVIDER = HTTP_PROVIDER[51];
+export const NETWORK_NAME = NETWORK_DICT[51];
 
 {/* Local Storage Encrypted Cookie Storage */}
 export const LS = new SecureLS({
@@ -54,7 +54,6 @@ const xdcSdk = domainjs.SDK(xdcDomainConfig);
 
 export const getXdcDomain = async (address) => {
   const xdcDomain = await xdcSdk.getDomain(address);
-  console.log(xdcDomain)
   return xdcDomain;
 };
 

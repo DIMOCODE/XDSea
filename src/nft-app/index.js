@@ -114,6 +114,7 @@ const NFTApp = () => {
           ) : null}
 
           {/* This is the main TopBar of the website */}
+
           <TopBar
             device={
               size.width > 1024
@@ -180,6 +181,7 @@ const NFTApp = () => {
                     wallet={wallet}
                     getUser={getUser}
                     user={user}
+                    xdc={xdcPrice}
                   />
                 )}
               ></Route>
@@ -201,6 +203,7 @@ const NFTApp = () => {
                   <Collection
                     xdc={xdcPrice}
                     redirect={NavigateTo}
+                    wallet={wallet}
                     showMenu={showMenu}
                   />
                 )}
@@ -231,10 +234,7 @@ const NFTApp = () => {
                 )}
               ></Route>
             </Switch>
-            <Footer
-              style={{ zIndex: -400 }}
-              redirect={NavigateTo}
-            ></Footer>
+            <Footer style={{ zIndex: -400 }} redirect={NavigateTo}></Footer>
           </ScrollView>
         </HomeStack>
       </>

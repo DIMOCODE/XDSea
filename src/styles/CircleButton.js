@@ -7,8 +7,9 @@ function CircleButton(props) {
 
   return (
     <VStack
-      maxwidth="48px"
-      height="48px"
+      maxwidth="39px"
+      minwidth="39px"
+      height="39px"
       border="48px"
       background={background}
       cursor="pointer"
@@ -18,8 +19,8 @@ function CircleButton(props) {
     >
       <IconImg
         url={image}
-        width="21px"
-        height="21px"
+        width="18px"
+        height="18px"
         cursor="pointer"
       ></IconImg>
     </VStack>

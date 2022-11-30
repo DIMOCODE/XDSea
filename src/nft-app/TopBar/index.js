@@ -1,44 +1,24 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import styled from "styled-components";
-import {
-  HStack,
-  IconImg,
-  Spacer,
-  VStack,
-  ZItem,
-  ZStack,
-} from "../../styles/Stacks";
-import ButtonApp from "../../styles/Buttons";
+import { HStack, IconImg, Spacer, VStack } from "../../styles/Stacks";
 import {
   BodyBold,
   CaptionRegular,
-  TitleBold21,
   TitleBold27,
   BodyRegular,
   CaptionBold,
   TitleBold18,
-  BodyMedium,
-  TitleRegular21,
   TitleRegular18,
 } from "../../styles/TextStyles";
-import { XdcConnect, Disconnect } from "xdc-connect";
 import XDSealogo from "../../images/LogoXDSEA.png";
-import mountain from "../../images/mountain.jpg";
 import { WalletButton } from "../../styles/walletButton";
-import { fromXdc, isXdc, toXdc } from "../../common/common";
-import { SwitchButton } from "../../styles/SwitchButton";
+import { isXdc, toXdc } from "../../common/common";
 import { motion, AnimatePresence } from "framer-motion/dist/framer-motion";
-import { UserMenuButton } from "./UserMenuButton";
 import { appStyle } from "../../styles/AppStyles";
 import "../../styles/App.css";
-import chevronRight from "../../images/chevronRight.png";
 import closeIcon from "../../images/closeIcon.png";
-import twitter from "../../images/twitterFaded.png";
-import instagram from "../../images/instagramFaded.png";
-import mail from "../../images/mailFaded.png";
 import gif from "../../images/gifConnect.gif";
-import search from "../../images/searchIcon.png";
 import XDClogo from "../../images/xdcpayLogo.png";
 import XDClogoBW from "../../images/xdcpayLogoBW.png";
 import Metamask from "../../images/metamaskIcon.png";
@@ -49,17 +29,19 @@ import { useClickAway } from "react-use";
 import { Searchbar } from "../../styles/Searbar";
 import { anonymousLogin, logout } from "../../API/access";
 import { LS, LS_ROOT_KEY, getXdcDomain } from "../../constant";
-import { Divider, Icon } from "@mui/material";
+import { Divider } from "@mui/material";
 import useWindowSize from "../../styles/useWindowSize";
 import howToStart from "../../images/HowToStart.png";
 import discoverIcon from "../../images/DiscoverIcon.png";
 import createNewIcon from "../../images/CreateNewIcon.png";
-import { createNFT } from "../../API/NFT";
 import iconMenu from "../../images/iconMenu.png";
-import zIndex from "@mui/material/styles/zIndex";
+import { TopBarButton } from "../../styles/Buttons/TopBarButton";
+import { SlideMenuTabletButton } from "../../styles/Buttons/SlideMenuTabletButton";
+import { WalletConnectButtons } from "../../styles/Buttons/WalletConnectButtons";
 
 function TopBar(props) {
-  const { device, themeToggler, devMode, onWalletChange, getUser, user } = props;
+  const { device, themeToggler, devMode, onWalletChange, getUser, user } =
+    props;
   const location = useLocation();
   const ref = useRef(null);
   const size = useWindowSize();
@@ -67,83 +49,91 @@ function TopBar(props) {
   const [wallet, setWallet] = useState({});
   const [deviceSize, setDeviceSize] = useState("");
   const [showMenu, setShowMenu] = useState(props.showMenu);
-  const [showMetamask, setShowMetamask] = useState(false);
   const [isMetamask, setIsMetamask] = useState(false);
   const [isDcent, setIsDcent] = useState(false);
   const [isXdcPay, setIsXdcPay] = useState(false);
   const [showError, setShowError] = useState(0);
   const [showInfo, setShowInfo] = useState(false);
-  const [isSearch, setIsSearch] = useState(false);
-  const [walletOptions, setWalletOptions] = useState(true);
   const [walletAddress, setWalletAddress] = useState("");
-  const [isDomain, setIsDomain] = useState(false);
-  const [searchPhone, setSearchPhone] = useState(false);
-
-  const variant1 = {
-    open: {
-      rotate: 0,
-      y: 0,
-    },
-    closed: {
-      rotate: 45,
-      y: 6,
-    },
-  };
-  const variant2 = {
-    open: {
-      rotate: 0,
-      y: 0,
-    },
-    closed: {
-      rotate: -45,
-      y: -6,
-    },
-  };
 
   /**
    * Connect Metamask wallet
    */
   const connectMetamask = async () => {
     if (window.ethereum) {
-      if (window.ethereum.isMetaMask && 
-        window.ethereum?.isDcentWallet === undefined && 
-        window.ethereum.chainId !== undefined) {
+      if (
+        window.ethereum.isMetaMask &&
+        window.ethereum?.isDcentWallet === undefined &&
+        window.ethereum.chainId !== undefined
+      ) {
         try {
-          if (window.ethereum.chainId === "0x32") {
-            const res = await window.ethereum.request({
-              method: "eth_requestAccounts",
-            });
-            const { data } = await anonymousLogin(res[0]);
-            LS.set(LS_ROOT_KEY, data);
+          if (window.ethereum.chainId !== "0x32") {
+            try {
+              await window.ethereum.request({
+                method: "wallet_switchEthereumChain",
+                params: [{ chainId: "0x32" }],
+              });
+            } catch (error) {
+              var code = error.data?.originalError?.code;
+              if (code === undefined) {
+                code = error.code;
+              }
+              if (code === 4902) {
+                try {
+                  await window.ethereum.request({
+                    method: "wallet_addEthereumChain",
+                    params: [
+                      {
+                        chainName: "XinFin Network Mainnet",
+                        chainId: "0x32",
+                        nativeCurrency: {
+                          symbol: "XDC",
+                          decimals: 18,
+                        },
+                        rpcUrls: ["https://rpc.xinfin.network/"],
+                        blockExplorerUrls: ["https://explorer.xinfin.network/"],
+                      },
+                    ],
+                  });
+                } catch (addError) {
+                  setShowError(4);
+                  return;
+                }
+              } else {
+                setShowError(4);
+                return;
+              }
+            }
+          }
+          const res = await window.ethereum.request({
+            method: "eth_requestAccounts",
+          });
+          const { data } = await anonymousLogin(res[0]);
+          LS.set(LS_ROOT_KEY, data);
+          setWallet({
+            connected: true,
+            address: res[0],
+          });
+          onWalletChange({
+            connected: true,
+            address: res[0],
+          });
+          setWalletAddress(await getXdcDomainAddress(res[0]));
+          window.ethereum.on("accountsChanged", (accounts) => {
             setWallet({
-              connected: true,
-              address: res[0],
+              connected: false,
+              address: accounts[0],
             });
             onWalletChange({
-              connected: true,
-              address: res[0],
+              connected: false,
+              address: accounts[0],
             });
-            setWalletAddress(await getXdcDomainAddress(res[0]));
-            window.ethereum.on("accountsChanged", (accounts) => {
-              setWallet({
-                connected: false,
-                address: accounts[0],
-              });
-              onWalletChange({
-                connected: false,
-                address: accounts[0],
-              });
-              logout();
-              setWalletOptions(true);
-            });
-            getUser();
-            setIsMetamask(true);
-            setShowMetamask(false);
-            setShowError(0);
-            setShowInfo(false);
-          } else {
-            setShowError(4);
-          }
+            logout();
+          });
+          getUser();
+          setIsMetamask(true);
+          setShowError(0);
+          setShowInfo(false);
         } catch (err) {
           setShowError(2);
         }
@@ -180,7 +170,6 @@ function TopBar(props) {
           });
           getUser();
           setWalletAddress(await getXdcDomainAddress(address));
-          setShowMetamask(false);
           setShowError(0);
           setShowInfo(false);
         } catch (err) {
@@ -227,7 +216,6 @@ function TopBar(props) {
                 address: accounts[0],
               });
               logout();
-              setWalletOptions(true);
             });
             getUser();
             setIsDcent(true);
@@ -256,14 +244,13 @@ function TopBar(props) {
     });
     setWallet({
       connected: false,
-      address: res[0],
+      address: "",
     });
     onWalletChange({
       connected: false,
-      address: res[0],
+      address: "",
     });
     logout();
-    setWalletOptions(true);
     setShowMenu(!showMenu);
     setIsMetamask(false);
   };
@@ -274,14 +261,13 @@ function TopBar(props) {
   const disconnectXdcPay = async () => {
     setWallet({
       connected: false,
-      address: wallet.address,
+      address: "",
     });
     onWalletChange({
       connected: false,
-      address: wallet.address,
+      address: "",
     });
     logout();
-    setWalletOptions(true);
     setShowMenu(!showMenu);
     setIsXdcPay(false);
   };
@@ -295,32 +281,31 @@ function TopBar(props) {
     });
     setWallet({
       connected: false,
-      address: res[0],
+      address: "",
     });
     onWalletChange({
       connected: false,
-      address: res[0],
+      address: "",
     });
     logout();
-    setWalletOptions(true);
     setShowMenu(!showMenu);
     setIsDcent(false);
   };
 
+  /**
+   * Get the XDC domain name in use by the wallet address
+   *
+   * @param {string} address
+   * @returns the XDC default domain name
+   */
   const getXdcDomainAddress = async (address) => {
     const xdcDomainName = isXdc(address)
-      ? (await getXdcDomain(address))
-      : (await getXdcDomain(toXdc(address)))
-    if(xdcDomainName === "") {
-      setIsDomain(false);
-    }
-    else{
-      setIsDomain(true);
-    }
-    return xdcDomainName === "" 
-      ? isXdc(address) 
-        ? address.toLowerCase() 
-        : toXdc(address.toLowerCase()) 
+      ? await getXdcDomain(address)
+      : await getXdcDomain(toXdc(address));
+    return xdcDomainName === ""
+      ? isXdc(address)
+        ? address.toLowerCase()
+        : toXdc(address.toLowerCase())
       : xdcDomainName;
   };
 
@@ -358,14 +343,14 @@ function TopBar(props) {
               ></IconImg>
               <VStack spacing="1px" alignment="flex-start">
                 <BodyRegular textcolor="#FCD868">BETA</BodyRegular>
-                <BodyBold textcolor="#FFFFFF">Basilisk</BodyBold>
+                <BodyBold textcolor="#FFFFFF">Witch</BodyBold>
               </VStack>
             </HStack>
 
             <Spacer></Spacer>
 
             {/* Search with Discover and Create NFT buttons for large sizes */}
-            {size.width > 768 ? (
+            {size.width > 532 ? (
               <HStack spacing="9px">
                 {location.pathname === "/SearchPage" ? null : (
                   <Searchbar
@@ -375,43 +360,29 @@ function TopBar(props) {
                   ></Searchbar>
                 )}
 
-                <HStack
-                  background={({ theme }) => theme.backElement}
-                  self="auto"
-                  height="42px"
-                  width="99px"
-                  border="6px"
-                  whileTap={{ scale: 0.9 }}
-                  cursor="pointer"
-                  onClick={() => props.redirect("discover/collections")}
-                >
-                  <BodyMedium cursor="pointer">Discover</BodyMedium>
-                </HStack>
+                {size.width > 768 && (
+                  <>
+                    <TopBarButton
+                      background={({ theme }) => theme.backElement}
+                      onClick={() => props.redirect("discover/collections")}
+                      text="Discover"
+                    />
 
-                <HStack
-                  background={
-                    "linear-gradient(166.99deg, #2868F4 37.6%, #0E27C1 115.6%)"
-                  }
-                  self="auto"
-                  height="42px"
-                  width="99px"
-                  border="6px"
-                  minwidth="300px"
-                  whileTap={{ scale: 0.9 }}
-                  cursor="pointer"
-                  onClick={() => props.redirect("create-nft")}
-                >
-                  <BodyMedium cursor="pointer" textcolor="white">
-                    Create NFT
-                  </BodyMedium>
-                </HStack>
+                    <TopBarButton
+                      background="linear-gradient(166.99deg, #2868F4 37.6%, #0E27C1 115.6%)"
+                      onClick={() => props.redirect("create-nft")}
+                      text="Create NFT"
+                      textcolor="white"
+                    />
+                  </>
+                )}
               </HStack>
             ) : null}
 
             <Spacer></Spacer>
 
             <HStack ref={ref}>
-              {/* Wallet button when connected */}
+              {/* Options button shows profile picture when wallet connected */}
               {wallet?.connected ? (
                 <HStack self="auto" height="52px">
                   <IconImg
@@ -426,16 +397,6 @@ function TopBar(props) {
                     onTapStart={() => setShowMenu(!showMenu)}
                     cursor="pointer"
                   ></IconImg>
-                  {/* <RedBubble>
-                      <VStack
-                        background="red"
-                        width="26px"
-                        height="26px"
-                        border="9px"
-                      >
-                        <CaptionBold textcolor="white">1</CaptionBold>
-                      </VStack>
-                    </RedBubble> */}
                 </HStack>
               ) : (
                 <VStack
@@ -452,203 +413,238 @@ function TopBar(props) {
               )}
 
               <AnimatePresence initial={false}>
-                {showMenu && (
-                  <SlideMenuTablet
-                    key="slidemenu"
-                    initial={{ opacity: 1, y: -6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -6 }}
-                    transition={{ type: "spring", damping: 10 }}
-                    top={size.width > 428 ? "76px" : "69px"}
-                  >
-                    <VStack
-                      background={({ theme }) => theme.backElement}
-                      width={size.width > 428 ? "360px" : "100vw"}
-                      padding="21px 30px"
-                      height={size.width > 428 ? "auto" : "94vh"}
-                      border={size.width > 428 ? "9px" : "0"}
-                      alignment="flex-start"
-                      spacing="15px"
-                      style={{
-                        boxShadow: " 0px 11px 12px 0px rgba(0, 0, 0, 0.1)",
-                      }}
+                {showMenu &&
+                  (size.width > 532 ? (
+                    <SlideMenuTablet
+                      key="slidemenu"
+                      initial={{ opacity: 1, y: -6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -6 }}
+                      transition={{ type: "spring", damping: 10 }}
+                      top={"76px"}
                     >
-                      <HStack minheight="42px">
-                        <WalletButton
-                          logout={
-                            isMetamask
-                              ? disconnectMetamask
-                              : isXdcPay
-                              ? disconnectXdcPay
-                              : disconnectDcent
-                          }
-                          status={wallet?.connected}
-                          wallet={wallet}
-                          walletAddress={walletAddress}
-                          onClickMetamask={() => setShowMetamask(true)}
-                          isMetamask={isMetamask}
-                          isDcent={isDcent}
-                          isXdcPay={isXdcPay}
-                          isDomain={isDomain}
-                          hasAlert={showError > 0}
-                          clickAlert={() => {
-                            setShowInfo(true);
-                          }}
-                        ></WalletButton>
-                      </HStack>
-
-                      {size.width < 429 && (
-                        <HStack style={{ zIndex: 1 }}>
-                          <Searchbar
-                            placeholder="Search for NFTs and Collections"
-                            top="46px"
-                            left="0px"
-                            widthInput={size.width - 60 + "px"}
-                            backcolor="rgba(0,0,0,0.1)"
-                            textcolor={"rgba(0,0,0,0.6)"}
-                            textplace={"rgba(0,0,0,0.6)"}
-                            isPhone={true}
-                            style={{ zIndex: 1 }}
-                          ></Searchbar>
-                        </HStack>
-                      )}
-
+                      {/* Options menu for larger screens */}
                       <VStack
-                        alignment="flex-end"
-                        width="100%"
-                        spacing="12px"
-                        style={{ zIndex: 0 }}
-                        justify="flex-start"
-                        padding="30px 0 0 0"
+                        background={({ theme }) => theme.backElement}
+                        width={"360px"}
+                        padding="21px 30px"
+                        height={"auto"}
+                        border={"9px"}
+                        alignment="flex-start"
+                        spacing="15px"
+                        style={{
+                          boxShadow: " 0px 11px 12px 0px rgba(0, 0, 0, 0.1)",
+                        }}
                       >
-                        <HStack height="30px">
-                          <TitleRegular18 textcolor="rgba(0,0,0,0.3)">
-                            MENU
-                          </TitleRegular18>
-                          <Spacer></Spacer>
+                        <HStack minheight="42px">
+                          <WalletButton
+                            logout={
+                              isMetamask
+                                ? disconnectMetamask
+                                : isXdcPay
+                                ? disconnectXdcPay
+                                : disconnectDcent
+                            }
+                            status={wallet?.connected}
+                            walletAddress={walletAddress}
+                            isMetamask={isMetamask}
+                            isXdcPay={isXdcPay}
+                            clickAlert={() => {
+                              setShowInfo(true);
+                            }}
+                          ></WalletButton>
                         </HStack>
-                        {wallet?.connected ? (
-                          <>
-                            <HStack
-                              minheight="42px"
-                              cursor="pointer"
-                              onClick={() => {
-                                setShowMenu(!showMenu);
+
+                        <VStack
+                          alignment="flex-end"
+                          width="100%"
+                          spacing="12px"
+                          style={{ zIndex: 0 }}
+                          justify="flex-start"
+                          padding="30px 0 0 0"
+                        >
+                          <HStack height="30px">
+                            <TitleRegular18 textcolor="rgba(0,0,0,0.3)">
+                              MENU
+                            </TitleRegular18>
+                            <Spacer></Spacer>
+                          </HStack>
+                          {wallet?.connected ? (
+                            <SlideMenuTabletButton
+                              showMenu={showMenu}
+                              setShowMenu={setShowMenu}
+                              redirect={() => {
                                 props.redirect(`user/${user?.nickName}`);
                               }}
-                            >
-                              <TitleRegular18
-                                textcolor={({ theme }) => theme.text}
-                              >
-                                User Profile
-                              </TitleRegular18>
-                              <Spacer></Spacer>
+                              title={"User Profile"}
+                              icon={user?.urlProfile}
+                              isDivider={true}
+                            ></SlideMenuTabletButton>
+                          ) : null}
 
-                              <IconImg
-                                url={user?.urlProfile}
-                                width="35px"
-                                height="35px"
-                                border="42px"
-                                bordersize="3px"
-                                bordercolor="white"
-                                backsize="cover"
-                                whileTap={{ scale: 0.96 }}
-                                cursor="pointer"
-                              ></IconImg>
-                            </HStack>
-                            <HStack
-                              background="rgba(0,0,0, 0.15)"
-                              minheight="1px"
-                              width="100%"
-                            ></HStack>
-                          </>
-                        ) : null}
+                          <SlideMenuTabletButton
+                            showMenu={showMenu}
+                            setShowMenu={setShowMenu}
+                            redirect={() => {
+                              props.redirect("how-to-start");
+                            }}
+                            title={"How To Start"}
+                            icon={howToStart}
+                            isDivider={true}
+                          ></SlideMenuTabletButton>
 
-                        <HStack
-                          minheight="42px"
-                          cursor="pointer"
-                          onClick={() => {
-                            setShowMenu(!showMenu);
-                            props.redirect("how-to-start");
-                          }}
-                        >
-                          <TitleRegular18 textcolor={({ theme }) => theme.text}>
-                            How To Start
-                          </TitleRegular18>
-                          <Spacer></Spacer>
+                          <SlideMenuTabletButton
+                            showMenu={showMenu}
+                            setShowMenu={setShowMenu}
+                            redirect={() => {
+                              props.redirect("discover/collections");
+                            }}
+                            title={"Discover"}
+                            icon={discoverIcon}
+                            isDivider={true}
+                          ></SlideMenuTabletButton>
 
-                          <IconImg
-                            cursor="pointer"
-                            url={howToStart}
-                            width="35px"
-                            height="39px"
-                          ></IconImg>
-                        </HStack>
-
-                        <HStack
-                          background="rgba(0,0,0, 0.15)"
-                          minheight="1px"
-                          width="100%"
-                        ></HStack>
-
-                        <HStack
-                          minheight="42px"
-                          cursor="pointer"
-                          onClick={() => {
-                            setShowMenu(!showMenu);
-                            props.redirect("discover/collections");
-                          }}
-                        >
-                          <TitleRegular18 textcolor={({ theme }) => theme.text}>
-                            Discover
-                          </TitleRegular18>
-                          <Spacer></Spacer>
-
-                          <IconImg
-                            cursor="pointer"
-                            url={discoverIcon}
-                            width="35px"
-                            height="35px"
-                          ></IconImg>
-                        </HStack>
-
-                        <HStack
-                          background="rgba(0,0,0, 0.15)"
-                          minheight="1px"
-                          width="100%"
-                        ></HStack>
-
-                        <HStack
-                          minheight="42px"
-                          cursor="pointer"
-                          onClick={() => {
-                            setShowMenu(!showMenu);
-                            props.redirect("create-nft");
-                          }}
-                        >
-                          <TitleRegular18 textcolor={({ theme }) => theme.text}>
-                            Create An NFT
-                          </TitleRegular18>
-                          <Spacer></Spacer>
-
-                          <IconImg
-                            cursor="pointer"
-                            url={createNewIcon}
-                            width="35px"
-                            height="35px"
-                          ></IconImg>
-                        </HStack>
+                          <SlideMenuTabletButton
+                            showMenu={showMenu}
+                            setShowMenu={setShowMenu}
+                            redirect={() => {
+                              props.redirect("create-nft");
+                            }}
+                            title={"Create An NFT"}
+                            icon={createNewIcon}
+                          ></SlideMenuTabletButton>
+                        </VStack>
+                        <Spacer></Spacer>
                       </VStack>
-                      <Spacer></Spacer>
-                    </VStack>
-                  </SlideMenuTablet>
-                )}
+                    </SlideMenuTablet>
+                  ) : (
+                    <SlideMenuTablet
+                      key="slidemenu"
+                      initial={{ opacity: 1, y: -6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -6 }}
+                      transition={{ type: "spring", damping: 10 }}
+                      top={"69px"}
+                    >
+                      {/* Options menu for smallers screens */}
+                      <VStack
+                        background={({ theme }) => theme.backElement}
+                        width={"100vw"}
+                        padding="21px 30px"
+                        height={"94vh"}
+                        border={"0"}
+                        alignment="flex-start"
+                        spacing="15px"
+                        style={{
+                          boxShadow: " 0px 11px 12px 0px rgba(0, 0, 0, 0.1)",
+                        }}
+                      >
+                        <HStack minheight="42px">
+                          <WalletButton
+                            logout={
+                              isMetamask
+                                ? disconnectMetamask
+                                : isXdcPay
+                                ? disconnectXdcPay
+                                : disconnectDcent
+                            }
+                            status={wallet?.connected}
+                            walletAddress={walletAddress}
+                            isMetamask={isMetamask}
+                            isMobile={true}
+                            isXdcPay={isXdcPay}
+                            clickAlert={() => {
+                              setShowInfo(true);
+                            }}
+                          ></WalletButton>
+                        </HStack>
+
+                        {location.pathname === "/SearchPage" ? null : size.width < 533 && (
+                          <HStack style={{ zIndex: 1 }}>
+                            <Searchbar
+                              placeholder="Search for NFTs and Collections"
+                              top="46px"
+                              left="0px"
+                              widthInput={size.width - 60 + "px"}
+                              backcolor="rgba(0,0,0,0.1)"
+                              textcolor={"rgba(0,0,0,0.6)"}
+                              textplace={"rgba(0,0,0,0.6)"}
+                              isPhone={true}
+                              style={{ zIndex: 1 }}
+                            ></Searchbar>
+                          </HStack>
+                        )}
+
+                        <VStack
+                          alignment="flex-end"
+                          width="100%"
+                          spacing="12px"
+                          style={{ zIndex: 0 }}
+                          justify="flex-start"
+                          padding="30px 0 0 0"
+                        >
+                          <HStack height="30px">
+                            <TitleRegular18 textcolor="rgba(0,0,0,0.3)">
+                              MENU
+                            </TitleRegular18>
+                            <Spacer></Spacer>
+                          </HStack>
+                          {wallet?.connected ? (
+                            <SlideMenuTabletButton
+                              showMenu={showMenu}
+                              setShowMenu={setShowMenu}
+                              redirect={() => {
+                                props.redirect(`user/${user?.nickName}`);
+                              }}
+                              title={"User Profile"}
+                              icon={user?.urlProfile}
+                              isDivider={true}
+                            ></SlideMenuTabletButton>
+                          ) : null}
+
+                          <SlideMenuTabletButton
+                            showMenu={showMenu}
+                            setShowMenu={setShowMenu}
+                            redirect={() => {
+                              props.redirect("how-to-start");
+                            }}
+                            title={"How To Start"}
+                            icon={howToStart}
+                            isDivider={true}
+                          ></SlideMenuTabletButton>
+
+                          <SlideMenuTabletButton
+                            showMenu={showMenu}
+                            setShowMenu={setShowMenu}
+                            redirect={() => {
+                              props.redirect("discover/collections");
+                            }}
+                            title={"Discover"}
+                            icon={discoverIcon}
+                            isDivider={true}
+                          ></SlideMenuTabletButton>
+
+                          <SlideMenuTabletButton
+                            showMenu={showMenu}
+                            setShowMenu={setShowMenu}
+                            redirect={() => {
+                              props.redirect("create-nft");
+                            }}
+                            title={"Create An NFT"}
+                            icon={createNewIcon}
+                          ></SlideMenuTabletButton>
+                        </VStack>
+                        <Spacer></Spacer>
+                      </VStack>
+                    </SlideMenuTablet>
+                  ))}
               </AnimatePresence>
             </HStack>
           </HStack>
         </>
       </HStack>
 
+      {/* Show the wallet connection options */}
       {showInfo ? (
         <AnimatePresence>
           <MetamaskSteps
@@ -659,16 +655,36 @@ function TopBar(props) {
             transition={{ type: "spring", damping: 10 }}
           >
             <VStack width="100%" height="100%" blur="60px">
-              {walletOptions ? (
-                <VStack
-                  self="none"
-                  background="rgb(0,0,0,0.3)"
-                  padding="15px"
-                  border="15px"
-                  maxheight="640px"
-                  maxwidth="390px"
-                  alignment="flex-start"
-                >
+              <HStack
+                self="none"
+                background={({ theme }) => theme.walletButton}
+                maxwidth={"560px"}
+                maxheight="640px"
+                padding="15px"
+                border="15px"
+                alignment="flex-start"
+                responsive={true}
+              >
+                {showError === 4 ? (
+                  <HStack
+                    self="none"
+                    background={({ theme }) => theme.walletButton}
+                    border="15px"
+                    responsive={true}
+                  >
+                    {deviceSize === "phone" ? null : (
+                      <IconImg
+                        url={gif}
+                        width="390px"
+                        height="580px"
+                        backsize="cover"
+                        border="9px"
+                      ></IconImg>
+                    )}
+                  </HStack>
+                ) : null}
+                <VStack self="none" alignment="flex-start">
+                  {/* Title and subtitle */}
                   <HStack>
                     <TitleBold27 textcolor="white">Connect Wallet</TitleBold27>
                     <Spacer></Spacer>
@@ -683,502 +699,281 @@ function TopBar(props) {
                     Please select a wallet provider
                   </BodyRegular>
 
-                  <Divider></Divider>
-
-                  <VStack spacing="9px" width="100%">
-                    {/* XDC pay  */}
-                    <HStack
-                      cursor="pointer"
-                      background="rgb(0,0,0,0.3)"
-                      padding="9px"
-                      border="6px"
-                      whileTap={{
-                        scale:
-                          (window.ethereum?.publicConfigStore?._state
-                            ?.networkVersion === "50" ||
-                            window.ethereum?.publicConfigStore?._state
-                              ?.networkVersion === "51") &&
+                  {/* List of wallet options */}
+                  <VStack spacing="9px" width="100%" maxwidth="390px">
+                    {/* XDCPay */}
+                    <WalletConnectButtons
+                      isEnabled={
+                        (window.ethereum?.publicConfigStore?._state
+                          ?.networkVersion === "50" ||
                           window.ethereum?.publicConfigStore?._state
-                            ?.selectedAddress !== undefined
-                            ? 0.98
-                            : 1,
-                      }}
+                            ?.networkVersion === "51") &&
+                        window.ethereum?.publicConfigStore?._state
+                          ?.selectedAddress !== undefined
+                      }
                       onClick={() => {
                         setShowError(0);
                         connectXDCPay();
                         setIsXdcPay(true);
                       }}
-                    >
-                      <IconImg
-                        cursor="pointer"
-                        url={
-                          (window.ethereum?.publicConfigStore?._state
-                            ?.networkVersion === "50" ||
-                            window.ethereum?.publicConfigStore?._state
-                              ?.networkVersion === "51") &&
-                          window.ethereum?.publicConfigStore?._state
-                            ?.selectedAddress !== undefined
-                            ? XDClogo
-                            : XDClogoBW
-                        }
-                        width="30px"
-                        height="30px"
-                      ></IconImg>
-                      <BodyRegular
-                        cursor="pointer"
-                        textcolor={
-                          (window.ethereum?.publicConfigStore?._state
-                            ?.networkVersion === "50" ||
-                            window.ethereum?.publicConfigStore?._state
-                              ?.networkVersion === "51") &&
-                          window.ethereum?.publicConfigStore?._state
-                            ?.selectedAddress !== undefined
-                            ? "white"
-                            : "grey"
-                        }
-                      >
-                        XDC Pay
-                      </BodyRegular>
-                    </HStack>
-                    {/* Metamask   */}
-                    <HStack
-                      cursor="pointer"
-                      background="rgb(0,0,0,0.3)"
-                      padding="9px"
-                      border="6px"
-                      whileTap={{
-                        scale:
-                          window.ethereum?.isMetaMask &&
-                          window.ethereum?.isDcentWallet === undefined &&
-                          window.ethereum.chainId !== undefined
-                            ? 0.98
-                            : 1,
-                      }}
+                      enabledIcon={XDClogo}
+                      disabledIcon={XDClogoBW}
+                      walletName={"XDCPay"}
+                    ></WalletConnectButtons>
+                    {/* Metamask */}
+                    <WalletConnectButtons
+                      isEnabled={
+                        window.ethereum?.isMetaMask &&
+                        window.ethereum?.isDcentWallet === undefined &&
+                        window.ethereum.chainId !== undefined
+                      }
                       onClick={() => {
-                        setShowMetamask(true);
-                        setWalletOptions(false);
+                        setShowError(0);
+                        connectMetamask();
                       }}
-                    >
-                      <IconImg
-                        cursor="pointer"
-                        url={
-                          window.ethereum?.isMetaMask &&
-                          window.ethereum?.isDcentWallet === undefined &&
-                          window.ethereum.chainId !== undefined
-                            ? Metamask
-                            : MetamaskBW
-                        }
-                        width="30px"
-                        height="30px"
-                      ></IconImg>
-                      <BodyRegular
-                        cursor="pointer"
-                        textcolor={
-                          window.ethereum?.isMetaMask &&
-                          window.ethereum?.isDcentWallet === undefined &&
-                          window.ethereum.chainId !== undefined
-                            ? "white"
-                            : "grey"
-                        }
-                      >
-                        Metamask
-                      </BodyRegular>
-                    </HStack>
-                    {/* Dcent Wallet  */}
-                    <HStack
-                      cursor="pointer"
-                      background="rgb(0,0,0,0.3)"
-                      padding="9px"
-                      border="6px"
-                      whileTap={{
-                        scale:
-                          window.ethereum?.isDcentWallet &&
-                          window.ethereum.chainId !== undefined
-                            ? 0.98
-                            : 1,
-                      }}
+                      enabledIcon={Metamask}
+                      disabledIcon={MetamaskBW}
+                      walletName={"Metamask"}
+                    ></WalletConnectButtons>
+                    {/* D'Cent */}
+                    <WalletConnectButtons
+                      isEnabled={
+                        window.ethereum?.isDcentWallet &&
+                        window.ethereum.chainId !== undefined
+                      }
                       onClick={() => {
                         setShowError(0);
                         connectDcent();
                       }}
-                    >
-                      <IconImg
-                        cursor="pointer"
-                        url={
-                          window.ethereum?.isDcentWallet &&
-                          window.ethereum.chainId !== undefined
-                            ? dcentWallet
-                            : dcentWalletBW
-                        }
-                        width="30px"
-                        height="30px"
-                      ></IconImg>
-                      <BodyRegular
-                        cursor="pointer"
-                        textcolor={
-                          window.ethereum?.isDcentWallet &&
-                          window.ethereum.chainId !== undefined
-                            ? "white"
-                            : "grey"
-                        }
-                      >
-                        Dcent Wallet
-                      </BodyRegular>
-                    </HStack>
-                  </VStack>
-
-                  <CaptionRegular align="flex-start" textcolor="white">
-                    In order to only use XDCPay, please uninstall or disable
-                    Metamask from your browser
-                  </CaptionRegular>
-
-                  <CaptionRegular align="flex-start" textcolor="white">
-                    In order to only use Metamask, please configure Metamask to
-                    connect to the XDC network
-                  </CaptionRegular>
-
-                  <CaptionRegular align="flex-start" textcolor="white">
-                    In order to only use D'Cent, please connect to the XDC
-                    network on your D'Cent mobile app browser
-                  </CaptionRegular>
-
-                  <Spacer></Spacer>
-                  <CaptionBold textcolor="white">RECENT ALERTS</CaptionBold>
-                  {showError === 0 && (
-                    <HStack
-                      border="9px"
-                      padding="18px"
-                      background={appStyle.colors.darkgrey30}
-                      cursor="pointer"
-                    >
-                      <BodyRegular align="center" textcolor="white">
-                        No recent alerts
-                      </BodyRegular>
-                    </HStack>
-                  )}
-                  {showError === 2 && (
-                    <HStack
-                      border="9px"
-                      padding="18px"
-                      background={appStyle.colors.softRed}
-                      cursor="pointer"
-                    >
-                      <BodyRegular
-                        align="center"
-                        textcolor={appStyle.colors.darkRed}
-                      >
-                        Connection Error. Check your wallet connection and try
-                        again.
-                      </BodyRegular>
-                    </HStack>
-                  )}
-                  {showError === 1 && (
-                    <HStack
-                      border="9px"
-                      background={appStyle.colors.yellow}
-                      cursor="pointer"
-                      padding="18px"
-                    >
-                      <BodyRegular
-                        align="center"
-                        textcolor={appStyle.colors.darkYellow}
-                      >
-                        Metamask is not detected. Install the{" "}
-                        <a
-                          style={{
-                            "text-decoration": "underline",
-                            color: appStyle.colors.darkYellow,
-                          }}
-                          href="https://metamask.io/download/"
-                        >
-                          official wallet
-                        </a>{" "}
-                        to connect with our marketplace
-                      </BodyRegular>
-                    </HStack>
-                  )}
-                  {showError === 3 && (
-                    <HStack
-                      border="9px"
-                      background={appStyle.colors.yellow}
-                      cursor="pointer"
-                      padding="18px"
-                    >
-                      <BodyRegular
-                        align="center"
-                        textcolor={appStyle.colors.darkYellow}
-                      >
-                        It appears you are trying to connect using XDCPay.
-                        Connect to XDCPay using the XDC icon button.
-                      </BodyRegular>
-                    </HStack>
-                  )}
-                  {showError === 4 && (
-                    <HStack
-                      border="9px"
-                      padding="18px"
-                      background={appStyle.colors.softRed}
-                      cursor="pointer"
-                    >
-                      <BodyRegular
-                        align="center"
-                        textcolor={appStyle.colors.darkRed}
-                      >
-                        Metamask is not connected to the right network. Change
-                        the Metamask network to the configured XDC network.
-                      </BodyRegular>
-                    </HStack>
-                  )}
-                  {showError === 5 && (
-                    <HStack
-                      border="9px"
-                      background={appStyle.colors.yellow}
-                      cursor="pointer"
-                      padding="18px"
-                    >
-                      <BodyRegular
-                        align="center"
-                        textcolor={appStyle.colors.darkYellow}
-                      >
-                        XDCPay is not detected. Install the{" "}
-                        <a
-                          style={{
-                            "text-decoration": "underline",
-                            color: appStyle.colors.darkYellow,
-                          }}
-                          href="https://chrome.google.com/webstore/detail/xdcpay/bocpokimicclpaiekenaeelehdjllofo"
-                        >
-                          official wallet
-                        </a>{" "}
-                        to connect with our marketplace
-                      </BodyRegular>
-                    </HStack>
-                  )}
-                  {showError === 6 && (
-                    <HStack
-                      border="9px"
-                      background={appStyle.colors.yellow}
-                      cursor="pointer"
-                      padding="18px"
-                    >
-                      <BodyRegular
-                        align="center"
-                        textcolor={appStyle.colors.darkYellow}
-                      >
-                        DCent Wallet is not detected. Install the{" "}
-                        <a
-                          style={{
-                            "text-decoration": "underline",
-                            color: appStyle.colors.darkYellow,
-                          }}
-                          href="https://play.google.com/store/apps/details?id=com.kr.iotrust.dcent.wallet&hl=en_NZ&gl=US"
-                        >
-                          official wallet application
-                        </a>{" "}
-                        to connect with our marketplace
-                      </BodyRegular>
-                    </HStack>
-                  )}
-                </VStack>
-              ) : null}
-
-              {/* Metamask Information Modal */}
-              {showMetamask ? (
-                <VStack width="100%" height="100%" border="15px">
-                  <HStack
-                    self="none"
-                    background={({ theme }) => theme.walletButton}
-                    maxWidth={size.width < 429 ? "100%" : "560px"}
-                    padding="15px"
-                    border="15px"
-                    responsive={true}
-                  >
-                    {deviceSize === "phone" ? null : (
-                      <IconImg
-                        url={gif}
-                        width="280px"
-                        height="420px"
-                        backsize="cover"
-                        border="9px"
-                      ></IconImg>
-                    )}
-
-                    <VStack height="420px">
-                      <HStack>
-                        <Spacer></Spacer>
-                        <IconImg
-                          url={closeIcon}
-                          width="21px"
-                          height="21px"
-                          onClick={() => {
-                            setShowMetamask(false);
-                            setWalletOptions(true);
-                          }}
-                        ></IconImg>
-                      </HStack>
-                      <VStack alignment="flex-start">
-                        <HStack spacing="9px">
-                          <IconImg
-                            url={Metamask}
-                            width="49px"
-                            height="49px"
-                            backsize="cover"
-                            border="9px"
-                          ></IconImg>
-                          <TitleBold18
-                            textcolor={({ theme }) => theme.walletText}
-                          >
-                            Add XinFin Network to Metamask
-                          </TitleBold18>
-                        </HStack>
-                        <Spacer></Spacer>
-
-                        <HStack justify="flex-start">
-                          <CaptionRegular
-                            textcolor={({ theme }) => theme.walletText}
-                          >
-                            Network Name:
+                      enabledIcon={dcentWallet}
+                      disabledIcon={dcentWalletBW}
+                      walletName={"D'Cent"}
+                    ></WalletConnectButtons>
+                    {/* XDCPay Notice */}
+                    {(window.ethereum?.publicConfigStore?._state
+                      ?.networkVersion === "50" ||
+                      window.ethereum?.publicConfigStore?._state
+                        ?.networkVersion === "51") &&
+                      window.ethereum?.publicConfigStore?._state
+                        ?.selectedAddress !== undefined && (
+                        <CaptionRegular textcolor="white">
+                          In order to use XDCPay, please uninstall or disable
+                          Metamask.
+                        </CaptionRegular>
+                      )}
+                    {/* Metamask Notice */}
+                    {window.ethereum?.isMetaMask &&
+                      window.ethereum?.isDcentWallet === undefined &&
+                      window.ethereum.chainId !== undefined && (
+                        <>
+                          <CaptionRegular textcolor="white">
+                            In order to use Metamask, please make sure that
+                            XDCPay is uninstalled or disabled.
                           </CaptionRegular>
-                          <BodyRegular
-                            textcolor={({ theme }) => theme.walletText}
-                          >
-                            Xinfin Mainnet
-                          </BodyRegular>
-                        </HStack>
-
-                        <HStack justify="flex-start">
-                          <CaptionRegular
-                            textcolor={({ theme }) => theme.walletText}
-                          >
-                            URL:
-                          </CaptionRegular>
-                          <BodyRegular
-                            textcolor={({ theme }) => theme.walletText}
-                          >
-                            https://erpc.xinfin.network
-                          </BodyRegular>
-                        </HStack>
-
-                        <HStack justify="flex-start">
-                          <CaptionRegular
-                            textcolor={({ theme }) => theme.walletText}
-                          >
-                            Chain ID:
-                          </CaptionRegular>
-                          <BodyRegular
-                            textcolor={({ theme }) => theme.walletText}
-                          >
-                            50
-                          </BodyRegular>
-                        </HStack>
-
-                        <HStack justify="flex-start">
-                          <CaptionRegular
-                            textcolor={({ theme }) => theme.walletText}
-                          >
-                            Currency Symbol:
-                          </CaptionRegular>
-                          <BodyRegular
-                            textcolor={({ theme }) => theme.walletText}
-                          >
-                            XDC
-                          </BodyRegular>
-                        </HStack>
-
-                        <VStack alignment="flex-start" spacing="3px">
-                          <CaptionRegular
-                            textcolor={({ theme }) => theme.walletText}
-                          >
-                            Block Explorer URL:
-                          </CaptionRegular>
-                          <BodyRegular
-                            textcolor={({ theme }) => theme.walletText}
-                          >
-                            https://explorer.xinfin.network
-                          </BodyRegular>
-                        </VStack>
-                      </VStack>
-                      {deviceSize === "phone" ? (
-                        <IconImg
-                          url={gif}
-                          width="240px"
-                          height="360px"
-                          backsize="contain"
-                          border="9px"
-                        ></IconImg>
-                      ) : null}
-
-                      <Spacer></Spacer>
+                          <Divider></Divider>
+                          {showError === 4 && (
+                            <>
+                              <TitleBold18 textcolor="white">
+                                Add XinFin Network to Metamask
+                              </TitleBold18>
+                              <HStack justify="flex-start">
+                                <CaptionRegular
+                                  textcolor={({ theme }) => theme.walletText}
+                                >
+                                  Network Name:
+                                </CaptionRegular>
+                                <BodyRegular
+                                  textcolor={({ theme }) => theme.walletText}
+                                >
+                                  Xinfin Mainnet
+                                </BodyRegular>
+                              </HStack>
+                              <HStack justify="flex-start">
+                                <CaptionRegular
+                                  textcolor={({ theme }) => theme.walletText}
+                                >
+                                  URL:
+                                </CaptionRegular>
+                                <BodyRegular
+                                  textcolor={({ theme }) => theme.walletText}
+                                >
+                                  https://erpc.xinfin.network
+                                </BodyRegular>
+                              </HStack>
+                              <HStack justify="flex-start">
+                                <CaptionRegular
+                                  textcolor={({ theme }) => theme.walletText}
+                                >
+                                  Chain ID:
+                                </CaptionRegular>
+                                <BodyRegular
+                                  textcolor={({ theme }) => theme.walletText}
+                                >
+                                  50
+                                </BodyRegular>
+                              </HStack>
+                              <HStack justify="flex-start">
+                                <CaptionRegular
+                                  textcolor={({ theme }) => theme.walletText}
+                                >
+                                  Currency Symbol:
+                                </CaptionRegular>
+                                <BodyRegular
+                                  textcolor={({ theme }) => theme.walletText}
+                                >
+                                  XDC
+                                </BodyRegular>
+                              </HStack>
+                              <HStack justify="flex-start">
+                                <CaptionRegular
+                                  textcolor={({ theme }) => theme.walletText}
+                                >
+                                  Block Explorer URL:
+                                </CaptionRegular>
+                                <BodyRegular
+                                  textcolor={({ theme }) => theme.walletText}
+                                >
+                                  https://explorer.xinfin.network
+                                </BodyRegular>
+                              </HStack>
+                              <Divider></Divider>
+                            </>
+                          )}
+                        </>
+                      )}
+                    {/* D'Cent Notice */}
+                    {window.ethereum?.isDcentWallet &&
+                      window.ethereum.chainId !== undefined && (
+                        <CaptionRegular textcolor="white">
+                          In order to use D'Cent, please connect to the XDC
+                          network on your D'Cent mobile app browser.
+                        </CaptionRegular>
+                      )}
+                    {/* Alert Window */}
+                    <CaptionBold textcolor="white">RECENT ALERTS</CaptionBold>
+                    {showError === 0 && (
                       <HStack
-                        whileHover={{ opacity: 0.8 }}
-                        whileTap={{ scale: 0.98 }}
-                        background="blue"
-                        minheight="39px"
                         border="9px"
+                        padding="18px"
+                        background={appStyle.colors.darkgrey30}
                         cursor="pointer"
-                        onClick={() => {
-                          setShowError(0);
-                          connectMetamask();
-                        }}
                       >
-                        <BodyBold cursor="pointer" textcolor="white">
-                          Connect Metamask
-                        </BodyBold>
+                        <BodyRegular align="center" textcolor="white">
+                          No recent alerts
+                        </BodyRegular>
                       </HStack>
-
-                      {showError === 0 && null}
-                      {showError === 1 && (
-                        <HStack
-                          whileHover={{ opacity: 0.8 }}
-                          whileTap={{ scale: 0.98 }}
-                          minheight="39px"
-                          border="9px"
-                          bordersize="1px"
-                          bordercolor={appStyle.colors.yellow}
-                          background={appStyle.colors.yellow}
-                          cursor="pointer"
+                    )}
+                    {showError === 1 && (
+                      <HStack
+                        border="9px"
+                        background={appStyle.colors.yellow}
+                        cursor="pointer"
+                        padding="18px"
+                      >
+                        <BodyRegular
+                          align="center"
+                          textcolor={appStyle.colors.darkYellow}
                         >
-                          <BodyBold textcolor={appStyle.colors.darkYellow}>
-                            <a href="https://metamask.io/download/">
-                              Install Metamask
-                            </a>
-                          </BodyBold>
-                        </HStack>
-                      )}
-                      {showError === 2 && (
-                        <HStack
-                          whileHover={{ opacity: 0.8 }}
-                          whileTap={{ scale: 0.98 }}
-                          minheight="39px"
-                          border="9px"
-                          bordersize="1px"
-                          background={appStyle.colors.softRed}
-                          cursor="pointer"
+                          Metamask is not detected. Install the{" "}
+                          <a
+                            style={{
+                              "text-decoration": "underline",
+                              color: appStyle.colors.darkYellow,
+                            }}
+                            href="https://metamask.io/download/"
+                          >
+                            official wallet
+                          </a>{" "}
+                          to connect to the marketplace.
+                        </BodyRegular>
+                      </HStack>
+                    )}
+                    {showError === 2 && (
+                      <HStack
+                        border="9px"
+                        padding="18px"
+                        background={appStyle.colors.softRed}
+                        cursor="pointer"
+                      >
+                        <BodyRegular
+                          align="center"
+                          textcolor={appStyle.colors.darkRed}
                         >
-                          <BodyBold textcolor={appStyle.colors.darkRed}>
-                            Connection Error
-                          </BodyBold>
-                        </HStack>
-                      )}
-                      {showError === 4 && (
-                        <HStack
-                          whileHover={{ opacity: 0.8 }}
-                          whileTap={{ scale: 0.98 }}
-                          minheight="39px"
-                          border="9px"
-                          bordersize="1px"
-                          background={appStyle.colors.softRed}
-                          cursor="pointer"
+                          Connection Error. Check your wallet connection and try
+                          again.
+                        </BodyRegular>
+                      </HStack>
+                    )}
+                    {showError === 4 && (
+                      <HStack
+                        border="9px"
+                        padding="18px"
+                        background={appStyle.colors.softRed}
+                        cursor="pointer"
+                      >
+                        <BodyRegular
+                          align="center"
+                          textcolor={appStyle.colors.darkRed}
                         >
-                          <BodyBold textcolor={appStyle.colors.darkRed}>
-                            Connect to XDC Mainnet
-                          </BodyBold>
-                        </HStack>
-                      )}
-                    </VStack>
-                  </HStack>
+                          Metamask failed to connect to the right network.
+                          Please change the Metamask network to the configured
+                          XDC network manually.
+                        </BodyRegular>
+                      </HStack>
+                    )}
+                    {showError === 5 && (
+                      <HStack
+                        border="9px"
+                        background={appStyle.colors.yellow}
+                        cursor="pointer"
+                        padding="18px"
+                      >
+                        <BodyRegular
+                          align="center"
+                          textcolor={appStyle.colors.darkYellow}
+                        >
+                          XDCPay is not detected. Install the{" "}
+                          <a
+                            style={{
+                              "text-decoration": "underline",
+                              color: appStyle.colors.darkYellow,
+                            }}
+                            href="https://chrome.google.com/webstore/detail/xdcpay/bocpokimicclpaiekenaeelehdjllofo"
+                          >
+                            official wallet
+                          </a>{" "}
+                          to connect with our marketplace
+                        </BodyRegular>
+                      </HStack>
+                    )}
+                    {showError === 6 && (
+                      <HStack
+                        border="9px"
+                        background={appStyle.colors.yellow}
+                        cursor="pointer"
+                        padding="18px"
+                      >
+                        <BodyRegular
+                          align="center"
+                          textcolor={appStyle.colors.darkYellow}
+                        >
+                          DCent Wallet is not detected. Install the{" "}
+                          <a
+                            style={{
+                              "text-decoration": "underline",
+                              color: appStyle.colors.darkYellow,
+                            }}
+                            href="https://play.google.com/store/apps/details?id=com.kr.iotrust.dcent.wallet&hl=en_NZ&gl=US"
+                          >
+                            official wallet application
+                          </a>{" "}
+                          to connect with our marketplace
+                        </BodyRegular>
+                      </HStack>
+                    )}
+                  </VStack>
                 </VStack>
-              ) : null}
+              </HStack>
             </VStack>
           </MetamaskSteps>
         </AnimatePresence>
@@ -1200,13 +995,6 @@ const ContentBar = styled(motion.div)`
   z-index: 10;
 `;
 
-const SlideMenu = styled(motion.div)`
-  position: fixed;
-  top: 60px;
-  right: 10px;
-  z-index: 1;
-`;
-
 const SlideMenuTablet = styled(motion.div)`
   position: fixed;
   top: ${(props) => props.top};
@@ -1220,11 +1008,6 @@ const SlideMenuTablet = styled(motion.div)`
   box-sizing: border-box;
 `;
 
-const Connect = styled(motion.div)`
-  position: relative;
-  // left: -16px;
-`;
-
 const MetamaskSteps = styled(motion.div)`
   position: absolute;
   top: 0px;
@@ -1232,10 +1015,4 @@ const MetamaskSteps = styled(motion.div)`
   width: 100vw;
   height: 100vh;
   z-index: 100;
-`;
-
-const RedBubble = styled(motion.div)`
-  position: absolute;
-  right: -6px;
-  top: 0px;
 `;

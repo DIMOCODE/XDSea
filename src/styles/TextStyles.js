@@ -102,7 +102,7 @@ export const TitleBold27 = styled(motion.h2).attrs((props) => ({
   align: props.align || "left",
 }))`
   font-style: normal;
-  font-weight: bold;
+  font-weight: 600;
   font-size: 27px;
   letter-spacing: -0.03em;
   line-height: 33px;
@@ -141,7 +141,7 @@ export const TitleBold21 = styled(motion.h2).attrs((props) => ({
   align: props.align || "left",
 }))`
   font-style: normal;
-  font-weight: bold;
+  font-weight: 600;
   font-size: 21px;
   color: ${(props) => props.textcolor};
   display: ${(props) => props.display};
@@ -175,12 +175,15 @@ export const TitleRegular21 = styled(motion.h2).attrs((props) => ({
 
 export const TitleBold18 = styled(motion.h3).attrs((props) => ({
   textcolor: props.textcolor || props.theme.text,
+  align: props.align,
 }))`
   font-style: normal;
   font-weight: bold;
   letter-spacing: -0.04em;
   font-size: 18px;
   color: ${(props) => props.textcolor};
+  text-align: ${(props) => props.align};
+  margin-bottom: 0px;
 `;
 
 export const TitleSemi18 = styled(motion.h3).attrs((props) => ({
@@ -206,6 +209,7 @@ export const TitleRegular18 = styled(motion.h3).attrs((props) => ({
   text-align: ${(props) => props.align};
   width: ${(props) => props.width};
   color: ${(props) => props.textcolor};
+  margin-bottom: 0px;
 `;
 
 export const SubtTitleRegular18 = styled(motion.h3).attrs((props) => ({
@@ -359,6 +363,7 @@ export const CaptionBoldShort = styled(motion.p).attrs((props) => ({
   padding: props.padding || "0px",
   cursor: props.cursor || "default",
   marginBottom: props.marginBottom || "0px",
+  texttransform: props.texttransform || null,
 }))`
   text-align: ${(props) => props.align};
   font-weight: 800;
@@ -374,6 +379,7 @@ export const CaptionBoldShort = styled(motion.p).attrs((props) => ({
   -moz-user-select: -moz-none;
   -o-user-select: none;
   user-select: none;
+  text-transform: ${(props) => props.texttransform};
 `;
 
 export const CaptionSmallRegular = styled(motion.p).attrs((props) => ({
@@ -389,6 +395,29 @@ export const CaptionSmallRegular = styled(motion.p).attrs((props) => ({
   letter-spacing: -0.01em;
   padding: ${(props) => props.padding};
   color: ${(props) => props.textcolor};
+  cursor: ${(props) => props.cursor};
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: -moz-none;
+  -o-user-select: none;
+  user-select: none;
+`;
+
+export const CaptionTiny = styled(motion.p).attrs((props) => ({
+  textcolor: props.textcolor || props.theme.text,
+  align: props.align || "Left",
+  padding: props.padding || "0px",
+  cursor: props.cursor || "default",
+  marginBottom: props.marginBottom || "0px",
+}))`
+  text-align: ${(props) => props.align};
+  font-weight: 800;
+  font-size: 9px;
+  line-height: 15px;
+  letter-spacing: -0.01em;
+  padding: ${(props) => props.padding};
+  color: ${(props) => props.textcolor};
+  margin-bottom: ${(props) => props.marginBottom};
   cursor: ${(props) => props.cursor};
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -441,6 +470,7 @@ export const CaptionMedium = styled(motion.p).attrs((props) => ({
   -moz-user-select: -moz-none;
   -o-user-select: none;
   user-select: none;
+  text-transform: uppercase;
 `;
 
 export const CaptionCrypto = styled.p.attrs((props) => ({

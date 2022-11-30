@@ -552,6 +552,7 @@ function CreateNft(props) {
                   image: nftUrl,
                   fileType: nft.fileType,
                   preview: previewUrl,
+                  unlockableContent: unlockableContent,
                 });
                 const added = await client.add(uploadData);
                 const url = `https://xdsea.infura-ipfs.io/ipfs/${added.path}`;
@@ -660,7 +661,9 @@ function CreateNft(props) {
           await createNFT(
             collectionCreation._id,
             tokenId,
-            isXdc(wallet?.address) ? fromXdc(wallet?.address.toLowerCase()) : wallet?.address.toLowerCase(),
+            isXdc(wallet?.address)
+              ? fromXdc(wallet?.address.toLowerCase())
+              : wallet?.address.toLowerCase(),
             nftmarketlayeraddress.toLowerCase(),
             price,
             royalty,
@@ -669,7 +672,8 @@ function CreateNft(props) {
             nftUrl,
             nft.fileType,
             previewURL,
-            filteredProperties
+            filteredProperties,
+            unlockableContent
           )
         ).data.nft;
       } else {
@@ -680,7 +684,9 @@ function CreateNft(props) {
           await createNFT(
             collectionId,
             tokenId,
-            isXdc(wallet?.address) ? fromXdc(wallet?.address.toLowerCase()) : wallet?.address.toLowerCase(),
+            isXdc(wallet?.address)
+              ? fromXdc(wallet?.address.toLowerCase())
+              : wallet?.address.toLowerCase(),
             nftmarketlayeraddress.toLowerCase(),
             price,
             royalty,
@@ -689,7 +695,8 @@ function CreateNft(props) {
             nftUrl,
             nft.fileType,
             previewURL,
-            filteredProperties
+            filteredProperties,
+            unlockableContent
           )
         ).data.nft;
       }
@@ -700,7 +707,6 @@ function CreateNft(props) {
           "urlFile",
           nftCreation._id
         );
-        console.log("update s3 result: ", success, nftCreation._id);
       }
       setMintButtonStatus(3);
       setMinted(true);
@@ -856,7 +862,13 @@ function CreateNft(props) {
               mintName={name}
               mintedNFT={assetURL}
               confirmActionModal={() => {
-                props.redirect(`nft/${isXdc(nftaddress) ? nftaddress.toLowerCase() : toXdc(nftaddress.toLowerCase())}/${tokenId}`);
+                props.redirect(
+                  `nft/${
+                    isXdc(nftaddress)
+                      ? nftaddress.toLowerCase()
+                      : toXdc(nftaddress.toLowerCase())
+                  }/${parseInt(tokenId, 16)}`
+                );
               }}
             ></TxModal>
           </VStack>
@@ -1334,7 +1346,7 @@ function CreateNft(props) {
                         width={size.width < 768 ? "390px" : "540px"}
                         height="210px"
                         backsize="cover"
-                        border="9px"
+                        border="6px"
                         file={collectionBanner}
                         button={"upload-button-collection"}
                         description="Collection Banner"
@@ -1349,10 +1361,12 @@ function CreateNft(props) {
                       {collectionBanner.raw !== "" && (
                         <ButtonsBanner>
                           <HStack
-                            width="540px"
+                            width="510px"
                             padding="15px"
                             height="213px"
                             alignment="flex-end"
+                            border="9px"
+                            overflow="hidden"
                           >
                             <ButtonApp
                               text="Clear"

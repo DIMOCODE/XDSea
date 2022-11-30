@@ -17,7 +17,7 @@ function CollectionTab(props) {
   } = props;
 
   const color = {
-    hover: { background: "rgba(255, 255, 255, 0.1)" },
+    hover: { background: "rgba(0, 0, 0, 0.1)" },
     initial: { background: "rgba(255, 255, 255, 1)" },
   };
 
@@ -49,15 +49,8 @@ function CollectionTab(props) {
           });
           onSelect(filterId, false);
         }
-        
       }}
-      animate={
-        isSelected
-          ? "initial"
-          : isVisible
-          ? "initial"
-          : "hover"
-      }
+      animate={isSelected ? "initial" : isVisible ? "initial" : "hover"}
       variants={color}
       onHoverStart={() => setIsVisible(true)}
       onHoverEnd={() => setIsVisible(false)}
@@ -73,11 +66,7 @@ function CollectionTab(props) {
       <BodyRegular
         cursor="pointer"
         textcolor={
-          isSelected
-            ? "black"
-            : isVisible
-            ? "black"
-            : "white"
+          isSelected ? "black" : isVisible ? "black" : "rgba(0,0,0,0.6)"
         }
       >
         {name || "Collection Name"}
