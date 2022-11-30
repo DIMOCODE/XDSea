@@ -57,13 +57,6 @@ function TokenInfo(props) {
 
   const updateRewardRate = async () => {
     try {
-      console.log(
-        stakingaddress,
-        wallet?.address,
-        newRewardRate,
-        unparsedRewardFrequency,
-        rewardStartTime
-      );
       const success = await UpdateRewards(
         stakingaddress,
         isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address,
@@ -185,7 +178,7 @@ function TokenInfo(props) {
                   ></ButtonIcon>
                 </HStack>
               </>
-            ) : isCreator ? (
+            ) : false ? (
               <HStack width="100%">
                 <HStack
                   width="80%"
@@ -276,7 +269,7 @@ function TokenInfo(props) {
                   ></ButtonIcon>
                 </HStack>
               </>
-            ) : isCreator ? (
+            ) : false ? (
               <HStack width="100%">
                 <HStack
                   width="80%"

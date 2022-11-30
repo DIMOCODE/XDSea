@@ -48,7 +48,6 @@ function TableOffersNft(props) {
               spacing="6px"
               onClick={() => props.redirect(`user/${offerUser}`)}
             >
-              {console.log(offerBy)}
               <IconImg
                 url={imageBuyer}
                 width="18px"

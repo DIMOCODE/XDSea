@@ -101,7 +101,7 @@ function BlockTVL(props) {
         <VStack alignment="flex-start" width="100%">
           <TitleBold15>Lock Period</TitleBold15>
           <HStack spacing="6px">
-            {props?.isCreator ? 
+            {false ? 
               isEditingLockIn ? (
                 <>
                   <InputStyled
@@ -206,7 +206,7 @@ function BlockTVL(props) {
         </VStack>
       </HStack>
 
-      {props?.isCreator && (
+      {/* {props?.isCreator && (
         <HStack>
           <ButtonM
             title="Add/Remove NFT"
@@ -223,7 +223,7 @@ function BlockTVL(props) {
             height="52px"
           ></ButtonM>
         </HStack>
-      )}            
+      )}             */}
     </VStack>
   );
 }

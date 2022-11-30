@@ -189,7 +189,6 @@ const Discover = (props) => {
    * @param {*} params - Collection Search Params
    */
   const updateCollections = async (params) => {
-    console.log(params);
     const collectionData = await (await getCollections(params)).data;
 
     setCollections(collectionData.collections);

@@ -97,10 +97,7 @@ function TokenSelector(props) {
                   >
                     <TabToken
                       image={
-                        reward.rewardTypeId?.addressContract ===
-                        "0x0000000000000000000000000000000000000000"
-                          ? xdc
-                          : reward.rewardTypeId?.url
+                        xdc
                       }
                       name={reward.rewardTypeId?.name}
                     ></TabToken>

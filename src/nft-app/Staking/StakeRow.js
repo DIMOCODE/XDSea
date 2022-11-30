@@ -18,7 +18,9 @@ function StakeRow(props) {
   const { image, title, price, backedValue, rewardRate, startDate, rewardFrequency, oneToken, usdPrice, stakeData, redirect, isCreator, isOwner, isStake } = props;
 
   return (
-    <HStack responsive={true} spacing="21px">
+    <HStack responsive={true} spacing="21px" 
+    padding="30px 15px 30px 15px"
+    width="100%">
       {/* NFT with Stake */}
       <NftMiniDetails
         width={size.width > 428 ? "72%" : "100%"}

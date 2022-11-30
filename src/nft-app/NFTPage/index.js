@@ -239,7 +239,6 @@ const NFTDetails = (props) => {
         setStakeModal(false);
       }, 3500);
     } catch (error) {
-      console.log("error.....");
       console.info(error);
     }
   };
@@ -1134,7 +1133,6 @@ const NFTDetails = (props) => {
                           </LockedContent>
                         ) : null}
 
-                        {console.log(nft?.name)}
                       </VStack>
                     </>
                   ) : isVideo(nft?.fileType) ? (

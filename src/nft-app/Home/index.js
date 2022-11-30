@@ -254,7 +254,7 @@ const Home = (props) => {
               height={size.width > 440 ? "460px" : "150px"}
               backsize="cover"
               cursor="pointer"
-              onClick={() => props.redirect("discover/collections")}
+              onClick={() => props.redirect("collection/XDSEA-MONKEYS-ORIGINAL-ART")}
             ></IconImg>
           </SwiperSlide>
 

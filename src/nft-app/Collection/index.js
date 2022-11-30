@@ -190,6 +190,8 @@ const CollectionPage = (props) => {
                 stakeable: true,
                 page: stakingParams.page + 1,
               });
+              const stakesData = await getStakes(stakingParams.page, collection._id);
+              setStakes([...stakes, ...stakesData.data.stakes]);
             }
           })
         );
@@ -230,6 +232,18 @@ const CollectionPage = (props) => {
       page: params.page + 1,
     });
     setNfts([...nfts, ...collectionNFTData]);
+  };
+
+  const fetchMoreStakes = async () => {
+    const stakesNFTData = await(await getNFTs(stakingParams)).data.nfts;
+    const stakesData = await getStakes(stakingParams.page, collection._id);
+    setStakes([...stakes, ...stakesData.data.stakes]);
+
+    setStakingParams({
+      ...stakingParams,
+      page: stakingParams.page + 1,
+    });
+    setStakingNFTs([...stakingNFTs, ...stakesNFTData]);
   };
 
   /**
@@ -303,10 +317,6 @@ const CollectionPage = (props) => {
     }
     setDepositing(false);
   };
-
-  useEffect(() => {
-    if (isStake) getStakesData();
-  }, [isStake]);
 
   /**
    * React Hook to re-render when the search term state value is changed
@@ -760,6 +770,7 @@ const CollectionPage = (props) => {
                 : props?.wallet?.address
             }
             nftsCount={stakingNFTsNumber}
+            fetchMoreStakes={fetchMoreStakes}
             setNftsCount={setStakingNFTsNumber}
             setWithdrawModal={setWithdrawing}
             setDepositModal={setDepositing}

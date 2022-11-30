@@ -34,6 +34,8 @@ import { BlockTVL } from "../Collection/TVL/BlockTVL";
 import { TokenSelector } from "../Collection/TokenSelector/TokenSelector";
 import { HolderSection } from "../Collection/HoldersSection";
 import { TopInventory } from "../Collection/Inventory/TopInventory";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { LoopLogo } from "../../styles/LoopLogo";
 
 function StakeSection(props) {
   const {
@@ -49,11 +51,14 @@ function StakeSection(props) {
     nftsCount,
     setWithdrawModal,
     setDepositModal,
+    fetchMoreStakes,
   } = props;
 
   const parseLockPeriod = (hours) => {
-    if (hours === 1) {
-      return "1 hrs";
+    if (hours === 0 || hours === undefined) {
+      return "0 hrs";
+    } else if (hours === 1) {
+      return `1 hrs`;
     } else if (hours < 24) {
       return hours + " hrs";
     } else if (hours === 24) {
@@ -73,7 +78,6 @@ function StakeSection(props) {
 
   const getStake = (id) => {
     var stake = {};
-    console.log(stakes);
     if (stakes?.length !== 0) {
       stakes?.map((stakeData) => {
         if (stakeData.nftId._id === id) {
@@ -120,36 +124,52 @@ function StakeSection(props) {
       <VStack
         background={({ theme }) => theme.backElement}
         border="6px"
-        padding="30px 15px 30px 15px"
-        spacing="26px"
         width="100%"
+        id="scrollableDiv"
       >
         {/* Collection Title  with back button*/}
         {/* <TopBarStake collection={collection}></TopBarStake> */}
 
         {/* NFTS with Staking Option */}
-        {nfts?.map((nft, i) => (
-          <>
-            <StakeRow
-              image={nft.urlFile.v0}
-              title={nft.name}
-              price={nft.price}
-              backedValue={stakingPool?.isBackedValue ? nft.backedValue : 1}
-              oneToken={stakingPool?.rewardRates?.length > 1 ? false : true}
-              rewardRate={stakingPool?.rewardRates}
-              startDate={stakingPool?.createdAt}
-              rewardFrequency={stakingPool?.rewardFrecuency}
-              usdPrice={usdPrice}
-              stakeData={getStake(nft._id)}
-              redirect={() => props?.redirect(`nft/${nft?.nftContract}/${nft?.tokenId}`)}
-              isOwner={!nft?.addressCreator === wallet?.address && nft?.addressOwner === wallet?.address}
-              isStake={nft?.isStake}
-              isCreator={nft?.addressCreator === wallet?.address}
-            ></StakeRow>
+        <InfiniteScroll
+          dataLength={nfts.length}
+          next={fetchMoreStakes}
+          hasMore={nfts.length < nftsCount}
+          loader={
+            <HStack
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              height="190px"
+            >
+              <LoopLogo></LoopLogo>
+            </HStack>
+          }
+          scrollableTarget="#scrollableDiv"
+          style={{ overflow: "hidden" }}
+        >
+          {nfts?.map((nft, i) => (
+            <>
+              <StakeRow
+                image={nft.urlFile.v0}
+                title={nft.name}
+                price={nft.price}
+                backedValue={stakingPool?.isBackedValue ? nft.backedValue : 1}
+                oneToken={stakingPool?.rewardRates?.length > 1 ? false : true}
+                rewardRate={stakingPool?.rewardRates}
+                startDate={stakingPool?.createdAt}
+                rewardFrequency={stakingPool?.rewardFrecuency}
+                usdPrice={usdPrice}
+                stakeData={getStake(nft._id)}
+                redirect={() => props?.redirect(`nft/${nft?.nftContract}/${nft?.tokenId}`)}
+                isOwner={!nft?.addressCreator === wallet?.address && nft?.addressOwner === wallet?.address}
+                isStake={nft?.isStake}
+                isCreator={nft?.addressCreator === wallet?.address}
+              ></StakeRow>
 
-            {i !== nfts.length - 1 && <Separator></Separator>}
-          </>
-        ))}
+              {i !== nfts.length - 1 && <Separator></Separator>}
+            </>
+          ))}
+        </InfiniteScroll>
       </VStack>
     </VStack>
   );

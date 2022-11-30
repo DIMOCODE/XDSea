@@ -341,7 +341,6 @@ const MyNFT = (props) => {
   }
 
   const handleCollectionFilter = (i, isNew) => {
-    console.log(isCollectionFilterSelected);
     const newIsCollectionFilterSelected = new Array(
       isCollectionFilterSelected.length
     ).fill(false);

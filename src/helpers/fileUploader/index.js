@@ -44,7 +44,6 @@ export const uploadFileInS3Bucket = async (
         const body = { [key]: url };
         resp = await updateUser(body);
       }
-      console.log("la data ....", resp.data);
       return true;
     } catch (error) {
       console.log("Error on updating the model");

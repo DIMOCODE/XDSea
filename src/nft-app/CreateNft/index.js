@@ -707,7 +707,6 @@ function CreateNft(props) {
           "urlFile",
           nftCreation._id
         );
-        console.log("update s3 result: ", success, nftCreation._id);
       }
       setMintButtonStatus(3);
       setMinted(true);

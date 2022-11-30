@@ -86,7 +86,6 @@ function SearchPage(props) {
       await getCollections(collectionParams)
     ).data;
     setCollectionData([...collectionData, ...collectionResults.collections]);
-    console.log(collectionParams);
     setCollectionParams((prevState) => ({
       ...prevState,
       page: prevState.page + 1,
@@ -146,7 +145,6 @@ function SearchPage(props) {
   const fetchMoreNFTs = async () => {
     const nftResults = await (await getNFTs(nftParams)).data;
 
-    console.log(nftParams);
     setNftData([...nftData, ...nftResults.nfts]);
     setNftParams({
       ...nftParams,
