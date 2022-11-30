@@ -15,14 +15,14 @@ import speakeasy from "speakeasy";
  * @return {[Promise<Any>]} Axios Promise Response
  */
 export const anonymousLogin = (address) => {
-  // const code = speakeasy.totp({
-  //   secret: process.env.REACT_APP_TOTP_SECRET,
-  //   step: 14,
-  // });
+  const code = speakeasy.totp({
+    secret: process.env.REACT_APP_TOTP_SECRET,
+    step: 14,
+  });
   const body = {
     XDCWallet: address,
   };
-  // const headers = { "x-auth-code": code };
+  const headers = { "x-auth-code": code };
 
   return createRequest(HTTP_METHODS.post, "anonymous/access", null, body);
 };
