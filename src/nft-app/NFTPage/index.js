@@ -224,23 +224,30 @@ const NFTDetails = (props) => {
   };
 
   const stakeNFT = async () => {
-    var success = await StakeNFT(stakingaddress, id, wallet?.address);
-    if (success) {
-      var stakeData = await(await createStake(nft?._id, stakingPool?._id)).data;
-      // setStake(stakeData?.stake);
-    } else {
-      console.log("Stake failed");
+    try {
+      var success = await StakeNFT(stakingaddress, id, wallet?.address);
+      if (success) {
+        var stakeData = await (
+          await createStake(nft?._id, stakingPool?._id)
+        ).data;
+        // setStake(stakeData?.stake);
+      } else {
+        console.log("Stake failed");
+      }
+      setActions(actions + 1);
+      setTimeout(() => {
+        setStakeModal(false);
+      }, 3500);
+    } catch (error) {
+      console.log("error.....");
+      console.info(error);
     }
-    setActions(actions + 1);
-    setTimeout(() => {
-      setStakeModal(false);
-    }, 3500);
   };
 
   const withdrawStakeNFT = async () => {
     setWithdrawStakeStatus(1);
     var success = await WithdrawStake(stakingaddress, id, wallet?.address);
-    if(success) {
+    if (success) {
       setWithdrawStakeStatus(3);
       await withdrawStake(stake?._id);
     } else {
@@ -253,9 +260,17 @@ const NFTDetails = (props) => {
   };
 
   const claimReward = async () => {
-    var success = await ClaimRewards(stakingaddress, id, "0x0000000000000000000000000000000000000000", wallet?.address);
+    var success = await ClaimRewards(
+      stakingaddress,
+      id,
+      "0x0000000000000000000000000000000000000000",
+      wallet?.address
+    );
     if (success) {
-      await claimStakeReward(stake?._id, stakingPool?.rewardRates[0]?.rewardTypeId?._id);
+      await claimStakeReward(
+        stake?._id,
+        stakingPool?.rewardRates[0]?.rewardTypeId?._id
+      );
     } else {
       console.log("Claim failed");
     }
@@ -263,7 +278,7 @@ const NFTDetails = (props) => {
     setTimeout(() => {
       setStakeModal(false);
     }, 3500);
-  }
+  };
 
   /**
    * Start the placing offer process
@@ -574,7 +589,9 @@ const NFTDetails = (props) => {
         )
       ).data;
 
-      setStakingPool(nftData.stakingPool);
+      setStakingPool(
+        nftData.stake ? nftData.stake.stakingPoolId : nftData.stakingPool
+      );
       setStake(nftData?.stake);
 
       await Promise.all(
@@ -739,7 +756,9 @@ const NFTDetails = (props) => {
                         ></IconImg>
                         <CaptionBoldShort>Removed from Pool</CaptionBoldShort>
                       </HStack>
-                    ) : <></>,
+                    ) : (
+                      <></>
+                    ),
                   price: item.price,
                   from: truncate(
                     await getXdcDomainAddress(item.fromAddress),
@@ -850,7 +869,17 @@ const NFTDetails = (props) => {
   return (
     <NFTPage>
       {/* Stake Modal goes here */}
-      {isStakeModal && <StakingModal nft={nft} oneToken={true} rewardRate={stakingPool?.rewardRates} rewardFrequency={stakingPool?.rewardRates[0]?.rewardFrecuency} setStakeModal={setStakeModal} stakeNFT={stakeNFT} claimReward={claimReward}></StakingModal>}
+      {isStakeModal && (
+        <StakingModal
+          nft={nft}
+          oneToken={true}
+          rewardRate={stakingPool?.rewardRates}
+          rewardFrequency={stakingPool?.rewardRates[0]?.rewardFrecuency}
+          setStakeModal={setStakeModal}
+          stakeNFT={stakeNFT}
+          claimReward={claimReward}
+        ></StakingModal>
+      )}
 
       {processingOffer ? (
         <TxModal
@@ -1788,21 +1817,22 @@ const NFTDetails = (props) => {
                       </>
                     )
                   ) : nft?.inBlacklist ? null : nft?.addressOwner.toLowerCase() ===
-                      (isXdc(wallet?.address)
-                        ? fromXdc(wallet?.address.toLowerCase())
-                        : wallet?.address.toLowerCase()) ? 
-                          nft?.isStake ? (
+                    (isXdc(wallet?.address)
+                      ? fromXdc(wallet?.address.toLowerCase())
+                      : wallet?.address.toLowerCase()) ? (
+                    nft?.isStake ? (
                       <>
-                        <StakeBtn claimButton={true} onClick={() => setStakeModal(true)}></StakeBtn>
+                        <StakeBtn
+                          claimButton={true}
+                          onClick={() => setStakeModal(true)}
+                        ></StakeBtn>
                         <ButtonApp
                           btnStatus={withdrawStakeStatus}
                           func={"WithdrawStake"}
                           icon={tagWhite}
                           iconWidth="21px"
                           iconHeight="21px"
-                          text={
-                            "Withdraw Stake"
-                          }
+                          text={"Withdraw Stake"}
                           onClick={() => {
                             withdrawStakeNFT();
                           }}
@@ -1812,8 +1842,7 @@ const NFTDetails = (props) => {
                           background={({ theme }) => theme.blue}
                         ></ButtonApp>
                       </>
-                          ) :
-                        (
+                    ) : (
                       <>
                         <TransferBtn
                           status={transferButtonStatus}
@@ -1821,12 +1850,15 @@ const NFTDetails = (props) => {
                             startTransfer();
                           }}
                         ></TransferBtn>
-                        {nft?.isStakeable && !nft?.isStake &&
+                        {nft?.isStakeable &&
+                          !nft?.isStake &&
                           nft?.addressCreator.toLowerCase() !==
                             (isXdc(wallet?.address)
                               ? fromXdc(wallet?.address.toLowerCase())
                               : wallet?.address.toLowerCase()) && (
-                            <StakeBtn onClick={() => setStakeModal(true)}></StakeBtn>
+                            <StakeBtn
+                              onClick={() => setStakeModal(true)}
+                            ></StakeBtn>
                           )}
                         <ButtonApp
                           icon={tagWhite}
@@ -1844,24 +1876,25 @@ const NFTDetails = (props) => {
                           background={({ theme }) => theme.blue}
                         ></ButtonApp>
                       </>
-                    ) : (
-                      <ButtonApp
-                        btnStatus={offerButtonStatus}
-                        func={"Offer"}
-                        icon={star}
-                        iconWidth="21px"
-                        iconHeight="21px"
-                        text="Place Offer"
-                        onClick={() => {
-                          placeOffer();
-                        }}
-                        cursor="pointer"
-                        textcolor={({ theme }) => theme.walletText}
-                        width="100%"
-                        background={({ theme }) => theme.blackLinear}
-                      ></ButtonApp>
                     )
-                  ) : null}
+                  ) : (
+                    <ButtonApp
+                      btnStatus={offerButtonStatus}
+                      func={"Offer"}
+                      icon={star}
+                      iconWidth="21px"
+                      iconHeight="21px"
+                      text="Place Offer"
+                      onClick={() => {
+                        placeOffer();
+                      }}
+                      cursor="pointer"
+                      textcolor={({ theme }) => theme.walletText}
+                      width="100%"
+                      background={({ theme }) => theme.blackLinear}
+                    ></ButtonApp>
+                  )
+                ) : null}
               </HStack>
             </VStack>
           </HStack>

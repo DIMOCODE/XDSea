@@ -38,7 +38,7 @@ function PendingClaimed(props) {
           <VStack width="100%" spacing="15px">
             <CaptionBold initial={{ opacity: 0.6 }}>PENDING</CaptionBold>
             <XdcCounter
-              amount={rewards.length ? rewards[0].amountOfPendingRewards * backedValue : "--"}
+              amount={rewards.length ? rewards[0].amountOfPendingRewards : "--"}
               period={0}
             ></XdcCounter>
           </VStack>
@@ -46,7 +46,7 @@ function PendingClaimed(props) {
           <VStack width="100%" spacing="15px">
             <CaptionBold initial={{ opacity: 0.6 }}>CLAIMED</CaptionBold>
             <XdcCounter
-              amount={rewards.length ? rewards[0].amountOfClaimedRewards * backedValue : "0"}
+              amount={rewards.length ? rewards[0].amountOfClaimedRewards : "0"}
               period={0}
             ></XdcCounter>
           </VStack>
