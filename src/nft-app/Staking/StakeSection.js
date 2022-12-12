@@ -124,7 +124,7 @@ function StakeSection(props) {
       <VStack
         background={({ theme }) => theme.backElement}
         border="6px"
-        width="100%"
+        minwidth="100%"
         id="scrollableDiv"
       >
         {/* Collection Title  with back button*/}
@@ -160,8 +160,13 @@ function StakeSection(props) {
                 rewardFrequency={stakingPool?.rewardFrecuency}
                 usdPrice={usdPrice}
                 stakeData={getStake(nft._id)}
-                redirect={() => props?.redirect(`nft/${nft?.nftContract}/${nft?.tokenId}`)}
-                isOwner={!nft?.addressCreator === wallet?.address && nft?.addressOwner === wallet?.address}
+                redirect={() =>
+                  props?.redirect(`nft/${nft?.nftContract}/${nft?.tokenId}`)
+                }
+                isOwner={
+                  !nft?.addressCreator === wallet?.address &&
+                  nft?.addressOwner === wallet?.address
+                }
                 isStake={nft?.isStake}
                 isCreator={nft?.addressCreator === wallet?.address}
               ></StakeRow>

@@ -8,7 +8,7 @@ import { GemCounter } from "./GemCounter";
 import { TabedButtons } from "../../styles/Buttons/TabedButtons";
 
 function PendingClaimed(props) {
-  const { onlyOneToken, stakeData, rewardRate, backedValue } = props;
+  const { onlyOneToken, stakeData, rewardRate, backedValue, isXDC } = props;
 
   const [rewards, setRewards] = useState([]);
 
@@ -37,18 +37,40 @@ function PendingClaimed(props) {
         <>
           <VStack width="100%" spacing="15px">
             <CaptionBold initial={{ opacity: 0.6 }}>PENDING</CaptionBold>
-            <XdcCounter
-              amount={rewards.length ? rewards[0].amountOfPendingRewards : "--"}
-              period={0}
-            ></XdcCounter>
+            {isXDC ? (
+              <XdcCounter
+                amount={
+                  rewards.length ? rewards[0].amountOfPendingRewards : "--"
+                }
+                period={0}
+              ></XdcCounter>
+            ) : (
+              <GemCounter
+                amount={
+                  rewards.length ? rewards[0].amountOfPendingRewards : "--"
+                }
+                period={0}
+              ></GemCounter>
+            )}
           </VStack>
 
           <VStack width="100%" spacing="15px">
             <CaptionBold initial={{ opacity: 0.6 }}>CLAIMED</CaptionBold>
-            <XdcCounter
-              amount={rewards.length ? rewards[0].amountOfClaimedRewards : "0"}
-              period={0}
-            ></XdcCounter>
+            {isXDC ? (
+              <XdcCounter
+                amount={
+                  rewards.length ? rewards[0].amountOfClaimedRewards : "0"
+                }
+                period={0}
+              ></XdcCounter>
+            ) : (
+              <GemCounter
+                amount={
+                  rewards.length ? rewards[0].amountOfClaimedRewards : "0"
+                }
+                period={0}
+              ></GemCounter>
+            )}
           </VStack>
         </>
       ) : (

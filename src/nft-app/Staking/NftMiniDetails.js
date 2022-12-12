@@ -17,7 +17,7 @@ function NftMiniDetails(props) {
         backsize="cover"
       ></IconImg>
 
-      <VStack alignment="flex-start" cursor="pointer">
+      <VStack alignment="flex-start" cursor="pointer" width="100%">
         <BodyBold cursor="pointer">{title}</BodyBold>
         <HStack cursor="pointer" spacing="6px" self="none">
           <BodyBold cursor="pointer">{price}</BodyBold>
@@ -28,19 +28,17 @@ function NftMiniDetails(props) {
             height="18px"
           ></IconImg>
           <CaptionBoldShort cursor="pointer" initial={{ opacity: 0.6 }}>
-            ({(usdPrice?.xdcPrice * Number(price) > 100000
-                      ? Intl.NumberFormat("en-US", {
-                          notation: "compact",
-                          maximumFractionDigits: 2,
-                        }).format(usdPrice?.xdcPrice * Number(price))
-                      : (usdPrice?.xdcPrice * Number(price)).toLocaleString(
-                          undefined,
-                          {
-                            maximumFractionDigits: 2,
-                          }
-                        ) || "0") + " USD"})
+            (
+            {(usdPrice?.xdcPrice * Number(price) > 100000
+              ? Intl.NumberFormat("en-US", {
+                  notation: "compact",
+                  maximumFractionDigits: 2,
+                }).format(usdPrice?.xdcPrice * Number(price))
+              : (usdPrice?.xdcPrice * Number(price)).toLocaleString(undefined, {
+                  maximumFractionDigits: 2,
+                }) || "0") + " USD"}
+            )
           </CaptionBoldShort>
-          <Spacer></Spacer>
         </HStack>
       </VStack>
     </HStack>

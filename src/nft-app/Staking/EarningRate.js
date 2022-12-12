@@ -9,13 +9,8 @@ import { GemCounter } from "./GemCounter";
 import { MultiTab } from "../../styles/Buttons/MultiTab";
 
 function EarningRate(props) {
-  const {
-    onlyOneToken,
-    titleOff,
-    rewardRate,
-    backedValue,
-    tittleOff,
-  } = props;
+  const { onlyOneToken, titleOff, rewardRate, backedValue, tittleOff, isXDC } =
+    props;
 
   const [isOneToken] = useState(onlyOneToken);
 
@@ -28,40 +23,81 @@ function EarningRate(props) {
         padding="15px"
       >
         {isOneToken ? (
-          <VStack width="100%">
-            {!titleOff && (
-              <CaptionBold initial={{ opacity: 0.6 }}>EARNING RATE</CaptionBold>
-            )}
-            <HStack width="100%">
-              {rewardRate ? (
-                <>
-                  <XdcCounter
-                    amount={
-                      (backedValue * 24 * rewardRate[0]?.amount) /
-                      rewardRate[0]?.rewardFrecuency
-                    }
-                    period={1}
-                  ></XdcCounter>
-                  <XdcCounter
-                    amount={
-                      (backedValue * 730 * rewardRate[0]?.amount) /
-                      rewardRate[0]?.rewardFrecuency
-                    }
-                    period={2}
-                  ></XdcCounter>
-                  <XdcCounter
-                    amount={
-                      (backedValue * 8760 * rewardRate[0]?.amount) /
-                      rewardRate[0]?.rewardFrecuency
-                    }
-                    period={3}
-                  ></XdcCounter>
-                </>
-              ) : (
-                <></>
+          isXDC ? (
+            <VStack width="100%">
+              {!titleOff && (
+                <CaptionBold initial={{ opacity: 0.6 }}>
+                  EARNING RATE
+                </CaptionBold>
               )}
-            </HStack>
-          </VStack>
+              <HStack width="100%">
+                {rewardRate ? (
+                  <>
+                    <XdcCounter
+                      amount={
+                        (backedValue * 24 * rewardRate[0]?.amount) /
+                        rewardRate[0]?.rewardFrecuency
+                      }
+                      period={1}
+                    ></XdcCounter>
+                    <XdcCounter
+                      amount={
+                        (backedValue * 730 * rewardRate[0]?.amount) /
+                        rewardRate[0]?.rewardFrecuency
+                      }
+                      period={2}
+                    ></XdcCounter>
+                    <XdcCounter
+                      amount={
+                        (backedValue * 8760 * rewardRate[0]?.amount) /
+                        rewardRate[0]?.rewardFrecuency
+                      }
+                      period={3}
+                    ></XdcCounter>
+                  </>
+                ) : (
+                  <></>
+                )}
+              </HStack>
+            </VStack>
+          ) : (
+            <VStack width="100%">
+              {!titleOff && (
+                <CaptionBold initial={{ opacity: 0.6 }}>
+                  EARNING RATE
+                </CaptionBold>
+              )}
+              <HStack width="100%">
+                {rewardRate ? (
+                  <>
+                    <GemCounter
+                      amount={
+                        (backedValue * 24 * rewardRate[0]?.amount) /
+                        rewardRate[0]?.rewardFrecuency
+                      }
+                      period={1}
+                    ></GemCounter>
+                    <GemCounter
+                      amount={
+                        (backedValue * 730 * rewardRate[0]?.amount) /
+                        rewardRate[0]?.rewardFrecuency
+                      }
+                      period={2}
+                    ></GemCounter>
+                    <GemCounter
+                      amount={
+                        (backedValue * 8760 * rewardRate[0]?.amount) /
+                        rewardRate[0]?.rewardFrecuency
+                      }
+                      period={3}
+                    ></GemCounter>
+                  </>
+                ) : (
+                  <></>
+                )}
+              </HStack>
+            </VStack>
+          )
         ) : (
           <VStack width="100%">
             <HStack>

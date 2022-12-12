@@ -15,12 +15,30 @@ import { PendingClaimed } from "./PendingClaimed";
 
 function StakeRow(props) {
   const size = useWindowSize();
-  const { image, title, price, backedValue, rewardRate, startDate, rewardFrequency, oneToken, usdPrice, stakeData, redirect, isCreator, isOwner, isStake } = props;
+  const {
+    image,
+    title,
+    price,
+    backedValue,
+    rewardRate,
+    startDate,
+    rewardFrequency,
+    oneToken,
+    usdPrice,
+    stakeData,
+    redirect,
+    isCreator,
+    isOwner,
+    isStake,
+  } = props;
 
   return (
-    <HStack responsive={true} spacing="21px" 
-    padding="30px 15px 30px 15px"
-    width="100%">
+    <HStack
+      responsive={true}
+      spacing="21px"
+      padding="30px 15px 30px 15px"
+      width={size.width > 900 ? "1024px" : size.width > 767 ? "700px" : "320px"}
+    >
       {/* NFT with Stake */}
       <NftMiniDetails
         width={size.width > 428 ? "72%" : "100%"}
@@ -32,14 +50,32 @@ function StakeRow(props) {
       ></NftMiniDetails>
 
       {/* Earning Rate */}
-      <EarningRate onlyOneToken={oneToken} rewardRate={rewardRate} rewardFrequency={rewardFrequency} backedValue={backedValue}></EarningRate>
+      <EarningRate
+        onlyOneToken={oneToken}
+        rewardRate={rewardRate}
+        rewardFrequency={rewardFrequency}
+        backedValue={backedValue}
+        isXDC={false}
+      ></EarningRate>
 
       {/* Pending Claimed */}
-      <PendingClaimed onlyOneToken={oneToken} stakeData={stakeData} rewardRate={rewardRate} backedValue={backedValue}></PendingClaimed>
+      <PendingClaimed
+        onlyOneToken={oneToken}
+        stakeData={stakeData}
+        rewardRate={rewardRate}
+        backedValue={backedValue}
+        isXDC={false}
+      ></PendingClaimed>
 
       {/* Actions */}
-      {!isCreator && 
-      <ButtonActions isOwner={isOwner} isStake={isStake} width={size.width > 428 ? "42%" : "100%"} redirect={redirect}></ButtonActions>}
+      {!isCreator && (
+        <ButtonActions
+          isOwner={isOwner}
+          isStake={isStake}
+          width={size.width > 428 ? "42%" : "100%"}
+          redirect={redirect}
+        ></ButtonActions>
+      )}
     </HStack>
   );
 }

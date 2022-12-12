@@ -190,7 +190,10 @@ const CollectionPage = (props) => {
                 stakeable: true,
                 page: stakingParams.page + 1,
               });
-              const stakesData = await getStakes(stakingParams.page, collection._id);
+              const stakesData = await getStakes(
+                stakingParams.page,
+                collection._id
+              );
               setStakes([...stakes, ...stakesData.data.stakes]);
             }
           })
@@ -235,7 +238,7 @@ const CollectionPage = (props) => {
   };
 
   const fetchMoreStakes = async () => {
-    const stakesNFTData = await(await getNFTs(stakingParams)).data.nfts;
+    const stakesNFTData = await (await getNFTs(stakingParams)).data.nfts;
     const stakesData = await getStakes(stakingParams.page, collection._id);
     setStakes([...stakes, ...stakesData.data.stakes]);
 
