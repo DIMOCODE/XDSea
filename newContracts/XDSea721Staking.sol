@@ -27,6 +27,7 @@ contract XDSea721Staking is ReentrancyGuard, IERC721Receiver, IERC1155Receiver {
     // Allows the usage of safe functions for XRC20 tokens
     using SafeERC20 for IERC20;
 
+    // Address that the staking pool creator sends commission to
     address public marketplaceAddress = 0x43174a2Cf9b214D9036eD73EFB7E36395FB86344;
 
     // Store the address of the staking pool creator
@@ -45,10 +46,14 @@ contract XDSea721Staking is ReentrancyGuard, IERC721Receiver, IERC1155Receiver {
     // this pool
     mapping(uint256 => StakedNFT) public stakedNFTs;
 
+    // Maintain an iterable list of token IDs that are eligible to be staked
+    // in this pool
     uint256[] public eligibleNFTs;
 
+    // Store a record of the time when a given token ID last claimed their rewards
     mapping(uint256 => mapping(address => uint256)) public timeOfLastClaims;
 
+    // Store a record of the amount of rewards that are saved and awaiting collection
     mapping(uint256 => mapping(address => uint256)) public pendingRewards;
 
     // Store a record of all the reward types that are awarded to stakers in

@@ -16,22 +16,32 @@ import { Event } from "./NFTMarketEvents.sol";
 import { Offer } from "./NFTMarketOffers.sol";
 
 contract NFTMarketLayer1 is ReentrancyGuard, IERC721Receiver {
+
+  // Address of the owner of the marketplace
   address payable public owner;
 
+  // Total number of collections that exist on the marketplace
   uint256 public collectionCount;
 
+  // Total number of NFTs that exist on the marketplace
   uint256 public tokenCount;
 
+  // The list of all the offers made imported from the Offers sub-contract
   NFTMarketOffers internal offerList = new NFTMarketOffers();
 
+  // The list of all the events recorded imported from the Events sub-contract
   NFTMarketEvents internal eventHistory = new NFTMarketEvents();
 
+  // The list of all the collections defined imported from the Collections sub-contract
   NFTMarketCollections internal collectionList = new NFTMarketCollections();
 
+  // Deploy the marketplace contract and make the deployer the owner of the marketplace
   constructor() {
     owner = payable(msg.sender);
   }
 
+  // NFT object that stores all the required information for an NFT created
+  // on the marketplace
   struct MarketItem {
     uint256 tokenId;
     uint256 itemId;
@@ -46,8 +56,10 @@ contract NFTMarketLayer1 is ReentrancyGuard, IERC721Receiver {
     string collectionName;
   }
 
+  // Store a record of all the NFTs mapped to their token IDs
   mapping(uint256 => MarketItem) public idToMarketItem;
 
+  // Get all the NFTs that belong to a given collection - UNUSED
   function getCollectionNFTs(string memory collectionName) external view returns(MarketItem[] memory){
     uint256 currentIndex = 0;
 
@@ -59,6 +71,7 @@ contract NFTMarketLayer1 is ReentrancyGuard, IERC721Receiver {
     return nfts;
   }
 
+  // Get all the Events recorded for a given token ID - UNUSED
   function getTokenEventHistory(uint256 tokenId) external view returns(Event[] memory) {
     uint256 currentIndex = 0;
 
@@ -70,6 +83,7 @@ contract NFTMarketLayer1 is ReentrancyGuard, IERC721Receiver {
     return events;
   }
 
+  // Get all the Offers received for a given token ID - UNUSED
   function getTokenOfferList(uint256 tokenId) external view returns(Offer[] memory) {
     uint256 currentIndex = 0;
 
@@ -81,6 +95,7 @@ contract NFTMarketLayer1 is ReentrancyGuard, IERC721Receiver {
     return offers;
   }
 
+  // Get all the Offers made by a given wallet address - UNUSED & UNTESTED
   function getUserFromOfferList(address user) external view returns(Offer[] memory) {
     uint256 currentIndex = 0;
 
@@ -92,6 +107,7 @@ contract NFTMarketLayer1 is ReentrancyGuard, IERC721Receiver {
     return offers;
   }
 
+  // Get all the Offers made to a given wallet address - UNUSED & UNTESTED
   function getUserToOfferList(address user) external view returns(Offer[] memory) {
     uint256 currentIndex = 0;
 
@@ -103,6 +119,7 @@ contract NFTMarketLayer1 is ReentrancyGuard, IERC721Receiver {
     return offers;
   }
 
+  // Create an NFT record for a newly minted NFT that will be traded on the marketplace
   function createMarketItem(
     uint256 tokenId,
     uint256 itemId,
@@ -146,6 +163,8 @@ contract NFTMarketLayer1 is ReentrancyGuard, IERC721Receiver {
     }
   }
 
+  // ADMIN - Add a record for an NFT that will be traded on the marketplace - USED TO
+  // IMPORT NFTS FROM THE OLD CONTRACT
   function addMarketItem(
     uint256 tokenId,
     uint256 itemId,
@@ -189,6 +208,8 @@ contract NFTMarketLayer1 is ReentrancyGuard, IERC721Receiver {
     }
   }
 
+  // ADMIN - Edit or update information stored for an NFT that will be traded on the
+  // marketplace - USED TO IMPORT NFTS FROM OLD CONTRACT
   function editMarketItem(
     uint256 tokenId,
     uint256 itemId,
@@ -218,10 +239,12 @@ contract NFTMarketLayer1 is ReentrancyGuard, IERC721Receiver {
     );
   }
 
+  // Return the address of the owner of a given token - REDUNDANT
   function getOwnerOfToken(address nftContract, uint256 tokenId) external view returns (address) {
     return IERC721(nftContract).ownerOf(tokenId);
   }
 
+  // List the given token for sale on the marketplace - CUSTODIAL
   function listItem(
     address nftContract,
     uint256 tokenId,
@@ -234,6 +257,7 @@ contract NFTMarketLayer1 is ReentrancyGuard, IERC721Receiver {
     eventHistory._addEvent(tokenId, idToMarketItem[tokenId].eventCount, msg.sender, address(this), price, block.timestamp, 1);
   }
 
+  // Withdraws the active listing of a given token from the marketplace
   function withdrawListing(
     address nftContract,
     uint256 tokenId
@@ -244,6 +268,7 @@ contract NFTMarketLayer1 is ReentrancyGuard, IERC721Receiver {
     eventHistory._addEvent(tokenId, idToMarketItem[tokenId].eventCount, address(this), msg.sender, 0, block.timestamp, 2);
   }
 
+  // Edit the selling price of a given token listing on the marketplace
   function editListing(
     uint256 tokenId,
     uint256 price
@@ -253,6 +278,7 @@ contract NFTMarketLayer1 is ReentrancyGuard, IERC721Receiver {
     eventHistory._addEvent(tokenId, idToMarketItem[tokenId].eventCount, msg.sender, address(this), price, block.timestamp, 5);
   }
 
+  // Transfer a given token from the owner to the given address
   function transferNFT(address nftContract, uint256 tokenId, address receiver) external payable nonReentrant {
     IERC721(nftContract).transferFrom(msg.sender, receiver, tokenId);
     idToMarketItem[tokenId].owner = payable(receiver);
@@ -269,6 +295,7 @@ contract NFTMarketLayer1 is ReentrancyGuard, IERC721Receiver {
     idToMarketItem[tokenId].offerCount = 0;
   }
 
+  // Buy a listed item from the marketplace
   function createMarketSale(
     address nftContract,
     uint256 tokenId
@@ -294,6 +321,8 @@ contract NFTMarketLayer1 is ReentrancyGuard, IERC721Receiver {
     idToMarketItem[tokenId].offerCount = 0;
   }
 
+  // Place an offer for a given token that can be listed or unlisted. It locks the offer
+  // amount in the contract
   function placeOffer(uint256 tokenId, uint256 price) external payable {
     require(price > 0);
     idToMarketItem[tokenId].offerCount = idToMarketItem[tokenId].offerCount + 1;
@@ -308,6 +337,7 @@ contract NFTMarketLayer1 is ReentrancyGuard, IERC721Receiver {
     eventHistory._addEvent(tokenId, idToMarketItem[tokenId].eventCount, msg.sender, idToMarketItem[tokenId].owner, price, block.timestamp, 6);
   }
 
+  // Withdraws an offer made by the sender on a given NFT
   function withdrawOffer(uint256 tokenId, uint256 offerId) external nonReentrant{
     offerList._withdrawOffer(tokenId, offerId);
     idToMarketItem[tokenId].eventCount = SafeMath.add(idToMarketItem[tokenId].eventCount, 1);
@@ -315,6 +345,7 @@ contract NFTMarketLayer1 is ReentrancyGuard, IERC721Receiver {
     offerList._getOfferFrom(tokenId, offerId).transfer(SafeMath.div(SafeMath.mul(offerList._getOfferPrice(tokenId, offerId), 102), 100));
   }
 
+  // Accepts a given offer made on the token - DISABLED
   function acceptOffer(uint256 tokenId, uint256 offerId, address nftContract) external payable nonReentrant {
     offerList._acceptOffer(tokenId, offerId);
     for(uint i = 1; i <= idToMarketItem[tokenId].offerCount; i++) {
@@ -345,11 +376,13 @@ contract NFTMarketLayer1 is ReentrancyGuard, IERC721Receiver {
     idToMarketItem[tokenId].offerCount = 0;
   }
 
+  // ADMIN - Transfer funds from the marketplace to the admin wallet address
   function transferFunds(uint256 price) external {
     require(msg.sender == owner);
     payable(owner).transfer(price);
   }
 
+  // Return a list of the first NFT from each Collection - UNUSED
   function fetchCollections() external view returns (MarketItem[] memory) {
     uint256 currentIndex = 0;
 
@@ -361,10 +394,12 @@ contract NFTMarketLayer1 is ReentrancyGuard, IERC721Receiver {
     return collectionItems;
   }
 
+  // Return the first NFT from a given Collection - UNUSED
   function fetchCollection(string memory collectionName) external view returns (MarketItem memory) {
     return idToMarketItem[collectionList._getCollectionNFT(collectionName, 1)];
   }
 
+  // Return a list of all the NFTs on the marketplace - UNUSED
   function fetchMarketItems() external view returns (MarketItem[] memory) {
     uint currentIndex = 0;
 
@@ -378,6 +413,7 @@ contract NFTMarketLayer1 is ReentrancyGuard, IERC721Receiver {
     return items;
   }
 
+  // Return a list of all the NFTs owned by a given wallet address - UNUSED
   function fetchMyNFTs(address user) external view returns (MarketItem[] memory) {
     uint itemCount = 0;
     uint currentIndex = 0;
@@ -398,6 +434,7 @@ contract NFTMarketLayer1 is ReentrancyGuard, IERC721Receiver {
     return items;
   }
 
+  // Return a list of all the NFTs created by a given wallet address - UNUSED
   function fetchItemsCreated(address user) external view returns (MarketItem[] memory) {
     uint itemCount = 0;
     uint currentIndex = 0;
@@ -418,10 +455,12 @@ contract NFTMarketLayer1 is ReentrancyGuard, IERC721Receiver {
     return items;
   }
 
+  // ADMIN - Set the trade volume of a given Collection manually - UNUSED
   function setTradeVolume(string memory collectionName, uint256 volumeTraded) external {
     collectionList._setVolumeTraded(collectionName, volumeTraded);
   }
 
+  // ADMIN - Add events to a given token to replicate the token's event history
   function addEventsToItem(
     uint256 tokenId,
     uint256 eventId,
@@ -434,7 +473,8 @@ contract NFTMarketLayer1 is ReentrancyGuard, IERC721Receiver {
     require(msg.sender == owner);
     eventHistory._addEvent(tokenId, eventId, from, to, price, timestamp, eventType);
   }
- 
+  
+  // OVERRIDE - Listener for when an ERC721 is received by this contract
   function onERC721Received(address, address, uint256, bytes memory) public virtual override returns (bytes4) {
     return this.onERC721Received.selector;
   }

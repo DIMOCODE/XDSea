@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT OR Apache-2.0
 pragma solidity ^0.8.3;
 
+// Enumeration of Event Types that list all the possible kind
+// of events
 enum EventType {
     Minted,
     Listed,
@@ -13,6 +15,8 @@ enum EventType {
     OfferAccepted
 }
 
+// Event struct that stores all the required information for 
+// events recorded for an NFT
 struct Event {
     EventType eventType;
     address from;
@@ -22,12 +26,16 @@ struct Event {
 }
 
 contract NFTMarketEvents {
+
+    // Store a record of all the Events for all the NFTs on the marketplace
     mapping(uint256 => mapping(uint256 => Event)) private eventHistory;
 
+    // Return the Event object for a given event of a given NFT
     function _getEvent(uint256 tokenId, uint256 eventId) external view returns (Event memory) {
         return eventHistory[tokenId][eventId];
     }
 
+    // Create and add an event to the given NFT's event history
     function _addEvent(uint256 tokenId, uint256 eventId, address from, address to, uint256 price, uint256 timestamp, uint256 eventType) external {
         if(eventType == 0) {
             _addMintEvent(tokenId, from, timestamp);
@@ -58,6 +66,7 @@ contract NFTMarketEvents {
         }
     }
 
+    // Add a Mint event to the given NFT's event history
     function _addMintEvent(uint256 tokenId, address from, uint256 timestamp) internal {
         eventHistory[tokenId][1] = Event(
             EventType.Minted,
@@ -68,6 +77,7 @@ contract NFTMarketEvents {
         );
     }
 
+    // Add a List event to the given NFT's event history
     function _addListEvent(uint256 tokenId, uint256 eventId, address from, address to, uint256 price, uint256 timestamp) internal {
         eventHistory[tokenId][eventId] = Event(
             EventType.Listed,
@@ -78,6 +88,7 @@ contract NFTMarketEvents {
         );
     }
 
+    // Add an Edit event to the given NFT's event history
     function _addEditEvent(uint256 tokenId, uint256 eventId, address from, address to, uint256 price, uint256 timestamp) internal {
         eventHistory[tokenId][eventId] = Event(
             EventType.Edit,
@@ -88,6 +99,7 @@ contract NFTMarketEvents {
         );
     }
 
+    // Add a Withdraw Listing event to the given NFT's event history
     function _addWithdrawEvent(uint256 tokenId, uint256 eventId, address from, address to, uint256 timestamp) internal {
         eventHistory[tokenId][eventId] = Event(
             EventType.Withdrawn,
@@ -98,6 +110,7 @@ contract NFTMarketEvents {
         );
     }
 
+    // Add a Transfer event to the given NFT's event history
     function _addTransferEvent(uint256 tokenId, uint256 eventId, address from, address to, uint256 timestamp) internal {
         eventHistory[tokenId][eventId] = Event(
             EventType.Transfer,
@@ -108,6 +121,7 @@ contract NFTMarketEvents {
         );
     }
 
+    // Add a Sale event to the given NFT's event history
     function _addSaleEvent(uint256 tokenId, uint256 eventId, address from, address to, uint256 price, uint256 timestamp) internal {
         eventHistory[tokenId][eventId] = Event(
             EventType.Sale,
@@ -118,6 +132,7 @@ contract NFTMarketEvents {
         );
     }
 
+    // Add an Offer Received event to the given NFT's event history
     function _addOfferReceivedEvent(uint256 tokenId, uint256 eventId, address from, address to, uint256 price, uint256 timestamp) internal {
         eventHistory[tokenId][eventId] = Event(
             EventType.OfferReceived,
@@ -128,6 +143,7 @@ contract NFTMarketEvents {
         );
     }
 
+    // Add an Offer Withdrawn event to the given NFT's event history
     function _addOfferWithdrawEvent(uint256 tokenId, uint256 eventId, address from, address to, uint256 price, uint256 timestamp) internal {
         eventHistory[tokenId][eventId] = Event(
             EventType.OfferWithdrawn,
@@ -138,6 +154,7 @@ contract NFTMarketEvents {
         );
     }
 
+    // Add an Offer Accepted event to the given NFT's event history
     function _addOfferAcceptedEvent(uint256 tokenId, uint256 eventId, address from, address to, uint256 price, uint256 timestamp) internal {
         eventHistory[tokenId][eventId] = Event(
             EventType.OfferAccepted,
