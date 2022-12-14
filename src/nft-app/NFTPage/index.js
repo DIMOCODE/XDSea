@@ -207,7 +207,7 @@ const NFTDetails = (props) => {
     if (nft.inBlacklist) {
       success = await LegacyBuyNFT(nft, wallet.address);
     } else {
-      success = await BuyNFT(nft, wallet.address, nftaddress);
+      success = await BuyNFT(nft, wallet.address);
     }
     if (success) {
       setBuyButtonStatus(3);
@@ -300,8 +300,7 @@ const NFTDetails = (props) => {
         approved,
         nft,
         offerPrice,
-        wallet.address,
-        nftaddress
+        wallet.address
       );
     }
     if (success) {
@@ -332,8 +331,7 @@ const NFTDetails = (props) => {
       success = await WithdrawListing(
         approved,
         nft,
-        wallet.address,
-        nftaddress
+        wallet.address
       );
     }
     if (success) {
@@ -373,8 +371,7 @@ const NFTDetails = (props) => {
         approved,
         nft,
         editPrice,
-        wallet.address,
-        nftaddress
+        wallet.address
       );
     }
     if (success) {
@@ -419,8 +416,7 @@ const NFTDetails = (props) => {
         approved,
         nft,
         listPrice,
-        wallet.address,
-        nftaddress
+        wallet.address
       );
     }
     if (success) {
@@ -461,8 +457,7 @@ const NFTDetails = (props) => {
         approved,
         nft,
         address,
-        wallet.address,
-        nftaddress
+        wallet.address
       );
     }
     if (success) {
@@ -499,7 +494,6 @@ const NFTDetails = (props) => {
         nft.tokenId,
         i + 1,
         wallet.address,
-        nftaddress,
         nft.marketAddress
       );
     }
@@ -546,7 +540,6 @@ const NFTDetails = (props) => {
         nft.tokenId,
         i + 1,
         wallet.address,
-        nftaddress,
         nft.marketAddress
       );
     }
@@ -793,7 +786,6 @@ const NFTDetails = (props) => {
       setMoreFromCollectionNfts(nftData.relatedNfts);
       setNftPlaying(new Array(nftData.relatedNfts.length).fill(false));
       setLoadingMore(false);
-      return nftData.nft.marketAddress;
     } catch (error) {
       console.log(error);
       return "";
@@ -819,12 +811,12 @@ const NFTDetails = (props) => {
       new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER)
     );
     const nftContract = new xdc3.eth.Contract(NFT.abi, nftaddress);
-    if (props?.wallet?.address !== "" && props?.wallet?.address !== undefined)
+    if (wallet?.address !== "" && wallet?.address !== undefined)
       var getVal = await nftContract.methods
         .isApprovedForAll(
-          isXdc(props?.wallet?.address)
-            ? fromXdc(props?.wallet?.address)
-            : props?.wallet?.address,
+          isXdc(wallet?.address)
+            ? fromXdc(wallet?.address)
+            : wallet?.address,
           marketAddress
         )
         .call();
@@ -853,8 +845,7 @@ const NFTDetails = (props) => {
     setLoadingOffers(true);
     setLoadingEvents(true);
     setLoadingMore(true);
-    const address = getData();
-    if (!approved) getApproval(address);
+    getData();
   }, [id, actions]);
 
   /**
@@ -862,7 +853,6 @@ const NFTDetails = (props) => {
    */
   useEffect(() => {
     setWallet(props?.wallet);
-    getApproval(nft?.marketAddress);
   }, [props?.wallet]);
 
   return (

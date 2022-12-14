@@ -41,7 +41,7 @@ const countDecimals = (value) => {
  * @param {string} wallet the wallet address of the user
  * @returns true if the transaction is successful, false if not
  */
-export const BuyNFT = async (nft, wallet, nftaddress) => {
+export const BuyNFT = async (nft, wallet) => {
   try {
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
     const contract = new xdc3.eth.Contract(
@@ -133,7 +133,7 @@ export const LegacyBuyNFT = async (nft, wallet) => {
  * @param {string} wallet the wallet address of the user
  * @returns true if the transaction is successful, false if not
  */
-export const SellNFT = async (approved, sellData, sellPrice, wallet, nftaddress) => {
+export const SellNFT = async (approved, sellData, sellPrice, wallet) => {
   try {
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
@@ -195,7 +195,7 @@ export const SellNFT = async (approved, sellData, sellPrice, wallet, nftaddress)
  * @param {string} wallet the wallet address of the user
  * @returns true if the transaction is successful, false if not
  */
-export const WithdrawListing = async (approved, nft, wallet, nftaddress) => {
+export const WithdrawListing = async (approved, nft, wallet) => {
   try {
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
@@ -318,16 +318,20 @@ export const LegacyWithdrawListing = async (approved, nft, wallet) => {
  * @param {string} wallet the wallet address of the user
  * @returns true if the transaction is successful, false if not
  */
-export const TransferNFT = async (approved, transferNFT, transferAddress, wallet, nftaddress) => {
+export const TransferNFT = async (approved, transferNFT, transferAddress, wallet) => {
   try {
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
     if (approved === false) {
       const nftContract = new xdc3.eth.Contract(nftaddress === "0x22222d61173b3b5be47965e19168b50f19826eee" ? ARPCNFT.abi : NFT.abi, nftaddress);
 
+      console.log(transferNFT.marketAddress)
+      
       var appData = nftContract.methods
         .setApprovalForAll(transferNFT.marketAddress, true)
         .encodeABI();
+
+      console.log(wallet, nftaddress)
 
       const tx1 = {
         from: wallet,
@@ -380,7 +384,7 @@ export const TransferNFT = async (approved, transferNFT, transferAddress, wallet
  * @param {string} wallet the wallet address of the user
  * @returns true if the transaction is successful, false if not
  */
-export const Offer = async (approved, offerNFT, offerPrice, wallet, nftaddress) => {
+export const Offer = async (approved, offerNFT, offerPrice, wallet) => {
   try {
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
@@ -448,7 +452,7 @@ export const Offer = async (approved, offerNFT, offerPrice, wallet, nftaddress) 
  * @param {string} wallet the wallet address of the user
  * @returns true if the transaction is successful, false if not
  */
-export const WithdrawOffer = async (approved, tokenId, offerId, wallet, nftaddress, marketAddress) => {
+export const WithdrawOffer = async (approved, tokenId, offerId, wallet, marketAddress) => {
   try {
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
@@ -508,7 +512,7 @@ export const WithdrawOffer = async (approved, tokenId, offerId, wallet, nftaddre
  * @param {string} wallet the wallet address of the user
  * @returns true if the transaction is successful, false if not
  */
-export const AcceptOffer = async (approved, tokenId, offerId, wallet, nftaddress, marketAddress) => {
+export const AcceptOffer = async (approved, tokenId, offerId, wallet, marketAddress) => {
   try {
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
@@ -538,7 +542,7 @@ export const AcceptOffer = async (approved, tokenId, offerId, wallet, nftaddress
       wallet
     );
 
-    let data = contract2.methods.acceptOffer(tokenId, offerId, nftaddress).encodeABI();
+    let data = contract2.methods.acceptOffer(tokenId, offerId).encodeABI();
 
     const tx2 = {
       from: wallet,
@@ -568,7 +572,7 @@ export const AcceptOffer = async (approved, tokenId, offerId, wallet, nftaddress
  * @param {string} wallet the wallet address of the user
  * @returns true if the transaction is successful, false if not
  */
-export const EditNFT = async (approved, sellData, sellPrice, wallet, nftaddress) => {
+export const EditNFT = async (approved, sellData, sellPrice, wallet) => {
   try {
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
 
