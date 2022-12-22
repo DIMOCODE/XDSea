@@ -753,8 +753,11 @@ export const DepositFunds = async(stakingContract, wallet, amount, erc20address)
       stakingContract,
       wallet
     );
-
+    
     var price = xdc3.utils.toWei(amount);
+    if(erc20address !== "0x0000000000000000000000000000000000000000") {
+      price = amount;
+    }
 
     let data = contract2.methods
       .depositFunds(price, erc20address)
@@ -791,6 +794,9 @@ export const WithdrawFunds = async(stakingContract, wallet, amount, erc20address
     );
 
     var price = xdc3.utils.toWei(amount);
+    if(erc20address !== "0x0000000000000000000000000000000000000000") {
+      price = amount;
+    }
 
     let data = contract2.methods
       .withdrawFunds(price, erc20address)
