@@ -58,9 +58,9 @@ function TokenInfo(props) {
   const updateRewardRate = async () => {
     try {
       const success = await UpdateRewards(
-        stakingaddress,
+        stakingPool?.walletAddress,
         isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address,
-        "0x0000000000000000000000000000000000000000",
+        stakingPool?.rewardRates[0]?.rewardTypeId?.addressContract,
         newRewardRate * 10000,
         unparsedRewardFrequency * 3600,
         0,
@@ -106,9 +106,9 @@ function TokenInfo(props) {
     }
     try {
       const success = await UpdateRewards(
-        stakingaddress,
+        stakingPool?.walletAddress,
         isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address,
-        "0x0000000000000000000000000000000000000000",
+        stakingPool?.rewardRates[0]?.rewardTypeId?.addressContract,
         rewardRate * 10000,
         newRewardFrequency === 0
           ? rewardFrequency * 3600

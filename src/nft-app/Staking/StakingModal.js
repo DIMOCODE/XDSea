@@ -16,7 +16,7 @@ import useWindowSize from "../../styles/useWindowSize";
 function StakingModal(props) {
   const size = useWindowSize();
 
-  const { oneToken, nft, rewardRate, setStakeModal, stakeNFT, claimReward } = props;
+  const { oneToken, nft, rewardRate, setStakeModal, stakeNFT, claimReward, stakeInfo } = props;
 
   return (
     <Modal>
@@ -41,8 +41,14 @@ function StakingModal(props) {
 
           <VStack width="370px" spacing="21px">
             <TitleBold21 textcolor="black">{nft?.name}</TitleBold21>
-            <EarningRate onlyOneToken={oneToken} rewardRate={rewardRate} backedValue={nft?.backedValue}></EarningRate>
-            <PendingClaimed onlyOneToken={oneToken}></PendingClaimed>
+            <EarningRate onlyOneToken={oneToken} rewardRate={rewardRate}
+              backedValue={nft?.backedValue}
+              isXDC={rewardRate[0]?.rewardTypeId?.name === "XDC"}></EarningRate>
+            <PendingClaimed onlyOneToken={oneToken}
+              stakeData={stakeInfo}
+              rewardRate={rewardRate}
+              backedValue={nft?.backedValue}
+              isXDC={rewardRate[0]?.rewardTypeId?.name === "XDC"}></PendingClaimed>
             <HStack>
               <ButtonM
                 background={({ theme }) => theme.faded30}

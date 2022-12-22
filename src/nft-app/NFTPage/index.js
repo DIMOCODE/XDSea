@@ -225,7 +225,7 @@ const NFTDetails = (props) => {
 
   const stakeNFT = async () => {
     try {
-      var success = await StakeNFT(stakingaddress, id, wallet?.address);
+      var success = await StakeNFT(stakingPool?.walletAddress, id, wallet?.address);
       if (success) {
         var stakeData = await (
           await createStake(nft?._id, stakingPool?._id)
@@ -245,7 +245,7 @@ const NFTDetails = (props) => {
 
   const withdrawStakeNFT = async () => {
     setWithdrawStakeStatus(1);
-    var success = await WithdrawStake(stakingaddress, id, wallet?.address);
+    var success = await WithdrawStake(stakingPool?.walletAddress, id, wallet?.address);
     if (success) {
       setWithdrawStakeStatus(3);
       await withdrawStake(stake?._id);
@@ -260,9 +260,9 @@ const NFTDetails = (props) => {
 
   const claimReward = async () => {
     var success = await ClaimRewards(
-      stakingaddress,
+      stakingPool?.walletAddress,
       id,
-      "0x0000000000000000000000000000000000000000",
+      stakingPool?.rewardRates[0]?.rewardTypeId?.addressContract,
       wallet?.address
     );
     if (success) {
@@ -867,6 +867,7 @@ const NFTDetails = (props) => {
           setStakeModal={setStakeModal}
           stakeNFT={stakeNFT}
           claimReward={claimReward}
+          stakeInfo={stake}
         ></StakingModal>
       )}
 

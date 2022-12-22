@@ -15,7 +15,23 @@ import { PendingClaimed } from "./PendingClaimed";
 
 function StakeRow(props) {
   const size = useWindowSize();
-  const { image, title, price, backedValue, rewardRate, startDate, rewardFrequency, oneToken, usdPrice, stakeData, redirect, isCreator, isOwner, isStake } = props;
+  const {
+    image,
+    title,
+    price,
+    fileType,
+    backedValue,
+    rewardRate,
+    startDate,
+    rewardFrequency,
+    oneToken,
+    usdPrice,
+    stakeData,
+    redirect,
+    isCreator,
+    isOwner,
+    isStake,
+  } = props;
 
   return (
     <HStack responsive={true} spacing="21px" 
@@ -26,16 +42,29 @@ function StakeRow(props) {
         width={size.width > 428 ? "72%" : "100%"}
         image={image}
         title={title}
+        type={fileType}
         price={price}
         usdPrice={usdPrice}
         redirect={redirect}
       ></NftMiniDetails>
 
       {/* Earning Rate */}
-      <EarningRate onlyOneToken={oneToken} rewardRate={rewardRate} rewardFrequency={rewardFrequency} backedValue={backedValue}></EarningRate>
+      <EarningRate
+        onlyOneToken={oneToken}
+        rewardRate={rewardRate}
+        rewardFrequency={rewardFrequency}
+        backedValue={backedValue}
+        isXDC={rewardRate[0]?.rewardTypeId?.name === "XDC"}
+      ></EarningRate>
 
       {/* Pending Claimed */}
-      <PendingClaimed onlyOneToken={oneToken} stakeData={stakeData} rewardRate={rewardRate} backedValue={backedValue}></PendingClaimed>
+      <PendingClaimed
+        onlyOneToken={oneToken}
+        stakeData={stakeData}
+        rewardRate={rewardRate}
+        backedValue={backedValue}
+        isXDC={rewardRate[0]?.rewardTypeId?.name === "XDC"}
+      ></PendingClaimed>
 
       {/* Actions */}
       {!isCreator && 

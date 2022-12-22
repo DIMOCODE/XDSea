@@ -45,7 +45,7 @@ function AddRemoveModal(props) {
 
   const updateEligibility = async () => {
     try{
-      const success = await UpdateEligibility(stakingaddress, isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address, tokenId, !nft?.isStakeable);
+      const success = await UpdateEligibility(stakingPool?.walletAddress, isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address, tokenId, !nft?.isStakeable);
       if(success) {
         const updatedPool = await updateStakingPool({stakingPoolId: stakingPool?._id, nftsStakeables: [nft?._id]});
         const stakingNFTsData = await(await getNFTs({

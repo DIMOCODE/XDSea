@@ -2,20 +2,33 @@ import React from "react";
 import { HStack, IconImg, VStack, Spacer } from "../../styles/Stacks";
 import { BodyBold, CaptionBoldShort } from "../../styles/TextStyles";
 import xdc from "../../images/miniXdcLogo.png";
+import ReactPlayer from "react-player";
 
 function NftMiniDetails(props) {
-  const { image, title, price, width, usdPrice, redirect } = props;
+  const { image, title, type, price, width, usdPrice, redirect } = props;
 
   return (
     <HStack width={width || "100%"} self="none" onClick={redirect}>
-      <IconImg
-        url={image}
-        width="60px"
-        height="60px"
-        cursor="pointer"
-        border="6px"
-        backsize="cover"
-      ></IconImg>
+      {type.match("image.*") ? (
+        <IconImg
+          url={image}
+          width="60px"
+          height="60px"
+          cursor="pointer"
+          border="6px"
+          backsize="cover"
+        ></IconImg>
+      ) : (
+        <ReactPlayer
+          url={image}
+          playing={true}
+          muted={true}
+          volume={0}
+          loop={false}
+          width="60px"
+          height="60px"
+        />
+      )}
 
       <VStack alignment="flex-start" cursor="pointer">
         <BodyBold cursor="pointer">{title}</BodyBold>
