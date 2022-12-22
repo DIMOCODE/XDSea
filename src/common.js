@@ -5,6 +5,7 @@ import NFT from "./abis/NFT.json";
 import NFTMarket from "./abis/NFTMarket.json";
 import NFTMarketLayer1 from "./abis/NFTMarketLayer1.json";
 import XDSea721Staking from "./abis/XDSea721Staking.json";
+import XRC20 from "./abis/XRC20.json";
 import { GetWallet, SendTransaction } from "xdc-connect";
 import { fromXdc, isXdc } from "./common/common";
 import ARPCNFT from "./abis/ARPCNFT.json";
@@ -747,6 +748,26 @@ export const ClaimRewards = async(stakingContract, tokenId, rewardContract, wall
 export const DepositFunds = async(stakingContract, wallet, amount, erc20address) => {
   try{
     const xdc3 = new Xdc3(new Xdc3.providers.HttpProvider(DEFAULT_PROVIDER, HEADER));
+
+    if (erc20address !== "0x0000000000000000000000000000000000000000") {
+      const erc20contract = new xdc3.eth.Contract(XRC20.abi, erc20address);
+
+      var appData = erc20contract.methods
+        .approve(stakingContract, amount)
+        .encodeABI();
+
+      const tx1 = {
+        from: wallet,
+        to: erc20address,
+        data: appData,
+      };
+
+      var gasLimit = await xdc3.eth.estimateGas(tx1);
+
+      tx1["gas"] = gasLimit;
+
+      await SendTransaction(tx1);
+    }
 
     const contract2 = new xdc3.eth.Contract(
       XDSea721Staking.abi,
