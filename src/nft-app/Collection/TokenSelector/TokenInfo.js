@@ -314,7 +314,7 @@ function TokenInfo(props) {
       </HStack>
 
       {/* Action Buttons */}
-      {isCreator && (
+      {isCreator ? (
         <HStack>
           <ButtonM
             background={({ theme }) => theme.fadedBlue}
@@ -331,7 +331,7 @@ function TokenInfo(props) {
             onClick={() => setDepositModal(true)}
           ></ButtonM>
         </HStack>
-      )}
+      ) : null}
     </VStack>
   );
 }
