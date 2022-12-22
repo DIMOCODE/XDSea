@@ -107,7 +107,7 @@ function StakeSection(props) {
           ></BlockTVL>
           <TokenSelector
             rewardRates={stakingPool?.rewardRates}
-            isCreator={isCreator}
+            isCreatorProp={isCreator}
             wallet={wallet}
             stakingPool={stakingPool}
             setStakingPool={setStakingPool}
