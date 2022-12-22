@@ -26,13 +26,13 @@ function GemCounter(props) {
         <IconImg url={gem} width="18px" height="18px"></IconImg>
       </HStack>
 
-      {timePeriod === 0 && <CaptionBold textcolor="#781FD1">GEM/D</CaptionBold>}
+      {timePeriod === 1 && <CaptionBold textcolor="#781FD1">GEM/D</CaptionBold>}
 
-      {timePeriod === 1 && (
+      {timePeriod === 2 && (
         <CaptionBold textcolor="#781FD1">GEM/Mo</CaptionBold>
       )}
 
-      {timePeriod === 2 && (
+      {timePeriod === 3 && (
         <CaptionBold textcolor="#781FD1">GEM/Yr</CaptionBold>
       )}
     </VStack>

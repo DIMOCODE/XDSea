@@ -296,10 +296,10 @@ const CollectionPage = (props) => {
   const withdrawFunds = async () => {
     try {
       const success = await WithdrawFunds(
-        stakingaddress,
+        stakingPool?.walletAddress,
         props?.wallet?.address,
         withdrawFundPrice,
-        "0x0000000000000000000000000000000000000000"
+        stakingPool?.rewardRates[0]?.rewardTypeId?.addressContract
       );
     } catch (err) {
       console.log(err);
@@ -310,10 +310,10 @@ const CollectionPage = (props) => {
   const depositFunds = async () => {
     try {
       const success = await DepositFunds(
-        stakingaddress,
+        stakingPool?.walletAddress,
         props?.wallet?.address,
         depositFundPrice,
-        "0x0000000000000000000000000000000000000000"
+        stakingPool?.rewardRates[0]?.rewardTypeId?.addressContract
       );
     } catch (err) {
       console.log(err);

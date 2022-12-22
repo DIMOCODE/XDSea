@@ -19,6 +19,7 @@ function StakeRow(props) {
     image,
     title,
     price,
+    fileType,
     backedValue,
     rewardRate,
     startDate,
@@ -44,6 +45,7 @@ function StakeRow(props) {
         width={size.width > 428 ? "72%" : "100%"}
         image={image}
         title={title}
+        type={fileType}
         price={price}
         usdPrice={usdPrice}
         redirect={redirect}
@@ -55,7 +57,7 @@ function StakeRow(props) {
         rewardRate={rewardRate}
         rewardFrequency={rewardFrequency}
         backedValue={backedValue}
-        isXDC={false}
+        isXDC={rewardRate[0]?.rewardTypeId?.name === "XDC"}
       ></EarningRate>
 
       {/* Pending Claimed */}
@@ -64,7 +66,7 @@ function StakeRow(props) {
         stakeData={stakeData}
         rewardRate={rewardRate}
         backedValue={backedValue}
-        isXDC={false}
+        isXDC={rewardRate[0]?.rewardTypeId?.name === "XDC"}
       ></PendingClaimed>
 
       {/* Actions */}

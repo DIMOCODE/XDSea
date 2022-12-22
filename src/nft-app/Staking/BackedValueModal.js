@@ -49,7 +49,7 @@ function BackedValueModal(props) {
 
   const updateBackedValue = async () => {
     try{
-      const success = await UpdateBackedValues(stakingaddress, isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address, tokenId, newBackedValue);
+      const success = await UpdateBackedValues(stakingPool?.walletAddress, isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address, tokenId, newBackedValue);
       if(success) {
         const updatedBackedValue = await updateBackedValueByNFT(nft?._id, stakingPool?._id, newBackedValue);
         const stakingNFTsData = await(await getNFTs({

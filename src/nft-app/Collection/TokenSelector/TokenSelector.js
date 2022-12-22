@@ -23,7 +23,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Mousewheel } from "swiper";
 
 function TokenSelector(props) {
-  const { rewardRates, isCreator, wallet, setStakingPool, stakingPool, setWithdrawModal, setDepositModal } = props;
+  const { rewardRates, isCreatorProp, wallet, setStakingPool, stakingPool, setWithdrawModal, setDepositModal } = props;
 
   const parseRewardFrequency = (hours) => {
     if (hours === 1) {
@@ -47,7 +47,7 @@ function TokenSelector(props) {
 
   const [newToken, setNewToken] = useState(false);
   const [currentTokenIcon, setCurrentTokenIcon] = useState(
-    rewardRates !== undefined ? rewardRates[0]?.rewardTypeId?.url || xdc : ""
+    rewardRates !== undefined ? rewardRates[0]?.rewardTypeId?.iconUrl : ""
   );
   const [currentTokenReward, setCurrentTokenReward] = useState(
     rewardRates !== undefined ? rewardRates[0]?.amount : 0
@@ -97,7 +97,7 @@ function TokenSelector(props) {
                   >
                     <TabToken
                       image={
-                        xdc
+                        reward.rewardTypeId?.iconUrl
                       }
                       name={reward.rewardTypeId?.name}
                     ></TabToken>
@@ -118,7 +118,7 @@ function TokenSelector(props) {
           <Separator></Separator>
 
           <TokenInfo
-            isCreator={isCreator}
+            isCreator={isCreatorProp}
             logo={currentTokenIcon}
             rewardRate={currentTokenReward}
             rewardFrequency={currentTokenRewardFrequency}

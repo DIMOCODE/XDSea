@@ -101,6 +101,7 @@ function StakeSection(props) {
             onClickBV={onClickBV}
             poolId={stakingPool?._id}
             setStakingPool={setStakingPool}
+            stakingPool={stakingPool}
             wallet={wallet}
             isCreator={isCreator}
           ></BlockTVL>
@@ -152,6 +153,7 @@ function StakeSection(props) {
               <StakeRow
                 image={nft.urlFile.v0}
                 title={nft.name}
+                fileType={nft.fileType}
                 price={nft.price}
                 backedValue={stakingPool?.isBackedValue ? nft.backedValue : 1}
                 oneToken={stakingPool?.rewardRates?.length > 1 ? false : true}

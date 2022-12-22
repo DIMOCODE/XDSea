@@ -28,7 +28,7 @@ function BlockTVL(props) {
   const options = ["hrs", "d", "mo", "yr"];
   const defaultOption = options[0];
 
-  const { tvl, onClickAR, onClickBV, usdPrice, lockPeriod, poolId, setStakingPool } = props;
+  const { tvl, onClickAR, onClickBV, usdPrice, lockPeriod, poolId, setStakingPool, stakingPool } = props;
   const [newLockInPeriod, setNewLockInPeriod] = useState(0);
   const [period, setPeriod] = useState("hrs");
   const [isEditingLockIn, setIsEditingLockIn] = useState(false);
@@ -51,7 +51,7 @@ function BlockTVL(props) {
       updatedLockInPeriod = 0;
     }
     try{
-      const success = await UpdateLockInPeriod(stakingaddress, isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address, updatedLockInPeriod * 3600);
+      const success = await UpdateLockInPeriod(stakingPool?.walletAddress, isXdc(props?.wallet?.address) ? fromXdc(props?.wallet?.address) : props?.wallet?.address, updatedLockInPeriod * 3600);
       if(success) {
         const updatedStakingPool = await(await updateStakingPool({stakingPoolId: poolId, lockPeriod: updatedLockInPeriod})).data.stakingPool;
         setStakingPool(updatedStakingPool);

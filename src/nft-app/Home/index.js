@@ -42,7 +42,7 @@ import goldshape3 from "../../images/goldshape3.png";
 import goldshape4 from "../../images/goldshape4.png";
 import { LoadingNftContainer } from "../../styles/LoadingNftContainer";
 import monkeyBanner from "../../images/monkeyBanner.png";
-
+import gemBanner from "../../images/gemBanner.jpg";
 import Swipper from "../Home/Swiper.css";
 
 import { isXdc, toXdc, truncateAddress } from "../../common/common";
@@ -236,7 +236,7 @@ const Home = (props) => {
           style={{
             "--swiper-navigation-color": "#fff",
             "--swiper-pagination-color": "#fff",
-            // height: size.width > 440 ? "780px" : "500px",
+            // height: size.width > 440 ? "660px" : "500px",
           }}
           navigation={true}
           modules={[Grid, FreeMode, Navigation, Thumbs]}
@@ -249,12 +249,12 @@ const Home = (props) => {
             style={{ cursor: "pointer", background: "transparent" }}
           >
             <IconImg
-              url={monkeyBanner}
+              url={gemBanner}
               width="100%"
-              height={size.width > 440 ? "460px" : "150px"}
+              height={size.width > 440 ? "660px" : "150px"}
               backsize="cover"
               cursor="pointer"
-              onClick={() => props.redirect("collection/XDSEA-MONKEYS-ORIGINAL-ART")}
+              onClick={() => props.redirect("collection/Sacred-Gems")}
             ></IconImg>
           </SwiperSlide>
 
