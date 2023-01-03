@@ -722,65 +722,35 @@ const MyNFT = (props) => {
                     >
                       <HStack>
                         {/* User image uploader*/}
-                        <VStack
-                          maxwidth="96px"
-                          cursor="pointer"
-                          overflow="visible"
-                          spacing="6px"
-                        >
-                          <ZStack
+                        <label htmlFor="upload-button">
+                          <VStack
+                            maxwidth="96px"
                             cursor="pointer"
-                            width="82px"
-                            height="82px"
                             overflow="visible"
-                            spacing="0px"
-                          >
-                            <ZItem>
-                              <label htmlFor="upload-button">
-                                {profilePicture.preview ? (
-                                  <IconImg
-                                    whileTap={{ scale: 0.97 }}
-                                    cursor="pointer"
-                                    url={profilePicture.preview}
-                                    width={"82px"}
-                                    height="82px"
-                                    border="90px"
-                                    backsize="cover"
-                                    bordercolor="white"
-                                    bordersize="3px"
-                                    style={{
-                                      boxShadow:
-                                        "0px 3px 6px 0px rgba(0, 0, 0, 0.3)",
-                                    }}
-                                  ></IconImg>
-                                ) : (
-                                  <>
-                                    <IconImg
-                                      whileTap={{ scale: 0.97 }}
-                                      cursor="pointer"
-                                      url={user?.urlProfile}
-                                      width="82px"
-                                      height="82px"
-                                      border="90px"
-                                      backsize="cover"
-                                      bordercolor="white"
-                                      bordersize="3px"
-                                      style={{
-                                        boxShadow:
-                                          "0px 3px 6px 0px rgba(0, 0, 0, 0.3)",
-                                      }}
-                                    ></IconImg>
-                                  </>
-                                )}
-                              </label>
-                              <input
-                                type="file"
-                                id="upload-button"
-                                style={{ display: "none" }}
-                                onChange={handleChange}
-                              />
-                            </ZItem>
-                            <ZItem>
+                            spacing="6px"
+                          > 
+                              <IconImg
+                                whileTap={{ scale: 0.97 }}
+                                cursor="pointer"
+                                url={profilePicture?.preview ? profilePicture.preview : user?.urlProfile}
+                                width={"82px"}
+                                height="82px"
+                                border="90px"
+                                backsize="cover"
+                                bordercolor="white"
+                                bordersize="3px"
+                                style={{
+                                  boxShadow:
+                                    "0px 3px 6px 0px rgba(0, 0, 0, 0.3)",
+                                }}
+                              ></IconImg>
+                            <input
+                              type="file"
+                              id="upload-button"
+                              style={{ display: "none" }}
+                              onChange={handleChange}
+                            />
+                            {/* <OverImage>
                               <HStack
                                 width="82px"
                                 height="82px"
@@ -793,8 +763,7 @@ const MyNFT = (props) => {
                                   height="30px"
                                 ></IconImg>
                               </HStack>
-                            </ZItem>
-                          </ZStack>
+                            </OverImage> */}
 
                           <CaptionBoldShort
                             textcolor={isDarkUI ? "#363537" : "#FAFAFA"}
@@ -803,6 +772,7 @@ const MyNFT = (props) => {
                             UPLOAD USER PROFILE
                           </CaptionBoldShort>
                         </VStack>
+                        </label>
 
                         {/* Username and social networks selector    */}
                         <VStack alignment="flex-start">
