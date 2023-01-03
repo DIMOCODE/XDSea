@@ -728,50 +728,55 @@ const MyNFT = (props) => {
                             cursor="pointer"
                             overflow="visible"
                             spacing="6px"
-                          > 
-                              <IconImg
-                                whileTap={{ scale: 0.97 }}
-                                cursor="pointer"
-                                url={profilePicture?.preview ? profilePicture.preview : user?.urlProfile}
-                                width={"82px"}
-                                height="82px"
-                                border="90px"
-                                backsize="cover"
-                                bordercolor="white"
-                                bordersize="3px"
-                                style={{
-                                  boxShadow:
-                                    "0px 3px 6px 0px rgba(0, 0, 0, 0.3)",
-                                }}
-                              ></IconImg>
+                          >
+                            <IconImg
+                              whileTap={{ scale: 0.97 }}
+                              cursor="pointer"
+                              url={
+                                profilePicture?.preview
+                                  ? profilePicture.preview
+                                  : user?.urlProfile
+                              }
+                              width={"82px"}
+                              height="82px"
+                              border="90px"
+                              backsize="cover"
+                              bordercolor="white"
+                              bordersize="3px"
+                              style={{
+                                boxShadow: "0px 3px 6px 0px rgba(0, 0, 0, 0.3)",
+                              }}
+                            ></IconImg>
                             <input
                               type="file"
                               id="upload-button"
                               style={{ display: "none" }}
                               onChange={handleChange}
                             />
-                            {/* <OverImage>
+                            <HoverIcon>
                               <HStack
                                 width="82px"
                                 height="82px"
                                 border="90px"
-                                background={({ theme }) => theme.faded}
+                                cursor="pointer"
+                                background={({ theme }) => theme.faded30}
                               >
                                 <IconImg
                                   url={uploadIcon}
                                   width="30px"
                                   height="30px"
+                                  cursor="pointer"
                                 ></IconImg>
                               </HStack>
-                            </OverImage> */}
+                            </HoverIcon>
 
-                          <CaptionBoldShort
-                            textcolor={isDarkUI ? "#363537" : "#FAFAFA"}
-                            align="center"
-                          >
-                            UPLOAD USER PROFILE
-                          </CaptionBoldShort>
-                        </VStack>
+                            <CaptionBoldShort
+                              textcolor={isDarkUI ? "#363537" : "#FAFAFA"}
+                              align="center"
+                            >
+                              UPLOAD USER PROFILE
+                            </CaptionBoldShort>
+                          </VStack>
                         </label>
 
                         {/* Username and social networks selector    */}
@@ -1215,7 +1220,7 @@ const MyNFT = (props) => {
                             cursor="pointer"
                           ></IconImg>
 
-                          <OverImage>
+                          <HoverImage>
                             <VStack
                               background={({ theme }) => theme.faded}
                               border="6px"
@@ -1234,7 +1239,7 @@ const MyNFT = (props) => {
                                 CHANGE BANNER IMAGE
                               </CaptionBoldShort>
                             </VStack>
-                          </OverImage>
+                          </HoverImage>
                         </HStack>
                       </label>
                       <input
@@ -2119,16 +2124,26 @@ const Selector = styled(motion.div)`
   height: 42px;
 `;
 
-const OverImage = styled(motion.div)`
+const HoverImage = styled(motion.div)`
   position: absolute;
+  display: block;
   width: 240px;
   height: 120px;
+  cursor: pointer;
+`;
+
+const HoverIcon = styled(motion.div)`
+  position: absolute;
+  display: block;
+  width: 82px;
+  height: 118px;
+  cursor: pointer;
 `;
 
 const Controls = styled(motion.div)`
   position: absolute;
   bottom: 10px;
-
+  cursor: pointer;
   z-index: 1;
   height: 42px;
 `;
