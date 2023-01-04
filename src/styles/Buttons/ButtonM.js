@@ -10,7 +10,7 @@ function ButtonM(props) {
     <HStack
       background={background}
       width={width || "100%"}
-      border={border || "6px"}
+      border={border || "9px"}
       height={height || "42px"}
       cursor="pointer"
       whileTap={{ scale: 0.96 }}
