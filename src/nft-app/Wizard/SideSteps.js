@@ -2,10 +2,11 @@ import React from "react";
 import { VStack } from "../../styles/Stacks";
 import { LogoWizard } from "./LogoWizard";
 import { StepWiz } from "./StepWiz";
+import gradient from "../../images/meshGradient.png";
 
 function SideSteps() {
   return (
-    <VStack maxwidth="390px" minwidth="390px" background="green">
+    <VStack maxwidth="390px" minwidth="390px" backgroundimage={gradient}>
       <LogoWizard isWizard={true}></LogoWizard>
 
       <VStack width="100%" spacing="0px" maxheight="520px">

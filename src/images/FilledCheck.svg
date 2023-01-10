@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="50px" height="50px" viewBox="0 0 50 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Checked</title>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Checked" stroke="#FFFFFF" stroke-width="3">
+            <rect id="Rectangle-Copy" fill="#0032F1" x="1.5" y="1.5" width="47" height="47" rx="23.5"></rect>
+            <polyline id="Path" points="13.8958281 26.738528 21.6588098 34.9557414 37.8364714 14.3286181"></polyline>
+        </g>
+    </g>
+</svg>
