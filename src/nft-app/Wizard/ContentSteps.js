@@ -2,6 +2,7 @@ import React from "react";
 import { HStack } from "../../styles/Stacks";
 import { Step1 } from "./Step1";
 import { Step2 } from "./Step2";
+import { Step3 } from "./Step3/Step3";
 
 function ContentSteps(props) {
   const { step } = props;
@@ -12,7 +13,7 @@ function ContentSteps(props) {
     case "step2":
       return <Step2></Step2>;
     case "step3":
-      return <div>Option 3 selected</div>;
+      return <Step3></Step3>;
     case "step4":
       return <div>Option 3 selected</div>;
     case "step5":
