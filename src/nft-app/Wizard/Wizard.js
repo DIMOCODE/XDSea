@@ -15,7 +15,7 @@ function Wizard() {
       >
         <SideSteps></SideSteps>
 
-        <ContentSteps step="step5"></ContentSteps>
+        <ContentSteps step="review"></ContentSteps>
       </HStack>
     </HStack>
   );

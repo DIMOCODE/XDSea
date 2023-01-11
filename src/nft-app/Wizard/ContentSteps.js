@@ -1,5 +1,6 @@
 import React from "react";
 import { HStack } from "../../styles/Stacks";
+import { Review } from "./Review/Review";
 import { Step1 } from "./Step1";
 import { Step2 } from "./Step2";
 import { Step3 } from "./Step3/Step3";
@@ -20,8 +21,8 @@ function ContentSteps(props) {
       return <Step4></Step4>;
     case "step5":
       return <Step5></Step5>;
-    case "publishing":
-      return <div>Option 3 selected</div>;
+    case "review":
+      return <Review></Review>;
     case "admin":
       return <div>Option 3 selected</div>;
     default:
