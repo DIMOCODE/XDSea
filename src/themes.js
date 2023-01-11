@@ -23,6 +23,7 @@ export const lightTheme = {
   faded: "rgba(0, 0, 0, 0.03)",
   faded30: "rgba(0, 0, 0, 0.1)",
   faded60: "rgba(0, 0, 0, 0.3)",
+  faded90: "rgba(0, 0, 0, 0.6)",
   topbar:
     "linear-gradient(180deg, rgba(21, 35, 51, 0.78) 0%, rgba(24, 33, 44, 0) 267.5%)",
   backgroundModal: "rgba(214, 214, 219, 0.84)",
