@@ -13,9 +13,9 @@ function Wizard() {
         border="9px"
         width="1200px"
       >
-        <SideSteps></SideSteps>
+        <SideSteps isadmin={true} isAdminSteps={true}></SideSteps>
 
-        <ContentSteps step="review"></ContentSteps>
+        <ContentSteps step="admin"></ContentSteps>
       </HStack>
     </HStack>
   );

@@ -37,7 +37,7 @@ function Review() {
         <PBVandLP hasBL={true}></PBVandLP>
 
         <ButtonM
-          title="Publish Stakin Pool"
+          title="Publish Staking Pool"
           background={({ theme }) => theme.blue}
           textcolor="white"
           height="52px"

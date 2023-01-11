@@ -12,12 +12,16 @@ function LogoWizard(props) {
       <VStack spacing="6px" maxheight="60px">
         <TitleBold18>Staking Pool</TitleBold18>
         <HStack
-          background={({ theme }) => theme.blue}
+          background={
+            isWizard
+              ? ({ theme }) => theme.blackLinear
+              : ({ theme }) => theme.blue
+          }
           height="26px"
           border="30px"
         >
           <CaptionBold textcolor="white">
-            {isWizard ? "WIZARD" : "ADMIN"}
+            {isWizard ? "ADMIN" : "WIZARD"}
           </CaptionBold>
         </HStack>
       </VStack>
