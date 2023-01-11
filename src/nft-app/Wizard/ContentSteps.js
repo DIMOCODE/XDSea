@@ -4,6 +4,7 @@ import { Step1 } from "./Step1";
 import { Step2 } from "./Step2";
 import { Step3 } from "./Step3/Step3";
 import { Step4 } from "./Step4/Step4";
+import { Step5 } from "./Step5/Step5";
 
 function ContentSteps(props) {
   const { step } = props;
@@ -18,7 +19,7 @@ function ContentSteps(props) {
     case "step4":
       return <Step4></Step4>;
     case "step5":
-      return <div>Option 3 selected</div>;
+      return <Step5></Step5>;
     case "publishing":
       return <div>Option 3 selected</div>;
     case "admin":

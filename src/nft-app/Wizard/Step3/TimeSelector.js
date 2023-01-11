@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { HStack, IconImg, VStack } from "../../../styles/Stacks";
 import { BodyMedium } from "../../../styles/TextStyles";
 import sortIcon from "../../../images/sortIcon.svg";
@@ -9,8 +9,14 @@ import { motion, AnimatePresence } from "framer-motion/dist/framer-motion";
 
 function SelectorItem(props) {
   return (
-    <HStack whileHover={{ background: "white" }} height="36px" border="6px">
-      <BodyMedium> {props.name} </BodyMedium>
+    <HStack
+      onClick={props.onClick}
+      whileHover={{ background: "white" }}
+      height="36px"
+      border="6px"
+      cursor="pointer"
+    >
+      <BodyMedium cursor="pointer"> {props.name} </BodyMedium>
     </HStack>
   );
 }
@@ -18,14 +24,29 @@ function SelectorItem(props) {
 function TimeSelector() {
   const ref = useRef(null);
   const [isActive, setIsActive] = useState(false);
+
   const handleActive = () => {
     setIsActive(true);
   };
 
   useClickAway(ref, () => {
-    setIsActive(false);
+    hideSelector();
   });
 
+  const [selectedValue, setSelectedValue] = useState("HOUR");
+
+  const handleSelect = (value) => {
+    setSelectedValue(value);
+    hideSelector();
+  };
+
+  const hideSelector = () => {
+    setIsActive(false);
+  };
+
+  {
+    console.log(isActive);
+  }
   return (
     <VStack
       border="9px"
@@ -35,7 +56,7 @@ function TimeSelector() {
       width="100%"
       onClick={handleActive}
     >
-      <BodyMedium>HOUR</BodyMedium>
+      <BodyMedium>{selectedValue}</BodyMedium>
       <IconImg
         url={sortIcon}
         width="21px"
@@ -62,11 +83,26 @@ function TimeSelector() {
                 boxShadow: " 0px 11px 12px 0px rgba(0, 0, 0, 0.1)",
               }}
             >
-              <SelectorItem name="HOUR"></SelectorItem>
-              <SelectorItem name="DAY"></SelectorItem>
-              <SelectorItem name="WEEK"></SelectorItem>
-              <SelectorItem name="MONTH"></SelectorItem>
-              <SelectorItem name="YEAR"></SelectorItem>
+              <SelectorItem
+                name="HOUR"
+                onClick={() => handleSelect("HOUR")}
+              ></SelectorItem>
+              <SelectorItem
+                name="DAY"
+                onClick={() => handleSelect("DAY")}
+              ></SelectorItem>
+              <SelectorItem
+                name="WEEK"
+                onClick={() => handleSelect("WEEK")}
+              ></SelectorItem>
+              <SelectorItem
+                name="MONTH"
+                onClick={() => handleSelect("MONTH")}
+              ></SelectorItem>
+              <SelectorItem
+                name="YEAR"
+                onClick={() => handleSelect("YEAR")}
+              ></SelectorItem>
             </VStack>
           </Selector>
         )}
