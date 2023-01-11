@@ -13,14 +13,14 @@ function SideSteps() {
         <StepWiz
           title="Step 1"
           description="Address of your nft collection"
-          selected={true}
-          completed={false}
+          selected={false}
+          completed={true}
         ></StepWiz>
         <StepWiz
           title="Step 2"
           description="Choose NFTs from your collection"
-          selected={false}
-          completed={false}
+          selected={true}
+          completed={true}
         ></StepWiz>
         <StepWiz
           title="Step 3"

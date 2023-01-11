@@ -1,5 +1,7 @@
 import React from "react";
+
 import { HStack } from "../../styles/Stacks";
+import { LoadingState } from "./LoadingState";
 import { Review } from "./Review/Review";
 import { Step1 } from "./Step1";
 import { Step2 } from "./Step2";
@@ -23,6 +25,9 @@ function ContentSteps(props) {
       return <Step5></Step5>;
     case "review":
       return <Review></Review>;
+    case "loading":
+      // states : loading, published, error
+      return <LoadingState state="error"></LoadingState>;
     case "admin":
       return <div>Option 3 selected</div>;
     default:
