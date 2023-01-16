@@ -104,6 +104,7 @@ import { StakeBtn } from "./StakeBtn";
 import { ListBtn } from "./ListBtn";
 import { claimStakeReward, createStake, withdrawStake } from "../../API/stake";
 import { StakingModal } from "../Staking/StakingModal";
+import { CounterStakeBtn } from "./CounterStakeBtn";
 
 const NFTDetails = (props) => {
   const size = useWindowSize();
@@ -140,6 +141,7 @@ const NFTDetails = (props) => {
   const [withdrawOfferButtonStatus, setWithdrawOfferButtonStatus] = useState(
     []
   );
+  const [counterDidFinish, setCounterDidFinish] = useState(false);
   const [acceptOfferButtonStatus, setAcceptOfferButtonStatus] = useState([]);
   const [processingOffer, setIsProcessingOffer] = useState(false);
   const [processingBuying, setIsProcessingBuying] = useState(false);
@@ -225,7 +227,11 @@ const NFTDetails = (props) => {
 
   const stakeNFT = async () => {
     try {
-      var success = await StakeNFT(stakingPool?.walletAddress, id, wallet?.address);
+      var success = await StakeNFT(
+        stakingPool?.walletAddress,
+        id,
+        wallet?.address
+      );
       if (success) {
         var stakeData = await (
           await createStake(nft?._id, stakingPool?._id)
@@ -245,7 +251,11 @@ const NFTDetails = (props) => {
 
   const withdrawStakeNFT = async () => {
     setWithdrawStakeStatus(1);
-    var success = await WithdrawStake(stakingPool?.walletAddress, id, wallet?.address);
+    var success = await WithdrawStake(
+      stakingPool?.walletAddress,
+      id,
+      wallet?.address
+    );
     if (success) {
       setWithdrawStakeStatus(3);
       await withdrawStake(stake?._id);
@@ -296,12 +306,7 @@ const NFTDetails = (props) => {
     setPlacingOffer(false);
     var success = false;
     if (!nft.inBlacklist) {
-      success = await Offer(
-        approved,
-        nft,
-        offerPrice,
-        wallet.address
-      );
+      success = await Offer(approved, nft, offerPrice, wallet.address);
     }
     if (success) {
       setOfferButtonStatus(3);
@@ -328,11 +333,7 @@ const NFTDetails = (props) => {
     if (nft.inBlacklist) {
       success = await LegacyWithdrawListing(approved, nft, wallet.address);
     } else {
-      success = await WithdrawListing(
-        approved,
-        nft,
-        wallet.address
-      );
+      success = await WithdrawListing(approved, nft, wallet.address);
     }
     if (success) {
       setWithdrawButtonStatus(3);
@@ -367,12 +368,7 @@ const NFTDetails = (props) => {
     setEditingListing(false);
     var success = false;
     if (!nft.inBlacklist) {
-      success = await EditNFT(
-        approved,
-        nft,
-        editPrice,
-        wallet.address
-      );
+      success = await EditNFT(approved, nft, editPrice, wallet.address);
     }
     if (success) {
       setEditButtonStatus(3);
@@ -412,12 +408,7 @@ const NFTDetails = (props) => {
     setListingNFT(false);
     var success = false;
     if (!nft.inBlacklist) {
-      success = await SellNFT(
-        approved,
-        nft,
-        listPrice,
-        wallet.address
-      );
+      success = await SellNFT(approved, nft, listPrice, wallet.address);
     }
     if (success) {
       setListButtonStatus(3);
@@ -453,12 +444,7 @@ const NFTDetails = (props) => {
         : transferAddress;
     var success = false;
     if (!nft.inBlacklist) {
-      success = await TransferNFT(
-        approved,
-        nft,
-        address,
-        wallet.address
-      );
+      success = await TransferNFT(approved, nft, address, wallet.address);
     }
     if (success) {
       setTransferButtonStatus(3);
@@ -580,7 +566,7 @@ const NFTDetails = (props) => {
           id
         )
       ).data;
-
+      console.log(nftData);
       setStakingPool(
         nftData.stake ? nftData.stake.stakingPoolId : nftData.stakingPool
       );
@@ -814,9 +800,7 @@ const NFTDetails = (props) => {
     if (wallet?.address !== "" && wallet?.address !== undefined)
       var getVal = await nftContract.methods
         .isApprovedForAll(
-          isXdc(wallet?.address)
-            ? fromXdc(wallet?.address)
-            : wallet?.address,
+          isXdc(wallet?.address) ? fromXdc(wallet?.address) : wallet?.address,
           marketAddress
         )
         .call();
@@ -1123,7 +1107,6 @@ const NFTDetails = (props) => {
                             </VStack>
                           </LockedContent>
                         ) : null}
-
                       </VStack>
                     </>
                   ) : isVideo(nft?.fileType) ? (
@@ -1811,10 +1794,22 @@ const NFTDetails = (props) => {
                       : wallet?.address.toLowerCase()) ? (
                     nft?.isStake ? (
                       <>
-                        <StakeBtn
-                          claimButton={true}
-                          onClick={() => setStakeModal(true)}
-                        ></StakeBtn>
+                        {stake.rewardsClaimed[0]?.amountOfPendingRewards <= 0 &&
+                        !counterDidFinish ? (
+                          <CounterStakeBtn
+                            delayMinutes={
+                              stake.rewardsClaimed[0]?.rewardFrecuencyMins -
+                              stake.rewardsClaimed[0]
+                                ?.amountminutesSinceLastReward
+                            }
+                            onComplete={() => setCounterDidFinish(true)}
+                          />
+                        ) : (
+                          <StakeBtn
+                            claimButton={true}
+                            onClick={() => setStakeModal(true)}
+                          ></StakeBtn>
+                        )}
                         <ButtonApp
                           btnStatus={withdrawStakeStatus}
                           func={"WithdrawStake"}
