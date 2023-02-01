@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { VStack } from "../../styles/Stacks";
 
-function InputWizard() {
+function InputWizard({ onComplete, onChange }) {
   const [value, setValue] = useState("");
   const [valid, setValid] = useState(false);
   const [error, setError] = useState(false);
@@ -19,11 +19,14 @@ function InputWizard() {
 
   function handleChange(event) {
     setValue(event.target.value);
+    onChange(event.target.value);
     if (event.target.value.length === 16) {
       setValid(true);
+      onComplete(true);
       setError(false);
     } else {
       setValid(false);
+      onComplete(false);
       setError(event.target.value.length > 16);
     }
   }

@@ -233,6 +233,11 @@ const NFTApp = () => {
                 render={() => <Wizard></Wizard>}
               ></Route>
               <Route
+                exact
+                path="/Wizard/:collectionId"
+                render={() => <Wizard></Wizard>}
+              ></Route>
+              <Route
                 path="**"
                 render={() => (
                   <Home redirect={NavigateTo} showMenu={showMenu} />

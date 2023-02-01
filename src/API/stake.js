@@ -78,7 +78,12 @@ export const createStakingPool = (
 
  * @returns HTTP GET request response 
  */
-export const updateStakingPool = ({stakingPoolId, lockPeriod, rewardRates, nftsStakeables}) => {
+export const updateStakingPool = ({
+  stakingPoolId,
+  lockPeriod,
+  rewardRates,
+  nftsStakeables,
+}) => {
   const body = {
     lockPeriod,
     rewardRates,
@@ -149,10 +154,27 @@ export const claimStakeReward = (stakeId, rewardTypeId) => {
  * @param {string} collectionId collection DB id
  * @returns HTTP GET request response
  */
-export const getStakingPoolsByCollection = (collectionId) => {
+export const getStakingPoolsByCollection = (
+  collectionId,
+  populateCollection = false
+) => {
   return createRequest(
     HTTP_METHODS.get,
     `stake/pool/${collectionId}`,
+    populateCollection ? { withCollection: true } : null,
+    null
+  );
+};
+/**
+ * Send an HTTP request to get staking pools by collection
+ *
+ * @param {string} collectionId collection DB id
+ * @returns HTTP GET request response
+ */
+export const getStakingPoolDetailByCollection = (collectionId) => {
+  return createRequest(
+    HTTP_METHODS.get,
+    `stake/pool/${collectionId}/detail`,
     null,
     null
   );

@@ -44,9 +44,6 @@ function TimeSelector() {
     setIsActive(false);
   };
 
-  {
-    console.log(isActive);
-  }
   return (
     <VStack
       border="9px"

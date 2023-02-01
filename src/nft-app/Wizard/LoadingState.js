@@ -6,20 +6,21 @@ import success from "../../images/IconStaking.png";
 import error from "../../images/ErrorState.gif";
 import { useState } from "react";
 import { ButtonM } from "../../styles/Buttons/ButtonM";
+import { WIZARD_STATUS, WIZARD_STEPS } from "../../constant";
 
 function LoadingState(props) {
   const [setStatus, setIsStatus] = useState(props.state);
   return (
     <HStack width="100%">
       <VStack maxwidth="390px" height="420px">
-        {setStatus === "loading" && (
+        {setStatus === WIZARD_STATUS.creating && (
           <VStack>
             <IconImg url={loading} width="240px" height="240px"></IconImg>
             <BodyMedium> Crafting your staking pool</BodyMedium>
           </VStack>
         )}
 
-        {setStatus === "published" && (
+        {setStatus === WIZARD_STATUS.published && (
           <VStack width="300px" spacing="15px">
             <IconImg url={success} width="180px" height="180px"></IconImg>
             <TitleBold30>Congratulations</TitleBold30>
@@ -45,7 +46,7 @@ function LoadingState(props) {
           </VStack>
         )}
 
-        {setStatus === "error" && (
+        {setStatus === WIZARD_STATUS.error && (
           <VStack width="300px">
             <IconImg url={error} width="180px" height="180px"></IconImg>
             <BodyMedium align="center">
