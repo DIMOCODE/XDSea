@@ -3,20 +3,30 @@ import { ButtonM } from "../../styles/Buttons/ButtonM";
 import { HStack } from "../../styles/Stacks";
 
 function ActionButtons(props) {
+  const {
+    grayBtn,
+    blueBtn,
+    onClickGray,
+    onClickBlue,
+    grayBtnDisabled,
+    blueBtnDisabled,
+  } = props;
   return (
     <HStack>
       <ButtonM
-        title={props.grayBtn}
+        title={grayBtn}
         background={({ theme }) => theme.faded30}
         height="52px"
-        onClick={props.onClickGray}
+        onClick={onClickGray}
+        disabled={grayBtnDisabled}
       ></ButtonM>
       <ButtonM
-        title={props.blueBtn}
+        title={blueBtn}
         background={({ theme }) => theme.blue}
         textcolor="white"
         height="52px"
-        onClick={props.onClickBlue}
+        onClick={onClickBlue}
+        disabled={blueBtnDisabled}
       ></ButtonM>
     </HStack>
   );

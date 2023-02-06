@@ -51,6 +51,7 @@ function Step2({ collectionId, onBack, onNext, onComplete }) {
             background={({ theme }) => theme.blue}
             textcolor="white"
             onClick={handleNext}
+            disabled={nftsSelected.length === 0}
             height="52px"
           ></ButtonM>
         </HStack>

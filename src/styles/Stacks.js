@@ -118,6 +118,7 @@ export const HStack = styled(motion.div).attrs((props) => ({
   flexwrap: props.flexwrap || "nowrap",
   cursor: props.cursor || "default",
   blur: props.blur || "0px",
+  opacity: props.opacity ?? "1",
 }))`
   display: flex;
   flex-wrap: ${(props) => props.flexwrap};
@@ -135,6 +136,7 @@ export const HStack = styled(motion.div).attrs((props) => ({
   width: ${(props) => props.width};
   padding: ${(props) => props.padding};
   color: ${(props) => props.color};
+  opacity: ${(props) => props.opacity};
   overflow: ${(props) => props.overflow};
   border-style: solid;
   border-color: ${(props) => props.bordercolor};

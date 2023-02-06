@@ -228,3 +228,11 @@ export const stopStake = (stakeId) => {
     null
   );
 };
+/**
+ * Send an HTTP request to get reward types
+ *
+ * @returns HTTP GET request response
+ */
+export const getRewardTypes = () => {
+  return createSignedRequest(HTTP_METHODS.get, `rewardType`, null, null);
+};

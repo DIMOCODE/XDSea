@@ -6,10 +6,9 @@ import addToken from "../../../images/AddTokenIcon.svg";
 import { ThemeConsumer } from "styled-components";
 
 function Token(props) {
-  const [setActive, setIsActive] = useState(false);
-
+  const { isDefault, onClick, image, id, name, coinSelected } = props;
   const handleActive = () => {
-    setIsActive(!setActive);
+    onClick();
   };
 
   return (
@@ -20,31 +19,51 @@ function Token(props) {
       height="111px"
       border="9px"
       whileHover={{ backgroundColor: "rgba(0,0,0,0.08)" }}
-      bordercolor={setActive ? ({ theme }) => theme.blueText : "transparent"}
+      bordercolor={
+        !isDefault && coinSelected === id
+          ? ({ theme }) => theme.blueText
+          : "transparent"
+      }
       bordersize={"2px"}
-      onClick={props.onClick}
-      whileTap={handleActive}
+      onClick={handleActive}
       cursor="pointer"
     >
       <IconImg
-        url={props.image}
+        url={image}
         width="52px"
         height="52px"
         cursor="pointer"
       ></IconImg>
-      <BodyMedium cursor="pointer">{props.name}</BodyMedium>
+      <BodyMedium cursor="pointer">{name}</BodyMedium>
     </VStack>
   );
 }
 
 function TokenGrid(props) {
+  const { rewardTypes, didSelect, didLaunchCreator } = props;
+  const [coinSelected, setCoinSelected] = useState(null);
+  const handleDidSelect = (idCoin) => {
+    setCoinSelected(idCoin);
+    didSelect(idCoin);
+  };
   return (
     <HStack flexwrap="wrap" justify="flex-start" spacing="18px">
-      <Token image={xdc} name="XDC"></Token>
-
-      <Token image={xdc} name="XDC"></Token>
-      <Token image={xdc} name="XDC"></Token>
-      <Token image={addToken} name="Add Token" onClick={props.onClick}></Token>
+      {rewardTypes.map((t) => (
+        <Token
+          key={t._id}
+          id={t._id}
+          image={t.iconUrl}
+          name={t.name}
+          coinSelected={coinSelected}
+          onClick={() => handleDidSelect(t._id)}
+        ></Token>
+      ))}
+      <Token
+        isDefault
+        image={addToken}
+        name="Add Token"
+        onClick={didLaunchCreator}
+      ></Token>
     </HStack>
   );
 }

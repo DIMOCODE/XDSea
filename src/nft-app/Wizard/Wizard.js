@@ -62,12 +62,15 @@ function Wizard() {
         break;
       case 3:
         setStep3Validated(isValid);
+        setRewards(data);
         break;
       case 4:
         setStep4Validated(isValid);
+        setNftsBackedValues(data);
         break;
       case 5:
         setStep5Validated(isValid);
+        setLockPeriod(data);
         break;
 
       default:
@@ -107,7 +110,13 @@ function Wizard() {
           didSelectStep={(step) => {
             setCurrentStep(step);
           }}
-        ></ContentSteps>
+          walletAddress={walletAddress}
+          lockPeriod={lockPeriod}
+          rewards={rewards}
+          nftsStakeabkes={nftsStakeabkes}
+          nftsBackedValues={nftsBackedValues}
+          isBackedValue={isBackedValue}
+        />
 
         <IconImg
           style={{ position: "absolute", top: "21px", right: "21px" }}

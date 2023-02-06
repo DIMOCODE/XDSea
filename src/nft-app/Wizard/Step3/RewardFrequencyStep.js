@@ -4,7 +4,16 @@ import { BodyRegular, CaptionBoldShort } from "../../../styles/TextStyles";
 import styled from "styled-components";
 import { TimeSelector } from "./TimeSelector";
 
-function RewardFrequencyStep() {
+function RewardFrequencyStep(props) {
+  const { time, timeType, onChangeTime, onChangeTimeType, headerLabel } = props;
+
+  const handleChangeInput = (event) => {
+    const { value } = event.target;
+    console.log(typeof value);
+    if (value === "" || value > 0) {
+      onChangeTime(value);
+    }
+  };
   return (
     <VStack
       maxheight="90px"
@@ -12,7 +21,7 @@ function RewardFrequencyStep() {
       width="100%"
       style={{ zIndex: 10 }}
     >
-      <BodyRegular>Choose your Reward Frequency</BodyRegular>
+      <BodyRegular>{headerLabel}</BodyRegular>
 
       <HStack>
         <VStack maxwidth="30%">
@@ -21,10 +30,18 @@ function RewardFrequencyStep() {
           >
             TIME
           </CaptionBoldShort>
-          <Input placeholder={"1"} />
+          <Input
+            placeholder={"01"}
+            type="number"
+            value={time}
+            onChange={handleChangeInput}
+          />
         </VStack>
 
-        <TimeSelector></TimeSelector>
+        <TimeSelector
+          selectedValue={timeType}
+          onChangeSelectedValue={onChangeTimeType}
+        />
       </HStack>
     </VStack>
   );

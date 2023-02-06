@@ -3,12 +3,16 @@ import { VStack } from "../../../styles/Stacks";
 import styled from "styled-components";
 import { BodyRegular } from "../../../styles/TextStyles";
 
-function RewardRateStep() {
+function RewardRateStep(props) {
+  const { value, onChange } = props;
+  const handleChange = (event) => {
+    onChange(event.target.value);
+  };
   return (
     <VStack maxheight="90px" alignment="flex-start" width="100%">
       <BodyRegular>Select your Reward Rate</BodyRegular>
 
-      <Input placeholder={"000"} />
+      <Input placeholder={"000"} value={value} onChange={handleChange} />
     </VStack>
   );
 }

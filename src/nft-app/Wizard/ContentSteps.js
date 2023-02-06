@@ -19,6 +19,12 @@ function ContentSteps(props) {
     isEditing,
     validateStep,
     didSelectStep,
+    walletAddress,
+    lockPeriod,
+    rewards,
+    nftsStakeabkes,
+    nftsBackedValues,
+    isBackedValue,
   } = props;
 
   const handleStepOne = (isValid, address) => {
@@ -27,11 +33,18 @@ function ContentSteps(props) {
 
   const handleStepTwo = (isValid, nftsSelected) => {
     console.info(isValid, nftsSelected);
-    validateStep(
-      2,
-      isValid,
-      nftsSelected.map((nft) => nft._id)
-    );
+    validateStep(2, isValid, nftsSelected);
+  };
+  const handleStepThree = (isValid, rewardRates) => {
+    console.info(isValid, rewardRates);
+    validateStep(3, isValid, rewardRates);
+  };
+  const handleStepFour = (isValid, backedValues) => {
+    console.info(isValid, backedValues);
+    validateStep(4, isValid, backedValues);
+  };
+  const handleStepFive = (isValid, lockPeriod) => {
+    validateStep(5, isValid, lockPeriod);
   };
 
   if (currentStakingPool) {
@@ -75,24 +88,25 @@ function ContentSteps(props) {
       case WIZARD_STEPS.step3:
         return (
           <Step3
-            onComplete={() => validateStep(3)}
-            onBack={() => didSelectStep(WIZARD_STEPS.Step2)}
+            onComplete={handleStepThree}
+            onBack={() => didSelectStep(WIZARD_STEPS.step2)}
             onNext={() => didSelectStep(WIZARD_STEPS.step4)}
           />
         );
       case WIZARD_STEPS.step4:
         return (
           <Step4
-            onComplete={() => validateStep(4)}
-            onBack={() => didSelectStep(WIZARD_STEPS.Step3)}
+            onComplete={handleStepFour}
+            onBack={() => didSelectStep(WIZARD_STEPS.step3)}
             onNext={() => didSelectStep(WIZARD_STEPS.step5)}
+            nftsStakeabkes={nftsStakeabkes}
           />
         );
       case WIZARD_STEPS.step5:
         return (
           <Step5
-            onComplete={() => validateStep(5)}
-            onBack={() => didSelectStep(WIZARD_STEPS.Step5)}
+            onComplete={handleStepFive}
+            onBack={() => didSelectStep(WIZARD_STEPS.step5)}
             onNext={() => didSelectStep(WIZARD_STATUS.review)}
           />
         );

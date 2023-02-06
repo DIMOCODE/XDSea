@@ -7,6 +7,12 @@ import { InputWizard } from "./InputWizard";
 
 function Step1({ onComplete, onNext, onBack }) {
   const [address, setAddress] = useState("");
+  const [validForm, setValidForm] = useState(false);
+
+  const handleSaveAddress = () => {
+    onComplete(true, address);
+    onNext();
+  };
   return (
     <HStack width="100%">
       <VStack background="transparent" maxwidth="390px" alignment="flex-start">
@@ -16,7 +22,7 @@ function Step1({ onComplete, onNext, onBack }) {
         </BodyRegular>
 
         <InputWizard
-          onComplete={(flag) => onComplete(flag, address)}
+          onComplete={setValidForm}
           onChange={(add) => setAddress(add)}
         ></InputWizard>
 
@@ -28,8 +34,9 @@ function Step1({ onComplete, onNext, onBack }) {
             onClick={onBack}
           ></ButtonM>
           <ButtonM
-            onClick={onNext}
+            onClick={handleSaveAddress}
             title="Continue"
+            disabled={!validForm}
             background={({ theme }) => theme.blue}
             textcolor="white"
             height="52px"

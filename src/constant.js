@@ -80,3 +80,11 @@ export const WIZARD_STATUS = {
   creating: "creating",
   admin: "admin",
 };
+
+export const HOURS_BY_TIME = {
+  HOUR: 1,
+  DAY: 24,
+  WEEK: 168,
+  MONTH: 720,
+  YEAR: 8760,
+};
