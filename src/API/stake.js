@@ -31,6 +31,7 @@ import { HTTP_METHODS } from "../constant";
  */
 export const createStakingPool = (
   collectionId,
+  walletAddress,
   lockPeriod,
   rewards,
   nftsStakeables,
@@ -43,6 +44,9 @@ export const createStakingPool = (
   };
   if (lockPeriod) {
     body.lockPeriod = lockPeriod;
+  }
+  if (walletAddress) {
+    body.walletAddress = walletAddress;
   }
   if (nftsStakeables) {
     body.nftsStakeables = nftsStakeables;
@@ -82,13 +86,24 @@ export const updateStakingPool = ({
   stakingPoolId,
   lockPeriod,
   rewardRates,
+  walletAddress,
   nftsStakeables,
+  nftsBackedValues,
+  isBackedValue,
 }) => {
   const body = {
     lockPeriod,
     rewardRates,
     nftsStakeables,
+    walletAddress,
   };
+
+  if (nftsBackedValues?.length) {
+    body.nftsBackedValues = nftsBackedValues;
+  }
+  if (isBackedValue !== undefined) {
+    body.isBackedValue = isBackedValue;
+  }
   return createSignedRequest(
     HTTP_METHODS.put,
     `stake/pool/${stakingPoolId}`,
@@ -235,4 +250,35 @@ export const stopStake = (stakeId) => {
  */
 export const getRewardTypes = () => {
   return createSignedRequest(HTTP_METHODS.get, `rewardType`, null, null);
+};
+export const updateRewardTypeById = ({
+  rewardTypeId,
+  addressContract,
+  type,
+  name,
+  color,
+  iconUrl,
+}) => {
+  const body = {};
+  if (addressContract) {
+    body.addressContract = addressContract;
+  }
+  if (type) {
+    body.type = type;
+  }
+  if (name) {
+    body.name = name;
+  }
+  if (color) {
+    body.color = color;
+  }
+  if (iconUrl) {
+    body.iconUrl = iconUrl;
+  }
+  return createSignedRequest(
+    HTTP_METHODS.put,
+    `rewardType/${rewardTypeId}`,
+    null,
+    body
+  );
 };

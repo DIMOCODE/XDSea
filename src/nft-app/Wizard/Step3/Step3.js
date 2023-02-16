@@ -12,11 +12,10 @@ import { RewardRateStep } from "./RewardRateStep";
 import { TokenGrid } from "./TokenGrid";
 
 function Step3(props) {
-  const { onComplete, onBack, onNext } = props;
+  const { initialRewardRates, onComplete, onBack, onNext } = props;
   const [setStep, setIsStep] = useState(3); //al inicio con formulario de creacion
   const [rewardTypes, setRewardTypes] = useState([]);
-  const [rewardRates, setRewardRates] = useState([]);
-  const [rewardRateSelected, setRewardRateSelected] = useState(null);
+  const [rewardRates, setRewardRates] = useState(initialRewardRates ?? []);
 
   // states for form of new rewardRate
   const [coinSelected, setCoinSelected] = useState(null);

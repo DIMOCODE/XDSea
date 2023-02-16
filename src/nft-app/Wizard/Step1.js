@@ -5,8 +5,8 @@ import { HStack, VStack } from "../../styles/Stacks";
 import { BodyMedium, BodyRegular, TitleBold30 } from "../../styles/TextStyles";
 import { InputWizard } from "./InputWizard";
 
-function Step1({ onComplete, onNext, onBack }) {
-  const [address, setAddress] = useState("");
+function Step1({ walletAddress, onComplete, onNext, onBack }) {
+  const [address, setAddress] = useState(walletAddress);
   const [validForm, setValidForm] = useState(false);
 
   const handleSaveAddress = () => {
@@ -22,6 +22,7 @@ function Step1({ onComplete, onNext, onBack }) {
         </BodyRegular>
 
         <InputWizard
+          valueIn={address}
           onComplete={setValidForm}
           onChange={(add) => setAddress(add)}
         ></InputWizard>

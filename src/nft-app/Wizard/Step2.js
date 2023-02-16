@@ -1,11 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { getCollectionNFTs } from "../../API/Collection";
+import { getCollectionNFTsPreviews } from "../../API/Collection";
 import { ButtonM } from "../../styles/Buttons/ButtonM";
 import { VStack, HStack } from "../../styles/Stacks";
 import { BodyRegular, TitleBold30 } from "../../styles/TextStyles";
 import { GridNFT } from "./GridNFT";
 
-function Step2({ collectionId, onBack, onNext, onComplete }) {
+function Step2({
+  collectionId,
+  nftsAlreadySelected,
+  onBack,
+  onNext,
+  onComplete,
+}) {
   const [nftsInCollection, setNftsInCollection] = useState([]);
   const [nftsSelected, setNftsSelected] = useState([]);
   useEffect(() => {
@@ -14,10 +20,24 @@ function Step2({ collectionId, onBack, onNext, onComplete }) {
 
   const fetchNfts = async () => {
     try {
-      const { data } = await getCollectionNFTs({ collectionId });
+      const { data } = await getCollectionNFTsPreviews({ collectionId });
       let { nfts } = data;
-      nfts = nfts.map((nft) => ({ ...nft, isSelected: false }));
+      const selected = [];
+      nfts = nfts.map((nft) => {
+        const found = nftsAlreadySelected.find(
+          (selected) => selected._id === nft._id
+        );
+
+        const mergedNft = { ...nft, isSelected: !!found };
+        if (found) {
+          selected.push(mergedNft);
+        }
+        return mergedNft;
+      });
       setNftsInCollection(nfts);
+      if (selected.length) {
+        setNftsSelected(selected);
+      }
     } catch (error) {
       console.info(error);
     }

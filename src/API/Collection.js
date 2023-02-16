@@ -51,16 +51,77 @@ export const getCollection = (nickName) => {
   );
 };
 
+export const getCollectionById = (id) => {
+  return createSignedRequest(HTTP_METHODS.get, `collection//${id}`, null, null);
+};
+
+/**
+ * Send an HTTP request to get a list of NFTs of a specific collection
+ *
+ * @param {string} collectionId the DB object ID of the collection
+ * @param {number} page page number
+ * @param {string} searchBy search word to filter NFTs of the collection
+ * @param {boolean} verified flag to filter only NFTs owned by verified owners
+ * @param {string} saleType1 sale type to be filtered, corresponds to "SALE"
+ * @param {string} saleType2 sale type to be filtered, corresponds to "RELIST"
+ * @param {string} saleType3 sale type to be filtered, corresponds to "SOLD"
+ * @param {string} saleType4 sale type to be filtered, corresponds to "NOT_SALE"
+ * @param {number} priceRangeStart minimum value of the range of prices to be filtered
+ * @param {number} priceRangeEnd maximum value of the range of prices to be filtered
+ * @param {string} sortBy sorting criteria for NFTs of the collection - "relevance", "publication", "price", "offersAmount", "alphabetical"
+ * @param {number} sortDirection sorting direction i.e., 1 for least to greatest, -1 for greatest to least
+ * @returns HTTP GET request response with the filtered list of NFTs of the collection
+ */
+export const getCollectionNFTs = ({
+  collectionId,
+  page,
+  searchBy,
+  verified,
+  saleType1,
+  saleType2,
+  saleType3,
+  saleType4,
+  priceRangeStart,
+  priceRangeEnd,
+  sortBy,
+  sortDirection,
+}) => {
+  var params =
+    `?${searchBy !== undefined ? `searchBy=${searchBy}&` : ""}` +
+    `${
+      priceRangeStart !== undefined ? `priceRangeStart=${priceRangeStart}&` : ""
+    }` +
+    `${priceRangeEnd !== undefined ? `priceRangeEnd=${priceRangeEnd}&` : ""}${
+      sortBy !== undefined ? `sortBy=${sortBy}&` : ""
+    }` +
+    `${sortDirection !== undefined ? `sortDirection=${sortDirection}&` : ""}${
+      verified !== undefined ? `verified=${verified}&` : ""
+    }` +
+    `${saleType1 !== undefined ? `saleType=${saleType1}&` : ""}${
+      saleType2 !== undefined ? `saleType=${saleType2}&` : ""
+    }` +
+    `${saleType3 !== undefined ? `saleType=${saleType3}&` : ""}${
+      saleType4 !== undefined ? `saleType=${saleType4}&` : ""
+    }`;
+  params = params.substring(0, params.length - 1);
+  return createSignedRequest(
+    HTTP_METHODS.get,
+    `collection/nft/${collectionId}/${page}${params}`,
+    null,
+    null
+  );
+};
+
 /**
  * Send an HTTP request to get a list of NFTs of a specific collection
  *
  * @param {string} collectionId the DB object ID of the collection
  * @returns HTTP GET request response with the filtered list of NFTs of the collection
  */
-export const getCollectionNFTs = ({ collectionId }) => {
+export const getCollectionNFTsPreviews = ({ collectionId }) => {
   return createSignedRequest(
     HTTP_METHODS.get,
-    `collection/nft/${collectionId}`,
+    `collection/nft/${collectionId}/previews`,
     null,
     null
   );

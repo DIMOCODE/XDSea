@@ -1,4 +1,5 @@
 import moment from "moment";
+import { HOURS_BY_TIME, KEYS_TIME } from "../constant";
 /**
  * Check if a wallet address has an "xdc" prefix
  *
@@ -39,18 +40,17 @@ export const truncateAddress = (address) => {
 };
 
 export const calculatePeriod = (timeInHours) => {
-  const now = moment();
-  const dateAfterTime = moment().add(timeInHours, "hours");
-  const years = Math.abs(now.diff(dateAfterTime, "year"));
-  const months = Math.abs(now.diff(dateAfterTime, "months")) % 12;
-  const weeks = Math.abs(now.diff(dateAfterTime, "weeks")) % 4;
-  const days = Math.abs(now.diff(dateAfterTime, "days")) % 7;
-  const hours = Math.abs(now.diff(dateAfterTime, "hours")) % 24;
-  return {
-    years,
-    months,
-    weeks,
-    days,
-    hours,
-  };
+  if (timeInHours % HOURS_BY_TIME.YEAR === 0) {
+    return `${timeInHours / HOURS_BY_TIME.YEAR} years`;
+  }
+  if (timeInHours % HOURS_BY_TIME.MONTH === 0) {
+    return `${timeInHours / HOURS_BY_TIME.MONTH} months`;
+  }
+  if (timeInHours % HOURS_BY_TIME.WEEK === 0) {
+    return `${timeInHours / HOURS_BY_TIME.WEEK} weeks`;
+  }
+  if (timeInHours % HOURS_BY_TIME.DAY === 0) {
+    return `${timeInHours / HOURS_BY_TIME.DAY} days`;
+  }
+  return `${timeInHours} hours`;
 };

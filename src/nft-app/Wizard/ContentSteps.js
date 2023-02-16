@@ -22,9 +22,14 @@ function ContentSteps(props) {
     walletAddress,
     lockPeriod,
     rewards,
-    nftsStakeabkes,
+    nftsStakeables,
     nftsBackedValues,
     isBackedValue,
+    onCreateStakingPool,
+    onVisitCollection,
+    onAdminStakingPool,
+    onEdit,
+    isAllowed,
   } = props;
 
   const handleStepOne = (isValid, address) => {
@@ -47,30 +52,14 @@ function ContentSteps(props) {
     validateStep(5, isValid, lockPeriod);
   };
 
-  if (currentStakingPool) {
-    if (isEditing) {
-      switch (step) {
-        case WIZARD_STEPS.step1:
-          return <Step1 onComplete={handleStepOne}></Step1>;
-        case WIZARD_STEPS.step2:
-          return <Step2 onComplete={() => validateStep(2)}></Step2>;
-        case WIZARD_STEPS.step3:
-          return <Step3 onComplete={() => validateStep(3)}></Step3>;
-        case WIZARD_STEPS.step4:
-          return <Step4 onComplete={() => validateStep(4)}></Step4>;
-        case WIZARD_STEPS.step5:
-          return <Step5 onComplete={() => validateStep(5)}></Step5>;
-        default:
-          return <LoadingState state={step}></LoadingState>;
-      }
-    } else {
-      return <AdminWizard stakingPool={currentStakingPool}></AdminWizard>;
-    }
-  } else {
+  if (!isAllowed) {
+    return <LoadingState status={WIZARD_STATUS.notAllowed} />;
+  } else if (!currentStakingPool || isEditing) {
     switch (step) {
       case WIZARD_STEPS.step1:
         return (
           <Step1
+            walletAddress={walletAddress}
             onNext={() => didSelectStep(WIZARD_STEPS.step2)}
             onBack={() => didSelectStep(WIZARD_STEPS.step1)}
             onComplete={handleStepOne}
@@ -81,6 +70,7 @@ function ContentSteps(props) {
           <Step2
             onComplete={handleStepTwo}
             collectionId={collectionId}
+            nftsAlreadySelected={nftsStakeables}
             onBack={() => didSelectStep(WIZARD_STEPS.step1)}
             onNext={() => didSelectStep(WIZARD_STEPS.step3)}
           />
@@ -88,6 +78,7 @@ function ContentSteps(props) {
       case WIZARD_STEPS.step3:
         return (
           <Step3
+            initialRewardRates={rewards}
             onComplete={handleStepThree}
             onBack={() => didSelectStep(WIZARD_STEPS.step2)}
             onNext={() => didSelectStep(WIZARD_STEPS.step4)}
@@ -96,27 +87,49 @@ function ContentSteps(props) {
       case WIZARD_STEPS.step4:
         return (
           <Step4
+            isBackedValue={isBackedValue}
             onComplete={handleStepFour}
             onBack={() => didSelectStep(WIZARD_STEPS.step3)}
             onNext={() => didSelectStep(WIZARD_STEPS.step5)}
-            nftsStakeabkes={nftsStakeabkes}
+            nftsStakeables={nftsStakeables}
           />
         );
       case WIZARD_STEPS.step5:
         return (
           <Step5
+            initialLockPeriod={lockPeriod}
             onComplete={handleStepFive}
             onBack={() => didSelectStep(WIZARD_STEPS.step5)}
             onNext={() => didSelectStep(WIZARD_STATUS.review)}
           />
         );
       case WIZARD_STATUS.review:
-        return <Review></Review>;
-      case WIZARD_STATUS.admin:
-        return <AdminWizard></AdminWizard>;
+        return (
+          <Review
+            isEditing={isEditing}
+            address={walletAddress}
+            lockPeriod={lockPeriod}
+            rewards={rewards}
+            nftsStakeables={nftsStakeables}
+            nftsBackedValues={nftsBackedValues}
+            isBackedValue={isBackedValue}
+            onCreateStakingPool={onCreateStakingPool}
+          />
+        );
+      // case WIZARD_STATUS.admin:
+      //   return <AdminWizard></AdminWizard>;
       default:
-        return <LoadingState state={step}></LoadingState>;
+        return (
+          <LoadingState
+            isEditing={isEditing}
+            status={step}
+            onVisitCollection={onVisitCollection}
+            onAdminStakingPool={onAdminStakingPool}
+          />
+        );
     }
+  } else {
+    return <AdminWizard stakingPool={currentStakingPool} onEdit={onEdit} />;
   }
 }
 

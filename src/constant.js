@@ -79,6 +79,7 @@ export const WIZARD_STATUS = {
   review: "review",
   creating: "creating",
   admin: "admin",
+  notAllowed: "notAllowed",
 };
 
 export const HOURS_BY_TIME = {
@@ -86,5 +87,13 @@ export const HOURS_BY_TIME = {
   DAY: 24,
   WEEK: 168,
   MONTH: 720,
-  YEAR: 8760,
+  YEAR: 8640,
+};
+
+export const KEYS_TIME = {
+  HOUR: "HOUR",
+  DAY: "DAY",
+  WEEK: "WEEK",
+  MONTH: "MONTH",
+  YEAR: "YEAR",
 };

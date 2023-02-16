@@ -229,11 +229,6 @@ const NFTApp = () => {
               ></Route>
               <Route
                 exact
-                path="/Wizard"
-                render={() => <Wizard></Wizard>}
-              ></Route>
-              <Route
-                exact
                 path="/Wizard/:collectionId"
                 render={() => <Wizard></Wizard>}
               ></Route>

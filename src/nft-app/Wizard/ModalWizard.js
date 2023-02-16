@@ -40,6 +40,7 @@ function ModalWizard(props) {
               <ActionButtons
                 grayBtn="Cancel"
                 onClickGray={props.clickCancel}
+                onClickBlue={props.clickOk}
                 blueBtn="Close Wizard"
               ></ActionButtons>
             </VStack>

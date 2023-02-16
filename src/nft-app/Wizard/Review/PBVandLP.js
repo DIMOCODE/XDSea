@@ -10,25 +10,8 @@ function PBVandLP(props) {
   const [lockPeriodLabel, setLockPeriodLabel] = useState("");
   useEffect(() => {
     const lockPeriodInTime = calculatePeriod(lockPeriod);
-    console.log(lockPeriod, lockPeriodInTime);
-    let lockPeriodString = "";
-    if (lockPeriodInTime.years) {
-      lockPeriodString = `${lockPeriodInTime.years} years, `;
-    }
-    if (lockPeriodInTime.months) {
-      lockPeriodString += `${lockPeriodInTime.months} months, `;
-    }
-    if (lockPeriodInTime.weeks) {
-      lockPeriodString += `${lockPeriodInTime.weeks} weeks, `;
-    }
-    if (lockPeriodInTime.days) {
-      lockPeriodString += `${lockPeriodInTime.days} days, `;
-    }
-    if (lockPeriodInTime.hours) {
-      lockPeriodString += `${lockPeriodInTime.hours} hours, `;
-    }
 
-    setLockPeriodLabel(lockPeriodString.trim().slice(0, -1));
+    setLockPeriodLabel(lockPeriodInTime);
   }, [lockPeriod]);
 
   return (
@@ -44,7 +27,7 @@ function PBVandLP(props) {
             padding="0 18px"
           >
             <BodyBold textcolor={({ theme }) => theme.blueText}>
-              {backedValue} Value Locked
+              {`${backedValue} Value Locked`}
             </BodyBold>
           </HStack>
         </VStack>

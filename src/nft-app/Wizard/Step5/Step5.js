@@ -6,8 +6,10 @@ import { ActionButtons } from "../ActionButtons";
 import { RewardFrequencyStep } from "../Step3/RewardFrequencyStep";
 
 function Step5(props) {
-  const { onComplete, onBack, onNext } = props;
-  const [lockPeriodAmount, setLockPeriodAmount] = useState("");
+  const { initialLockPeriod, onComplete, onBack, onNext } = props;
+  const [lockPeriodAmount, setLockPeriodAmount] = useState(
+    `${initialLockPeriod}`
+  );
   const [lockPeriodType, setLockPeriodType] = useState("HOUR");
   const saveLockPeriod = () => {
     onComplete(true, lockPeriodAmount * HOURS_BY_TIME[lockPeriodType]);

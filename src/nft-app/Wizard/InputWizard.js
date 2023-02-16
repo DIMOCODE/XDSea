@@ -2,8 +2,8 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { VStack } from "../../styles/Stacks";
 
-function InputWizard({ onComplete, onChange }) {
-  const [value, setValue] = useState("");
+function InputWizard({ valueIn, onComplete, onChange }) {
+  const [value, setValue] = useState(valueIn);
   const [valid, setValid] = useState(false);
   const [error, setError] = useState(false);
 
@@ -14,20 +14,20 @@ function InputWizard({ onComplete, onChange }) {
   } else if (valid) {
     text = "Valid Contract";
   } else {
-    text = "16 Characters";
+    text = "43 Characters";
   }
 
   function handleChange(event) {
     setValue(event.target.value);
     onChange(event.target.value);
-    if (event.target.value.length === 16) {
+    if (event.target.value.length >= 42 && event.target.value.length <= 43) {
       setValid(true);
       onComplete(true);
       setError(false);
     } else {
       setValid(false);
       onComplete(false);
-      setError(event.target.value.length > 16);
+      setError(event.target.value.length > 43);
     }
   }
 

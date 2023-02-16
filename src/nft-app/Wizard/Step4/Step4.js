@@ -7,13 +7,13 @@ import { NFTValue } from "./NFTValue";
 import { ToggleBtn } from "./ToggleBtn";
 
 function Step4(props) {
-  const { onComplete, onBack, onNext } = props;
-  const { nftsStakeabkes } = props;
-  const [isOn, setIsOn] = useState(false);
+  const { isBackedValue, onComplete, onBack, onNext } = props;
+  const { nftsStakeables } = props;
+  const [isOn, setIsOn] = useState(!!isBackedValue);
   const [nftsBackedValues, setNftsBackedValues] = useState([]);
 
   useEffect(() => {
-    const nftsWithBackedValues = nftsStakeabkes.map((nft) => ({
+    const nftsWithBackedValues = nftsStakeables.map((nft) => ({
       _id: nft._id,
       backedValue: nft.backedValue ?? "",
       urlFile: nft.urlFile,
@@ -21,11 +21,11 @@ function Step4(props) {
     }));
 
     setNftsBackedValues(nftsWithBackedValues);
-  }, [nftsStakeabkes]);
+  }, [nftsStakeables]);
 
   const handleOn = () => {
     setIsOn(!isOn);
-    console.log(nftsStakeabkes);
+    console.log(nftsStakeables);
   };
 
   const onChangeNft = (id, value) => {
@@ -36,13 +36,7 @@ function Step4(props) {
   };
 
   const saveBackdValues = () => {
-    onComplete(
-      true,
-      nftsBackedValues.map((nft) => ({
-        nftId: nft._id,
-        value: nft.backedValue,
-      }))
-    );
+    onComplete(true, nftsBackedValues);
     onNext();
   };
 
@@ -64,13 +58,13 @@ function Step4(props) {
         >
           <VStack width="100%" spacing="15px">
             <HStack padding="0 0 15px 0">
-              {nftsStakeabkes.length ? (
+              {nftsStakeables.length ? (
                 <>
                   <BodyRegular>
                     Do you want to activate the Backed Value on your NFTs?
                   </BodyRegular>
 
-                  <ToggleBtn onClick={handleOn}></ToggleBtn>
+                  <ToggleBtn value={isOn} onClick={handleOn}></ToggleBtn>
                 </>
               ) : (
                 <BodyRegular>
