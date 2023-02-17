@@ -31,7 +31,7 @@ function ContentSteps(props) {
     onEdit,
     isAllowed,
   } = props;
-
+  //TODO: example
   const handleStepOne = (isValid, address) => {
     validateStep(1, isValid, address);
   };
