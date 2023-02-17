@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { VStack } from "../../styles/Stacks";
+//TODO: example
 
 function InputWizard({ valueIn, onComplete, onChange }) {
   const [value, setValue] = useState(valueIn);
