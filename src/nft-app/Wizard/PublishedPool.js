@@ -2,8 +2,9 @@ import React from "react";
 import { HStack, VStack } from "../../styles/Stacks";
 import stakeIcon from "../../images/stakingPool.png";
 import { BodyBold, BodyMedium } from "../../styles/TextStyles";
+import moment from "moment";
 
-function PublishedPool() {
+function PublishedPool({ date }) {
   return (
     <HStack
       width="100%"
@@ -25,7 +26,9 @@ function PublishedPool() {
         cursor="pointer"
       >
         <BodyBold cursor="pointer">Your Staking Pool</BodyBold>
-        <BodyMedium cursor="pointer">Created 19 Dec 2022</BodyMedium>
+        <BodyMedium cursor="pointer">
+          Created {moment(date ?? Date.now()).format("DD MMM YYYY")}
+        </BodyMedium>
       </VStack>
     </HStack>
   );

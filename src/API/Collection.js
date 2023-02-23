@@ -48,8 +48,11 @@ export const getCollection = (nickName) => {
     `collection/byNickName/${nickName}`,
     null,
     null
-  
   );
+};
+
+export const getCollectionById = (id) => {
+  return createSignedRequest(HTTP_METHODS.get, `collection//${id}`, null, null);
 };
 
 /**
@@ -104,6 +107,21 @@ export const getCollectionNFTs = ({
   return createSignedRequest(
     HTTP_METHODS.get,
     `collection/nft/${collectionId}/${page}${params}`,
+    null,
+    null
+  );
+};
+
+/**
+ * Send an HTTP request to get a list of NFTs of a specific collection
+ *
+ * @param {string} collectionId the DB object ID of the collection
+ * @returns HTTP GET request response with the filtered list of NFTs of the collection
+ */
+export const getCollectionNFTsPreviews = ({ collectionId }) => {
+  return createSignedRequest(
+    HTTP_METHODS.get,
+    `collection/nft/${collectionId}/previews`,
     null,
     null
   );

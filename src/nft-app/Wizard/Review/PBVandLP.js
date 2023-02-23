@@ -1,9 +1,18 @@
 import React, { useState } from "react";
+import { useEffect } from "react";
+import { calculatePeriod } from "../../../common/common";
 import { HStack, VStack } from "../../../styles/Stacks";
 import { BodyMedium, BodyBold } from "../../../styles/TextStyles";
 
 function PBVandLP(props) {
-  const [hasBL, setHasBL] = useState(props.hasBL);
+  const { hasBL, backedValue, lockPeriod } = props;
+
+  const [lockPeriodLabel, setLockPeriodLabel] = useState("");
+  useEffect(() => {
+    const lockPeriodInTime = calculatePeriod(lockPeriod);
+
+    setLockPeriodLabel(lockPeriodInTime);
+  }, [lockPeriod]);
 
   return (
     <HStack>
@@ -18,7 +27,7 @@ function PBVandLP(props) {
             padding="0 18px"
           >
             <BodyBold textcolor={({ theme }) => theme.blueText}>
-              340 Value Locked
+              {`${backedValue} Value Locked`}
             </BodyBold>
           </HStack>
         </VStack>
@@ -33,7 +42,7 @@ function PBVandLP(props) {
           border="6px"
           width="100%"
         >
-          <BodyBold>3 Weeks</BodyBold>
+          <BodyBold>{lockPeriodLabel}</BodyBold>
         </HStack>
       </VStack>
     </HStack>

@@ -17,7 +17,12 @@ function NFTValue(props) {
 
       <VStack spacing="3px" width="100%" alignment="flex-start">
         <BodyMedium>{props.name}</BodyMedium>
-        <Input placeholder={"000"} />
+        <Input
+          type={"number"}
+          placeholder={"000"}
+          value={props.value}
+          onChange={(e) => props.onChange(e.target.value)}
+        />
       </VStack>
     </HStack>
   );

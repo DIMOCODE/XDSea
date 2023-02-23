@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { HStack, VStack } from "../../../styles/Stacks";
 
 function ToggleBtn(props) {
-  const [isActive, setIsActive] = useState(false);
+  const [isActive, setIsActive] = useState(props.value);
 
   const handleActive = () => {
     setIsActive(!isActive);

@@ -6,6 +6,7 @@ import styled from "styled-components";
 
 import { useClickAway } from "react-use";
 import { motion, AnimatePresence } from "framer-motion/dist/framer-motion";
+import { HOURS_BY_TIME } from "../../../constant";
 
 function SelectorItem(props) {
   return (
@@ -21,9 +22,14 @@ function SelectorItem(props) {
   );
 }
 
-function TimeSelector() {
+function TimeSelector(props) {
   const ref = useRef(null);
   const [isActive, setIsActive] = useState(false);
+  const { selectedValue, onChangeSelectedValue } = props;
+
+  useEffect(() => {
+    hideSelector();
+  }, [selectedValue]);
 
   const handleActive = () => {
     setIsActive(true);
@@ -33,20 +39,14 @@ function TimeSelector() {
     hideSelector();
   });
 
-  const [selectedValue, setSelectedValue] = useState("HOUR");
-
   const handleSelect = (value) => {
-    setSelectedValue(value);
-    hideSelector();
+    onChangeSelectedValue(value);
   };
 
   const hideSelector = () => {
     setIsActive(false);
   };
 
-  {
-    console.log(isActive);
-  }
   return (
     <VStack
       border="9px"
@@ -83,26 +83,13 @@ function TimeSelector() {
                 boxShadow: " 0px 11px 12px 0px rgba(0, 0, 0, 0.1)",
               }}
             >
-              <SelectorItem
-                name="HOUR"
-                onClick={() => handleSelect("HOUR")}
-              ></SelectorItem>
-              <SelectorItem
-                name="DAY"
-                onClick={() => handleSelect("DAY")}
-              ></SelectorItem>
-              <SelectorItem
-                name="WEEK"
-                onClick={() => handleSelect("WEEK")}
-              ></SelectorItem>
-              <SelectorItem
-                name="MONTH"
-                onClick={() => handleSelect("MONTH")}
-              ></SelectorItem>
-              <SelectorItem
-                name="YEAR"
-                onClick={() => handleSelect("YEAR")}
-              ></SelectorItem>
+              {Object.keys(HOURS_BY_TIME).map((key) => (
+                <SelectorItem
+                  key={key}
+                  name={key}
+                  onClick={() => handleSelect(key)}
+                ></SelectorItem>
+              ))}
             </VStack>
           </Selector>
         )}

@@ -1,11 +1,18 @@
-import React from "react";
+import React, { useState } from "react";
 import { ButtonM } from "../../styles/Buttons/ButtonM";
 
 import { HStack, VStack } from "../../styles/Stacks";
 import { BodyMedium, BodyRegular, TitleBold30 } from "../../styles/TextStyles";
 import { InputWizard } from "./InputWizard";
 
-function Step1() {
+function Step1({ walletAddress, onComplete, onNext, onBack }) {
+  const [address, setAddress] = useState(walletAddress);
+  const [validForm, setValidForm] = useState(false);
+
+  const handleSaveAddress = () => {
+    onComplete(true, address);
+    onNext();
+  };
   return (
     <HStack width="100%">
       <VStack background="transparent" maxwidth="390px" alignment="flex-start">
@@ -14,16 +21,23 @@ function Step1() {
           Paste the address contract of your NFT Collection
         </BodyRegular>
 
-        <InputWizard></InputWizard>
+        <InputWizard
+          valueIn={address}
+          onComplete={setValidForm}
+          onChange={(add) => setAddress(add)}
+        ></InputWizard>
 
         <HStack>
           <ButtonM
             title="Cancel Creation"
             background={({ theme }) => theme.faded30}
             height="52px"
+            onClick={onBack}
           ></ButtonM>
           <ButtonM
+            onClick={handleSaveAddress}
             title="Continue"
+            disabled={!validForm}
             background={({ theme }) => theme.blue}
             textcolor="white"
             height="52px"

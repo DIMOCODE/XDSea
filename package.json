@@ -25,6 +25,7 @@
     "framer-motion": "^6.3.0",
     "hardhat": "^2.11.1",
     "ipfs-http-client": "^55.0.0",
+    "moment": "^2.29.4",
     "multiformats": "^9.6.5",
     "ng": "^0.0.0",
     "node-gyp-build": "^4.5.0",

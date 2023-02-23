@@ -31,6 +31,7 @@ import { HTTP_METHODS } from "../constant";
  */
 export const createStakingPool = (
   collectionId,
+  walletAddress,
   lockPeriod,
   rewards,
   nftsStakeables,
@@ -43,6 +44,9 @@ export const createStakingPool = (
   };
   if (lockPeriod) {
     body.lockPeriod = lockPeriod;
+  }
+  if (walletAddress) {
+    body.walletAddress = walletAddress;
   }
   if (nftsStakeables) {
     body.nftsStakeables = nftsStakeables;
@@ -78,12 +82,28 @@ export const createStakingPool = (
 
  * @returns HTTP GET request response 
  */
-export const updateStakingPool = ({stakingPoolId, lockPeriod, rewardRates, nftsStakeables}) => {
+export const updateStakingPool = ({
+  stakingPoolId,
+  lockPeriod,
+  rewardRates,
+  walletAddress,
+  nftsStakeables,
+  nftsBackedValues,
+  isBackedValue,
+}) => {
   const body = {
     lockPeriod,
     rewardRates,
     nftsStakeables,
+    walletAddress,
   };
+
+  if (nftsBackedValues?.length) {
+    body.nftsBackedValues = nftsBackedValues;
+  }
+  if (isBackedValue !== undefined) {
+    body.isBackedValue = isBackedValue;
+  }
   return createSignedRequest(
     HTTP_METHODS.put,
     `stake/pool/${stakingPoolId}`,
@@ -149,10 +169,27 @@ export const claimStakeReward = (stakeId, rewardTypeId) => {
  * @param {string} collectionId collection DB id
  * @returns HTTP GET request response
  */
-export const getStakingPoolsByCollection = (collectionId) => {
+export const getStakingPoolsByCollection = (
+  collectionId,
+  populateCollection = false
+) => {
   return createRequest(
     HTTP_METHODS.get,
     `stake/pool/${collectionId}`,
+    populateCollection ? { withCollection: true } : null,
+    null
+  );
+};
+/**
+ * Send an HTTP request to get staking pools by collection
+ *
+ * @param {string} collectionId collection DB id
+ * @returns HTTP GET request response
+ */
+export const getStakingPoolDetailByCollection = (collectionId) => {
+  return createRequest(
+    HTTP_METHODS.get,
+    `stake/pool/${collectionId}/detail`,
     null,
     null
   );
@@ -204,5 +241,44 @@ export const stopStake = (stakeId) => {
     `stake/stop/${stakeId}`,
     null,
     null
+  );
+};
+/**
+ * Send an HTTP request to get reward types
+ *
+ * @returns HTTP GET request response
+ */
+export const getRewardTypes = () => {
+  return createSignedRequest(HTTP_METHODS.get, `rewardType`, null, null);
+};
+export const updateRewardTypeById = ({
+  rewardTypeId,
+  addressContract,
+  type,
+  name,
+  color,
+  iconUrl,
+}) => {
+  const body = {};
+  if (addressContract) {
+    body.addressContract = addressContract;
+  }
+  if (type) {
+    body.type = type;
+  }
+  if (name) {
+    body.name = name;
+  }
+  if (color) {
+    body.color = color;
+  }
+  if (iconUrl) {
+    body.iconUrl = iconUrl;
+  }
+  return createSignedRequest(
+    HTTP_METHODS.put,
+    `rewardType/${rewardTypeId}`,
+    null,
+    body
   );
 };

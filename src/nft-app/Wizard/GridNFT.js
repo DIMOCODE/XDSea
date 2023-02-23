@@ -10,22 +10,11 @@ import { motion } from "framer-motion/dist/framer-motion";
 import { ButtonM } from "../../styles/Buttons/ButtonM";
 
 function NFTBox(props) {
-  const [isSelected, setIsSelected] = useState(false);
-  const [isActive, setIsActive] = useState(false);
-  useEffect(() => {
-    setIsSelected(props.selected.includes(props.id));
-  }, [props.selected]);
+  const { selected, onSelect } = props;
 
   const handleSelect = () => {
-    props.onSelect(props.id);
-    setIsSelected(!isSelected);
+    onSelect(!selected);
   };
-
-  useEffect(() => {
-    if (props.handleDeselectAll && props.selected.includes(props.id)) {
-      setIsSelected(false);
-    }
-  }, [props.handleDeselectAll, props.selected]);
 
   return (
     <VStack
@@ -42,7 +31,7 @@ function NFTBox(props) {
       <BodyMedium textcolor="white">{props.title}</BodyMedium>
 
       <AbsoluteCheck>
-        {isSelected ? (
+        {selected ? (
           <IconImg
             url={checked}
             width="30px"
@@ -60,47 +49,40 @@ function NFTBox(props) {
           ></IconImg>
         )}
       </AbsoluteCheck>
-
-      {console.log(isSelected)}
     </VStack>
   );
 }
 
-function GridNFT() {
-  const [selected, setSelected] = useState([]);
+function GridNFT({ nfts, onChange }) {
+  const [nftsSelected, setNftsSelected] = useState(nfts);
 
-  const handleSelect = (id) => {
-    setSelected((prevSelected) => {
-      if (prevSelected.includes(id)) {
-        return prevSelected.filter((selectedId) => selectedId !== id);
-      }
-      return [...prevSelected, id];
-    });
+  useEffect(() => {}, [nftsSelected]);
+
+  const handleSelect = (id, selected) => {
+    const nftsUpdated = nftsSelected.map((nft) =>
+      nft._id === id ? { ...nft, isSelected: selected } : { ...nft }
+    );
+    setNftsSelected(nftsUpdated);
+    onChange(nftsUpdated.filter((nft) => nft.isSelected));
   };
 
   const handleDeselectAll = () => {
-    setSelected([]);
+    const nftsUpdated = nftsSelected.map((nft) => ({
+      ...nft,
+      isSelected: false,
+    }));
+    setNftsSelected(nftsUpdated);
+    onChange([]);
   };
 
   const handleSelectAll = () => {
-    setSelected(components.map((component) => component.id));
+    const nftsUpdated = nftsSelected.map((nft) => ({
+      ...nft,
+      isSelected: true,
+    }));
+    setNftsSelected(nftsUpdated);
+    onChange(nftsUpdated);
   };
-
-  const components = [
-    { id: 1, title: "Image 1", image: mountain },
-    { id: 2, title: "Image 2", image: mountain },
-    { id: 3, title: "Image 4", image: mountain },
-    { id: 4, title: "Image 5", image: mountain },
-    { id: 5, title: "Image 3", image: mountain },
-    { id: 6, title: "Image 1", image: mountain },
-    { id: 7, title: "Image 2", image: mountain },
-    { id: 8, title: "Image 4", image: mountain },
-    { id: 9, title: "Image 5", image: mountain },
-    { id: 10, title: "Image 3", image: mountain },
-    { id: 11, title: "Image 4", image: mountain },
-    { id: 12, title: "Image 5", image: mountain },
-    { id: 13, title: "Image 3", image: mountain },
-  ];
 
   return (
     <VStack maxheight="526px">
@@ -131,20 +113,23 @@ function GridNFT() {
           alignment="flex-start"
           spacing="9px"
         >
-          {components.map((component) => (
+          {nftsSelected.map((nft) => (
             <NFTBox
-              key={component.id}
-              id={component.id}
-              image={component.image}
-              title={component.title}
-              selected={selected}
-              onSelect={handleSelect}
+              key={nft._id}
+              id={nft._id}
+              image={nft.urlFile.v0}
+              title={nft.name}
+              selected={nft.isSelected}
+              onSelect={(selected) => handleSelect(nft._id, selected)}
               handleDeselectAll={handleDeselectAll}
             />
           ))}
         </HStack>
       </HStack>
-      <BodyBold>{selected.length + " items selected"}</BodyBold>
+      <BodyBold>
+        {nftsSelected.filter((nft) => nft.isSelected).length +
+          " items selected"}
+      </BodyBold>
     </VStack>
   );
 }

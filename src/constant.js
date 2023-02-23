@@ -20,11 +20,15 @@ export const HEADER = {
   ],
 };
 
-{/* HTTP Provider for connecting to the blockchain */}
+{
+  /* HTTP Provider for connecting to the blockchain */
+}
 export const DEFAULT_PROVIDER = HTTP_PROVIDER[51];
 export const NETWORK_NAME = NETWORK_DICT[51];
 
-{/* Local Storage Encrypted Cookie Storage */}
+{
+  /* Local Storage Encrypted Cookie Storage */
+}
 export const LS = new SecureLS({
   encodingType: "rabbit",
   isCompression: true,
@@ -41,13 +45,13 @@ export const HTTP_METHODS = {
 const xdcDomainConfig = {
   testnet: {
     rpcUrl: "",
-    contractAddress: ""
+    contractAddress: "",
   },
   mainnet: {
     rpcUrl: "https://xdsearpc.blocksscan.io/",
-    contractAddress: "xdc295a7ab79368187a6cd03c464cfaab04d799784e"
+    contractAddress: "xdc295a7ab79368187a6cd03c464cfaab04d799784e",
   },
-  defaultNetwork: "mainnnet"
+  defaultNetwork: "mainnnet",
 };
 
 const xdcSdk = domainjs.SDK(xdcDomainConfig);
@@ -60,4 +64,36 @@ export const getXdcDomain = async (address) => {
 export const getXdcOwner = async (domain) => {
   const xdcAddress = await xdcSdk.getOwner(domain, false);
   return xdcAddress;
-}
+};
+
+export const WIZARD_STEPS = {
+  step1: "step1",
+  step2: "step2",
+  step3: "step3",
+  step4: "step4",
+  step5: "step5",
+};
+export const WIZARD_STATUS = {
+  published: "published",
+  error: "error",
+  review: "review",
+  creating: "creating",
+  admin: "admin",
+  notAllowed: "notAllowed",
+};
+
+export const HOURS_BY_TIME = {
+  HOUR: 1,
+  DAY: 24,
+  WEEK: 168,
+  MONTH: 720,
+  YEAR: 8640,
+};
+
+export const KEYS_TIME = {
+  HOUR: "HOUR",
+  DAY: "DAY",
+  WEEK: "WEEK",
+  MONTH: "MONTH",
+  YEAR: "YEAR",
+};

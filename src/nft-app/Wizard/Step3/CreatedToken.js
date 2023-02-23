@@ -12,6 +12,7 @@ import add from "../../../images/addIcon.svg";
 import { ActionButtons } from "../ActionButtons";
 
 function PublishedToken(props) {
+  const { logo, amount, name, rewardFrecuency } = props;
   return (
     <HStack
       background={({ theme }) => theme.faded30}
@@ -25,16 +26,16 @@ function PublishedToken(props) {
       <VStack spacing="0px" cursor="pointer">
         <HStack spacing="6px" maxheight="15px" cursor="pointer">
           <TitleBold18 cursor="pointer" textcolor="black">
-            {props.amount}
+            {amount}
           </TitleBold18>
           <IconImg
-            url={props.logo}
+            url={logo}
             cursor="pointer"
             width="21px"
             height="21px"
           ></IconImg>
         </HStack>
-        <BodyMedium cursor="pointer">XDC/D</BodyMedium>
+        <BodyMedium cursor="pointer">{`${name} / ${rewardFrecuency} Hours`}</BodyMedium>
       </VStack>
       <IconImg cursor="pointer" url={edit} width="30px" height="30px"></IconImg>
     </HStack>
@@ -63,17 +64,30 @@ function AddNewToken(props) {
 }
 
 function CreatedToken(props) {
+  const { rewardRates, onEditRewardRate, onCreateRewardRate, onBack, onNext } =
+    props;
   return (
     <HStack>
       <VStack height="auto" width="100%" alignment="flex-start">
         <BodyMedium>Staking Pool Rewards Tokens</BodyMedium>
-        <PublishedToken
-          logo={xdc}
-          amount="100"
-          onClick={props.onClick}
-        ></PublishedToken>
-        <AddNewToken onClick={props.onClick}></AddNewToken>
-        <ActionButtons grayBtn="Cancel" blueBtn="Continue"></ActionButtons>
+        {rewardRates.map((rr) => (
+          <PublishedToken
+            key={`RR_${rr._id}`}
+            logo={rr.iconUrl}
+            amount={rr.amount}
+            name={rr.name}
+            rewardFrecuency={rr.rewardFrecuency}
+            onClick={() => onEditRewardRate(rr._id)}
+          />
+        ))}
+        <AddNewToken onClick={onCreateRewardRate}></AddNewToken>
+        <ActionButtons
+          grayBtn="Cancel"
+          blueBtn="Continue"
+          onClickGray={onBack}
+          onClickBlue={onNext}
+          blueBtnDisabled={rewardRates.length === 0}
+        />
       </VStack>
     </HStack>
   );
