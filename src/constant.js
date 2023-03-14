@@ -2,7 +2,7 @@ import SecureLS from "secure-ls";
 import domainjs from "xdcdomainjs";
 
 export const HTTP_PROVIDER = {
-  50: "https://xdsearpc.blocksscan.io",
+  50: "https://rpc.xdcrpc.com",
   51: "https://apothem.xdcrpc.com",
 };
 
@@ -44,7 +44,7 @@ const xdcDomainConfig = {
     contractAddress: ""
   },
   mainnet: {
-    rpcUrl: "https://xdsearpc.blocksscan.io/",
+    rpcUrl: "https://rpc.xdcrpc.com/",
     contractAddress: "xdc295a7ab79368187a6cd03c464cfaab04d799784e"
   },
   defaultNetwork: "mainnnet"
