@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"},{"v":{"$numberInt":"2"},"key":{"tokenId":{"$numberInt":"1"}},"name":"tokenId_1","background":true},{"v":{"$numberInt":"2"},"key":{"SCTokenId":{"$numberInt":"1"}},"name":"SCTokenId_1","background":true}],"uuid":"df60af3b42f14601b123b707a63e1e52","collectionName":"nfts","type":"collection"}
